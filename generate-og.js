@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '72-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '80-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -538,6 +538,62 @@ const APPS = [
     subdomain: 'b64img',
     title: 'CYBERTOOLS // B64IMG',
     subtitle: 'RASTER DECODE & BASE64 RADAR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'camera',
+    subdomain: 'camera',
+    title: 'CYBERTOOLS // CAMERA',
+    subtitle: 'OPTIC STREAM & SENSOR DIAGNOSTICS',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'mic',
+    subdomain: 'mic',
+    title: 'CYBERTOOLS // MIC',
+    subtitle: 'AUDIO TELEMETRY & DECIBEL SPECTRUM',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'keys',
+    subdomain: 'keys',
+    title: 'CYBERTOOLS // KEYS',
+    subtitle: 'INPUT DECODER & KEYCODE MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'network',
+    subdomain: 'network',
+    title: 'CYBERTOOLS // NETWORK',
+    subtitle: 'UPLINK RADAR & NETWORK TELEMETRY',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'bintext',
+    subdomain: 'bintext',
+    title: 'CYBERTOOLS // BINTEXT',
+    subtitle: 'BITSTREAM FORGE & BINARY CODEC',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'easing',
+    subdomain: 'easing',
+    title: 'CYBERTOOLS // EASING',
+    subtitle: 'VELOCITY VECTOR & CUBIC_BEZIER FORGE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'headers',
+    subdomain: 'headers',
+    title: 'CYBERTOOLS // HEADERS',
+    subtitle: 'SECURITY SHIELD & HEADER MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'draw',
+    subdomain: 'draw',
+    title: 'CYBERTOOLS // DRAW',
+    subtitle: 'TACTICAL SLATE & CANVAS VECTOR',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

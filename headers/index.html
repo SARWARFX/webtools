@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Shield // HTTP Security Headers Generator & Matrix | CyberTools</title>
+  <meta name="description" content="Interactive HTTP security header builder for Content-Security-Policy (CSP), HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy with Nginx, Apache & Cloudflare Workers export.">
+  <meta name="keywords" content="http security headers, csp generator, content security policy, hsts header, x-frame-options, permissions-policy, nginx security headers, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/headers/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/headers/" />
+  <meta property="og:title" content="Security Shield // HTTP Security Headers Generator & Matrix | CyberTools" />
+  <meta property="og:description" content="Interactive HTTP security header builder for Content-Security-Policy (CSP), HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy with Nginx, Apache & Cloudflare Workers export." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/headers/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/headers/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/headers/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Security Shield // HTTP Security Headers Generator & Matrix | CyberTools" />
+  <meta name="twitter:description" content="Interactive HTTP security header builder for Content-Security-Policy (CSP), HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy with Nginx, Apache & Cloudflare Workers export." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/headers/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Security Shield // Header Matrix",
+    "url": "https://apps.sarwarfx.cfd/headers/",
+    "description": "Interactive HTTP security header builder for Content-Security-Policy (CSP), HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy with Nginx, Apache & Cloudflare Workers export.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%2305070d"/><path d="M50 18 L80 30 L80 55 C80 72 50 85 50 85 C50 85 20 72 20 55 L20 30 Z" stroke="%2300f5ff" stroke-width="6" fill="none"/><path d="M42 50 L48 56 L62 42" stroke="%23ff2bd6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">SECURITY_SHIELD // HEADER MATRIX</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x4F</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>NETSEC_MATRIX</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">SECURITY_SHIELD</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x4F</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          SECURITY SHIELD <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">HEADER MATRIX</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Interactive HTTP security header builder for Content-Security-Policy (CSP), HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy with Nginx, Apache &amp; Cloudflare Workers export.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="applyPreset('paranoia')" class="hud-btn-primary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-shield-virus"></i>
+          <span>MAX PARANOIA (A+)</span>
+        </button>
+        <button onclick="applyPreset('standard')" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>SPA / STATIC (REC)</span>
+        </button>
+        <button onclick="applyPreset('permissive')" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-unlock-keyhole text-pink-400"></i>
+          <span>PERMISSIVE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Security Grade & Posture Score Banner -->
+    <div class="hud-card p-5 rounded flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <div id="gradeBadge" class="w-14 h-14 rounded-lg bg-emerald-950/80 border-2 border-emerald-400 flex items-center justify-center font-orbitron font-black text-2xl text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.4)]">
+          A+
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h2 id="gradeTitle" class="font-orbitron font-bold text-white text-base tracking-wide">MAXIMUM FORTIFIED DEFENSE</h2>
+            <span id="scoreNumber" class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">100 / 100 PTS</span>
+          </div>
+          <p id="gradeSummary" class="text-xs font-mono text-slate-400 mt-1">
+            Zero-trust CSP, HSTS preloaded, frame lock active, MIME sniffing blocked, and sensor hardware sandboxed.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button onclick="copyCurrentSnippet()" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-regular fa-copy"></i>
+          <span>COPY ACTIVE CONFIG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace: Configurator on Left, Code Exporter on Right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Configurator Panels (7 cols) -->
+      <div class="lg:col-span-7 space-y-4 font-mono text-xs">
+        <!-- Panel 1: Content-Security-Policy (CSP) -->
+        <div class="hud-card p-4 sm:p-5 rounded space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-lock text-cyan-400"></i>
+              <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">CONTENT-SECURITY-POLICY (CSP)</h3>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="chkCspEnabled" checked onchange="buildHeaders()" class="sr-only peer">
+              <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+            </label>
+          </div>
+
+          <div id="cspSection" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="selCspDefault" class="text-[11px] text-slate-400 block mb-1">DEFAULT-SRC:</label>
+                <select id="selCspDefault" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1.5 rounded focus:border-cyan-400 focus:outline-none">
+                  <option value="'self'">'self' (Origin Only)</option>
+                  <option value="'none'">'none' (Reject all by default)</option>
+                  <option value="*">* (Permissive Wildcard)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="selCspScript" class="text-[11px] text-slate-400 block mb-1">SCRIPT-SRC:</label>
+                <select id="selCspScript" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1.5 rounded focus:border-cyan-400 focus:outline-none">
+                  <option value="'self'">'self' (Strict No Inline)</option>
+                  <option value="'self' 'unsafe-inline'">'self' 'unsafe-inline' (Allows Scripts)</option>
+                  <option value="'self' 'unsafe-inline' 'unsafe-eval'">'self' 'unsafe-inline' 'unsafe-eval' (SPAs)</option>
+                  <option value="https:">https: (Any Secure Origin)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="selCspStyle" class="text-[11px] text-slate-400 block mb-1">STYLE-SRC:</label>
+                <select id="selCspStyle" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1.5 rounded focus:border-cyan-400 focus:outline-none">
+                  <option value="'self' 'unsafe-inline'">'self' 'unsafe-inline' (Tailwind/CSS-in-JS)</option>
+                  <option value="'self'">'self' (Strict External Only)</option>
+                  <option value="https:">https: (Any Secure CDN)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="selCspImg" class="text-[11px] text-slate-400 block mb-1">IMG-SRC:</label>
+                <select id="selCspImg" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1.5 rounded focus:border-cyan-400 focus:outline-none">
+                  <option value="'self' data: https:">'self' data: https: (Standard)</option>
+                  <option value="'self'">'self' (Strict Origin Only)</option>
+                  <option value="*">* (Any Origin)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4 pt-1 text-[11px]">
+              <label class="flex items-center space-x-1.5 text-slate-300 cursor-pointer">
+                <input type="checkbox" id="chkCspUpgrade" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>upgrade-insecure-requests</span>
+              </label>
+              <label class="flex items-center space-x-1.5 text-slate-300 cursor-pointer">
+                <input type="checkbox" id="chkCspBlockObject" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>object-src 'none'</span>
+              </label>
+              <label class="flex items-center space-x-1.5 text-slate-300 cursor-pointer">
+                <input type="checkbox" id="chkCspBaseUri" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>base-uri 'self'</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: HSTS, Framing & Sniffing -->
+        <div class="hud-card p-4 sm:p-5 rounded space-y-4">
+          <div class="flex items-center space-x-2 border-b border-cyan-500/20 pb-3">
+            <i class="fa-solid fa-network-wired text-cyan-400"></i>
+            <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">TRANSPORT &amp; FRAME INTEGRITY</h3>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- HSTS -->
+            <div class="space-y-2 p-3 bg-slate-950/60 rounded border border-slate-800">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-200">STRICT-TRANSPORT-SECURITY</span>
+                <input type="checkbox" id="chkHstsEnabled" checked onchange="buildHeaders()" class="accent-cyan-400">
+              </div>
+              <div>
+                <label for="selHstsAge" class="text-[10px] text-slate-500">MAX-AGE DURATION:</label>
+                <select id="selHstsAge" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded">
+                  <option value="31536000">1 Year (31536000s)</option>
+                  <option value="63072000">2 Years (63072000s)</option>
+                  <option value="2592000">30 Days (2592000s)</option>
+                </select>
+              </div>
+              <div class="flex items-center space-x-3 text-[10px] pt-1">
+                <label class="flex items-center space-x-1 cursor-pointer">
+                  <input type="checkbox" id="chkHstsSubdomains" checked onchange="buildHeaders()" class="accent-cyan-400">
+                  <span>includeSubDomains</span>
+                </label>
+                <label class="flex items-center space-x-1 cursor-pointer">
+                  <input type="checkbox" id="chkHstsPreload" checked onchange="buildHeaders()" class="accent-cyan-400">
+                  <span>preload</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Framing & Sniffing -->
+            <div class="space-y-3 p-3 bg-slate-950/60 rounded border border-slate-800">
+              <div>
+                <label for="selXfo" class="text-[10px] text-slate-500 font-bold block mb-1">X-FRAME-OPTIONS (ANTI-CLICKJACK):</label>
+                <select id="selXfo" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded">
+                  <option value="DENY">DENY (Never allow iframe)</option>
+                  <option value="SAMEORIGIN">SAMEORIGIN (Same origin only)</option>
+                  <option value="OFF">DISABLED (Permit embedding)</option>
+                </select>
+              </div>
+              <div>
+                <label for="selContentType" class="text-[10px] text-slate-500 font-bold block mb-1">X-CONTENT-TYPE-OPTIONS:</label>
+                <select id="selContentType" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded">
+                  <option value="nosniff">nosniff (Block MIME Confusion)</option>
+                  <option value="OFF">DISABLED</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Privacy, Cross-Origin & Permissions -->
+        <div class="hud-card p-4 sm:p-5 rounded space-y-4">
+          <div class="flex items-center space-x-2 border-b border-cyan-500/20 pb-3">
+            <i class="fa-solid fa-fingerprint text-pink-400"></i>
+            <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">PRIVACY &amp; SENSOR PERMISSIONS</h3>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="selReferrer" class="text-[10px] text-slate-400 font-bold block mb-1">REFERRER-POLICY:</label>
+              <select id="selReferrer" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded">
+                <option value="strict-origin-when-cross-origin">strict-origin-when-cross-origin (Standard)</option>
+                <option value="no-referrer">no-referrer (Absolute Zero Leak)</option>
+                <option value="same-origin">same-origin</option>
+                <option value="unsafe-url">unsafe-url (Full Leak)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="selCoop" class="text-[10px] text-slate-400 font-bold block mb-1">CROSS-ORIGIN-OPENER (COOP):</label>
+              <select id="selCoop" onchange="buildHeaders()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded">
+                <option value="same-origin">same-origin (Spectre Isolation)</option>
+                <option value="same-origin-allow-popups">same-origin-allow-popups</option>
+                <option value="unsafe-none">unsafe-none</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Permissions Policy Checkboxes -->
+          <div>
+            <label class="text-[10px] text-slate-400 font-bold block mb-1">PERMISSIONS-POLICY (HARDWARE RESTRICTIONS):</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="chkPermCamera" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>camera=()</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="chkPermMic" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>microphone=()</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="chkPermGeo" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>geolocation=()</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="chkPermPayment" checked onchange="buildHeaders()" class="accent-cyan-400">
+                <span>payment=()</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Output & Server Snippets (5 cols) -->
+      <div class="lg:col-span-5 space-y-4 flex flex-col font-mono text-xs">
+        <div class="hud-card p-5 rounded space-y-4 flex flex-col flex-grow">
+          <!-- Server Dialect Tabs -->
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+            <div class="flex items-center space-x-1 overflow-x-auto">
+              <button id="tabBtnNginx" onclick="switchTab('nginx')" class="px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 font-bold text-[11px]">
+                NGINX
+              </button>
+              <button id="tabBtnHeaders" onclick="switchTab('headers')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white text-[11px]">
+                RAW HTTP
+              </button>
+              <button id="tabBtnApache" onclick="switchTab('apache')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white text-[11px]">
+                APACHE
+              </button>
+              <button id="tabBtnCf" onclick="switchTab('cf')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white text-[11px]">
+                CLOUDFLARE
+              </button>
+            </div>
+            <button onclick="copyCurrentSnippet()" class="hud-btn-primary px-2.5 py-1 rounded text-[11px]">
+              COPY
+            </button>
+          </div>
+
+          <!-- Generated Snippet Block -->
+          <div class="relative flex-grow">
+            <textarea id="codeOutput" readonly rows="18" class="w-full h-full min-h-[360px] bg-slate-950 border border-slate-800 rounded p-3 text-cyan-300 font-mono text-xs focus:border-cyan-400 focus:outline-none resize-none leading-relaxed selection:bg-cyan-500/30 selection:text-white"></textarea>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-800">
+            <span id="headerTally">7 active security headers</span>
+            <span class="text-emerald-400">RFC 6797 / CSP L3 COMPLIANT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // HTTP SECURITY HEADERS &amp; MODERN DEFENSE ARCHITECTURE
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Hardening web servers against Cross-Site Scripting (XSS), Clickjacking, MIME Confusion, and Protocol Downgrade attacks.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">The Core Defense Perimeter</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            HTTP response headers allow server operators to enforce strict security boundaries directly in the visitor's browser sandbox. Even if application code contains latent vulnerabilities, properly synthesized security headers block unauthorized script execution, isolate credentials, and prevent malicious iframing.
+          </p>
+          <ul class="space-y-2 text-xs sm:text-sm text-slate-400 list-disc list-inside">
+            <li><strong class="text-slate-200">Content-Security-Policy (CSP):</strong> Restricts sources of executable scripts, stylesheets, images, and network connections, stopping Reflected and Stored XSS attacks.</li>
+            <li><strong class="text-slate-200">Strict-Transport-Security (HSTS):</strong> Mandates HTTPS communication, eliminating SSL-stripping and man-in-the-middle attacks on public networks.</li>
+            <li><strong class="text-slate-200">X-Frame-Options:</strong> Prevents third-party websites from rendering your site within an invisible iframe, neutralizing UI redressing and Clickjacking.</li>
+            <li><strong class="text-slate-200">X-Content-Type-Options:</strong> Disables MIME sniffing, forcing browsers to respect the declared <code class="text-cyan-300">Content-Type</code> and preventing polyglot script execution.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Permissions &amp; Cross-Origin Isolation</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Modern browser security standards extend far beyond basic transport encryption. The <code class="text-pink-300">Permissions-Policy</code> allows sites to permanently revoke browser hardware APIs (such as microphones, webcams, and payment processors) for all third-party embedded widgets.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Furthermore, <code class="text-cyan-300">Cross-Origin-Opener-Policy (COOP)</code> isolates your top-level browsing context into an independent execution process, mitigating Spectre side-channel attacks and enabling high-resolution JavaScript performance timers.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Why does my website break when using strict CSP?</h4>
+            <p class="text-slate-400">
+              Modern frontend frameworks often inject dynamic inline styles or evaluate templates at runtime. If your CSP lacks <code class="text-cyan-300">'unsafe-inline'</code> or appropriate cryptographic hashes/nonces, the browser will refuse to execute those resources.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">What is HSTS Preloading?</h4>
+            <p class="text-slate-400">
+              Preloading registers your domain into an immutable list baked directly into Chrome, Firefox, Safari, and Edge source code. Browsers will never attempt an insecure HTTP connection, even on the very first visit.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Where do I paste these headers in Cloudflare Pages?</h4>
+            <p class="text-slate-400">
+              Save the generated Cloudflare snippet into a plain text file named <code class="text-cyan-300">_headers</code> placed directly in the root output folder of your static build directory.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Does this tool inspect or store my website domain?</h4>
+            <p class="text-slate-400">
+              Zero storage. Like all CyberTools utilities, this configurator executes 100% in-browser with no backend telemetry or tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    let currentTab = 'nginx'; // 'nginx', 'headers', 'apache', 'cf'
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const tabs = ['nginx', 'headers', 'apache', 'cf'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === tab) {
+          btn.className = 'px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 font-bold text-[11px]';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white text-[11px]';
+        }
+      });
+      buildHeaders();
+    }
+
+    function applyPreset(preset) {
+      if (preset === 'paranoia') {
+        document.getElementById('chkCspEnabled').checked = true;
+        document.getElementById('selCspDefault').value = "'none'";
+        document.getElementById('selCspScript').value = "'self'";
+        document.getElementById('selCspStyle').value = "'self'";
+        document.getElementById('selCspImg').value = "'self'";
+        document.getElementById('chkCspUpgrade').checked = true;
+        document.getElementById('chkCspBlockObject').checked = true;
+        document.getElementById('chkCspBaseUri').checked = true;
+
+        document.getElementById('chkHstsEnabled').checked = true;
+        document.getElementById('selHstsAge').value = "63072000";
+        document.getElementById('chkHstsSubdomains').checked = true;
+        document.getElementById('chkHstsPreload').checked = true;
+
+        document.getElementById('selXfo').value = 'DENY';
+        document.getElementById('selContentType').value = 'nosniff';
+        document.getElementById('selReferrer').value = 'no-referrer';
+        document.getElementById('selCoop').value = 'same-origin';
+
+        document.getElementById('chkPermCamera').checked = true;
+        document.getElementById('chkPermMic').checked = true;
+        document.getElementById('chkPermGeo').checked = true;
+        document.getElementById('chkPermPayment').checked = true;
+        showToast('Applied MAXIMUM PARANOIA (A+) Preset');
+      } else if (preset === 'standard') {
+        document.getElementById('chkCspEnabled').checked = true;
+        document.getElementById('selCspDefault').value = "'self'";
+        document.getElementById('selCspScript').value = "'self' 'unsafe-inline'";
+        document.getElementById('selCspStyle').value = "'self' 'unsafe-inline'";
+        document.getElementById('selCspImg').value = "'self' data: https:";
+        document.getElementById('chkCspUpgrade').checked = true;
+        document.getElementById('chkCspBlockObject').checked = true;
+        document.getElementById('chkCspBaseUri').checked = true;
+
+        document.getElementById('chkHstsEnabled').checked = true;
+        document.getElementById('selHstsAge').value = "31536000";
+        document.getElementById('chkHstsSubdomains').checked = true;
+        document.getElementById('chkHstsPreload').checked = true;
+
+        document.getElementById('selXfo').value = 'SAMEORIGIN';
+        document.getElementById('selContentType').value = 'nosniff';
+        document.getElementById('selReferrer').value = 'strict-origin-when-cross-origin';
+        document.getElementById('selCoop').value = 'same-origin';
+
+        document.getElementById('chkPermCamera').checked = true;
+        document.getElementById('chkPermMic').checked = true;
+        document.getElementById('chkPermGeo').checked = true;
+        document.getElementById('chkPermPayment').checked = false;
+        showToast('Applied SPA / STATIC (Recommended) Preset');
+      } else if (preset === 'permissive') {
+        document.getElementById('chkCspEnabled').checked = false;
+        document.getElementById('chkHstsEnabled').checked = true;
+        document.getElementById('selHstsAge').value = "2592000";
+        document.getElementById('chkHstsSubdomains').checked = false;
+        document.getElementById('chkHstsPreload').checked = false;
+
+        document.getElementById('selXfo').value = 'OFF';
+        document.getElementById('selContentType').value = 'nosniff';
+        document.getElementById('selReferrer').value = 'strict-origin-when-cross-origin';
+        document.getElementById('selCoop').value = 'unsafe-none';
+
+        document.getElementById('chkPermCamera').checked = false;
+        document.getElementById('chkPermMic').checked = false;
+        document.getElementById('chkPermGeo').checked = false;
+        document.getElementById('chkPermPayment').checked = false;
+        showToast('Applied Permissive Preset');
+      }
+      buildHeaders();
+    }
+
+    function calculateScore(headersMap) {
+      let score = 0;
+      if (headersMap['Content-Security-Policy']) {
+        score += 35;
+        if (headersMap['Content-Security-Policy'].includes("default-src 'none'")) score += 5;
+        if (!headersMap['Content-Security-Policy'].includes("'unsafe-inline'")) score += 5;
+      }
+      if (headersMap['Strict-Transport-Security']) {
+        score += 25;
+        if (headersMap['Strict-Transport-Security'].includes('preload')) score += 5;
+      }
+      if (headersMap['X-Frame-Options'] === 'DENY' || headersMap['X-Frame-Options'] === 'SAMEORIGIN') score += 15;
+      if (headersMap['X-Content-Type-Options'] === 'nosniff') score += 10;
+      if (headersMap['Referrer-Policy'] && headersMap['Referrer-Policy'] !== 'unsafe-url') score += 5;
+      if (headersMap['Permissions-Policy']) score += 5;
+      if (headersMap['Cross-Origin-Opener-Policy'] === 'same-origin') score += 5;
+
+      score = Math.min(100, score);
+
+      const gradeEl = document.getElementById('gradeBadge');
+      const titleEl = document.getElementById('gradeTitle');
+      const scoreEl = document.getElementById('scoreNumber');
+      const sumEl = document.getElementById('gradeSummary');
+
+      scoreEl.textContent = `${score} / 100 PTS`;
+
+      if (score >= 90) {
+        gradeEl.textContent = 'A+';
+        gradeEl.className = 'w-14 h-14 rounded-lg bg-emerald-950/80 border-2 border-emerald-400 flex items-center justify-center font-orbitron font-black text-2xl text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.4)]';
+        titleEl.textContent = 'MAXIMUM FORTIFIED DEFENSE';
+        sumEl.textContent = 'Airgapped CSP policy, HSTS preloaded, frame lock active, and sensory APIs restricted.';
+      } else if (score >= 75) {
+        gradeEl.textContent = 'A';
+        gradeEl.className = 'w-14 h-14 rounded-lg bg-cyan-950/80 border-2 border-cyan-400 flex items-center justify-center font-orbitron font-black text-2xl text-cyan-300 shadow-[0_0_20px_rgba(0,245,255,0.4)]';
+        titleEl.textContent = 'SECURE PRODUCTION STANDARD';
+        sumEl.textContent = 'Robust defense against typical XSS and clickjacking attacks across all modern browsers.';
+      } else if (score >= 50) {
+        gradeEl.textContent = 'B';
+        gradeEl.className = 'w-14 h-14 rounded-lg bg-amber-950/80 border-2 border-amber-400 flex items-center justify-center font-orbitron font-black text-2xl text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.4)]';
+        titleEl.textContent = 'MODERATE PROTECTION';
+        sumEl.textContent = 'Consider tightening CSP and enabling HSTS subdomains for higher defense resilience.';
+      } else {
+        gradeEl.textContent = 'C';
+        gradeEl.className = 'w-14 h-14 rounded-lg bg-rose-950/80 border-2 border-rose-400 flex items-center justify-center font-orbitron font-black text-2xl text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.4)]';
+        titleEl.textContent = 'VULNERABLE CONFIGURATION';
+        sumEl.textContent = 'Missing critical CSP and transport integrity headers. Risk of XSS and framing exploit.';
+      }
+    }
+
+    function buildHeaders() {
+      const headers = {};
+
+      // CSP
+      const cspEnabled = document.getElementById('chkCspEnabled').checked;
+      if (cspEnabled) {
+        const def = document.getElementById('selCspDefault').value;
+        const script = document.getElementById('selCspScript').value;
+        const style = document.getElementById('selCspStyle').value;
+        const img = document.getElementById('selCspImg').value;
+        const upgrade = document.getElementById('chkCspUpgrade').checked;
+        const blockObj = document.getElementById('chkCspBlockObject').checked;
+        const baseUri = document.getElementById('chkCspBaseUri').checked;
+
+        const directives = [];
+        directives.push(`default-src ${def}`);
+        directives.push(`script-src ${script}`);
+        directives.push(`style-src ${style}`);
+        directives.push(`img-src ${img}`);
+        if (blockObj) directives.push("object-src 'none'");
+        if (baseUri) directives.push("base-uri 'self'");
+        if (upgrade) directives.push("upgrade-insecure-requests");
+
+        headers['Content-Security-Policy'] = directives.join('; ');
+      }
+
+      // HSTS
+      const hstsEnabled = document.getElementById('chkHstsEnabled').checked;
+      if (hstsEnabled) {
+        const age = document.getElementById('selHstsAge').value;
+        const sub = document.getElementById('chkHstsSubdomains').checked;
+        const preload = document.getElementById('chkHstsPreload').checked;
+
+        let val = `max-age=${age}`;
+        if (sub) val += '; includeSubDomains';
+        if (preload) val += '; preload';
+        headers['Strict-Transport-Security'] = val;
+      }
+
+      // X-Frame-Options
+      const xfo = document.getElementById('selXfo').value;
+      if (xfo !== 'OFF') {
+        headers['X-Frame-Options'] = xfo;
+      }
+
+      // X-Content-Type-Options
+      const cto = document.getElementById('selContentType').value;
+      if (cto !== 'OFF') {
+        headers['X-Content-Type-Options'] = cto;
+      }
+
+      // Referrer-Policy
+      const ref = document.getElementById('selReferrer').value;
+      if (ref) {
+        headers['Referrer-Policy'] = ref;
+      }
+
+      // COOP
+      const coop = document.getElementById('selCoop').value;
+      if (coop && coop !== 'unsafe-none') {
+        headers['Cross-Origin-Opener-Policy'] = coop;
+      }
+
+      // Permissions-Policy
+      const permCam = document.getElementById('chkPermCamera').checked;
+      const permMic = document.getElementById('chkPermMic').checked;
+      const permGeo = document.getElementById('chkPermGeo').checked;
+      const permPay = document.getElementById('chkPermPayment').checked;
+
+      const perms = [];
+      if (permCam) perms.push('camera=()');
+      if (permMic) perms.push('microphone=()');
+      if (permGeo) perms.push('geolocation=()');
+      if (permPay) perms.push('payment=()');
+
+      if (perms.length > 0) {
+        headers['Permissions-Policy'] = perms.join(', ');
+      }
+
+      // Calculate score & update banner
+      calculateScore(headers);
+
+      // Render snippet
+      let snippet = '';
+      if (currentTab === 'nginx') {
+        snippet = '# Nginx Security Headers\n';
+        for (const [k, v] of Object.entries(headers)) {
+          snippet += `add_header ${k} "${v}" always;\n`;
+        }
+      } else if (currentTab === 'headers') {
+        snippet = '# Raw HTTP Response Headers\n';
+        for (const [k, v] of Object.entries(headers)) {
+          snippet += `${k}: ${v}\n`;
+        }
+      } else if (currentTab === 'apache') {
+        snippet = '# Apache .htaccess / VirtualHost\n<IfModule mod_headers.c>\n';
+        for (const [k, v] of Object.entries(headers)) {
+          snippet += `  Header always set ${k} "${v}"\n`;
+        }
+        snippet += '</IfModule>\n';
+      } else if (currentTab === 'cf') {
+        snippet = '# Cloudflare Pages / Workers _headers file\n/*\n';
+        for (const [k, v] of Object.entries(headers)) {
+          snippet += `  ${k}: ${v}\n`;
+        }
+      }
+
+      document.getElementById('codeOutput').value = snippet;
+      document.getElementById('headerTally').textContent = `${Object.keys(headers).length} active security headers`;
+    }
+
+    function copyCurrentSnippet() {
+      const text = document.getElementById('codeOutput').value;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Security headers copied to clipboard');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      applyPreset('standard');
+    });
+  </script>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'headers';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>

@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microphone Test & Decibel Spectrum Analyzer | CyberTools</title>
+  <meta name="description" content="Live microphone diagnostic running via Web Audio API. Real-time animated neon frequency spectrum canvas, decibel volume meter, and peak clip alert.">
+  <meta name="keywords" content="microphone test, mic test online, decibel meter online, audio spectrum visualizer, test mic volume, webaudio microphone, audio frequency analyzer">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/mic/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/mic/" />
+  <meta property="og:title" content="Microphone Test & Decibel Spectrum Analyzer | CyberTools" />
+  <meta property="og:description" content="Live microphone diagnostic running via Web Audio API. Real-time animated neon frequency spectrum canvas, decibel volume meter, and peak clip alert." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/mic/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/mic/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/mic/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Microphone Test & Decibel Spectrum Analyzer | CyberTools" />
+  <meta name="twitter:description" content="Live microphone diagnostic running via Web Audio API. Real-time animated neon frequency spectrum canvas, decibel volume meter, and peak clip alert." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/mic/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Microphone Test & Decibel Spectrum Analyzer",
+    "url": "https://apps.sarwarfx.cfd/mic/",
+    "description": "Live microphone diagnostic running via Web Audio API. Real-time animated neon frequency spectrum canvas, decibel volume meter, and peak clip alert.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">AUDIO_TELEMETRY // DECIBEL SPECTRUM</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x4A</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>ACOUSTIC SENSOR PROBE // WEBAUDIO ANALYSER PIPELINE</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-wide">
+          DECIBEL SPECTRUM <span class="text-cyan-400">// MICROPHONE HUD</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Live microphone frequency spectrum analyzer, real-time volume decibel (dBFS) gauge, and digital peak clipping sensor.
+        </p>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+        <button id="micToggleBtn" onclick="toggleMicrophone()" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-microphone" id="micBtnIcon"></i>
+          <span id="micBtnLabel">ACTIVATE MICROPHONE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Audio Visualizer Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Panel: Spectrum Canvas (7 cols) -->
+      <div class="lg:col-span-7 space-y-4">
+        
+        <div class="hud-card p-5 space-y-3 font-mono text-xs flex flex-col">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+            <span class="text-xs font-orbitron font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-wave-square text-cyan-400"></i> LIVE FREQUENCY SPECTRUM (FFT)
+            </span>
+            <div class="flex items-center space-x-1.5 text-[10px]">
+              <button onclick="setVizType('bars')" id="viz-bars" class="px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300">FFT BARS</button>
+              <button onclick="setVizType('wave')" id="viz-wave" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">OSCILLOSCOPE</button>
+            </div>
+          </div>
+
+          <!-- Canvas Viewport -->
+          <div class="relative w-full aspect-video bg-black/90 rounded border border-cyan-500/30 overflow-hidden flex items-center justify-center">
+            <canvas id="spectrumCanvas" class="w-full h-full block"></canvas>
+            
+            <div id="micPrompt" class="absolute inset-0 flex flex-col items-center justify-center text-slate-600 font-mono text-xs space-y-2 pointer-events-none">
+              <i class="fa-solid fa-microphone-slash text-2xl"></i>
+              <span>Click 'Activate Microphone' to initialize audio input</span>
+            </div>
+          </div>
+
+          <!-- Freq Axis Legend -->
+          <div class="flex justify-between text-[9px] text-slate-500 pt-1 font-mono">
+            <span>20 Hz</span>
+            <span>250 Hz</span>
+            <span>1 kHz</span>
+            <span>4 kHz</span>
+            <span>16 kHz</span>
+            <span>20 kHz</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Volume Meter & Acoustic Metrics (5 cols) -->
+      <div class="lg:col-span-5 space-y-4">
+        
+        <!-- Live Volume & Clipping Gauge -->
+        <div class="hud-card p-5 space-y-4 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+            <span class="text-xs font-orbitron font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-volume-high text-cyan-400"></i> LIVE DECIBEL GAUGE
+            </span>
+            <span id="clipBadge" class="text-[9px] bg-slate-900 border border-slate-800 text-slate-500 px-2 py-0.5 rounded">NO CLIP</span>
+          </div>
+
+          <!-- Volume Level Bar -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-[11px]">
+              <span class="text-slate-400">RMS Amplitude</span>
+              <span id="dbValue" class="text-cyan-300 font-bold">-Infinity dBFS</span>
+            </div>
+            <div class="w-full h-4 bg-slate-950 rounded border border-slate-800 overflow-hidden p-0.5 flex items-center">
+              <div id="meterBar" class="h-full bg-gradient-to-r from-cyan-400 via-teal-400 to-pink-500 rounded transition-all duration-75" style="width: 0%;"></div>
+            </div>
+            <div class="flex justify-between text-[9px] text-slate-500">
+              <span>-60 dB</span>
+              <span>-30 dB</span>
+              <span>-12 dB</span>
+              <span>0 dB (PEAK)</span>
+            </div>
+          </div>
+
+          <!-- Metrics Telemetry Grid -->
+          <div class="grid grid-cols-2 gap-2 text-[10px] pt-1 border-t border-slate-800">
+            <div class="bg-slate-900/70 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-500 block uppercase">Peak Level</span>
+              <span id="statPeak" class="text-white font-bold text-xs">-Infinity dB</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-500 block uppercase">Sample Rate</span>
+              <span id="statRate" class="text-cyan-300 font-bold text-xs">---</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-500 block uppercase">Dominant Frequency</span>
+              <span id="statDominant" class="text-purple-300 font-bold text-xs">---</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-500 block uppercase">Sensor State</span>
+              <span id="statSensorState" class="text-slate-400 font-bold text-xs">MUTED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latency & Processing Notice -->
+        <div class="hud-card p-4 space-y-2 font-mono text-[11px]">
+          <span class="text-xs font-orbitron font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-cyan-400"></i> ACOUSTIC RECON NOTE
+          </span>
+          <p class="text-slate-400 leading-relaxed text-[11px]">
+            Input stream operates in a closed audio graph loop directly routed to the <code>AnalyserNode</code> and is deliberately decoupled from your speakers (<code>destination</code>) to eliminate acoustic feedback howl.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SEO Tactical Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 mt-12 space-y-6 text-slate-300 font-rajdhani text-sm sm:text-base leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          DECIBEL SPECTRUM // FAST FOURIER TRANSFORM (FFT) & ACOUSTIC TELEMETRY
+        </h2>
+        <p class="text-xs sm:text-sm text-cyan-400 font-mono mt-1">
+          Technical specifications of W3C Web Audio API audio graphs, frequency binning physics, and dBFS measurement standards.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-simple text-cyan-400"></i> Fast Fourier Transform (FFT) Mechanics
+          </h3>
+          <p>
+            Microphone diagnostics convert continuous air pressure waves into discrete frequency band distributions using the Fast Fourier Transform algorithm:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">AnalyserNode Window:</strong> Configured with an <code>fftSize</code> of 2048, yielding 1024 individual frequency bins spanning from 0 Hz up to the Nyquist frequency (half the sample rate, e.g. 24,000 Hz).</li>
+            <li><strong class="text-white">Spectral Energy:</strong> Real-time amplitudes are quantified between 0 and 255 per bin, rendering a visual spectral fingerprint of your vocal cords or room ambient noise.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-gauge text-pink-400"></i> Decibels Relative to Full Scale (dBFS)
+          </h3>
+          <p>
+            Unlike acoustic sound pressure level (dBSPL), digital audio measures volume relative to the maximum possible level before distortion:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">0 dBFS Threshold:</strong> The absolute digital ceiling. Any amplitude exceeding this produces harsh flat-topped waveform clipping.</li>
+            <li><strong class="text-white">RMS Power:</strong> Root Mean Square averaging smooths instantaneous peaks to accurately represent perceived human acoustic loudness.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-4 space-y-2">
+        <h3 class="text-sm font-orbitron font-semibold text-white uppercase tracking-wider">
+          Airgap Zero-Log Privacy Architecture
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400">
+          The Decibel Spectrum diagnostic analyzes audio buffers in transient RAM without saving recordings to disk or streaming raw audio over the network. Muting the mic immediately terminates the audio graph.
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'mic';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    let audioCtx = null;
+    let micStream = null;
+    let analyser = null;
+    let isMicActive = false;
+    let animFrame = null;
+    let vizType = 'bars'; // 'bars' or 'wave'
+    let maxPeakDb = -Infinity;
+
+    async function toggleMicrophone() {
+      if (isMicActive) {
+        stopMicrophone();
+      } else {
+        await startMicrophone();
+      }
+    }
+
+    async function startMicrophone() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        const source = audioCtx.createMediaStreamSource(micStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.8;
+
+        source.connect(analyser);
+        // Note: Do not connect analyser to audioCtx.destination to prevent feedback loop!
+
+        isMicActive = true;
+        updateMicUI(true);
+        document.getElementById('statRate').textContent = `${audioCtx.sampleRate.toLocaleString()} Hz`;
+
+        startVisualization();
+        showToast('MICROPHONE SENSOR ONLINE');
+      } catch (err) {
+        console.error('Mic access error:', err);
+        showToast(`MIC ERROR: ${err.name}`);
+      }
+    }
+
+    function stopMicrophone() {
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+        micStream = null;
+      }
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+      if (animFrame) {
+        cancelAnimationFrame(animFrame);
+        animFrame = null;
+      }
+      isMicActive = false;
+      updateMicUI(false);
+      showToast('MICROPHONE MUTED');
+    }
+
+    function updateMicUI(active) {
+      const btn = document.getElementById('micToggleBtn');
+      const label = document.getElementById('micBtnLabel');
+      const icon = document.getElementById('micBtnIcon');
+      const prompt = document.getElementById('micPrompt');
+      const sensorState = document.getElementById('statSensorState');
+
+      if (active) {
+        btn.className = 'hud-btn-secondary border-pink-500/50 text-pink-400 px-4 py-2 rounded flex items-center space-x-1.5';
+        label.textContent = 'MUTE MICROPHONE';
+        icon.className = 'fa-solid fa-microphone-slash';
+        prompt.classList.add('hidden');
+        sensorState.textContent = 'ACTIVE';
+        sensorState.className = 'text-emerald-400 font-bold text-xs animate-pulse';
+      } else {
+        btn.className = 'hud-btn-primary px-4 py-2 rounded flex items-center space-x-1.5';
+        label.textContent = 'ACTIVATE MICROPHONE';
+        icon.className = 'fa-solid fa-microphone';
+        prompt.classList.remove('hidden');
+        sensorState.textContent = 'MUTED';
+        sensorState.className = 'text-slate-400 font-bold text-xs';
+
+        document.getElementById('dbValue').textContent = '-Infinity dBFS';
+        document.getElementById('meterBar').style.width = '0%';
+        document.getElementById('clipBadge').textContent = 'NO CLIP';
+        document.getElementById('clipBadge').className = 'text-[9px] bg-slate-900 border border-slate-800 text-slate-500 px-2 py-0.5 rounded';
+      }
+    }
+
+    function setVizType(type) {
+      vizType = type;
+      document.getElementById('viz-bars').className = type === 'bars' ? 
+        'px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300' : 
+        'px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400';
+      document.getElementById('viz-wave').className = type === 'wave' ? 
+        'px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300' : 
+        'px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400';
+    }
+
+    function startVisualization() {
+      const canvas = document.getElementById('spectrumCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function draw() {
+        if (!isMicActive || !analyser) return;
+        animFrame = requestAnimationFrame(draw);
+
+        const width = canvas.width = canvas.parentElement.clientWidth;
+        const height = canvas.height = canvas.parentElement.clientHeight;
+
+        ctx.fillStyle = '#05070d';
+        ctx.fillRect(0, 0, width, height);
+
+        // Grid lines
+        ctx.strokeStyle = 'rgba(0, 245, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 40) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        if (vizType === 'bars') {
+          analyser.getByteFrequencyData(dataArray);
+
+          const barCount = 64;
+          const barWidth = width / barCount;
+          let maxBin = 0;
+          let maxVal = 0;
+
+          for (let i = 0; i < barCount; i++) {
+            const index = Math.floor(i * (bufferLength / barCount) * 0.5);
+            const val = dataArray[index] / 255;
+            if (dataArray[index] > maxVal) {
+              maxVal = dataArray[index];
+              maxBin = index;
+            }
+
+            const barHeight = val * (height - 10);
+            const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
+            gradient.addColorStop(0, '#00f5ff');
+            gradient.addColorStop(0.7, '#ff2bd6');
+            gradient.addColorStop(1, '#ffffff');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+          }
+
+          // Compute dominant frequency (approximate)
+          if (audioCtx && maxVal > 30) {
+            const nyquist = audioCtx.sampleRate / 2;
+            const domFreq = Math.round((maxBin / bufferLength) * nyquist);
+            document.getElementById('statDominant').textContent = `${domFreq.toLocaleString()} Hz`;
+          } else {
+            document.getElementById('statDominant').textContent = '---';
+          }
+        } else {
+          // Waveform
+          analyser.getByteTimeDomainData(dataArray);
+
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#00f5ff';
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = '#00f5ff';
+          ctx.beginPath();
+
+          const sliceWidth = width / bufferLength;
+          let x = 0;
+
+          for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * height / 2;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += sliceWidth;
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+
+        // Compute RMS dB volume
+        const timeData = new Uint8Array(analyser.fftSize);
+        analyser.getByteTimeDomainData(timeData);
+
+        let sumSquares = 0;
+        for (let i = 0; i < timeData.length; i++) {
+          const norm = (timeData[i] - 128) / 128;
+          sumSquares += norm * norm;
+        }
+        const rms = Math.sqrt(sumSquares / timeData.length);
+        const db = rms > 0.0001 ? 20 * Math.log10(rms) : -100;
+
+        const dbRounded = Math.max(-100, Math.min(0, parseFloat(db.toFixed(1))));
+        document.getElementById('dbValue').textContent = `${dbRounded} dBFS`;
+
+        // Percentage for bar (from -60 to 0)
+        const pct = Math.max(0, Math.min(100, ((dbRounded + 60) / 60) * 100));
+        document.getElementById('meterBar').style.width = `${pct}%`;
+
+        if (dbRounded > maxPeakDb) {
+          maxPeakDb = dbRounded;
+          document.getElementById('statPeak').textContent = `${maxPeakDb} dBFS`;
+        }
+
+        // Clipping check
+        const clipBadge = document.getElementById('clipBadge');
+        if (dbRounded >= -0.5) {
+          clipBadge.textContent = 'CLIP ALERT!';
+          clipBadge.className = 'text-[9px] bg-red-950 border border-red-500 text-red-400 px-2 py-0.5 rounded font-bold animate-ping';
+        } else {
+          clipBadge.textContent = 'NO CLIP';
+          clipBadge.className = 'text-[9px] bg-slate-900 border border-slate-800 text-slate-500 px-2 py-0.5 rounded';
+        }
+      }
+
+      draw();
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+
+    window.addEventListener('beforeunload', () => {
+      stopMicrophone();
+    });
+  </script>
+</body>
+</html>

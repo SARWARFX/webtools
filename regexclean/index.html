@@ -181,7 +181,7 @@
         <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
           <span class="hidden md:inline">SUITE SELECTOR</span>
-          <span class="text-cyan-400 font-bold">(72)</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
         </button>
       </div>
     </div>
@@ -367,7 +367,7 @@
       <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (72)</span>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
         </div>
         <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
       </div>
@@ -473,7 +473,15 @@
       { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
       { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
       { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
-      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' }
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
 ];
 
     function toggleSuiteModal(open) {

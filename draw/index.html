@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tactical Slate // Cyberpunk Vector Sketching Canvas | CyberTools</title>
+  <meta name="description" content="Lightweight in-browser HUD sketching canvas. Freehand tactical drawing with neon palettes, adjustable stroke weights, grid overlay toggle, undo/redo, and PNG export.">
+  <meta name="keywords" content="canvas sketching, drawing tool, neon whiteboard, vector sketch, tactical slate, drawing pad, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/draw/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/draw/" />
+  <meta property="og:title" content="Tactical Slate // Cyberpunk Vector Sketching Canvas | CyberTools" />
+  <meta property="og:description" content="Lightweight in-browser HUD sketching canvas. Freehand tactical drawing with neon palettes, adjustable stroke weights, grid overlay toggle, undo/redo, and PNG export." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/draw/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/draw/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/draw/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tactical Slate // Cyberpunk Vector Sketching Canvas | CyberTools" />
+  <meta name="twitter:description" content="Lightweight in-browser HUD sketching canvas. Freehand tactical drawing with neon palettes, adjustable stroke weights, grid overlay toggle, undo/redo, and PNG export." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/draw/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Tactical Slate // Canvas Vector",
+    "url": "https://apps.sarwarfx.cfd/draw/",
+    "description": "Lightweight in-browser HUD sketching canvas. Freehand tactical drawing with neon palettes, adjustable stroke weights, grid overlay toggle, undo/redo, and PNG export.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%2305070d"/><path d="M25 75 L35 75 L75 35 L65 25 Z" fill="%2300f5ff"/><path d="M25 75 L22 82 L30 80 Z" fill="%23ff2bd6"/><circle cx="70" cy="30" r="5" fill="%2300ff9d"/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">TACTICAL_SLATE // CANVAS VECTOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x50</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>CANVAS_TELEMETRY</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">TACTICAL_SLATE</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x50</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          TACTICAL SLATE <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">CANVAS VECTOR</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Lightweight HUD sketching canvas. Freehand tactical drawing with neon luminescence, adjustable stroke weights, grid overlays, undo history, and instant PNG export.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="undo()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5" title="Ctrl+Z">
+          <i class="fa-solid fa-rotate-left text-cyan-400"></i>
+          <span>UNDO</span>
+        </button>
+        <button onclick="redo()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5" title="Ctrl+Y">
+          <i class="fa-solid fa-rotate-right text-cyan-400"></i>
+          <span>REDO</span>
+        </button>
+        <button onclick="clearSlate()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-trash-can text-pink-400"></i>
+          <span>CLEAR SLATE</span>
+        </button>
+        <button onclick="exportPng(false)" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>EXPORT PNG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawing Tool & Palette Control Bar -->
+    <div class="hud-card p-4 rounded flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+      <!-- Neon Color Swatches -->
+      <div class="flex items-center space-x-3">
+        <span class="text-slate-400 uppercase tracking-wider text-[11px]">COLOR MATRIX:</span>
+        <div class="flex items-center space-x-2" id="colorPalette">
+          <button onclick="setColor('#00f5ff')" data-color="#00f5ff" class="w-7 h-7 rounded-full bg-[#00f5ff] border-2 border-white shadow-[0_0_10px_#00f5ff] transition-transform scale-110" title="Neon Cyan"></button>
+          <button onclick="setColor('#ff2bd6')" data-color="#ff2bd6" class="w-7 h-7 rounded-full bg-[#ff2bd6] border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105" title="Hot Pink"></button>
+          <button onclick="setColor('#00ff9d')" data-color="#00ff9d" class="w-7 h-7 rounded-full bg-[#00ff9d] border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105" title="Matrix Green"></button>
+          <button onclick="setColor('#ffe600')" data-color="#ffe600" class="w-7 h-7 rounded-full bg-[#ffe600] border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105" title="Solar Yellow"></button>
+          <button onclick="setColor('#a855f7')" data-color="#a855f7" class="w-7 h-7 rounded-full bg-[#a855f7] border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105" title="Ultraviolet"></button>
+          <button onclick="setColor('#ffffff')" data-color="#ffffff" class="w-7 h-7 rounded-full bg-[#ffffff] border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105" title="Pure White"></button>
+          <button onclick="setEraser()" id="btnEraser" class="w-7 h-7 rounded-full bg-slate-800 border-2 border-transparent hover:border-slate-400 flex items-center justify-center text-slate-300 text-xs transition-transform hover:scale-105" title="Eraser Tool">
+            <i class="fa-solid fa-eraser"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stroke Weight Presets -->
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 uppercase tracking-wider text-[11px]">STROKE:</span>
+        <div class="inline-flex rounded border border-slate-800 bg-slate-950 p-0.5" id="strokeButtons">
+          <button onclick="setLineWidth(2)" data-width="2" class="px-2.5 py-1 rounded text-slate-400 hover:text-white font-bold">2PX</button>
+          <button onclick="setLineWidth(4)" data-width="4" class="px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 font-bold">4PX</button>
+          <button onclick="setLineWidth(8)" data-width="8" class="px-2.5 py-1 rounded text-slate-400 hover:text-white font-bold">8PX</button>
+          <button onclick="setLineWidth(16)" data-width="16" class="px-2.5 py-1 rounded text-slate-400 hover:text-white font-bold">16PX</button>
+        </div>
+      </div>
+
+      <!-- HUD Toggles -->
+      <div class="flex items-center space-x-4">
+        <!-- Glow Effect -->
+        <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 select-none">
+          <input type="checkbox" id="chkNeonGlow" checked onchange="toggleGlow(this.checked)" class="accent-cyan-400">
+          <span>NEON GLOW</span>
+        </label>
+
+        <!-- Grid Overlay -->
+        <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 select-none">
+          <input type="checkbox" id="chkGridOverlay" checked onchange="toggleGrid(this.checked)" class="accent-cyan-400">
+          <span>HUD GRID</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Slate Canvas Workspace -->
+    <div class="hud-card p-3 rounded relative overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2 mb-2 font-mono text-xs">
+        <div class="flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="text-white font-bold">ACTIVE DRAWING SURFACE</span>
+          <span class="text-slate-500">|</span>
+          <span id="canvasDimLabel" class="text-slate-400">1200 x 600 PX</span>
+        </div>
+        <div class="flex items-center space-x-2 text-[11px]">
+          <button onclick="exportPng(true)" class="hud-btn-secondary px-2 py-0.5 rounded text-[10px]">
+            EXPORT TRANSPARENT PNG
+          </button>
+          <button onclick="copyToClipboard()" class="hud-btn-secondary px-2 py-0.5 rounded text-[10px]">
+            COPY IMAGE
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Frame -->
+      <div id="canvasContainer" class="relative w-full h-[540px] bg-[#05070d] border border-slate-800 rounded overflow-hidden select-none touch-none cursor-crosshair">
+        <!-- Grid Canvas (Lower Layer) -->
+        <canvas id="gridCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+        <!-- Main Drawing Canvas (Upper Layer) -->
+        <canvas id="drawCanvas" class="absolute inset-0 w-full h-full"></canvas>
+      </div>
+
+      <!-- Footer Canvas Telemetry -->
+      <div class="flex items-center justify-between text-[11px] font-mono text-slate-500 pt-2 px-1">
+        <span id="strokeCountLabel">0 stroke vectors</span>
+        <span class="text-cyan-400">AIRGAP MEMORY &bull; ZERO TELEMETRY</span>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // HTML5 CANVAS VECTOR SKETCHING &amp; HIGH-DPI DRAFTING
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Understanding pointer event coordinates, sub-pixel rasterization, device pixel ratios, and non-destructive canvas export.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">Client-Side Slate Architecture</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Tactical Slate transforms your browser into an airgapped digital drafting whiteboard. By orchestrating hardware-accelerated HTML5 Canvas 2D contexts (<code class="text-cyan-300">CanvasRenderingContext2D</code>) with high-frequency W3C Pointer Events, every stroke is captured with zero input latency.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Whether interacting via precision desktop mice, graphic drawing tablets (Apple Pencil, Wacom), or multi-touch mobile screens, the engine normalizes screen coordinates against native <code class="text-pink-300">window.devicePixelRatio</code> metrics, ensuring crisp vector rendering on Retina and 4K displays without blur.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Bézier Smoothing &amp; Neon Optics</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            To eliminate jagged pixelation during rapid sketching, line segments are rendered with rounded caps (<code class="text-cyan-300">lineCap = 'round'</code>) and rounded joins (<code class="text-cyan-300">lineJoin = 'round'</code>). 
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            When Neon Glow is activated, Gaussian blur halos are composited in real time using the GPU canvas shadow renderer (<code class="text-pink-300">shadowBlur</code> and <code class="text-pink-300">shadowColor</code>), recreating the authentic luminescence of vintage HUD radar displays.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Are my drawings sent to any cloud server?</h4>
+            <p class="text-slate-400">
+              Never. Tactical Slate operates on a 100% client-side privacy model. All pixel rasters and stroke history reside exclusively in your local browser tab's transient memory.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How do Undo and Redo work?</h4>
+            <p class="text-slate-400">
+              Every completed pointer stroke snapshots the canvas state into an in-memory stack using <code class="text-cyan-300">getImageData()</code> / <code class="text-cyan-300">putImageData()</code>. You can traverse forward and backward using the UI buttons or standard shortcuts (<kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd>).
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">What is the difference between solid and transparent export?</h4>
+            <p class="text-slate-400">
+              Standard PNG export includes the dark Obsidian background (`#05070d`), making it ready for instant sharing or slide embedding. Transparent PNG export exports only your neon vector strokes, ideal for graphic overlays.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Can I copy the canvas directly to my clipboard?</h4>
+            <p class="text-slate-400">
+              Yes. Clicking 'COPY IMAGE' generates an in-memory PNG blob and invokes the native Async Clipboard API (<code class="text-cyan-300">navigator.clipboard.write</code>) to paste directly into Discord, Slack, or Figma.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    const container = document.getElementById('canvasContainer');
+    const drawCanvas = document.getElementById('drawCanvas');
+    const gridCanvas = document.getElementById('gridCanvas');
+    const drawCtx = drawCanvas.getContext('2d');
+    const gridCtx = gridCanvas.getContext('2d');
+
+    let currentColor = '#00f5ff';
+    let currentWidth = 4;
+    let isEraser = false;
+    let hasGlow = true;
+    let showGrid = true;
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let strokeCount = 0;
+
+    // Undo / Redo history
+    const historyStack = [];
+    let historyStep = -1;
+    const maxHistory = 20;
+
+    function resizeCanvases() {
+      const rect = container.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      // Save current image content if already initialized
+      let savedData = null;
+      if (drawCanvas.width > 0 && drawCanvas.height > 0) {
+        savedData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+      }
+
+      drawCanvas.width = rect.width * dpr;
+      drawCanvas.height = rect.height * dpr;
+      gridCanvas.width = rect.width * dpr;
+      gridCanvas.height = rect.height * dpr;
+
+      drawCtx.scale(dpr, dpr);
+      gridCtx.scale(dpr, dpr);
+
+      document.getElementById('canvasDimLabel').textContent = `${Math.round(rect.width)} x ${Math.round(rect.height)} PX`;
+
+      drawGrid();
+      if (savedData) {
+        drawCtx.putImageData(savedData, 0, 0);
+      } else {
+        saveHistory();
+      }
+    }
+
+    function drawGrid() {
+      const rect = container.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+
+      gridCtx.clearRect(0, 0, w, h);
+      if (!showGrid) return;
+
+      gridCtx.strokeStyle = 'rgba(0, 245, 255, 0.06)';
+      gridCtx.lineWidth = 1;
+
+      const step = 32;
+      for (let x = 0; x < w; x += step) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(x, 0);
+        gridCtx.lineTo(x, h);
+        gridCtx.stroke();
+      }
+      for (let y = 0; y < h; y += step) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(0, y);
+        gridCtx.lineTo(w, y);
+        gridCtx.stroke();
+      }
+    }
+
+    function toggleGrid(enabled) {
+      showGrid = enabled;
+      drawGrid();
+    }
+
+    function toggleGlow(enabled) {
+      hasGlow = enabled;
+    }
+
+    function setColor(color) {
+      isEraser = false;
+      currentColor = color;
+      document.querySelectorAll('#colorPalette button').forEach(btn => {
+        if (btn.dataset.color === color) {
+          btn.className = 'w-7 h-7 rounded-full border-2 border-white transition-transform scale-110 shadow-[0_0_10px_' + color + ']';
+          btn.style.backgroundColor = color;
+        } else if (btn.id === 'btnEraser') {
+          btn.className = 'w-7 h-7 rounded-full bg-slate-800 border-2 border-transparent hover:border-slate-400 flex items-center justify-center text-slate-300 text-xs transition-transform hover:scale-105';
+        } else {
+          btn.className = 'w-7 h-7 rounded-full border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105';
+          btn.style.backgroundColor = btn.dataset.color;
+        }
+      });
+    }
+
+    function setEraser() {
+      isEraser = true;
+      document.querySelectorAll('#colorPalette button').forEach(btn => {
+        if (btn.id === 'btnEraser') {
+          btn.className = 'w-7 h-7 rounded-full bg-pink-900 border-2 border-pink-400 text-pink-300 flex items-center justify-center text-xs transition-transform scale-110 shadow-[0_0_10px_#ff2bd6]';
+        } else {
+          btn.className = 'w-7 h-7 rounded-full border-2 border-transparent hover:border-slate-400 transition-transform hover:scale-105';
+        }
+      });
+      showToast('Eraser mode selected');
+    }
+
+    function setLineWidth(w) {
+      currentWidth = w;
+      document.querySelectorAll('#strokeButtons button').forEach(btn => {
+        if (parseInt(btn.dataset.width, 10) === w) {
+          btn.className = 'px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 font-bold';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white font-bold';
+        }
+      });
+    }
+
+    function saveHistory() {
+      if (historyStep < historyStack.length - 1) {
+        historyStack.length = historyStep + 1;
+      }
+      const dpr = window.devicePixelRatio || 1;
+      const snapshot = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+      historyStack.push(snapshot);
+      if (historyStack.length > maxHistory) {
+        historyStack.shift();
+      } else {
+        historyStep++;
+      }
+    }
+
+    function undo() {
+      if (historyStep > 0) {
+        historyStep--;
+        drawCtx.putImageData(historyStack[historyStep], 0, 0);
+        strokeCount = Math.max(0, strokeCount - 1);
+        document.getElementById('strokeCountLabel').textContent = `${strokeCount} stroke vectors`;
+        showToast('Undo action');
+      } else {
+        showToast('At earliest history point');
+      }
+    }
+
+    function redo() {
+      if (historyStep < historyStack.length - 1) {
+        historyStep++;
+        drawCtx.putImageData(historyStack[historyStep], 0, 0);
+        strokeCount++;
+        document.getElementById('strokeCountLabel').textContent = `${strokeCount} stroke vectors`;
+        showToast('Redo action');
+      } else {
+        showToast('At latest history point');
+      }
+    }
+
+    function clearSlate() {
+      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      strokeCount = 0;
+      document.getElementById('strokeCountLabel').textContent = '0 stroke vectors';
+      saveHistory();
+      showToast('Slate cleared');
+    }
+
+    function handlePointerDown(e) {
+      isDrawing = true;
+      const rect = container.getBoundingClientRect();
+      lastX = e.clientX - rect.left;
+      lastY = e.clientY - rect.top;
+
+      drawCtx.beginPath();
+      drawCtx.arc(lastX, lastY, (isEraser ? currentWidth * 2 : currentWidth) / 2, 0, Math.PI * 2);
+      if (isEraser) {
+        drawCtx.globalCompositeOperation = 'destination-out';
+        drawCtx.fillStyle = '#000000';
+      } else {
+        drawCtx.globalCompositeOperation = 'source-over';
+        drawCtx.fillStyle = currentColor;
+        if (hasGlow) {
+          drawCtx.shadowColor = currentColor;
+          drawCtx.shadowBlur = currentWidth * 2.5;
+        } else {
+          drawCtx.shadowBlur = 0;
+        }
+      }
+      drawCtx.fill();
+    }
+
+    function handlePointerMove(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const rect = container.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+
+      drawCtx.beginPath();
+      drawCtx.moveTo(lastX, lastY);
+      drawCtx.lineTo(currentX, currentY);
+
+      if (isEraser) {
+        drawCtx.globalCompositeOperation = 'destination-out';
+        drawCtx.strokeStyle = '#000000';
+        drawCtx.lineWidth = currentWidth * 3;
+        drawCtx.shadowBlur = 0;
+      } else {
+        drawCtx.globalCompositeOperation = 'source-over';
+        drawCtx.strokeStyle = currentColor;
+        drawCtx.lineWidth = currentWidth;
+        if (hasGlow) {
+          drawCtx.shadowColor = currentColor;
+          drawCtx.shadowBlur = currentWidth * 2.5;
+        } else {
+          drawCtx.shadowBlur = 0;
+        }
+      }
+
+      drawCtx.lineCap = 'round';
+      drawCtx.lineJoin = 'round';
+      drawCtx.stroke();
+
+      lastX = currentX;
+      lastY = currentY;
+    }
+
+    function handlePointerUp() {
+      if (isDrawing) {
+        isDrawing = false;
+        strokeCount++;
+        document.getElementById('strokeCountLabel').textContent = `${strokeCount} stroke vectors`;
+        saveHistory();
+      }
+    }
+
+    drawCanvas.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+
+    // Keyboard shortcuts for Undo/Redo
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    });
+
+    function getCompositeCanvas(transparent = false) {
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = drawCanvas.width;
+      exportCanvas.height = drawCanvas.height;
+      const expCtx = exportCanvas.getContext('2d');
+
+      if (!transparent) {
+        // Dark Obsidian background
+        expCtx.fillStyle = '#05070d';
+        expCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+        if (showGrid) {
+          expCtx.drawImage(gridCanvas, 0, 0);
+        }
+      }
+
+      expCtx.drawImage(drawCanvas, 0, 0);
+      return exportCanvas;
+    }
+
+    function exportPng(transparent = false) {
+      const canvasToExport = getCompositeCanvas(transparent);
+      canvasToExport.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = transparent ? 'tactical-slate-transparent.png' : 'tactical-slate.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(transparent ? 'Exported transparent PNG' : 'Exported solid PNG');
+      }, 'image/png');
+    }
+
+    async function copyToClipboard() {
+      const canvasToExport = getCompositeCanvas(false);
+      try {
+        canvasToExport.toBlob(async (blob) => {
+          if (!blob) return;
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('Tactical slate copied to clipboard');
+        }, 'image/png');
+      } catch (err) {
+        showToast('Clipboard image write failed');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      resizeCanvases();
+    });
+
+    window.addEventListener('resize', () => {
+      resizeCanvases();
+    });
+  </script>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'draw';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>

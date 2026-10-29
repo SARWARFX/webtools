@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript KeyCode Event & Keyboard Debugger | CyberTools</title>
+  <meta name="description" content="Interactive keyboard event debugger capturing KeyboardEvent properties: event.key, code, which, ASCII codes, modifier keys, and keypress history log.">
+  <meta name="keywords" content="javascript keycode, keyboard event test, event key code, keycode tester, event which, keyboard debugger, test keypress online">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/keys/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/keys/" />
+  <meta property="og:title" content="JavaScript KeyCode Event & Keyboard Debugger | CyberTools" />
+  <meta property="og:description" content="Interactive keyboard event debugger capturing KeyboardEvent properties: event.key, code, which, ASCII codes, modifier keys, and keypress history log." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/keys/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/keys/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/keys/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="JavaScript KeyCode Event & Keyboard Debugger | CyberTools" />
+  <meta name="twitter:description" content="Interactive keyboard event debugger capturing KeyboardEvent properties: event.key, code, which, ASCII codes, modifier keys, and keypress history log." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/keys/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JavaScript KeyCode Event & Keyboard Debugger",
+    "url": "https://apps.sarwarfx.cfd/keys/",
+    "description": "Interactive keyboard event debugger capturing KeyboardEvent properties: event.key, code, which, ASCII codes, modifier keys, and keypress history log.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌨️</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">INPUT_DECODER // KEYCODE MATRIX</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x4B</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>HUMAN INTERFACE DEVICE RECON // KEYBOARD EVENT PROBE</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-wide">
+          KEYCODE MATRIX <span class="text-cyan-400">// INPUT DECODER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Hardware keystroke event interceptor inspecting W3C KeyboardEvent properties, legacy keyCodes, modifiers & event sequence logs.
+        </p>
+      </div>
+
+      <!-- Action Toggles -->
+      <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
+        <label class="flex items-center space-x-2 cursor-pointer select-none bg-slate-900 border border-slate-800 px-3 py-1.5 rounded">
+          <input type="checkbox" id="preventToggle" class="rounded border-slate-700 bg-slate-950 text-cyan-400 focus:ring-0">
+          <span class="text-slate-300">Prevent Default Browser Keys</span>
+        </label>
+        <button onclick="clearHistory()" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-trash-can text-pink-400"></i>
+          <span>CLEAR LOG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Key Display Hero Banner -->
+    <div class="hud-card p-6 rounded text-center relative overflow-hidden">
+      <div class="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-1">
+        [ACTIVE_KEY_CODE_RADAR]
+      </div>
+      <div id="bigKeyCode" class="text-6xl sm:text-8xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-pink-500 tracking-wider">
+        65
+      </div>
+      <div id="bigKeyName" class="text-xl sm:text-2xl font-mono font-bold text-white tracking-widest uppercase mt-2">
+        Key: 'a'
+      </div>
+      <div class="text-[11px] text-slate-500 font-mono mt-1">
+        Press any key on your keyboard to inspect event telemetry
+      </div>
+    </div>
+
+    <!-- Keyboard Event Specifications Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono text-xs">
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">event.key</span>
+        <span id="propKey" class="text-base font-bold text-cyan-300 truncate block">a</span>
+      </div>
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">event.code</span>
+        <span id="propCode" class="text-base font-bold text-pink-300 truncate block">KeyA</span>
+      </div>
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">event.which (Legacy)</span>
+        <span id="propWhich" class="text-base font-bold text-white truncate block">65</span>
+      </div>
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">event.location</span>
+        <span id="propLocation" class="text-base font-bold text-purple-300 truncate block">0 (Standard)</span>
+      </div>
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">ASCII Decimal</span>
+        <span id="propAscii" class="text-base font-bold text-amber-300 truncate block">97</span>
+      </div>
+      <div class="hud-card p-4 rounded text-center">
+        <span class="text-[10px] text-slate-500 uppercase block mb-1">ASCII Hex</span>
+        <span id="propHex" class="text-base font-bold text-emerald-400 truncate block">0x61</span>
+      </div>
+    </div>
+
+    <!-- Modifier Keys Strip -->
+    <div class="hud-card p-4 rounded font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2 mb-3">
+        <span class="text-[11px] font-orbitron font-bold text-slate-300 uppercase tracking-wider">
+          ACTIVE MODIFIER SIGNALS
+        </span>
+        <span class="text-[10px] text-slate-500">HARDWARE INTERRUPTS</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div id="modCtrl" class="p-2.5 rounded bg-slate-900/80 border border-slate-800 text-slate-500 font-bold text-center transition-all">
+          Ctrl Key
+        </div>
+        <div id="modShift" class="p-2.5 rounded bg-slate-900/80 border border-slate-800 text-slate-500 font-bold text-center transition-all">
+          Shift Key
+        </div>
+        <div id="modAlt" class="p-2.5 rounded bg-slate-900/80 border border-slate-800 text-slate-500 font-bold text-center transition-all">
+          Alt Key / Option
+        </div>
+        <div id="modMeta" class="p-2.5 rounded bg-slate-900/80 border border-slate-800 text-slate-500 font-bold text-center transition-all">
+          Meta Key / Cmd / Win
+        </div>
+      </div>
+    </div>
+
+    <!-- Chronological Event Log Table -->
+    <div class="hud-card p-5 space-y-3 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+        <span class="text-xs font-orbitron font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-list-ol text-cyan-400"></i> CHRONOLOGICAL KEYPRESS AUDIT LOG
+        </span>
+        <button onclick="copyLogJSON()" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px] flex items-center space-x-1">
+          <i class="fa-solid fa-copy text-cyan-400"></i>
+          <span>COPY JSON LOG</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto max-h-[300px]">
+        <table class="w-full text-left border-collapse text-[11px]">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-500 uppercase text-[10px]">
+              <th class="p-2">Time</th>
+              <th class="p-2">Event</th>
+              <th class="p-2">Key</th>
+              <th class="p-2">Code</th>
+              <th class="p-2">Which</th>
+              <th class="p-2">Modifiers</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable" class="divide-y divide-slate-800/60 font-mono">
+            <!-- Injected key events -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEO Tactical Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 mt-12 space-y-6 text-slate-300 font-rajdhani text-sm sm:text-base leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          KEYCODE MATRIX // DOM LEVEL 3 KEYBOARDEVENT SPECIFICATION
+        </h2>
+        <p class="text-xs sm:text-sm text-cyan-400 font-mono mt-1">
+          Technical architecture of physical keyboard scan codes, logical character generation, and legacy keyCode deprecation.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-keyboard text-cyan-400"></i> event.key vs. event.code
+          </h3>
+          <p>
+            W3C DOM Level 3 explicitly deprecated the numeric <code>event.keyCode</code> and <code>event.which</code> properties in favor of modern semantic strings:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">event.key (Logical Representation):</strong> Reflects the character that will be printed or generated, accounting for keyboard language layout, CapsLock, and active Shift modifiers (e.g. <code>a</code> vs <code>A</code> vs <code>&aring;</code>).</li>
+            <li><strong class="text-white">event.code (Physical Key Position):</strong> Represents the physical key location on the keyboard regardless of operating system language settings (e.g. <code>KeyQ</code> remains <code>KeyQ</code> whether typed on QWERTY, AZERTY, or Dvorak keyboards). Essential for WASD video game movement controls.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-pink-400"></i> Key Location & Modifier Flags
+          </h3>
+          <p>
+            Modern keyboards contain redundant physical keys mapped to distinct hardware registers:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">event.location 0 (Standard):</strong> Standard alphanumeric keys and functional buttons.</li>
+            <li><strong class="text-white">event.location 1 & 2 (Left vs Right):</strong> Distinguishes Left Shift/Ctrl/Alt from Right Shift/Ctrl/Alt.</li>
+            <li><strong class="text-white">event.location 3 (Numpad):</strong> Numeric keypad buttons that differentiate dedicated numpad digits from top-row number keys.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-4 space-y-2">
+        <h3 class="text-sm font-orbitron font-semibold text-white uppercase tracking-wider">
+          Airgap Zero-Log Privacy Architecture
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400">
+          The KeyCode Matrix debugger processes all keystroke interrupts strictly within the active browser DOM event pipeline. No keylogger hooks, persistent keystroke caches, or password tracking mechanisms are executed.
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'keys';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    let eventHistory = [];
+
+    function handleKeyEvent(e, type) {
+      const prevent = document.getElementById('preventToggle').checked;
+      if (prevent && !['F12', 'F5'].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      // Update Big Banner
+      document.getElementById('bigKeyCode').textContent = e.which || e.keyCode;
+      document.getElementById('bigKeyName').textContent = `Key: '${e.key}'`;
+
+      // Update Properties
+      document.getElementById('propKey').textContent = e.key;
+      document.getElementById('propCode').textContent = e.code;
+      document.getElementById('propWhich').textContent = e.which || e.keyCode;
+      
+      const locNames = ['0 (Standard)', '1 (Left)', '2 (Right)', '3 (Numpad)'];
+      document.getElementById('propLocation').textContent = locNames[e.location] || e.location;
+
+      if (e.key.length === 1) {
+        const ascii = e.key.charCodeAt(0);
+        document.getElementById('propAscii').textContent = ascii;
+        document.getElementById('propHex').textContent = '0x' + ascii.toString(16).toUpperCase();
+      } else {
+        document.getElementById('propAscii').textContent = 'N/A';
+        document.getElementById('propHex').textContent = 'N/A';
+      }
+
+      // Modifiers
+      updateModifier('modCtrl', e.ctrlKey);
+      updateModifier('modShift', e.shiftKey);
+      updateModifier('modAlt', e.altKey);
+      updateModifier('modMeta', e.metaKey);
+
+      // Add to log if keydown
+      if (type === 'keydown') {
+        const mods = [];
+        if (e.ctrlKey) mods.push('Ctrl');
+        if (e.shiftKey) mods.push('Shift');
+        if (e.altKey) mods.push('Alt');
+        if (e.metaKey) mods.push('Meta');
+
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+
+        const logEntry = {
+          time: timeStr,
+          event: type,
+          key: e.key,
+          code: e.code,
+          which: e.which || e.keyCode,
+          modifiers: mods.join('+') || 'None'
+        };
+
+        eventHistory.unshift(logEntry);
+        if (eventHistory.length > 30) eventHistory.pop();
+        renderHistory();
+      }
+    }
+
+    function updateModifier(id, active) {
+      const el = document.getElementById(id);
+      if (active) {
+        el.className = 'p-2.5 rounded bg-cyan-950/60 border border-cyan-400 text-cyan-300 font-bold text-center shadow-[0_0_10px_rgba(0,245,255,0.2)] transition-all';
+      } else {
+        el.className = 'p-2.5 rounded bg-slate-900/80 border border-slate-800 text-slate-500 font-bold text-center transition-all';
+      }
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById('historyTable');
+      tbody.innerHTML = eventHistory.map(item => `
+        <tr class="hover:bg-slate-900/40 transition-colors">
+          <td class="p-2 text-slate-500">${item.time}</td>
+          <td class="p-2 text-pink-400">${item.event}</td>
+          <td class="p-2 text-cyan-300 font-bold">${item.key}</td>
+          <td class="p-2 text-slate-300">${item.code}</td>
+          <td class="p-2 text-white font-bold">${item.which}</td>
+          <td class="p-2 text-slate-400">${item.modifiers}</td>
+        </tr>
+      `).join('');
+    }
+
+    function clearHistory() {
+      eventHistory = [];
+      renderHistory();
+      showToast('CLEARED KEYPRESS LOG');
+    }
+
+    function copyLogJSON() {
+      if (eventHistory.length === 0) return;
+      navigator.clipboard.writeText(JSON.stringify(eventHistory, null, 2));
+      showToast('COPIED LOG AS JSON');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+
+      window.addEventListener('keydown', (e) => handleKeyEvent(e, 'keydown'));
+      window.addEventListener('keyup', (e) => handleKeyEvent(e, 'keyup'));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velocity Vector // CSS Cubic-Bezier Easing Curve Forge | CyberTools</title>
+  <meta name="description" content="Interactive CSS cubic-bezier easing curve designer. Drag control points P1 and P2 on canvas, preview timing animations, and copy CSS transition curves.">
+  <meta name="keywords" content="cubic bezier, css easing generator, animation timing function, cubic bezier curve editor, velocity vector, css transition, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/easing/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/easing/" />
+  <meta property="og:title" content="Velocity Vector // CSS Cubic-Bezier Easing Curve Forge | CyberTools" />
+  <meta property="og:description" content="Interactive CSS cubic-bezier easing curve designer. Drag control points P1 and P2 on canvas, preview timing animations, and copy CSS transition curves." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/easing/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/easing/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/easing/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Velocity Vector // CSS Cubic-Bezier Easing Curve Forge | CyberTools" />
+  <meta name="twitter:description" content="Interactive CSS cubic-bezier easing curve designer. Drag control points P1 and P2 on canvas, preview timing animations, and copy CSS transition curves." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/easing/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Velocity Vector // Cubic-Bezier Forge",
+    "url": "https://apps.sarwarfx.cfd/easing/",
+    "description": "Interactive CSS cubic-bezier easing curve designer. Drag control points P1 and P2 on canvas, preview timing animations, and copy CSS transition curves.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%2305070d"/><path d="M20 80 C 30 20, 70 80, 80 20" stroke="%2300f5ff" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="35" cy="35" r="6" fill="%23ff2bd6"/><circle cx="65" cy="65" r="6" fill="%2300ff9d"/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">VELOCITY_VECTOR // CUBIC_BEZIER FORGE</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x4E</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(80)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>VECTOR_MATH</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">VELOCITY_VECTOR</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x4E</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          VELOCITY VECTOR <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">CUBIC_BEZIER FORGE</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Interactive CSS cubic-bezier easing curve designer. Manipulate vector handles P1 and P2, test real-time animation velocity, and export CSS animation timings.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="triggerAnimationPreview()" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-play"></i>
+          <span>TEST ANIMATION</span>
+        </button>
+        <button onclick="copyCssSnippet()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-regular fa-copy text-cyan-400"></i>
+          <span>COPY CSS</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Forge Workspace: Canvas on Left, Controls & Preview on Right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Bezier Coordinate Plane Canvas -->
+      <div class="lg:col-span-7 hud-card p-5 rounded space-y-4 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-bezier-curve text-cyan-400"></i>
+            <h2 class="font-orbitron font-bold text-white text-sm tracking-wide">INTERACTIVE CURVE PLANE</h2>
+          </div>
+          <span id="curveFormula" class="text-xs font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">
+            cubic-bezier(0.25, 0.1, 0.25, 1.0)
+          </span>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="relative w-full aspect-square max-h-[460px] bg-slate-950 border border-slate-800 rounded flex items-center justify-center overflow-hidden touch-none select-none">
+          <canvas id="bezierCanvas" class="w-full h-full cursor-crosshair"></canvas>
+          <div class="absolute bottom-2 left-2 text-[10px] font-mono text-slate-500 pointer-events-none">
+            [P0: (0, 0) START]
+          </div>
+          <div class="absolute top-2 right-2 text-[10px] font-mono text-slate-500 pointer-events-none">
+            [P3: (1, 1) END]
+          </div>
+        </div>
+
+        <!-- Coordinate Control Handles (P1 & P2 Inputs) -->
+        <div class="grid grid-cols-2 gap-4 font-mono text-xs pt-2">
+          <!-- P1 Handle (Cyan) -->
+          <div class="bg-cyan-950/20 border border-cyan-500/30 p-3 rounded space-y-2">
+            <div class="flex items-center justify-between text-cyan-400 font-bold">
+              <span>HANDLE P1 (START VECTOR)</span>
+              <span class="w-3 h-3 rounded-full bg-cyan-400 inline-block shadow-[0_0_8px_#00f5ff]"></span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-400">X1 [0 &rarr; 1]:</label>
+                <input id="inputX1" type="number" step="0.01" min="0" max="1" value="0.25" oninput="updateFromInputs()" class="w-full bg-slate-900 border border-slate-700 px-2 py-1 rounded text-cyan-300 focus:border-cyan-400 focus:outline-none">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400">Y1 [-2 &rarr; 2]:</label>
+                <input id="inputY1" type="number" step="0.01" min="-2" max="2" value="0.10" oninput="updateFromInputs()" class="w-full bg-slate-900 border border-slate-700 px-2 py-1 rounded text-cyan-300 focus:border-cyan-400 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- P2 Handle (Pink) -->
+          <div class="bg-pink-950/20 border border-pink-500/30 p-3 rounded space-y-2">
+            <div class="flex items-center justify-between text-pink-400 font-bold">
+              <span>HANDLE P2 (END VECTOR)</span>
+              <span class="w-3 h-3 rounded-full bg-pink-400 inline-block shadow-[0_0_8px_#ff2bd6]"></span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-400">X2 [0 &rarr; 1]:</label>
+                <input id="inputX2" type="number" step="0.01" min="0" max="1" value="0.25" oninput="updateFromInputs()" class="w-full bg-slate-900 border border-slate-700 px-2 py-1 rounded text-pink-300 focus:border-pink-400 focus:outline-none">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400">Y2 [-2 &rarr; 2]:</label>
+                <input id="inputY2" type="number" step="0.01" min="-2" max="2" value="1.00" oninput="updateFromInputs()" class="w-full bg-slate-900 border border-slate-700 px-2 py-1 rounded text-pink-300 focus:border-pink-400 focus:outline-none">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls, Animation Preview & Code Export -->
+      <div class="lg:col-span-5 space-y-5">
+        <!-- Live Animation Compare Stage -->
+        <div class="hud-card p-5 rounded space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-gauge-high text-cyan-400"></i>
+              <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">VELOCITY BENCHMARK</h3>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleLoop()" id="btnLoop" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded">
+                LOOP: OFF
+              </button>
+            </div>
+          </div>
+
+          <!-- Animation Track 1: Custom Easing -->
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between text-slate-400 text-[11px]">
+              <span class="text-cyan-400 font-bold">CUSTOM BEZIER CURVE</span>
+              <span id="lblDuration">1.0s</span>
+            </div>
+            <div class="relative w-full h-10 bg-slate-950 border border-cyan-500/30 rounded overflow-hidden p-1 flex items-center">
+              <div id="animBoxCustom" class="w-8 h-8 rounded bg-gradient-to-r from-cyan-400 to-blue-500 border border-cyan-300 flex items-center justify-center text-slate-950 shadow-[0_0_12px_rgba(0,245,255,0.6)]">
+                <i class="fa-solid fa-bolt text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animation Track 2: Linear Baseline -->
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between text-slate-400 text-[11px]">
+              <span class="text-slate-400">LINEAR BASELINE</span>
+              <span>1.0s</span>
+            </div>
+            <div class="relative w-full h-10 bg-slate-950 border border-slate-800 rounded overflow-hidden p-1 flex items-center">
+              <div id="animBoxLinear" class="w-8 h-8 rounded bg-slate-800 border border-slate-600 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duration Slider & Mode -->
+          <div class="grid grid-cols-2 gap-3 pt-2 font-mono text-xs">
+            <div>
+              <label for="sliderDuration" class="text-slate-400 text-[10px] block mb-1">DURATION (0.2s - 4.0s):</label>
+              <input id="sliderDuration" type="range" min="0.2" max="4.0" step="0.1" value="1.0" oninput="updateDuration(this.value)" class="w-full accent-cyan-400 cursor-pointer">
+            </div>
+            <div>
+              <label for="selAnimType" class="text-slate-400 text-[10px] block mb-1">MOTION TYPE:</label>
+              <select id="selAnimType" onchange="triggerAnimationPreview()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-2 py-1 rounded focus:border-cyan-400 focus:outline-none">
+                <option value="translate">Translate X (Track)</option>
+                <option value="scale">Scale Pulsar</option>
+                <option value="rotate">Rotation 360&deg;</option>
+                <option value="opacity">Opacity Fade</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Presets Matrix -->
+        <div class="hud-card p-5 rounded space-y-3">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-sliders text-pink-400"></i>
+              <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">TACTICAL PRESET MATRIX</h3>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500">9 PROFILES</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 font-mono text-[10px]">
+            <button onclick="applyPreset(0.25, 0.1, 0.25, 1.0, 'EASE')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">EASE</div>
+              <div class="text-[9px] text-slate-500">Standard</div>
+            </button>
+            <button onclick="applyPreset(0.42, 0, 1.0, 1.0, 'EASE-IN')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">EASE-IN</div>
+              <div class="text-[9px] text-slate-500">Accelerate</div>
+            </button>
+            <button onclick="applyPreset(0, 0, 0.58, 1.0, 'EASE-OUT')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">EASE-OUT</div>
+              <div class="text-[9px] text-slate-500">Decelerate</div>
+            </button>
+            <button onclick="applyPreset(0.42, 0, 0.58, 1.0, 'EASE-IN-OUT')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">IN-OUT</div>
+              <div class="text-[9px] text-slate-500">Symmetric</div>
+            </button>
+            <button onclick="applyPreset(0, 0, 1.0, 1.0, 'LINEAR')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">LINEAR</div>
+              <div class="text-[9px] text-slate-500">Uniform</div>
+            </button>
+            <button onclick="applyPreset(0.19, 1.0, 0.22, 1.0, 'CYBER SNAP')" class="p-2 rounded bg-slate-900/80 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 text-center transition-all">
+              <div class="font-bold">CYBER SNAP</div>
+              <div class="text-[9px] text-cyan-500">Expo Out</div>
+            </button>
+            <button onclick="applyPreset(0.68, -0.55, 0.265, 1.55, 'RETRO OVERSHOOT')" class="p-2 rounded bg-slate-900/80 border border-pink-500/50 hover:border-pink-400 text-pink-300 text-center transition-all">
+              <div class="font-bold">OVERSHOOT</div>
+              <div class="text-[9px] text-pink-500">Spring Back</div>
+            </button>
+            <button onclick="applyPreset(0.7, 0, 0.3, 1.0, 'HYPER DRIVE')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">HYPER DRIVE</div>
+              <div class="text-[9px] text-slate-500">Warp Speed</div>
+            </button>
+            <button onclick="applyPreset(0.175, 0.885, 0.32, 1.275, 'GLITCH BOUNCE')" class="p-2 rounded bg-slate-900/80 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center transition-all">
+              <div class="font-bold">GLITCH BOUNCE</div>
+              <div class="text-[9px] text-slate-500">Elastic</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- CSS Snippet Export -->
+        <div class="hud-card p-5 rounded space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="font-bold text-white uppercase">SYNTHESIZED CSS SNIPPET</span>
+            <button onclick="copyCssSnippet()" class="hud-btn-primary px-2.5 py-1 rounded text-[10px]">
+              COPY CSS
+            </button>
+          </div>
+          <pre id="cssOutputBlock" class="p-3 bg-slate-950 rounded border border-slate-800 text-cyan-300 overflow-x-auto text-[11px] leading-relaxed">
+/* Generated Cubic-Bezier Timing */
+transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+transition-duration: 1.0s;
+          </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // CUBIC BEZIER CURVES &amp; CSS TRANSITION TIMING
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Understanding parametric Bernstein polynomials, acceleration profiles, control vector mechanics, and physical overshoot in web animations.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">The Mathematics of Cubic Bezier</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            In CSS transitions and web animations, timing functions determine how intermediate property values are calculated between keyframes over elapsed time. Rather than linear progression, realistic physics requires variable acceleration and deceleration.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            A cubic Bezier curve is defined by four anchor points: <code class="text-cyan-300">P0 (0, 0)</code> at start-time, <code class="text-pink-300">P3 (1, 1)</code> at final-time, and two movable tangent control handles: <code class="text-cyan-400">P1 (x1, y1)</code> and <code class="text-pink-400">P2 (x2, y2)</code>. The curve equation follows third-order Bernstein polynomials:
+          </p>
+          <pre class="bg-slate-950 p-2.5 rounded border border-slate-800 font-mono text-[11px] text-cyan-300 overflow-x-auto">B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃, where t ∈ [0, 1]</pre>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Handle Constraints &amp; Elastic Overshoot</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            CSS specifications impose a strict restriction on the horizontal time axis: <strong class="text-slate-200">0 &le; x1, x2 &le; 1</strong>, because time cannot flow backwards. However, the vertical progression axis has no such constraint!
+          </p>
+          <ul class="space-y-2 text-xs sm:text-sm text-slate-400 list-disc list-inside">
+            <li><strong class="text-slate-200">Y &gt; 1.0 (Overshoot):</strong> The animated element travels past its final destination before snapping back into place, creating a natural mechanical bounce or rubber-band spring effect.</li>
+            <li><strong class="text-slate-200">Y &lt; 0.0 (Anticipation):</strong> The element recoils slightly in reverse before rocketing forward, mimicking an athlete winding up for a jump or a sling pullback.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Why can't X coordinates exceed 0 or 1?</h4>
+            <p class="text-slate-400">
+              In a browser animation engine, the X axis corresponds directly to normalized time. If X were allowed outside [0, 1] or allowed non-monotonic slopes, multiple progress states would exist for the exact same point in time, creating undefined rendering states.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How do I use this curve in Tailwind CSS?</h4>
+            <p class="text-slate-400">
+              You can define custom transition timing in Tailwind by adding an arbitrary value class such as <code class="text-cyan-300">ease-[cubic-bezier(0.19,1,0.22,1)]</code> or by configuring <code class="text-pink-300">theme.extend.transitionTimingFunction</code>.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">What is the difference between transition and keyframe animation?</h4>
+            <p class="text-slate-400">
+              CSS transitions interpolate between two states when triggered by user interaction (hover, active, class change). Keyframe animations run autonomously on loop, but both utilize identical <code class="text-cyan-300">cubic-bezier()</code> timing syntax.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Is client processing 100% private?</h4>
+            <p class="text-slate-400">
+              Yes. All Bezier curve calculations, coordinate transformations, and vector drag listeners occur exclusively within your client's JavaScript runtime.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    let p1 = { x: 0.25, y: 0.1 };
+    let p2 = { x: 0.25, y: 1.0 };
+    let duration = 1.0;
+    let isLooping = false;
+    let activeDrag = null; // 'p1' or 'p2'
+
+    const canvas = document.getElementById('bezierCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Canvas margins to allow Y overshoot below 0 and above 1
+    const marginX = 40;
+    const marginY = 80;
+
+    function getCanvasCoords(pt) {
+      const rect = canvas.getBoundingClientRect();
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
+      const plotW = w - marginX * 2;
+      const plotH = h - marginY * 2;
+
+      // X: 0 -> marginX, 1 -> marginX + plotW
+      const cx = marginX + pt.x * plotW;
+      // Y: 0 -> marginY + plotH, 1 -> marginY
+      const cy = (marginY + plotH) - pt.y * plotH;
+      return { x: cx, y: cy };
+    }
+
+    function getPointFromCanvasCoords(cx, cy) {
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
+      const plotW = w - marginX * 2;
+      const plotH = h - marginY * 2;
+
+      let x = (cx - marginX) / plotW;
+      let y = ((marginY + plotH) - cy) / plotH;
+
+      // Clamp X to [0, 1]
+      x = Math.max(0, Math.min(1, x));
+      // Clamp Y to [-2, 2]
+      y = Math.max(-2, Math.min(2, y));
+
+      return {
+        x: Math.round(x * 100) / 100,
+        y: Math.round(y * 100) / 100
+      };
+    }
+
+    function drawCurve() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      const w = rect.width;
+      const h = rect.height;
+
+      // Clear dark HUD slate
+      ctx.fillStyle = '#05070d';
+      ctx.fillRect(0, 0, w, h);
+
+      const p0Coord = getCanvasCoords({ x: 0, y: 0 });
+      const p3Coord = getCanvasCoords({ x: 1, y: 1 });
+      const p1Coord = getCanvasCoords(p1);
+      const p2Coord = getCanvasCoords(p2);
+
+      const plotW = w - marginX * 2;
+      const plotH = h - marginY * 2;
+
+      // Draw baseline unit box (0,0 to 1,1)
+      ctx.strokeStyle = 'rgba(0, 245, 255, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(marginX, marginY, plotW, plotH);
+
+      // Grid guidelines
+      ctx.strokeStyle = 'rgba(0, 245, 255, 0.05)';
+      for (let i = 1; i <= 3; i++) {
+        const gx = marginX + (plotW * i) / 4;
+        const gy = marginY + (plotH * i) / 4;
+        ctx.beginPath();
+        ctx.moveTo(gx, marginY);
+        ctx.lineTo(gx, marginY + plotH);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(marginX, gy);
+        ctx.lineTo(marginX + plotW, gy);
+        ctx.stroke();
+      }
+
+      // Diagonal linear reference
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(p0Coord.x, p0Coord.y);
+      ctx.lineTo(p3Coord.x, p3Coord.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw P1 tangent handle line
+      ctx.strokeStyle = 'rgba(0, 245, 255, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(p0Coord.x, p0Coord.y);
+      ctx.lineTo(p1Coord.x, p1Coord.y);
+      ctx.stroke();
+
+      // Draw P2 tangent handle line
+      ctx.strokeStyle = 'rgba(255, 43, 214, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(p3Coord.x, p3Coord.y);
+      ctx.lineTo(p2Coord.x, p2Coord.y);
+      ctx.stroke();
+
+      // Draw Cubic Bezier Curve
+      ctx.strokeStyle = '#00f5ff';
+      ctx.lineWidth = 3.5;
+      ctx.shadowColor = '#00f5ff';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(p0Coord.x, p0Coord.y);
+      ctx.bezierCurveTo(p1Coord.x, p1Coord.y, p2Coord.x, p2Coord.y, p3Coord.x, p3Coord.y);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Draw anchor points P0 and P3
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.arc(p0Coord.x, p0Coord.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(p3Coord.x, p3Coord.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw draggable handle P1 (Cyan)
+      ctx.fillStyle = '#00f5ff';
+      ctx.shadowColor = '#00f5ff';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(p1Coord.x, p1Coord.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#05070d';
+      ctx.beginPath();
+      ctx.arc(p1Coord.x, p1Coord.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw draggable handle P2 (Pink)
+      ctx.fillStyle = '#ff2bd6';
+      ctx.shadowColor = '#ff2bd6';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(p2Coord.x, p2Coord.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#05070d';
+      ctx.beginPath();
+      ctx.arc(p2Coord.x, p2Coord.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function updateFromInputs() {
+      p1.x = parseFloat(document.getElementById('inputX1').value) || 0;
+      p1.y = parseFloat(document.getElementById('inputY1').value) || 0;
+      p2.x = parseFloat(document.getElementById('inputX2').value) || 0;
+      p2.y = parseFloat(document.getElementById('inputY2').value) || 0;
+      syncUiAndCode();
+    }
+
+    function syncUiAndCode() {
+      // Update badge
+      const formula = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
+      document.getElementById('curveFormula').textContent = formula;
+
+      // Update inputs
+      document.getElementById('inputX1').value = p1.x;
+      document.getElementById('inputY1').value = p1.y;
+      document.getElementById('inputX2').value = p2.x;
+      document.getElementById('inputY2').value = p2.y;
+
+      // Update code block
+      const cssCode = `/* Generated Cubic-Bezier Timing */\ntransition-timing-function: ${formula};\ntransition-duration: ${duration}s;\n\n/* CSS Animation Shorthand */\nanimation: cyberMotion ${duration}s ${formula}${isLooping ? ' infinite' : ''};`;
+      document.getElementById('cssOutputBlock').textContent = cssCode;
+
+      drawCurve();
+    }
+
+    function applyPreset(x1, y1, x2, y2, name) {
+      p1 = { x: x1, y: y1 };
+      p2 = { x: x2, y: y2 };
+      syncUiAndCode();
+      triggerAnimationPreview();
+      showToast(`Loaded ${name} preset`);
+    }
+
+    function updateDuration(val) {
+      duration = parseFloat(val);
+      document.getElementById('lblDuration').textContent = `${duration}s`;
+      syncUiAndCode();
+      triggerAnimationPreview();
+    }
+
+    function toggleLoop() {
+      isLooping = !isLooping;
+      const btn = document.getElementById('btnLoop');
+      btn.textContent = isLooping ? 'LOOP: ON' : 'LOOP: OFF';
+      btn.className = isLooping 
+        ? 'hud-btn-primary px-2 py-0.5 text-[10px] rounded' 
+        : 'hud-btn-secondary px-2 py-0.5 text-[10px] rounded';
+      triggerAnimationPreview();
+    }
+
+    function triggerAnimationPreview() {
+      const boxCustom = document.getElementById('animBoxCustom');
+      const boxLinear = document.getElementById('animBoxLinear');
+      const type = document.getElementById('selAnimType').value;
+      const formula = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
+
+      // Reset animation state
+      boxCustom.style.transition = 'none';
+      boxLinear.style.transition = 'none';
+      boxCustom.style.transform = 'none';
+      boxLinear.style.transform = 'none';
+      boxCustom.style.opacity = '1';
+      boxLinear.style.opacity = '1';
+
+      void boxCustom.offsetWidth;
+      void boxLinear.offsetWidth;
+
+      // Setup transition
+      boxCustom.style.transition = `all ${duration}s ${formula}`;
+      boxLinear.style.transition = `all ${duration}s linear`;
+
+      requestAnimationFrame(() => {
+        if (type === 'translate') {
+          const trackWidth = boxCustom.parentElement.clientWidth - 40;
+          boxCustom.style.transform = `translateX(${trackWidth}px)`;
+          boxLinear.style.transform = `translateX(${trackWidth}px)`;
+        } else if (type === 'scale') {
+          boxCustom.style.transform = 'scale(1.8)';
+          boxLinear.style.transform = 'scale(1.8)';
+        } else if (type === 'rotate') {
+          boxCustom.style.transform = 'rotate(360deg)';
+          boxLinear.style.transform = 'rotate(360deg)';
+        } else if (type === 'opacity') {
+          boxCustom.style.opacity = '0.1';
+          boxLinear.style.opacity = '0.1';
+        }
+      });
+
+      if (isLooping) {
+        clearTimeout(window._loopTimer);
+        window._loopTimer = setTimeout(triggerAnimationPreview, (duration * 1000) + 400);
+      }
+    }
+
+    function copyCssSnippet() {
+      const formula = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
+      const code = `transition-timing-function: ${formula};\ntransition-duration: ${duration}s;`;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('CSS timing function copied');
+      });
+    }
+
+    // Canvas Pointer Interactivity
+    function handlePointerDown(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      const cx = clientX - rect.left;
+      const cy = clientY - rect.top;
+
+      const p1Coord = getCanvasCoords(p1);
+      const p2Coord = getCanvasCoords(p2);
+
+      const dist1 = Math.hypot(cx - p1Coord.x, cy - p1Coord.y);
+      const dist2 = Math.hypot(cx - p2Coord.x, cy - p2Coord.y);
+
+      if (dist1 < 25) {
+        activeDrag = 'p1';
+      } else if (dist2 < 25) {
+        activeDrag = 'p2';
+      }
+    }
+
+    function handlePointerMove(e) {
+      if (!activeDrag) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      const cx = clientX - rect.left;
+      const cy = clientY - rect.top;
+
+      const pt = getPointFromCanvasCoords(cx, cy);
+      if (activeDrag === 'p1') {
+        p1 = pt;
+      } else if (activeDrag === 'p2') {
+        p2 = pt;
+      }
+      syncUiAndCode();
+    }
+
+    function handlePointerUp() {
+      if (activeDrag) {
+        activeDrag = null;
+        triggerAnimationPreview();
+      }
+    }
+
+    canvas.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('mouseup', handlePointerUp);
+
+    canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
+    window.addEventListener('touchmove', handlePointerMove, { passive: false });
+    window.addEventListener('touchend', handlePointerUp);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      syncUiAndCode();
+      setTimeout(() => {
+        drawCurve();
+        triggerAnimationPreview();
+      }, 60);
+    });
+
+    window.addEventListener('resize', drawCurve);
+  </script>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (80)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'easing';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
