@@ -1,10 +1,11 @@
 import os
 import re
 import sys
+import json
 import subprocess
 
 def test_apps():
-    print("=== CYBERTOOLS BATCH 16 SMOKE TEST SUITE (100-APP MILESTONE) ===")
+    print("=== CYBERTOOLS BATCH 16 SMOKE TEST SUITE (100-APP MASTER DEPLOYMENT) ===")
     errors = []
 
     apps = {
@@ -124,17 +125,86 @@ def test_apps():
         url = f"https://apps.sarwarfx.cfd/{app_name}/"
         if url not in sitemap:
             errors.append(f"[sitemap.xml] Missing URL: {url}")
-    print("[PASS] sitemap.xml contains all 5 Batch 16 URLs.")
+    url_count = sitemap.count('<loc>')
+    if url_count != 101:
+        errors.append(f"[sitemap.xml] Expected 101 URLs (100 apps + root), found {url_count}")
+    else:
+        print("[PASS] sitemap.xml contains exactly 101 URLs (100 apps + root).")
 
     # 4. Test index.html
     with open('index.html', 'r', encoding='utf-8') as f:
         index_html = f.read()
     for app_name in apps.keys():
-        if f"id: '{app_name}'" not in index_html:
+        if f'"id": "{app_name}"' not in index_html and f"id: '{app_name}'" not in index_html:
             errors.append(f"[index.html] Missing tool registration: {app_name}")
     if "100/100 APPS DEPLOYED" not in index_html:
         errors.append("[index.html] Missing 100/100 APPS DEPLOYED counter badge")
-    print("[PASS] index.html registered all Batch 16 tools and displays 100/100 APPS DEPLOYED.")
+
+    # Command Center Elements
+    required_index_elements = [
+        'id="commandPaletteModal"',
+        'id="recentNodesShelf"',
+        'id="gridContainer"',
+        'id="tableContainer"',
+        'id="radarSearchInput"',
+        'id="btnViewGrid"',
+        'id="btnViewTable"'
+    ]
+    for elem in required_index_elements:
+        if elem not in index_html:
+            errors.append(f"[index.html] Missing Command Center element: {elem}")
+
+    # Count tools in TOOLS array in index.html
+    tools_start = index_html.find('const TOOLS = [')
+    tools_end = index_html.find('];', tools_start)
+    if tools_start != -1 and tools_end != -1:
+        tools_block = index_html[tools_start:tools_end+2]
+        tool_ids = re.findall(r'"id":\s*"([^"]+)"', tools_block)
+        if len(tool_ids) != 100:
+            errors.append(f"[index.html] Expected 100 tools in TOOLS array, found {len(tool_ids)}")
+        else:
+            print(f"[PASS] index.html registered exactly 100 tools in TOOLS array.")
+    else:
+        errors.append("[index.html] Could not locate const TOOLS array")
+
+    # 5. Test PWA assets
+    if not os.path.isfile('manifest.json'):
+        errors.append("Missing manifest.json")
+    else:
+        try:
+            with open('manifest.json', 'r', encoding='utf-8') as f:
+                manifest_data = json.load(f)
+            if manifest_data.get('theme_color') != '#00f5ff':
+                errors.append(f"manifest.json theme_color expected #00f5ff, got {manifest_data.get('theme_color')}")
+            print("[PASS] manifest.json valid JSON and theme verified.")
+        except Exception as ex:
+            errors.append(f"manifest.json invalid: {ex}")
+
+    if not os.path.isfile('sw.js'):
+        errors.append("Missing sw.js")
+    else:
+        res = subprocess.run(['node', '-c', 'sw.js'], capture_output=True, text=True)
+        if res.returncode != 0:
+            errors.append(f"sw.js syntax error: {res.stderr}")
+        else:
+            print("[PASS] sw.js syntax validated.")
+
+    if not os.path.isfile('assets/js/relay.js'):
+        errors.append("Missing assets/js/relay.js")
+    else:
+        res = subprocess.run(['node', '-c', 'assets/js/relay.js'], capture_output=True, text=True)
+        if res.returncode != 0:
+            errors.append(f"relay.js syntax error: {res.stderr}")
+        else:
+            print("[PASS] assets/js/relay.js syntax validated.")
+
+    # 6. Check icons exist
+    for icon_name in ['icon-192.png', 'icon-512.png', 'icon-maskable.png']:
+        icon_path = os.path.join('assets', 'icons', icon_name)
+        if not os.path.isfile(icon_path):
+            errors.append(f"Missing icon: {icon_path}")
+        else:
+            print(f"[PASS] {icon_path} present.")
 
     if errors:
         print("\n=== SMOKE TEST FAILED ===")

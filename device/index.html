@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Telemetry // Client Hardware &amp; Sensor Auditor | CyberTools</title>
+  <meta name="description" content="In-browser client hardware diagnostics, CPU core count, device memory, GPU WebGL renderer inspection, and display telemetry. Zero remote telemetry.">
+  <meta name="keywords" content="device telemetry, hardware diagnostics, webgl gpu inspector, cpu cores, device memory, browser sensors, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/device/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/device/" />
+  <meta property="og:title" content="Device Telemetry // Client Hardware &amp; Sensor Auditor | CyberTools" />
+  <meta property="og:description" content="In-browser client hardware diagnostics, CPU core count, device memory, GPU WebGL renderer inspection, and display telemetry. Zero remote telemetry." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/device/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/device/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/device/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Device Telemetry // Client Hardware &amp; Sensor Auditor | CyberTools" />
+  <meta name="twitter:description" content="In-browser client hardware diagnostics, CPU core count, device memory, GPU WebGL renderer inspection, and display telemetry. Zero remote telemetry." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/device/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Device Hardware Telemetry Auditor",
+    "url": "https://apps.sarwarfx.cfd/device/",
+    "description": "In-browser client hardware diagnostics, CPU core count, device memory, GPU WebGL renderer inspection, and display telemetry. Zero remote telemetry.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "CPU concurrency core detection",
+      "RAM memory quota inspection",
+      "Unmasked WebGL GPU hardware renderer query",
+      "Screen color depth and device pixel ratio audit",
+      "Zero network telemetry leakage"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { background-color: #05070d; color: #cbd5e1; font-family: 'Rajdhani', sans-serif; }
+    .hud-card { background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98)); border: 1px solid rgba(0, 245, 255, 0.2); box-shadow: 0 0 15px rgba(0, 245, 255, 0.05); }
+    .hud-btn-secondary { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 245, 255, 0.3); color: #00f5ff; font-family: 'Orbitron', sans-serif; transition: all 0.2s; }
+    .hud-btn-secondary:hover { background: rgba(0, 245, 255, 0.15); border-color: #00f5ff; }
+  </style>
+  <script defer src="/assets/js/relay.js"></script>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">DEVICE_TELEMETRY // HARDWARE AUDITOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x64</span>
+      </div>
+      <div>
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">COMMAND CENTER</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>SYSTEM_SYS</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">DEVICE_TELEMETRY</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x64</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          DEVICE TELEMETRY <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">HARDWARE SENSOR AUDITOR</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Direct hardware diagnostics inspecting CPU concurrency, device memory RAM quotas, GPU WebGL renderer vendor strings, screen pixel density, and network interface status.
+        </p>
+      </div>
+      <div>
+        <button onclick="auditDevice()" class="hud-btn-secondary text-xs px-3 py-1.5 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-arrows-rotate text-cyan-400"></i>
+          <span>REFRESH SENSORS</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Telemetry Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
+      <!-- CPU Cores -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-cyan-400 space-y-2">
+        <div class="text-slate-400 flex items-center justify-between">
+          <span>CPU CONCURRENCY</span>
+          <i class="fa-solid fa-microchip text-cyan-400"></i>
+        </div>
+        <div id="statCpuCores" class="text-2xl font-orbitron font-extrabold text-white">--</div>
+        <div class="text-[10px] text-slate-500">Logical hardware execution threads</div>
+      </div>
+
+      <!-- RAM Quota -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-pink-500 space-y-2">
+        <div class="text-slate-400 flex items-center justify-between">
+          <span>DEVICE MEMORY</span>
+          <i class="fa-solid fa-memory text-pink-400"></i>
+        </div>
+        <div id="statMemory" class="text-2xl font-orbitron font-extrabold text-white">--</div>
+        <div class="text-[10px] text-slate-500">Approximate RAM capacity (GB)</div>
+      </div>
+
+      <!-- Touch Points -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-purple-500 space-y-2">
+        <div class="text-slate-400 flex items-center justify-between">
+          <span>TOUCH SENSOR</span>
+          <i class="fa-solid fa-hand-pointer text-purple-400"></i>
+        </div>
+        <div id="statTouch" class="text-2xl font-orbitron font-extrabold text-white">--</div>
+        <div class="text-[10px] text-slate-500">Max concurrent touch contact points</div>
+      </div>
+
+      <!-- Pixel Ratio -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-emerald-400 space-y-2">
+        <div class="text-slate-400 flex items-center justify-between">
+          <span>PIXEL DENSITY</span>
+          <i class="fa-solid fa-display text-emerald-400"></i>
+        </div>
+        <div id="statDpr" class="text-2xl font-orbitron font-extrabold text-white">--</div>
+        <div class="text-[10px] text-slate-500">Device Pixel Ratio (DPR)</div>
+      </div>
+    </div>
+
+    <!-- Deep Hardware Panels -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono text-xs">
+      <!-- GPU WebGL Inspector -->
+      <div class="hud-card p-5 rounded-lg space-y-3">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-vr-cardboard text-cyan-400"></i> GPU HARDWARE ACCELERATION
+          </span>
+          <span class="text-[10px] text-cyan-400">WEBGL 2.0</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">GPU Renderer</span>
+            <span id="gpuRendererText" class="text-slate-200 font-bold truncate max-w-xs">--</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">GPU Vendor</span>
+            <span id="gpuVendorText" class="text-slate-200 font-bold truncate max-w-xs">--</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">Max Texture Size</span>
+            <span id="gpuTextureSizeText" class="text-cyan-300 font-bold">--</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-400">Antialiasing (MSAA)</span>
+            <span id="gpuMsaaText" class="text-emerald-400 font-bold">SUPPORTED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen & Display Specs -->
+      <div class="hud-card p-5 rounded-lg space-y-3">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-desktop text-pink-400"></i> SCREEN &amp; RUNTIME GEOMETRY
+          </span>
+          <span class="text-[10px] text-pink-400">DISPLAY METRICS</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">Screen Resolution</span>
+            <span id="screenResText" class="text-slate-200 font-bold">--</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">Available Resolution</span>
+            <span id="availResText" class="text-slate-200 font-bold">--</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-400">Color Depth</span>
+            <span id="colorDepthText" class="text-cyan-300 font-bold">--</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-400">Platform OS</span>
+            <span id="platformText" class="text-emerald-400 font-bold">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Educational Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          BROWSER HARDWARE TELEMETRY &amp; HARDWARE CONCURRENCY
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL SYSTEM SPECIFICATION // HARDWARE SENSORS &amp; UNMASKED GPU PROFILES
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Navigator Hardware APIs</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Modern HTML5 browsers provide standardized APIs to inspect client hardware resources without requiring privileged desktop binaries. <code class="text-cyan-300">navigator.hardwareConcurrency</code> reports the number of logical CPU processing cores available, allowing multithreaded Web Workers to optimize workload distribution.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">WebGL Unmasked GPU Identification</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            By querying the <code class="text-cyan-300">WEBGL_debug_renderer_info</code> extension through a hidden 3D canvas context, web applications can identify the physical graphics processing unit (NVIDIA, AMD Radeon, Apple Silicon, or Intel Iris) powering the device.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div><span>AIRGAPPED EXECUTION // READ-ONLY SENSORS</span></div>
+    </div>
+  </footer>
+
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <script>
+    function auditDevice() {
+      // CPU Cores
+      const cores = navigator.hardwareConcurrency || 'N/A';
+      document.getElementById('statCpuCores').textContent = cores;
+
+      // RAM
+      const ram = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '>= 8 GB';
+      document.getElementById('statMemory').textContent = ram;
+
+      // Touch Points
+      const touch = navigator.maxTouchPoints || 0;
+      document.getElementById('statTouch').textContent = touch > 0 ? `${touch} Points` : 'None (Desktop)';
+
+      // DPR
+      const dpr = window.devicePixelRatio ? window.devicePixelRatio.toFixed(2) : '1.00';
+      document.getElementById('statDpr').textContent = `${dpr}x`;
+
+      // Screen Metrics
+      document.getElementById('screenResText').textContent = `${screen.width} x ${screen.height}`;
+      document.getElementById('availResText').textContent = `${screen.availWidth} x ${screen.availHeight}`;
+      document.getElementById('colorDepthText').textContent = `${screen.colorDepth}-bit Color`;
+      document.getElementById('platformText').textContent = navigator.userAgentData?.platform || navigator.platform || 'Unknown OS';
+
+      // WebGL GPU
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (gl) {
+          const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+          if (debugInfo) {
+            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+            document.getElementById('gpuRendererText').textContent = renderer || 'Standard GPU';
+            document.getElementById('gpuVendorText').textContent = vendor || 'Standard Vendor';
+          } else {
+            document.getElementById('gpuRendererText').textContent = gl.getParameter(gl.RENDERER) || 'Generic GPU';
+            document.getElementById('gpuVendorText').textContent = gl.getParameter(gl.VENDOR) || 'Generic Vendor';
+          }
+          const maxTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+          document.getElementById('gpuTextureSizeText').textContent = `${maxTexture} x ${maxTexture}`;
+        }
+      } catch (e) {
+        document.getElementById('gpuRendererText').textContent = 'Software Renderer';
+        document.getElementById('gpuVendorText').textContent = 'Generic';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      auditDevice();
+    });
+  </script>
+</body>
+</html>

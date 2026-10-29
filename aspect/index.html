@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aspect Ratio // Resolution &amp; Screen Ratio Matrix | CyberTools</title>
+  <meta name="description" content="Client-side aspect ratio calculator, screen resolution scaler, and Euclidean GCD proportion matrix. Real-time canvas preview with zero network telemetry.">
+  <meta name="keywords" content="aspect ratio calculator, resolution scaler, 16:9 calculator, screen ratio, gcd aspect ratio, pixel dimensions, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/aspect/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/aspect/" />
+  <meta property="og:title" content="Aspect Ratio // Resolution &amp; Screen Ratio Matrix | CyberTools" />
+  <meta property="og:description" content="Client-side aspect ratio calculator, screen resolution scaler, and Euclidean GCD proportion matrix. Real-time canvas preview with zero network telemetry." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/aspect/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/aspect/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/aspect/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Aspect Ratio // Resolution &amp; Screen Ratio Matrix | CyberTools" />
+  <meta name="twitter:description" content="Client-side aspect ratio calculator, screen resolution scaler, and Euclidean GCD proportion matrix. Real-time canvas preview with zero network telemetry." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/aspect/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Aspect Ratio Matrix Calculator",
+    "url": "https://apps.sarwarfx.cfd/aspect/",
+    "description": "Client-side aspect ratio calculator, screen resolution scaler, and Euclidean GCD proportion matrix. Real-time canvas preview with zero network telemetry.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Euclidean GCD aspect ratio calculation",
+      "Bidirectional dimension scaling with ratio lock",
+      "Interactive 2D proportion visualizer canvas",
+      "Industry resolution presets (4K, 1080p, Ultrawide, Social Media)",
+      "Zero server uploads or tracking"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { background-color: #05070d; color: #cbd5e1; font-family: 'Rajdhani', sans-serif; }
+    .hud-card { background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98)); border: 1px solid rgba(0, 245, 255, 0.2); box-shadow: 0 0 15px rgba(0, 245, 255, 0.05); }
+    .hud-input { background: #020617; border: 1px solid #1e293b; color: #00f5ff; font-family: 'JetBrains Mono', monospace; outline: none; transition: all 0.2s; }
+    .hud-input:focus { border-color: #00f5ff; box-shadow: 0 0 10px rgba(0, 245, 255, 0.3); }
+    .hud-btn { background: linear-gradient(90deg, #00f5ff, #00b4d8); color: #020617; font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 0.05em; transition: all 0.2s; }
+    .hud-btn:hover { box-shadow: 0 0 15px rgba(0, 245, 255, 0.5); transform: translateY(-1px); }
+    .hud-btn-secondary { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 245, 255, 0.3); color: #00f5ff; font-family: 'Orbitron', sans-serif; transition: all 0.2s; }
+    .hud-btn-secondary:hover { background: rgba(0, 245, 255, 0.15); border-color: #00f5ff; }
+  </style>
+  <script defer src="/assets/js/relay.js"></script>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">ASPECT_RATIO // RESOLUTION MATRIX</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x63</span>
+      </div>
+      <div>
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">COMMAND CENTER</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>TACTICAL_MATH</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">ASPECT_RATIO</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x63</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          ASPECT RATIO <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">RESOLUTION SCALER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          High-precision aspect ratio solver, dimension scaler, and Euclidean GCD proportion matrix. Bidirectional scaling with real-time 2D canvas proportion visualizer.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Input Controls (5 cols) -->
+      <div class="lg:col-span-5 space-y-5">
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+              <i class="fa-solid fa-expand"></i> RESOLUTION INPUTS
+            </span>
+            <span id="ratioDisplayBadge" class="text-xs font-orbitron font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">16 : 9</span>
+          </div>
+
+          <!-- Dimension Inputs -->
+          <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1">WIDTH (PX)</label>
+              <input id="inputWidth" type="number" value="1920" min="1" class="hud-input w-full px-3 py-2 text-sm rounded font-bold" oninput="handleDimensionChange('width')">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">HEIGHT (PX)</label>
+              <input id="inputHeight" type="number" value="1080" min="1" class="hud-input w-full px-3 py-2 text-sm rounded font-bold" oninput="handleDimensionChange('height')">
+            </div>
+          </div>
+
+          <!-- Ratio Lock Toggle -->
+          <div class="pt-2 border-t border-slate-800">
+            <label class="flex items-center justify-between p-2.5 rounded bg-slate-950 border border-slate-800 cursor-pointer hover:border-cyan-500/40">
+              <div class="flex items-center space-x-2 text-xs font-mono">
+                <i class="fa-solid fa-lock text-cyan-400"></i>
+                <span class="text-slate-200">Lock Aspect Ratio when scaling</span>
+              </div>
+              <input id="chkLockRatio" type="checkbox" checked class="accent-cyan-400 w-4 h-4 cursor-pointer">
+            </label>
+          </div>
+
+          <!-- Common Ratio Presets -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <label class="block text-xs font-mono text-slate-400">COMMON RATIO PRESETS</label>
+            <div class="grid grid-cols-3 gap-1.5 font-mono text-xs">
+              <button onclick="applyPresetRatio(16, 9)" class="p-2 rounded bg-slate-900 border border-cyan-400 text-cyan-300 font-bold text-center">16:9 (HD)</button>
+              <button onclick="applyPresetRatio(4, 3)" class="p-2 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-center">4:3 (SD)</button>
+              <button onclick="applyPresetRatio(21, 9)" class="p-2 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-center">21:9 (UW)</button>
+              <button onclick="applyPresetRatio(1, 1)" class="p-2 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-center">1:1 (Square)</button>
+              <button onclick="applyPresetRatio(9, 16)" class="p-2 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-center">9:16 (Story)</button>
+              <button onclick="applyPresetRatio(3, 2)" class="p-2 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-center">3:2 (Photo)</button>
+            </div>
+          </div>
+
+          <!-- Common Resolution Presets -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <label class="block text-xs font-mono text-slate-400">COMMON RESOLUTION PRESETS</label>
+            <div class="grid grid-cols-2 gap-1.5 font-mono text-xs">
+              <button onclick="applyResolution(3840, 2160)" class="p-1.5 rounded bg-slate-950 border border-slate-800 hover:border-cyan-400 text-slate-400 hover:text-white text-left truncate">3840 x 2160 (4K UHD)</button>
+              <button onclick="applyResolution(2560, 1440)" class="p-1.5 rounded bg-slate-950 border border-slate-800 hover:border-cyan-400 text-slate-400 hover:text-white text-left truncate">2560 x 1440 (2K QHD)</button>
+              <button onclick="applyResolution(1920, 1080)" class="p-1.5 rounded bg-slate-950 border border-slate-800 hover:border-cyan-400 text-slate-400 hover:text-white text-left truncate">1920 x 1080 (1080p FHD)</button>
+              <button onclick="applyResolution(1080, 1920)" class="p-1.5 rounded bg-slate-950 border border-slate-800 hover:border-cyan-400 text-slate-400 hover:text-white text-left truncate">1080 x 1920 (TikTok / Reels)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Visualizer & Calculated Metrics (7 cols) -->
+      <div class="lg:col-span-7 space-y-5">
+        <!-- Visualizer Card -->
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-shapes text-cyan-400"></i> PROPORTION PREVIEW CANVAS
+            </span>
+            <span id="decimalRatioText" class="text-xs font-mono text-cyan-400 font-bold">1.778 : 1</span>
+          </div>
+
+          <div class="w-full h-64 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center p-4 overflow-hidden relative">
+            <div id="previewBox" class="border-2 border-cyan-400 bg-cyan-950/20 shadow-[0_0_15px_rgba(0,245,255,0.2)] flex flex-col items-center justify-center transition-all duration-200">
+              <span id="boxLabel" class="text-xs font-orbitron font-bold text-white tracking-wider">1920 x 1080</span>
+              <span id="boxRatioLabel" class="text-[11px] font-mono text-cyan-400">16:9</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Details -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <span class="text-slate-400">TOTAL PIXELS</span>
+            <div id="totalPixelsText" class="text-lg font-orbitron font-bold text-white">2,073,600</div>
+            <span id="megapixelsText" class="text-[10px] text-cyan-400">2.07 Megapixels</span>
+          </div>
+
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <span class="text-slate-400">GCD DIVISOR</span>
+            <div id="gcdText" class="text-lg font-orbitron font-bold text-pink-400">120</div>
+            <span class="text-[10px] text-slate-500">Euclidean factor</span>
+          </div>
+
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <span class="text-slate-400">ORIENTATION</span>
+            <div id="orientationText" class="text-lg font-orbitron font-bold text-emerald-400">LANDSCAPE</div>
+            <span id="orientationSubtext" class="text-[10px] text-slate-500">Width &gt; Height</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Educational Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          ASPECT RATIO MATHEMATICS &amp; EUCLIDEAN GCD ALGORITHM
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL MATHEMATICS SPECIFICATION // DISPLAY PROPORTIONS &amp; RESOLUTION SCALING
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Euclidean Greatest Common Divisor</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            To express the aspect ratio of two pixel dimensions (such as 1920 and 1080) in lowest integer terms, the Euclidean algorithm determines the Greatest Common Divisor (GCD). By iteratively replacing the larger number by the remainder of dividing the larger by the smaller:
+            <code class="text-cyan-300 block my-1 font-mono">GCD(1920, 1080) = 120</code>
+            Dividing both numbers by 120 yields the canonical proportion <code class="text-cyan-300">16:9</code>.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Zero-Artifact Client Calculation</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            When scaling assets for responsive layouts, video encoding, or game development, locking the aspect ratio guarantees that fractional pixels do not introduce blurred sub-pixel rendering. All calculations execute instantly within browser memory with zero network dependencies.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div><span>AIRGAPPED EXECUTION // CLIENT-SIDE MATH</span></div>
+    </div>
+  </footer>
+
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <script>
+    let currentLockedRatio = 16 / 9;
+
+    function gcd(a, b) {
+      return b === 0 ? a : gcd(b, a % b);
+    }
+
+    function recalculate() {
+      const w = parseInt(document.getElementById('inputWidth').value, 10) || 1;
+      const h = parseInt(document.getElementById('inputHeight').value, 10) || 1;
+
+      const divisor = gcd(w, h);
+      const ratioW = w / divisor;
+      const ratioH = h / divisor;
+
+      document.getElementById('ratioDisplayBadge').textContent = `${ratioW} : ${ratioH}`;
+      document.getElementById('decimalRatioText').textContent = `${(w / h).toFixed(3)} : 1`;
+
+      const totalPixels = w * h;
+      document.getElementById('totalPixelsText').textContent = totalPixels.toLocaleString();
+      document.getElementById('megapixelsText').textContent = `${(totalPixels / 1000000).toFixed(2)} Megapixels`;
+      document.getElementById('gcdText').textContent = divisor;
+
+      if (w > h) {
+        document.getElementById('orientationText').textContent = 'LANDSCAPE';
+        document.getElementById('orientationText').className = 'text-lg font-orbitron font-bold text-emerald-400';
+        document.getElementById('orientationSubtext').textContent = 'Width > Height';
+      } else if (h > w) {
+        document.getElementById('orientationText').textContent = 'PORTRAIT';
+        document.getElementById('orientationText').className = 'text-lg font-orbitron font-bold text-pink-400';
+        document.getElementById('orientationSubtext').textContent = 'Height > Width';
+      } else {
+        document.getElementById('orientationText').textContent = 'SQUARE';
+        document.getElementById('orientationText').className = 'text-lg font-orbitron font-bold text-cyan-400';
+        document.getElementById('orientationSubtext').textContent = '1:1 Balanced';
+      }
+
+      renderPreview(w, h, ratioW, ratioH);
+    }
+
+    function renderPreview(w, h, rw, rh) {
+      const box = document.getElementById('previewBox');
+      const maxW = 260;
+      const maxH = 200;
+
+      const ratio = w / h;
+      let targetW, targetH;
+
+      if (ratio >= maxW / maxH) {
+        targetW = maxW;
+        targetH = maxW / ratio;
+      } else {
+        targetH = maxH;
+        targetW = maxH * ratio;
+      }
+
+      box.style.width = `${Math.max(40, targetW)}px`;
+      box.style.height = `${Math.max(40, targetH)}px`;
+
+      document.getElementById('boxLabel').textContent = `${w} x ${h}`;
+      document.getElementById('boxRatioLabel').textContent = `${rw}:${rh}`;
+    }
+
+    function handleDimensionChange(source) {
+      const isLocked = document.getElementById('chkLockRatio').checked;
+      if (isLocked) {
+        if (source === 'width') {
+          const w = parseInt(document.getElementById('inputWidth').value, 10) || 1;
+          document.getElementById('inputHeight').value = Math.max(1, Math.round(w / currentLockedRatio));
+        } else {
+          const h = parseInt(document.getElementById('inputHeight').value, 10) || 1;
+          document.getElementById('inputWidth').value = Math.max(1, Math.round(h * currentLockedRatio));
+        }
+      } else {
+        const w = parseInt(document.getElementById('inputWidth').value, 10) || 1;
+        const h = parseInt(document.getElementById('inputHeight').value, 10) || 1;
+        currentLockedRatio = w / h;
+      }
+      recalculate();
+    }
+
+    function applyPresetRatio(rw, rh) {
+      const currentW = parseInt(document.getElementById('inputWidth').value, 10) || 1920;
+      currentLockedRatio = rw / rh;
+      document.getElementById('inputHeight').value = Math.max(1, Math.round(currentW / currentLockedRatio));
+      recalculate();
+    }
+
+    function applyResolution(w, h) {
+      document.getElementById('inputWidth').value = w;
+      document.getElementById('inputHeight').value = h;
+      currentLockedRatio = w / h;
+      recalculate();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      recalculate();
+    });
+  </script>
+</body>
+</html>

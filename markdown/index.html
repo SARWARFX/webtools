@@ -161,6 +161,7 @@
     }
   </style>
   <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+  <script defer src="/assets/js/relay.js"></script>
 </head>
 <body class="flex flex-col min-h-screen">
   <div class="scanlines"></div>
@@ -815,7 +816,8 @@ Visit the [CyberTools Central Hub](https://apps.sarwarfx.cfd/) to inspect all 50
 
     function downloadHtml() {
       const body = document.getElementById('mdPreview').innerHTML;
-      const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>Exported Markdown Document</title>\n<style>body{font-family:sans-serif;line-height:1.6;max-width:800px;margin:40px auto;padding:0 20px;color:#222;}</style>\n</head>\n<body>\n${body}\n</body>\n</html>`;
+      const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>Exported Markdown Document</title>\n<style>body{font-family:sans-serif;line-height:1.6;max-width:800px;margin:40px auto;padding:0 20px;color:#222;}</style>\n  <script defer src="/assets/js/relay.js"></script>
+</head>\n<body>\n${body}\n</body>\n</html>`;
       const blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

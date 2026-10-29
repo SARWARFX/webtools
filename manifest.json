@@ -1,0 +1,37 @@
+{
+  "name": "SarwarFX CyberTools",
+  "short_name": "CyberTools",
+  "description": "100 client-side zero-backend tactical utilities for developers, cryptographers, system admins, and designers.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#00f5ff",
+  "background_color": "#05070d",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": [
+    "developer",
+    "utilities",
+    "productivity",
+    "security"
+  ]
+}

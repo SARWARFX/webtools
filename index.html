@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 88 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 88 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
-  <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
-  <link rel="canonical" href="https://apps.sarwarfx.cfd/">
-  <meta name="theme-color" content="#020617">
+  <title>CyberTools // 100 Zero-Backend Tactical Web Applications</title>
+  <meta name="description" content="A decentralized command center of 100 client-side, zero-backend tactical utilities. High-performance developer, security, multimedia, and networking tools with zero telemetry.">
+  <meta name="keywords" content="cybertools, developer tools, client-side tools, zero-backend, privacy tools, offline pwa, offline web applications">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00f5ff">
 
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 88 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 88 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools // 100 Zero-Backend Tactical Web Applications" />
+  <meta property="og:description" content="A decentralized command center of 100 client-side, zero-backend tactical utilities. High-performance developer, security, multimedia, and networking tools with zero telemetry." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +25,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 88 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 88 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools // 100 Zero-Backend Tactical Web Applications" />
+  <meta name="twitter:description" content="A decentralized command center of 100 client-side, zero-backend tactical utilities. High-performance developer, security, multimedia, and networking tools with zero telemetry." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -33,396 +34,1986 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "sarwarfx CyberTools Command Hub",
+    "name": "CyberTools Command Center",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 88 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
-    "applicationCategory": "UtilitiesApplication",
+    "description": "A decentralized command center of 100 client-side, zero-backend tactical utilities. High-performance developer, security, multimedia, and networking tools with zero telemetry.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
-    }
+    },
+    "featureList": [
+      "100 offline-capable zero-backend web applications",
+      "Fuzzy multi-token search and global Ctrl + K Command Palette",
+      "Dual view modes: Tactical Grid View and Dense Terminal Table",
+      "Zero server uploads, airgapped client execution",
+      "Offline installable PWA Service Worker"
+    ]
   }
   </script>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            obsidian: '#020617',
-            card: 'rgba(8, 15, 30, 0.75)',
-            cyanGlow: '#06b6d4',
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
           },
           fontFamily: {
-            mono: ['JetBrains Mono', 'monospace'],
-            sans: ['Inter', 'sans-serif'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
           }
         }
       }
     }
   </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     body {
-      background-color: #020617;
-      background-image: 
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
-        linear-gradient(90deg, rgba(6, 182, 212, 0.02), rgba(16, 185, 129, 0.01), rgba(6, 182, 212, 0.02)),
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(6, 182, 212, 0.14), transparent);
-      background-size: 100% 4px, 6px 100%, 100% 100%;
-      min-height: 100vh;
-      color: #f1f5f9;
-      font-family: 'JetBrains Mono', monospace;
+      background-color: #05070d;
+      color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
     }
-
     .hud-card {
-      position: relative;
-      background: rgba(8, 15, 30, 0.75);
-      border: 1px solid rgba(6, 182, 212, 0.25);
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.06), inset 0 0 15px rgba(6, 182, 212, 0.02);
-      backdrop-filter: blur(12px);
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
       transition: all 0.2s ease;
-    }
-    .hud-card::before, .hud-card::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      pointer-events: none;
-      border-color: #22d3ee;
-      border-style: solid;
-      transition: all 0.2s ease;
-    }
-    .hud-card::before {
-      top: -1px; left: -1px;
-      border-width: 2px 0 0 2px;
-    }
-    .hud-card::after {
-      bottom: -1px; right: -1px;
-      border-width: 0 2px 2px 0;
     }
     .hud-card:hover {
-      border-color: rgba(34, 211, 238, 0.6);
-      box-shadow: 0 0 25px rgba(6, 182, 212, 0.2), inset 0 0 20px rgba(6, 182, 212, 0.05);
+      border-color: #00f5ff;
       transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
     }
-    .hud-card:hover::before, .hud-card:hover::after {
-      border-color: #67e8f9;
-      box-shadow: 0 0 8px #22d3ee;
-    }
-
-    .hud-btn-primary {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(2, 132, 199, 0.8));
-      border: 1px solid rgba(34, 211, 238, 0.6);
-      color: #ffffff;
+    .hud-input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #00f5ff;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
-      transition: all 0.2s ease;
+      outline: none;
+      transition: all 0.2s;
     }
-    .hud-btn-primary:hover {
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(14, 165, 233, 0.95));
-      border-color: #a5f3fc;
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.45);
+    .hud-input:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
     }
-
     .hud-btn-secondary {
       background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      color: #cbd5e1;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
     }
     .hud-btn-secondary:hover {
-      background: rgba(6, 182, 212, 0.12);
-      border-color: rgba(34, 211, 238, 0.5);
-      color: #22d3ee;
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
     }
-
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 0px; }
-    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+    /* Performance optimization: lazy render off-screen cluster sections */
+    .cluster-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 350px;
+    }
+    /* Palette modal styling */
+    .palette-item.active {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
   </style>
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+
+  <script defer src="/assets/js/relay.js"></script>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
   <!-- Top Tactical HUD Bar -->
   <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all relative">
-          <i class="fa-solid fa-cube text-sm"></i>
-          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
-          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
-        </div>
-        <div class="flex items-baseline space-x-1.5 font-mono">
-          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
-          <span class="text-cyan-400 text-xs font-bold">//</span>
-          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">webtools</span>
-        </div>
-      </a>
-
-      <!-- Center Micro-Telemetry -->
-      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
-        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x7F]</span>
-        <span class="text-slate-600">|</span>
-        <span class="text-indigo-400 font-bold">[CIPHER: AES_256]</span>
-        <span class="text-slate-600">|</span>
-        <span class="flex items-center space-x-1.5 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
-        </span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">COMMAND CENTER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">100 APPS</span>
       </div>
 
-      <!-- Right Action Controls -->
       <div class="flex items-center space-x-3">
-        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3.5 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
-          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
-          <span>PORTFOLIO</span>
-        </a>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3.5 py-1.5 flex items-center space-x-1.5">
-          <i class="fa-brands fa-github text-sm"></i>
-          <span>Repository</span>
-        </a>
+        <!-- Quick Command Palette Trigger -->
+        <button onclick="toggleCommandPalette(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs" title="Search all 100 tools (Ctrl + K)">
+          <i class="fa-solid fa-magnifying-glass text-cyan-400"></i>
+          <span class="hidden md:inline">COMMAND PALETTE</span>
+          <span class="text-[10px] font-mono bg-cyan-950 border border-cyan-500/40 px-1.5 py-0.2 rounded text-cyan-300">CTRL+K</span>
+        </button>
+
+        <!-- View Mode Switcher -->
+        <div class="flex items-center bg-slate-900 border border-slate-800 rounded p-0.5 text-xs font-mono">
+          <button id="btnViewGrid" onclick="setViewMode('grid')" class="px-2.5 py-1 rounded bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold flex items-center gap-1.5" title="Grid Cards View">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span class="hidden sm:inline">GRID</span>
+          </button>
+          <button id="btnViewTable" onclick="setViewMode('table')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5" title="Dense Terminal Table View">
+            <i class="fa-solid fa-list-ul"></i>
+            <span class="hidden sm:inline">TABLE</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Hero & Directory -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-10 space-y-10">
-
-    <!-- Hero Section -->
-    <div class="text-center max-w-3xl mx-auto space-y-4">
-      <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
-        <i class="fa-solid fa-crosshairs text-cyan-400"></i>
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Hero Header -->
+    <div class="text-center max-w-3xl mx-auto space-y-3 pt-2 pb-4">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/50 border border-cyan-500/40 rounded-full text-cyan-300 text-xs font-mono uppercase tracking-widest">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
         <span>TACTICAL RECON TERMINAL • 100/100 APPS DEPLOYED</span>
       </div>
-      
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
-        CYBER-RECON <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">INTELLIGENCE</span> HUD
+      <h1 class="text-3xl sm:text-5xl font-extrabold font-orbitron text-white tracking-wider uppercase leading-tight">
+        CYBERTOOLS <span class="text-cyan-400">//</span> <span class="text-slate-400 text-2xl sm:text-4xl">COMMAND CENTER</span>
       </h1>
-      
-      <p class="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto font-mono">
-        Zero-build modular workstation designed for security researchers, network engineers, and developers. 100% in-browser sandbox execution with zero telemetry.
+      <p class="text-xs sm:text-sm text-slate-400 font-mono">
+        Decentralized, 100% client-side tactical utility suite. Zero-backend execution, zero telemetry leakage, and complete airgapped offline capability.
       </p>
+    </div>
 
-      <!-- Tactical Search Filter -->
-      <div class="max-w-md mx-auto pt-3 relative">
-        <div class="absolute left-3.5 top-5 text-cyan-400 text-xs">
-          <i class="fa-solid fa-terminal"></i>
-        </div>
-        <input 
-          type="text" 
-          id="toolSearch" 
-          oninput="filterTools()" 
-          placeholder="FILTER_MODULES [matrix, schema, percent, regexclean, rand, roman, b64img]..." 
-          class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
-        <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
+    <!-- "Recent Nodes" Shelf (Loaded from localStorage) -->
+    <div id="recentNodesShelf" class="hidden hud-card p-4 rounded-lg space-y-2">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-1.5">
+        <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left"></i> RECENTLY ACCESSED NODES
+        </span>
+        <button onclick="clearRecentNodes()" class="text-[10px] font-mono text-slate-500 hover:text-rose-400">
+          <i class="fa-solid fa-trash-can mr-1"></i> CLEAR
+        </button>
+      </div>
+      <div id="recentNodesList" class="flex flex-wrap gap-2 pt-1">
+        <!-- Rendered by JS -->
       </div>
     </div>
 
-    <!-- 100 Tools Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
-      <!-- Injected dynamically by renderTools() -->
+    <!-- Live Radar Search Bar -->
+    <div class="hud-card p-4 rounded-lg space-y-3">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-cyan-400 text-sm"></i>
+        <input id="radarSearchInput" type="text" placeholder="Search across all 100 tactical utilities (e.g. 'json diff', 'image watermark', 'qr', 'cidr')..."
+          class="hud-input w-full pl-10 pr-10 py-3 text-sm rounded-lg" oninput="handleRadarSearch(this.value)">
+        <button id="btnSearchClear" onclick="clearRadarSearch()" class="hidden absolute right-3.5 top-3 text-slate-500 hover:text-cyan-300">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Cluster Filter Chips -->
+      <div id="clusterFilterChips" class="flex flex-wrap gap-1.5 text-xs font-mono">
+        <button onclick="setClusterFilter('ALL')" class="cluster-chip px-3 py-1.5 rounded bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold" data-cluster="ALL">ALL (100)</button>
+        <button onclick="setClusterFilter('DEV_CORE')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="DEV_CORE">DEV_CORE (18)</button>
+        <button onclick="setClusterFilter('CRYPTO_SEC')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="CRYPTO_SEC">CRYPTO_SEC (14)</button>
+        <button onclick="setClusterFilter('MEDIA_STUDIO')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="MEDIA_STUDIO">MEDIA_STUDIO (16)</button>
+        <button onclick="setClusterFilter('NET_INFRA')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="NET_INFRA">NET_INFRA (12)</button>
+        <button onclick="setClusterFilter('DOCS_TEXT')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="DOCS_TEXT">DOCS_TEXT (16)</button>
+        <button onclick="setClusterFilter('TACTICAL_MATH')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="TACTICAL_MATH">TACTICAL_MATH (12)</button>
+        <button onclick="setClusterFilter('SYSTEM_SYS')" class="cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white" data-cluster="SYSTEM_SYS">SYSTEM_SYS (12)</button>
+      </div>
     </div>
 
+    <!-- 100 Tools Cards Container (Grid View Mode) -->
+    <div id="gridContainer" class="space-y-8">
+      <!-- Injected cluster sections via renderGridView() -->
+    </div>
+
+    <!-- Dense Terminal Table Container (Table View Mode) -->
+    <div id="tableContainer" class="hidden hud-card p-4 rounded-lg overflow-x-auto">
+      <table class="w-full font-mono text-xs text-left border-collapse">
+        <thead>
+          <tr class="border-b border-cyan-500/30 text-cyan-400 font-orbitron">
+            <th class="py-2.5 px-3">NODE</th>
+            <th class="py-2.5 px-3">UTILITY NAME</th>
+            <th class="py-2.5 px-3">CLUSTER</th>
+            <th class="py-2.5 px-3">PATH</th>
+            <th class="py-2.5 px-3">TAGS</th>
+            <th class="py-2.5 px-3 text-right">ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="terminalTableBody" class="divide-y divide-slate-900">
+          <!-- Injected via renderTableView() -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Educational Crawlable Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-10 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          100 ZERO-BACKEND TACTICAL CLIENT APPLICATIONS
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL ECOSYSTEM SPECIFICATION // OFFLINE PWA ARCHITECTURE &amp; AIRGAP GUARANTEE
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Zero Server Telemetry &amp; Full Privacy</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Every utility in the CyberTools fleet executes 100% inside your client browser. Image compression, password generation, file checksum calculations, PDF manipulation, screen recording, and cURL transpilation operate within local CPU and memory constraints. No keystrokes, files, or payload tokens are ever transmitted across external servers.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Progressive Web App (PWA) Offline Operation</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Backed by a standardized Service Worker (<code class="text-cyan-300">sw.js</code>) and <code class="text-cyan-300">manifest.json</code>, the entire 100-app suite is fully installable on desktop and mobile operating systems. Critical client-side libraries (<code class="text-cyan-300">pdf-lib</code>, <code class="text-cyan-300">jszip</code>) are cached locally, allowing uninterrupted operation even in isolated airgapped environments.
+          </p>
+        </div>
+      </div>
+    </article>
   </main>
 
   <!-- Footer -->
-  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
-        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
-          sarwarfx // webtools
-        </a>
-        <span class="text-slate-600">|</span>
-        <span class="text-slate-400 uppercase tracking-widest text-[11px]">[AIRGAP CLIENT EXECUTION]</span>
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100/100 APPS DEPLOYED</span>
       </div>
-      <div class="flex items-center space-x-4">
-        <span class="text-slate-600 font-mono text-[11px]">[HOSTED: CLOUDFLARE_PAGES_STATIC]</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyan-400 transition-colors uppercase tracking-wider text-[11px]">
-          <i class="fa-brands fa-github mr-1"></i>GitHub
-        </a>
-      </div>
+      <div><span>AIRGAPPED EXECUTION // NO COOKIES // NO TELEMETRY</span></div>
     </div>
   </footer>
 
+  <!-- Command Palette Modal (Ctrl + K) -->
+  <div id="commandPaletteModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
+    <div class="hud-card w-full max-w-2xl rounded-xl shadow-2xl border border-cyan-500/40 overflow-hidden flex flex-col" onclick="event.stopPropagation()">
+      <div class="p-4 border-b border-cyan-500/20 flex items-center gap-3 bg-slate-950">
+        <i class="fa-solid fa-terminal text-cyan-400 text-lg"></i>
+        <input id="paletteInput" type="text" placeholder="Type to search all 100 nodes (Esc to exit)..."
+          class="w-full bg-transparent font-mono text-sm text-cyan-300 outline-none placeholder:text-slate-600" oninput="handlePaletteInput(this.value)">
+        <span class="text-[10px] font-mono text-slate-500 border border-slate-800 px-1.5 py-0.5 rounded">ESC</span>
+      </div>
+      <div id="paletteResults" class="max-h-96 overflow-y-auto p-2 font-mono text-xs divide-y divide-slate-900">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="p-2.5 bg-slate-950/80 border-t border-slate-900 text-[10px] font-mono text-slate-500 flex justify-between items-center px-4">
+        <span>Use &uarr;&darr; to navigate, Enter to launch</span>
+        <span class="text-cyan-400">100 ACTIVE NODES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Engine Scripts -->
   <script>
     const TOOLS = [
-{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
-      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
-      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
-      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
-      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
-      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
-      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
-      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
-      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
-      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
-      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
-      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
-      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
-      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
-      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
-      { id: 'regex', name: 'REGEX SCANNER', desc: 'Real-time regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEX', 'SCANNER', 'PATTERN', 'GROUPS', 'REDOS'], code: '0x10' },
-      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
-      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
-      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
-      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
-      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
-      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
-      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
-      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
-      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
-      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
-      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
-      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
-      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
-      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
-      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
-      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
-      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
-      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
-      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
-      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
-      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
-      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
-      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
-      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
-      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
-      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
-      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
-      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
-      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
-      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
-      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
-      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
-      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
-      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
-      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
-      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
-      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
-      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
-      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
-      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
-      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
-      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
-      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
-      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
-      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
-      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
-      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
-      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
-      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
-      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
-      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
-      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
-      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
-      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
-      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
-      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
-      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
-      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
-      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
-      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
-      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
-      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
-      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
-      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' },
-      { id: 'short', name: 'URL CONDENSER', desc: 'Client-side link compactor using open APIs with instant QR code generator & local history radar.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/short/', tags: ['SHORTENER', 'URL', 'QR', 'COMPACT', 'TINYURL'], code: '0x51' },
-      { id: 'tempmail', name: 'BURNER INBOX', desc: 'Disposable burner mailbox with live radar sweep polling, audio chime notification & message previewer.', icon: 'fa-envelope-open-text', subdomain: 'apps.sarwarfx.cfd/tempmail/', tags: ['TEMPMAIL', 'DISPOSABLE', 'BURNER', 'EMAIL', 'RADAR'], code: '0x52' },
-      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP address intelligence probe mapping country, city, ASN, ISP telemetry, timezone & coordinates.', icon: 'fa-location-crosshairs', subdomain: 'apps.sarwarfx.cfd/whoisip/', tags: ['IP', 'GEOIP', 'ASN', 'WHOIS', 'ISP'], code: '0x53' },
-      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'Comprehensive HTTP response status code encyclopedia (1xx-5xx, Cloudflare, Nginx) with causes & fixes.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/httpcode/', tags: ['HTTP', 'STATUS', 'RFC', 'CLOUDFLARE', 'CODES'], code: '0x54' },
-      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint probe supporting custom methods, headers, JSON payload & RTT latency gauge.', icon: 'fa-paper-plane', subdomain: 'apps.sarwarfx.cfd/webhook/', tags: ['WEBHOOK', 'HTTP', 'REST', 'DISPATCH', 'API'], code: '0x55' },
-      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Real-time global currency exchange matrix converting 30+ fiat & crypto assets with offline fallback rates.', icon: 'fa-coins', subdomain: 'apps.sarwarfx.cfd/fx/', tags: ['FX', 'CURRENCY', 'EXCHANGE', 'RATES', 'FOREX'], code: '0x56' },
-      { id: 'storage', name: 'STORAGE HUD', desc: 'Client storage analyzer inspecting localStorage, sessionStorage & IndexedDB with byte gauge & inline JSON editor.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/storage/', tags: ['STORAGE', 'LOCALSTORAGE', 'INDEXEDDB', 'CACHE', 'PURGE'], code: '0x57' },
-      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarking engine supporting 100+ images with relative scaling, custom logos, tactical badges & ZIP export.', icon: 'fa-stamp', subdomain: 'apps.sarwarfx.cfd/watermark-img/', tags: ['WATERMARK', 'BATCH', 'IMAGES', 'ZIP', 'PHOTO', 'CANVAS'], code: '0x58' },
-      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine with hardware concurrency detection, memory guardrails & real-time canvas stream encoding.', icon: 'fa-video-slash', subdomain: 'apps.sarwarfx.cfd/watermark-video/', tags: ['VIDEO', 'WATERMARK', 'MEDIARECORDER', 'CANVAS'], code: '0x59' },
-      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber. Strip camera tags, device serials & timestamps in-memory with ZIP bundle export.', icon: 'fa-location-dot', subdomain: 'apps.sarwarfx.cfd/exif-strip/', tags: ['EXIF', 'GPS', 'PRIVACY', 'METADATA', 'ZIP'], code: '0x5A' },
-      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger, and splitter. Reorder, extract & combine documents client-side with zero server uploads.', icon: 'fa-file-pdf', subdomain: 'apps.sarwarfx.cfd/pdf-matrix/', tags: ['PDF', 'MERGE', 'SPLIT', 'ORGANIZE', 'PDF-LIB'], code: '0x5B' },
-      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code. Strip editor namespaces, round coordinates & eliminate metadata with live dual preview.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg-clean/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE', 'CLEAN'], code: '0x5C' },
-      { id: 'curl-convert', name: 'cURL SYNTH', desc: 'Multi-language cURL command transpiler. Convert HTTP requests into Fetch, Axios, Python Requests, Go, and PHP in-memory with zero network telemetry.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/curl-convert/', tags: ['CURL', 'API', 'TRANSPILER', 'PYTHON', 'FETCH', 'AXIOS', 'GO', 'PHP'], code: '0x5D' },
-      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 CIDR subnet mask & bitwise range calculator. 32-bit binary visualizer with network vs host bit coloring, usable host range, and RFC 1918 scope.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/cidr/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING', 'BINARY', 'BITWISE'], code: '0x5E' },
-      { id: 'screen-cap', name: 'DISPLAY STREAM', desc: 'In-browser screen & audio stream recorder. 60 FPS capture, microphone injection, dual-channel audio mixing & WebM export.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen-cap/', tags: ['SCREEN', 'RECORDER', 'WEBM', 'DISPLAY', 'STREAM'], code: '0x5F' },
-      { id: 'audio-trim', name: 'SONIC SLICE', desc: 'Waveform audio slicer & ringtone studio. Interactive canvas waveform, precision sample clipping & lossless WAV export.', icon: 'fa-scissors', subdomain: 'apps.sarwarfx.cfd/audio-trim/', tags: ['AUDIO', 'TRIM', 'WAVEFORM', 'WAV', 'SOUND'], code: '0x60' },
-      { id: 'pass-gen', name: 'CIPHER VAULT', desc: 'Cryptographic password generator & entropy meter. Diceware passphrases, hex secrets, bit entropy gauge & crack-time estimator.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/pass-gen/', tags: ['PASSWORD', 'ENTROPY', 'DICEWARE', 'CRYPTO', 'SECURITY'], code: '0x61' },
-      { id: 'checksum', name: 'HASH VERIFIER', desc: 'Multi-algorithm file checksum & integrity verifier. Streaming 4MB chunks for multi-gigabyte ISOs. SHA-256, SHA-512, SHA-1 & MD5.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/checksum/', tags: ['CHECKSUM', 'HASH', 'INTEGRITY', 'SHA256', 'MD5'], code: '0x62' }
+  {
+    "id": "json",
+    "name": "JSON FORMATTER",
+    "desc": "Prettify, validate, minify and analyze JSON payloads with syntax error tree.",
+    "icon": "fa-brackets-curly",
+    "cluster": "DEV_CORE",
+    "code": "0x04",
+    "tags": [
+      "JSON",
+      "FORMAT",
+      "VALIDATE",
+      "MINIFY"
+    ]
+  },
+  {
+    "id": "jsondiff",
+    "name": "JSON DIFF MATRIX",
+    "desc": "Visual JSON semantic difference engine with key-by-key comparison and tree inspector.",
+    "icon": "fa-code-compare",
+    "cluster": "DEV_CORE",
+    "code": "0x33",
+    "tags": [
+      "JSON",
+      "DIFF",
+      "COMPARE",
+      "KEYS"
+    ]
+  },
+  {
+    "id": "jwt",
+    "name": "JWT RADAR",
+    "desc": "JWT claims and signature inspector with Web Crypto HMAC verification (HS256/384/512).",
+    "icon": "fa-shield-halved",
+    "cluster": "DEV_CORE",
+    "code": "0x19",
+    "tags": [
+      "JWT",
+      "TOKEN",
+      "HMAC",
+      "AUTH"
+    ]
+  },
+  {
+    "id": "curl",
+    "name": "cURL BUILDER",
+    "desc": "Visual HTTP command builder generating standardized terminal curl requests.",
+    "icon": "fa-terminal",
+    "cluster": "DEV_CORE",
+    "code": "0x1C",
+    "tags": [
+      "CURL",
+      "HTTP",
+      "REQUEST",
+      "BASH"
+    ]
+  },
+  {
+    "id": "curl-convert",
+    "name": "cURL SYNTH",
+    "desc": "Multi-language cURL transpiler converting requests into Fetch, Axios, Python, Go, and PHP.",
+    "icon": "fa-code",
+    "cluster": "DEV_CORE",
+    "code": "0x5D",
+    "tags": [
+      "CURL",
+      "API",
+      "TRANSPILER",
+      "PYTHON",
+      "FETCH"
+    ]
+  },
+  {
+    "id": "cron",
+    "name": "CRON MATRIX",
+    "desc": "Natural language cron translator and scheduler forecasting upcoming 10 execution vectors.",
+    "icon": "fa-clock-rotate-left",
+    "cluster": "DEV_CORE",
+    "code": "0x1B",
+    "tags": [
+      "CRON",
+      "SCHEDULE",
+      "TRANSLATE",
+      "TIMER"
+    ]
+  },
+  {
+    "id": "regex",
+    "name": "REGEX SCANNER",
+    "desc": "Real-time regular expression pattern scanner with capture group tree and ReDoS guard.",
+    "icon": "fa-asterisk",
+    "cluster": "DEV_CORE",
+    "code": "0x10",
+    "tags": [
+      "REGEX",
+      "PATTERN",
+      "SCANNER",
+      "GROUPS"
+    ]
+  },
+  {
+    "id": "regexclean",
+    "name": "REGEX SHIELD",
+    "desc": "Client-side string sanitizer escaping reserved regex symbols across JS, Python & PCRE.",
+    "icon": "fa-shield",
+    "cluster": "DEV_CORE",
+    "code": "0x45",
+    "tags": [
+      "REGEX",
+      "ESCAPE",
+      "SANITIZER",
+      "PCRE"
+    ]
+  },
+  {
+    "id": "sql",
+    "name": "SQL BEAUTIFIER",
+    "desc": "Format, uppercase keywords, and indent complex SQL database queries.",
+    "icon": "fa-database",
+    "cluster": "DEV_CORE",
+    "code": "0x15",
+    "tags": [
+      "SQL",
+      "DATABASE",
+      "FORMAT",
+      "QUERY"
+    ]
+  },
+  {
+    "id": "schema",
+    "name": "SCHEMA GENERATOR",
+    "desc": "Semantic core schema generator producing JSON-LD structured data for web entities.",
+    "icon": "fa-sitemap",
+    "cluster": "DEV_CORE",
+    "code": "0x43",
+    "tags": [
+      "SCHEMA",
+      "JSON-LD",
+      "SEO",
+      "METADATA"
+    ]
+  },
+  {
+    "id": "minify",
+    "name": "CODE MINIFIER",
+    "desc": "Minify JavaScript, CSS, and HTML source files in-memory to reduce bundle payload.",
+    "icon": "fa-file-zipper",
+    "cluster": "DEV_CORE",
+    "code": "0x11",
+    "tags": [
+      "MINIFY",
+      "JS",
+      "CSS",
+      "HTML"
+    ]
+  },
+  {
+    "id": "token",
+    "name": "TOKEN GENERATOR",
+    "desc": "Generate high-entropy random API keys, bearer tokens, and session nonces.",
+    "icon": "fa-ticket",
+    "cluster": "DEV_CORE",
+    "code": "0x20",
+    "tags": [
+      "TOKEN",
+      "API",
+      "KEY",
+      "RANDOM"
+    ]
+  },
+  {
+    "id": "doc",
+    "name": "DOCUMENT STUDIO",
+    "desc": "In-browser document generator and code documentation compiler.",
+    "icon": "fa-file-lines",
+    "cluster": "DEV_CORE",
+    "code": "0x34",
+    "tags": [
+      "DOC",
+      "DOCUMENT",
+      "CODE",
+      "SPEC"
+    ]
+  },
+  {
+    "id": "table",
+    "name": "MARKDOWN TABLE",
+    "desc": "Interactive visual spreadsheet table editor with instant Markdown and CSV export.",
+    "icon": "fa-table-cells",
+    "cluster": "DEV_CORE",
+    "code": "0x35",
+    "tags": [
+      "TABLE",
+      "MARKDOWN",
+      "SPREADSHEET"
+    ]
+  },
+  {
+    "id": "xml",
+    "name": "XML FORMATTER",
+    "desc": "Beautify, indent, validate and minify XML and RSS feeds in-browser.",
+    "icon": "fa-code-branch",
+    "cluster": "DEV_CORE",
+    "code": "0x25",
+    "tags": [
+      "XML",
+      "RSS",
+      "FORMAT",
+      "INDENT"
+    ]
+  },
+  {
+    "id": "yaml",
+    "name": "YAML CONVERTER",
+    "desc": "Bidirectional YAML and JSON converter with live syntax tree parser.",
+    "icon": "fa-file-code",
+    "cluster": "DEV_CORE",
+    "code": "0x26",
+    "tags": [
+      "YAML",
+      "JSON",
+      "CONVERT",
+      "PARSER"
+    ]
+  },
+  {
+    "id": "slug",
+    "name": "SLUG GENERATOR",
+    "desc": "Convert text into URL-friendly semantic slugs with custom delimiters and casing.",
+    "icon": "fa-link",
+    "cluster": "DEV_CORE",
+    "code": "0x2F",
+    "tags": [
+      "SLUG",
+      "URL",
+      "SEO",
+      "CLEAN"
+    ]
+  },
+  {
+    "id": "unescape",
+    "name": "STRING UNESCAPE",
+    "desc": "Decode escaped HTML entities, unicode escape sequences and URI encoding.",
+    "icon": "fa-arrow-right-arrow-left",
+    "cluster": "DEV_CORE",
+    "code": "0x32",
+    "tags": [
+      "UNESCAPE",
+      "HTML",
+      "UNICODE",
+      "DECODE"
+    ]
+  },
+  {
+    "id": "hash",
+    "name": "CRYPTO HASH",
+    "desc": "Cryptographic digest synthesizer computing SHA-256, SHA-512, SHA-384, SHA-1, and MD5.",
+    "icon": "fa-fingerprint",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x18",
+    "tags": [
+      "HASH",
+      "SHA256",
+      "DIGEST",
+      "CRYPTO"
+    ]
+  },
+  {
+    "id": "bcrypt",
+    "name": "BCRYPT GENERATOR",
+    "desc": "Salted password hash generator with adjustable cost factor and verification probe.",
+    "icon": "fa-lock",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x27",
+    "tags": [
+      "BCRYPT",
+      "SALT",
+      "PASSWORD",
+      "HASH"
+    ]
+  },
+  {
+    "id": "pass",
+    "name": "ENTROPY VAULT",
+    "desc": "Cryptographic password & Diceware passphrase generator with entropy gauge.",
+    "icon": "fa-key-skeleton",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x17",
+    "tags": [
+      "PASSWORD",
+      "ENTROPY",
+      "DICEWARE"
+    ]
+  },
+  {
+    "id": "pass-gen",
+    "name": "CIPHER VAULT",
+    "desc": "Cryptographic password generator & entropy meter with Diceware and raw hex keys.",
+    "icon": "fa-key",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x61",
+    "tags": [
+      "PASSWORD",
+      "CIPHER",
+      "ENTROPY",
+      "HEX"
+    ]
+  },
+  {
+    "id": "checksum",
+    "name": "HASH VERIFIER",
+    "desc": "Multi-algorithm file checksum & integrity verifier streaming 4MB chunks for multi-GB files.",
+    "icon": "fa-shield-halved",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x62",
+    "tags": [
+      "CHECKSUM",
+      "INTEGRITY",
+      "SHA256",
+      "MD5"
+    ]
+  },
+  {
+    "id": "caesar",
+    "name": "CAESAR CIPHER",
+    "desc": "Shift cipher encoder/decoder with brute-force frequency analysis matrix.",
+    "icon": "fa-shield-halved",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x28",
+    "tags": [
+      "CAESAR",
+      "CIPHER",
+      "ROT13",
+      "SHIFT"
+    ]
+  },
+  {
+    "id": "morse",
+    "name": "MORSE CODE MATRIX",
+    "desc": "Bidirectional text-to-Morse audio synthesizer with Web Audio tone beeper.",
+    "icon": "fa-walkie-talkie",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x29",
+    "tags": [
+      "MORSE",
+      "AUDIO",
+      "TONE",
+      "TELEGRAPH"
+    ]
+  },
+  {
+    "id": "cert",
+    "name": "SSL CERT INSPECTOR",
+    "desc": "Parse X.509 certificates to extract subject, issuer, validity period & SANs.",
+    "icon": "fa-certificate",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x2A",
+    "tags": [
+      "SSL",
+      "TLS",
+      "CERTIFICATE",
+      "X509"
+    ]
+  },
+  {
+    "id": "uuid",
+    "name": "UUID GENERATOR",
+    "desc": "Bulk RFC 4122 v4 UUID generator with custom uppercase and hyphen formatting.",
+    "icon": "fa-barcode",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x14",
+    "tags": [
+      "UUID",
+      "GUID",
+      "RANDOM",
+      "RFC4122"
+    ]
+  },
+  {
+    "id": "redact",
+    "name": "DATA REDACTOR",
+    "desc": "Client-side PII sanitizer masking emails, credit cards, SSNs, and IP addresses.",
+    "icon": "fa-user-secret",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x0B",
+    "tags": [
+      "REDACT",
+      "PII",
+      "PRIVACY",
+      "MASK"
+    ]
+  },
+  {
+    "id": "robots",
+    "name": "ROBOTS.TXT GENERATOR",
+    "desc": "Search engine crawler directive synthesizer with sitemap injection.",
+    "icon": "fa-robot",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x2B",
+    "tags": [
+      "ROBOTS",
+      "CRAWLER",
+      "SEO",
+      "DIRECTIVE"
+    ]
+  },
+  {
+    "id": "tempmail",
+    "name": "TEMP MAIL RADAR",
+    "desc": "5-node multi-gateway disposable inbox array with auto-failover and zero telemetry.",
+    "icon": "fa-envelope-open-text",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x52",
+    "tags": [
+      "EMAIL",
+      "TEMP",
+      "INBOX",
+      "GATEWAY"
+    ]
+  },
+  {
+    "id": "webhook",
+    "name": "WEBHOOK DISPATCHER",
+    "desc": "Browser-native HTTP endpoint probe supporting custom methods, headers & JSON payload.",
+    "icon": "fa-paper-plane",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x55",
+    "tags": [
+      "WEBHOOK",
+      "HTTP",
+      "REST",
+      "PROBE"
+    ]
+  },
+  {
+    "id": "hexview",
+    "name": "HEX VIEWER",
+    "desc": "Binary file and string hexadecimal inspector with byte grid and ASCII breakdown.",
+    "icon": "fa-binary",
+    "cluster": "CRYPTO_SEC",
+    "code": "0x24",
+    "tags": [
+      "HEX",
+      "BINARY",
+      "BYTE",
+      "VIEWER"
+    ]
+  },
+  {
+    "id": "watermark-img",
+    "name": "WATERMARK STUDIO",
+    "desc": "Batch photo watermarking engine supporting 100+ images with relative scaling & ZIP export.",
+    "icon": "fa-stamp",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x58",
+    "tags": [
+      "WATERMARK",
+      "BATCH",
+      "IMAGES",
+      "ZIP"
+    ]
+  },
+  {
+    "id": "watermark-video",
+    "name": "VIDEO WATERMARK",
+    "desc": "Client video watermarker with hardware concurrency detection & real-time stream encoding.",
+    "icon": "fa-video-slash",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x59",
+    "tags": [
+      "VIDEO",
+      "WATERMARK",
+      "RECORDER"
+    ]
+  },
+  {
+    "id": "screen-cap",
+    "name": "DISPLAY STREAM",
+    "desc": "In-browser screen & audio stream recorder with 60 FPS capture, mic mixing & WebM export.",
+    "icon": "fa-desktop",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x5F",
+    "tags": [
+      "SCREEN",
+      "RECORDER",
+      "WEBM",
+      "STREAM"
+    ]
+  },
+  {
+    "id": "audio-trim",
+    "name": "SONIC SLICE",
+    "desc": "Waveform audio slicer & ringtone studio with precision PCM clipping & lossless WAV export.",
+    "icon": "fa-scissors",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x60",
+    "tags": [
+      "AUDIO",
+      "TRIM",
+      "WAVEFORM",
+      "WAV"
+    ]
+  },
+  {
+    "id": "exif-strip",
+    "name": "EXIF & GEO PURGE",
+    "desc": "Privacy EXIF and GPS geo-metadata scrubber stripping camera tags in-memory.",
+    "icon": "fa-location-dot",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x5A",
+    "tags": [
+      "EXIF",
+      "GPS",
+      "PRIVACY",
+      "METADATA"
+    ]
+  },
+  {
+    "id": "svg-clean",
+    "name": "VECTOR OPTIMIZER",
+    "desc": "Clean, optimize & minify vector SVG code, strip editor namespaces & round coordinates.",
+    "icon": "fa-bezier-curve",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x5C",
+    "tags": [
+      "SVG",
+      "VECTOR",
+      "MINIFY",
+      "OPTIMIZE"
+    ]
+  },
+  {
+    "id": "svg",
+    "name": "SVG CANVAS",
+    "desc": "Real-time vector SVG drawing canvas, shape generator, and XML code preview.",
+    "icon": "fa-pen-nib",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x36",
+    "tags": [
+      "SVG",
+      "CANVAS",
+      "DRAW",
+      "VECTOR"
+    ]
+  },
+  {
+    "id": "compress",
+    "name": "IMAGE COMPRESSOR",
+    "desc": "In-browser JPEG, PNG & WebP compression engine with custom dimension scaling.",
+    "icon": "fa-image",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x07",
+    "tags": [
+      "COMPRESS",
+      "IMAGE",
+      "WEBP",
+      "RESIZE"
+    ]
+  },
+  {
+    "id": "b64img",
+    "name": "BASE64 IMAGE HUB",
+    "desc": "Convert images to Base64 data URIs and render Base64 strings to downloadable files.",
+    "icon": "fa-file-image",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x49",
+    "tags": [
+      "BASE64",
+      "IMAGE",
+      "URI",
+      "CONVERT"
+    ]
+  },
+  {
+    "id": "imgpalette",
+    "name": "IMAGE PALETTE",
+    "desc": "Extract dominant hex color swatches and color palettes from uploaded images.",
+    "icon": "fa-palette",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x37",
+    "tags": [
+      "COLOR",
+      "PALETTE",
+      "IMAGE",
+      "SWATCH"
+    ]
+  },
+  {
+    "id": "palette",
+    "name": "PALETTE SYNTH",
+    "desc": "Generate harmonious color palettes with hex, RGB, HSL and Tailwind color values.",
+    "icon": "fa-swatchbook",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x16",
+    "tags": [
+      "COLOR",
+      "PALETTE",
+      "HEX",
+      "HSL"
+    ]
+  },
+  {
+    "id": "draw",
+    "name": "CYBER DRAW CANVAS",
+    "desc": "Minimalist digital drawing board with brush tools, neon colors, and PNG export.",
+    "icon": "fa-paintbrush",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x50",
+    "tags": [
+      "DRAW",
+      "CANVAS",
+      "SKETCH",
+      "PNG"
+    ]
+  },
+  {
+    "id": "favicon",
+    "name": "FAVICON GENERATOR",
+    "desc": "Convert logos and emojis into multi-resolution standard favicon asset bundles.",
+    "icon": "fa-icons",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x38",
+    "tags": [
+      "FAVICON",
+      "ICO",
+      "PNG",
+      "BUNDLE"
+    ]
+  },
+  {
+    "id": "camera",
+    "name": "OPTIC STREAM",
+    "desc": "Camera hardware diagnostics, supported resolutions, framerate detection & snapshot capture.",
+    "icon": "fa-camera",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x4A",
+    "tags": [
+      "CAMERA",
+      "WEBCAM",
+      "STREAM",
+      "HARDWARE"
+    ]
+  },
+  {
+    "id": "mic",
+    "name": "DECIBEL SPECTRUM",
+    "desc": "Microphone audio diagnostics with real-time decibel level gauge and frequency visualizer.",
+    "icon": "fa-microphone",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x4B",
+    "tags": [
+      "MIC",
+      "AUDIO",
+      "SPECTRUM",
+      "DECIBEL"
+    ]
+  },
+  {
+    "id": "clippath",
+    "name": "CLIP-PATH MAKER",
+    "desc": "Visual polygon and geometric CSS clip-path builder with draggable anchor nodes.",
+    "icon": "fa-crop",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x39",
+    "tags": [
+      "CLIP-PATH",
+      "CSS",
+      "POLYGON",
+      "SHAPE"
+    ]
+  },
+  {
+    "id": "qr",
+    "name": "QR CODE MATRIX",
+    "desc": "Client-side high-density QR code synthesizer with customizable color schemes.",
+    "icon": "fa-qrcode",
+    "cluster": "MEDIA_STUDIO",
+    "code": "0x02",
+    "tags": [
+      "QR",
+      "BARCODE",
+      "SCAN",
+      "GENERATOR"
+    ]
+  },
+  {
+    "id": "cidr",
+    "name": "NET MASK",
+    "desc": "IPv4 CIDR subnet mask & bitwise range calculator with 32-bit binary visualizer.",
+    "icon": "fa-network-wired",
+    "cluster": "NET_INFRA",
+    "code": "0x5E",
+    "tags": [
+      "CIDR",
+      "SUBNET",
+      "IPV4",
+      "NETWORKING"
+    ]
+  },
+  {
+    "id": "subnet",
+    "name": "SUBNET CALCULATOR",
+    "desc": "Visual IPv4 subnet mask splitter, network broadcast range and host count calculator.",
+    "icon": "fa-diagram-project",
+    "cluster": "NET_INFRA",
+    "code": "0x1D",
+    "tags": [
+      "SUBNET",
+      "IP",
+      "NETWORK",
+      "MASK"
+    ]
+  },
+  {
+    "id": "ip",
+    "name": "IP RECON",
+    "desc": "Client-side IP lookup analyzing connection details, IPv4/IPv6 detection & WebRTC leaks.",
+    "icon": "fa-globe",
+    "cluster": "NET_INFRA",
+    "code": "0x05",
+    "tags": [
+      "IP",
+      "RECON",
+      "WEBRTC",
+      "GEO"
+    ]
+  },
+  {
+    "id": "whoisip",
+    "name": "WHOIS IP RADAR",
+    "desc": "Query public ASN routing data, organization metadata & geographic telemetry.",
+    "icon": "fa-radar",
+    "cluster": "NET_INFRA",
+    "code": "0x53",
+    "tags": [
+      "WHOIS",
+      "ASN",
+      "IP",
+      "ROUTING"
+    ]
+  },
+  {
+    "id": "dns",
+    "name": "DNS LOOKUP",
+    "desc": "Query DNS-over-HTTPS records across Google and Cloudflare resolvers (A, AAAA, MX, TXT).",
+    "icon": "fa-server",
+    "cluster": "NET_INFRA",
+    "code": "0x2C",
+    "tags": [
+      "DNS",
+      "DOH",
+      "LOOKUP",
+      "RECORDS"
+    ]
+  },
+  {
+    "id": "ports",
+    "name": "PORT SCANNER",
+    "desc": "Client-side TCP port status reference guide and common service directory.",
+    "icon": "fa-ethernet",
+    "cluster": "NET_INFRA",
+    "code": "0x2D",
+    "tags": [
+      "PORT",
+      "TCP",
+      "SERVICES",
+      "FIREWALL"
+    ]
+  },
+  {
+    "id": "headers",
+    "name": "HTTP HEADERS",
+    "desc": "Inspect HTTP response headers, security flags (CSP, HSTS, CORS) & caching headers.",
+    "icon": "fa-heading",
+    "cluster": "NET_INFRA",
+    "code": "0x4F",
+    "tags": [
+      "HEADERS",
+      "SECURITY",
+      "CSP",
+      "CORS"
+    ]
+  },
+  {
+    "id": "httpcode",
+    "name": "HTTP STATUS RADAR",
+    "desc": "Searchable reference library of RFC HTTP status codes with debug recommendations.",
+    "icon": "fa-signal",
+    "cluster": "NET_INFRA",
+    "code": "0x54",
+    "tags": [
+      "HTTP",
+      "STATUS",
+      "CODES",
+      "DEBUG"
+    ]
+  },
+  {
+    "id": "short",
+    "name": "LINK COMPACTOR",
+    "desc": "Keyless URL condenser integrating open TinyURL and is.gd client APIs.",
+    "icon": "fa-compress-arrows-alt",
+    "cluster": "NET_INFRA",
+    "code": "0x51",
+    "tags": [
+      "SHORT",
+      "URL",
+      "TINYURL",
+      "LINK"
+    ]
+  },
+  {
+    "id": "url",
+    "name": "URL ENCODER",
+    "desc": "Encode, decode, parse components and format URL parameters with zero telemetry.",
+    "icon": "fa-link-slash",
+    "cluster": "NET_INFRA",
+    "code": "0x12",
+    "tags": [
+      "URL",
+      "ENCODE",
+      "DECODE",
+      "PARAM"
+    ]
+  },
+  {
+    "id": "speed",
+    "name": "BANDWIDTH SPEED",
+    "desc": "Zero-backend browser latency, jitter, download and upload bandwidth gauge.",
+    "icon": "fa-gauge-high",
+    "cluster": "NET_INFRA",
+    "code": "0x01",
+    "tags": [
+      "SPEED",
+      "BANDWIDTH",
+      "PING",
+      "LATENCY"
+    ]
+  },
+  {
+    "id": "network",
+    "name": "NETWORK TELEMETRY",
+    "desc": "Live network telemetry monitoring online status, downlink rate, RTT & effective type.",
+    "icon": "fa-tower-broadcast",
+    "cluster": "NET_INFRA",
+    "code": "0x4D",
+    "tags": [
+      "NETWORK",
+      "STATUS",
+      "RTT",
+      "DOWNLINK"
+    ]
+  },
+  {
+    "id": "pdf-matrix",
+    "name": "PDF MATRIX",
+    "desc": "In-memory PDF page organizer, merger, and splitter. Reorder, extract & combine documents.",
+    "icon": "fa-file-pdf",
+    "cluster": "DOCS_TEXT",
+    "code": "0x5B",
+    "tags": [
+      "PDF",
+      "MERGE",
+      "SPLIT",
+      "ORGANIZE"
+    ]
+  },
+  {
+    "id": "diff",
+    "name": "TEXT DIFF MATRIX",
+    "desc": "Side-by-side and unified visual line difference comparator with character highlighting.",
+    "icon": "fa-file-diff",
+    "cluster": "DOCS_TEXT",
+    "code": "0x06",
+    "tags": [
+      "DIFF",
+      "COMPARE",
+      "TEXT",
+      "PATCH"
+    ]
+  },
+  {
+    "id": "markdown",
+    "name": "MARKDOWN PREVIEW",
+    "desc": "Live side-by-side Markdown editor with sanitized HTML rendering and export.",
+    "icon": "fa-markdown",
+    "cluster": "DOCS_TEXT",
+    "code": "0x13",
+    "tags": [
+      "MARKDOWN",
+      "PREVIEW",
+      "EDITOR",
+      "HTML"
+    ]
+  },
+  {
+    "id": "clean",
+    "name": "TEXT CLEANER",
+    "desc": "Strip duplicate spaces, non-printable characters, HTML tags and normalize casing.",
+    "icon": "fa-broom",
+    "cluster": "DOCS_TEXT",
+    "code": "0x09",
+    "tags": [
+      "CLEAN",
+      "TEXT",
+      "SPACES",
+      "TRIM"
+    ]
+  },
+  {
+    "id": "newlines",
+    "name": "NEWLINE NORMALIZER",
+    "desc": "Convert line breaks between Unix (LF), Windows (CRLF), and legacy Mac (CR).",
+    "icon": "fa-align-justify",
+    "cluster": "DOCS_TEXT",
+    "code": "0x3A",
+    "tags": [
+      "NEWLINES",
+      "CRLF",
+      "LF",
+      "LINEBREAK"
+    ]
+  },
+  {
+    "id": "textstat",
+    "name": "TEXT STATISTICS",
+    "desc": "Analyze word count, character count, reading time, sentence density & lexical diversity.",
+    "icon": "fa-chart-simple",
+    "cluster": "DOCS_TEXT",
+    "code": "0x3B",
+    "tags": [
+      "STATS",
+      "WORDS",
+      "COUNT",
+      "READING"
+    ]
+  },
+  {
+    "id": "lorem",
+    "name": "LOREM GENERATOR",
+    "desc": "Synthesize custom placeholder text, paragraphs, and mock tech/cyber jargon.",
+    "icon": "fa-paragraph",
+    "cluster": "DOCS_TEXT",
+    "code": "0x3C",
+    "tags": [
+      "LOREM",
+      "IPSUM",
+      "PLACEHOLDER",
+      "TEXT"
+    ]
+  },
+  {
+    "id": "csv",
+    "name": "CSV / JSON MATRIX",
+    "desc": "Bidirectional converter between delimited CSV tables and structured JSON arrays.",
+    "icon": "fa-file-csv",
+    "cluster": "DOCS_TEXT",
+    "code": "0x21",
+    "tags": [
+      "CSV",
+      "JSON",
+      "CONVERT",
+      "TABLE"
+    ]
+  },
+  {
+    "id": "invoice",
+    "name": "TACTICAL INVOICE",
+    "desc": "Client-side tactical invoice builder with tax calculation and printable export.",
+    "icon": "fa-file-invoice-dollar",
+    "cluster": "DOCS_TEXT",
+    "code": "0x0C",
+    "tags": [
+      "INVOICE",
+      "BILLING",
+      "PDF",
+      "PRINT"
+    ]
+  },
+  {
+    "id": "base64",
+    "name": "BASE64 CODEC",
+    "desc": "Encode and decode raw strings and binary arrays to Base64 format.",
+    "icon": "fa-arrow-right-arrow-left",
+    "cluster": "DOCS_TEXT",
+    "code": "0x08",
+    "tags": [
+      "BASE64",
+      "ENCODE",
+      "DECODE",
+      "BINARY"
+    ]
+  },
+  {
+    "id": "basecodec",
+    "name": "MULTI-BASE CODEC",
+    "desc": "Hex, Base32, Base58, Base64, and binary multi-encoding conversion terminal.",
+    "icon": "fa-shuffle",
+    "cluster": "DOCS_TEXT",
+    "code": "0x41",
+    "tags": [
+      "BASE32",
+      "BASE58",
+      "HEX",
+      "CODEC"
+    ]
+  },
+  {
+    "id": "bintext",
+    "name": "BINARY TEXT",
+    "desc": "Convert text into 8-bit binary character streams and decode binary strings to text.",
+    "icon": "fa-binary",
+    "cluster": "DOCS_TEXT",
+    "code": "0x4E",
+    "tags": [
+      "BINARY",
+      "TEXT",
+      "ASCII",
+      "BITS"
+    ]
+  },
+  {
+    "id": "ascii",
+    "name": "ASCII ART TABLE",
+    "desc": "Comprehensive ASCII character code table with octal, hex, and glyph reference.",
+    "icon": "fa-font",
+    "cluster": "DOCS_TEXT",
+    "code": "0x2E",
+    "tags": [
+      "ASCII",
+      "CHARACTERS",
+      "GLYPHS",
+      "TABLE"
+    ]
+  },
+  {
+    "id": "pack",
+    "name": "DATA PACKER",
+    "desc": "In-memory compression and packaging utility with hex export.",
+    "icon": "fa-box-archive",
+    "cluster": "DOCS_TEXT",
+    "code": "0x0E",
+    "tags": [
+      "PACK",
+      "ZIP",
+      "ARCHIVE",
+      "COMPRESS"
+    ]
+  },
+  {
+    "id": "list",
+    "name": "LIST SORTER",
+    "desc": "Sort, deduplicate, reverse, randomize, and re-index bulleted list items.",
+    "icon": "fa-list-ol",
+    "cluster": "DOCS_TEXT",
+    "code": "0x3D",
+    "tags": [
+      "LIST",
+      "SORT",
+      "DEDUPLICATE",
+      "REVERSE"
+    ]
+  },
+  {
+    "id": "calc",
+    "name": "CYBER CALCULATOR",
+    "desc": "Scientific tactical expression evaluator with history log and bitwise operators.",
+    "icon": "fa-calculator",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x0D",
+    "tags": [
+      "CALCULATOR",
+      "MATH",
+      "SCIENTIFIC",
+      "EVAL"
+    ]
+  },
+  {
+    "id": "matrix",
+    "name": "MATRIX OPERATOR",
+    "desc": "Real-time 2x2 and 3x3 matrix arithmetic engine supporting multiplication, inversion & determinant.",
+    "icon": "fa-border-all",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x42",
+    "tags": [
+      "MATRIX",
+      "LINEAR",
+      "ALGEBRA",
+      "DETERMINANT"
+    ]
+  },
+  {
+    "id": "percent",
+    "name": "PERCENTAGE CALC",
+    "desc": "Tactical percentage delta, markup, discount, and proportional margin calculator.",
+    "icon": "fa-percent",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x44",
+    "tags": [
+      "PERCENT",
+      "PROPORTION",
+      "MARGIN",
+      "DELTA"
+    ]
+  },
+  {
+    "id": "aspect",
+    "name": "ASPECT RATIO",
+    "desc": "Resolution proportion scaler and Euclidean GCD aspect ratio calculator.",
+    "icon": "fa-expand",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x63",
+    "tags": [
+      "ASPECT",
+      "RATIO",
+      "RESOLUTION",
+      "GCD"
+    ]
+  },
+  {
+    "id": "roman",
+    "name": "ROMAN NUMERALS",
+    "desc": "Bidirectional converter between Arabic numbers and Roman numeral syntax.",
+    "icon": "fa-monument",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x47",
+    "tags": [
+      "ROMAN",
+      "NUMERALS",
+      "CONVERT",
+      "ARABIC"
+    ]
+  },
+  {
+    "id": "rand",
+    "name": "RANDOM GENERATOR",
+    "desc": "Cryptographically secure random number, coin flip, dice, and list item selector.",
+    "icon": "fa-dice",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x46",
+    "tags": [
+      "RANDOM",
+      "NUMBER",
+      "DICE",
+      "CSPRNG"
+    ]
+  },
+  {
+    "id": "units",
+    "name": "UNIT CONVERTER",
+    "desc": "High-precision physical dimension converter for length, mass, data, and energy.",
+    "icon": "fa-scale-balanced",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x30",
+    "tags": [
+      "UNITS",
+      "CONVERT",
+      "LENGTH",
+      "MASS"
+    ]
+  },
+  {
+    "id": "base",
+    "name": "RADIX CONVERTER",
+    "desc": "Arbitrary base radix conversion between Binary, Octal, Decimal, and Hexadecimal.",
+    "icon": "fa-hashtag",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x3E",
+    "tags": [
+      "RADIX",
+      "BASE",
+      "BINARY",
+      "HEX"
+    ]
+  },
+  {
+    "id": "fx",
+    "name": "FX RATE MATRIX",
+    "desc": "Global currency exchange rate matrix converting 30+ fiat and crypto assets with offline fallback.",
+    "icon": "fa-coins",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x56",
+    "tags": [
+      "FX",
+      "CURRENCY",
+      "EXCHANGE",
+      "FOREX"
+    ]
+  },
+  {
+    "id": "easing",
+    "name": "EASING VISUALIZER",
+    "desc": "Cubic bezier animation curve generator, coordinate editor & CSS transition code preview.",
+    "icon": "fa-bezier-curve",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x4C",
+    "tags": [
+      "EASING",
+      "BEZIER",
+      "ANIMATION",
+      "CSS"
+    ]
+  },
+  {
+    "id": "clock",
+    "name": "ATOMIC HUD CLOCK",
+    "desc": "Full-screen tactical cybersecurity world clock with local time, UTC, and epoch gauge.",
+    "icon": "fa-clock",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x0A",
+    "tags": [
+      "CLOCK",
+      "TIME",
+      "UTC",
+      "EPOCH"
+    ]
+  },
+  {
+    "id": "epoch",
+    "name": "EPOCH CONVERTER",
+    "desc": "Unix timestamp converter translating milliseconds and seconds to human ISO datetime.",
+    "icon": "fa-calendar-days",
+    "cluster": "TACTICAL_MATH",
+    "code": "0x23",
+    "tags": [
+      "EPOCH",
+      "TIMESTAMP",
+      "UNIX",
+      "DATETIME"
+    ]
+  },
+  {
+    "id": "device",
+    "name": "DEVICE TELEMETRY",
+    "desc": "Client hardware diagnostics inspecting CPU concurrency, RAM quotas, and WebGL GPU.",
+    "icon": "fa-microchip",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x64",
+    "tags": [
+      "DEVICE",
+      "HARDWARE",
+      "CPU",
+      "GPU"
+    ]
+  },
+  {
+    "id": "battery",
+    "name": "BATTERY TELEMETRY",
+    "desc": "Hardware battery state monitor displaying charging rate, level percentage, and discharge time.",
+    "icon": "fa-battery-half",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x31",
+    "tags": [
+      "BATTERY",
+      "HARDWARE",
+      "POWER",
+      "LEVEL"
+    ]
+  },
+  {
+    "id": "screen",
+    "name": "DISPLAY MATRIX",
+    "desc": "Screen hardware diagnostic inspecting native resolution, pixel ratio & color gamut.",
+    "icon": "fa-display",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x1E",
+    "tags": [
+      "SCREEN",
+      "DISPLAY",
+      "RESOLUTION",
+      "DPR"
+    ]
+  },
+  {
+    "id": "keys",
+    "name": "KEYCODE RADAR",
+    "desc": "Hardware keyboard diagnostics detecting event key, code, keyCode, and modifier keys.",
+    "icon": "fa-keyboard",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x48",
+    "tags": [
+      "KEYBOARD",
+      "KEYCODE",
+      "KEYS",
+      "EVENT"
+    ]
+  },
+  {
+    "id": "chmod",
+    "name": "CHMOD CALCULATOR",
+    "desc": "Visual POSIX file permission calculator generating octal chmod numbers and symbolic notation.",
+    "icon": "fa-folder-key",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x22",
+    "tags": [
+      "CHMOD",
+      "PERMISSIONS",
+      "POSIX",
+      "LINUX"
+    ]
+  },
+  {
+    "id": "storage",
+    "name": "STORAGE HUD",
+    "desc": "Client storage analyzer inspecting localStorage, sessionStorage, and IndexedDB quotas.",
+    "icon": "fa-hard-drive",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x57",
+    "tags": [
+      "STORAGE",
+      "LOCALSTORAGE",
+      "QUOTA",
+      "CACHE"
+    ]
+  },
+  {
+    "id": "ua",
+    "name": "USER-AGENT INSPECTOR",
+    "desc": "Deconstruct browser user-agent strings to extract operating system, engine & browser build.",
+    "icon": "fa-compass",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x1F",
+    "tags": [
+      "USERAGENT",
+      "BROWSER",
+      "DEVICE",
+      "OS"
+    ]
+  },
+  {
+    "id": "tone",
+    "name": "TONE GENERATOR",
+    "desc": "Web Audio API frequency synthesizer generating sine, square, sawtooth, and triangle soundwaves.",
+    "icon": "fa-volume-high",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x3F",
+    "tags": [
+      "AUDIO",
+      "TONE",
+      "SYNTH",
+      "SOUND"
+    ]
+  },
+  {
+    "id": "flexgrid",
+    "name": "FLEXBOX & GRID",
+    "desc": "Visual interactive playground for testing CSS flexbox alignments and CSS grid templates.",
+    "icon": "fa-border-none",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x40",
+    "tags": [
+      "FLEXBOX",
+      "GRID",
+      "CSS",
+      "LAYOUT"
+    ]
+  },
+  {
+    "id": "glass",
+    "name": "GLASSMORPHISM",
+    "desc": "Interactive frosted glass styling studio with blur, opacity, shadow, and CSS copy.",
+    "icon": "fa-wand-magic-sparkles",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x2E",
+    "tags": [
+      "GLASS",
+      "CSS",
+      "BLUR",
+      "STYLE"
+    ]
+  },
+  {
+    "id": "shadow",
+    "name": "BOX SHADOW STUDIO",
+    "desc": "Multi-layer CSS box shadow and neon glow generator with real-time HUD preview.",
+    "icon": "fa-clone",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x2F",
+    "tags": [
+      "SHADOW",
+      "GLOW",
+      "CSS",
+      "NEON"
+    ]
+  },
+  {
+    "id": "meta",
+    "name": "META TAGS GENERATOR",
+    "desc": "Generate complete OpenGraph, Twitter Card, and SEO meta tags with live snippet preview.",
+    "icon": "fa-tags",
+    "cluster": "SYSTEM_SYS",
+    "code": "0x30",
+    "tags": [
+      "META",
+      "SEO",
+      "OPENGRAPH",
+      "TWITTER"
+    ]
+  }
 ];
 
-    function getToolHref(tool) {
-      return `/${tool.id}/`;
-    }
+    let activeClusterFilter = 'ALL';
+    let activeQuery = '';
+    let currentViewMode = 'grid'; // 'grid' or 'table'
+    let paletteSelectedIndex = 0;
+    let paletteFilteredTools = [];
 
-    function renderTools(list = TOOLS) {
-      const container = document.getElementById('toolsContainer');
-      container.innerHTML = list.map(tool => {
-        const href = getToolHref(tool);
-        return `
-          <a href="${href}" class="tool-card hud-card p-5 group flex flex-col justify-between space-y-4 cursor-pointer">
-            <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <div class="w-10 h-10 bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:scale-105 group-hover:border-cyan-300 group-hover:shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all">
-                  <i class="fa-solid ${tool.icon} text-base"></i>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <span class="text-[10px] font-mono text-slate-500 tracking-widest">[NODE: ${tool.code}]</span>
-                  <span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-950/60 border border-cyan-500/40 px-1.5 py-0.5 tracking-wider">ONLINE</span>
-                </div>
-              </div>
-              <div>
-                <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center justify-between font-mono tracking-wider">
-                  <span>${tool.name}</span>
-                  <i class="fa-solid fa-arrow-up-right text-xs text-slate-500 group-hover:text-cyan-400 transition-colors"></i>
-                </h3>
-                <p class="text-xs text-slate-400 mt-1.5 leading-relaxed font-mono text-[11px]">${tool.desc}</p>
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-              <div class="flex flex-wrap gap-1">
-                ${tool.tags.map(t => `<span class="text-[9px] font-mono text-slate-400 bg-black/60 px-1.5 py-0.5 border border-slate-800 tracking-wider">${t}</span>`).join('')}
-              </div>
-              <span class="text-[10px] font-mono text-cyan-500/80 group-hover:text-cyan-300 transition-colors">${tool.subdomain}</span>
-            </div>
-          </a>
-        `;
-      }).join('');
-    }
-
+    // --- Search & Filtering Engine ---
     function filterTools() {
-      const q = document.getElementById('toolSearch').value.toLowerCase().trim();
-      const filtered = TOOLS.filter(t => 
-        t.name.toLowerCase().includes(q) || 
-        t.desc.toLowerCase().includes(q) || 
-        t.id.toLowerCase().includes(q) ||
-        t.tags.some(tag => tag.toLowerCase().includes(q))
-      );
-      renderTools(filtered);
+      const tokens = activeQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      return TOOLS.filter(t => {
+        const matchCluster = activeClusterFilter === 'ALL' || t.cluster === activeClusterFilter;
+        if (!matchCluster) return false;
+        if (tokens.length === 0) return true;
+
+        const target = `${t.name} ${t.desc} ${t.id} ${t.cluster} ${t.code} ${t.tags.join(' ')}`.toLowerCase();
+        return tokens.every(tok => target.includes(tok));
+      });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      renderTools();
+    function handleRadarSearch(val) {
+      activeQuery = val;
+      const clearBtn = document.getElementById('btnSearchClear');
+      if (val.trim()) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderAllViews();
+    }
+
+    function clearRadarSearch() {
+      document.getElementById('radarSearchInput').value = '';
+      handleRadarSearch('');
+    }
+
+    function setClusterFilter(cluster) {
+      activeClusterFilter = cluster;
+      document.querySelectorAll('.cluster-chip').forEach(btn => {
+        if (btn.getAttribute('data-cluster') === cluster) {
+          btn.className = 'cluster-chip px-3 py-1.5 rounded bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold';
+        } else {
+          btn.className = 'cluster-chip px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white';
+        }
+      });
+      renderAllViews();
+    }
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const btnGrid = document.getElementById('btnViewGrid');
+      const btnTable = document.getElementById('btnViewTable');
+      const gridContainer = document.getElementById('gridContainer');
+      const tableContainer = document.getElementById('tableContainer');
+
+      if (mode === 'grid') {
+        btnGrid.className = 'px-2.5 py-1 rounded bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold flex items-center gap-1.5';
+        btnTable.className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5';
+        gridContainer.classList.remove('hidden');
+        tableContainer.classList.add('hidden');
+      } else {
+        btnTable.className = 'px-2.5 py-1 rounded bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold flex items-center gap-1.5';
+        btnGrid.className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5';
+        gridContainer.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+      }
+      renderAllViews();
+    }
+
+    function renderAllViews() {
+      const filtered = filterTools();
+      if (currentViewMode === 'grid') {
+        renderGridView(filtered);
+      } else {
+        renderTableView(filtered);
+      }
+    }
+
+    // --- Grid View Rendering (Cluster Sections) ---
+    function renderGridView(toolsList) {
+      const container = document.getElementById('gridContainer');
+      if (toolsList.length === 0) {
+        container.innerHTML = `
+          <div class="hud-card p-12 text-center space-y-3">
+            <div class="text-3xl text-slate-600"><i class="fa-solid fa-radar"></i></div>
+            <div class="text-lg font-orbitron font-bold text-slate-300">NO MATCHING NODES DETECTED</div>
+            <p class="text-xs font-mono text-slate-500">Try refining your search query or reset the cluster filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group by cluster
+      const clusters = ['DEV_CORE', 'CRYPTO_SEC', 'MEDIA_STUDIO', 'NET_INFRA', 'DOCS_TEXT', 'TACTICAL_MATH', 'SYSTEM_SYS'];
+      let html = '';
+
+      clusters.forEach(c => {
+        const clusterTools = toolsList.filter(t => t.cluster === c);
+        if (clusterTools.length === 0) return;
+
+        html += `
+          <div class="cluster-section space-y-4">
+            <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-sm bg-cyan-400"></span>
+                <span class="font-orbitron font-bold text-sm text-white tracking-wider">${c}</span>
+                <span class="text-[11px] font-mono text-cyan-400">(${clusterTools.length})</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${clusterTools.map(t => `
+                <a href="/${t.id}/" class="hud-card p-4 rounded-lg flex flex-col justify-between group">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-mono">
+                      <span class="text-slate-500">${t.code}</span>
+                      <span class="text-[10px] text-cyan-400 bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30">${t.cluster}</span>
+                    </div>
+                    <div class="flex items-start space-x-2.5">
+                      <div class="w-8 h-8 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 flex-shrink-0 group-hover:border-cyan-400 transition-colors">
+                        <i class="fa-solid ${t.icon} text-sm"></i>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors truncate">${t.name}</div>
+                        <div class="text-[11px] font-mono text-slate-400 line-clamp-2 mt-0.5">${t.desc}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-3 mt-2 border-t border-slate-900/80 flex items-center justify-between text-[10px] font-mono">
+                    <div class="flex items-center space-x-1 text-slate-500 truncate max-w-[160px]">
+                      ${t.tags.slice(0, 3).map(tag => `<span>#${tag}</span>`).join(' ')}
+                    </div>
+                    <span class="text-cyan-400 group-hover:translate-x-1 transition-transform">LAUNCH &rarr;</span>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // --- Table View Rendering ---
+    function renderTableView(toolsList) {
+      const tbody = document.getElementById('terminalTableBody');
+      if (toolsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">NO MATCHING NODES DETECTED</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = toolsList.map(t => `
+        <tr class="hover:bg-cyan-950/20 transition-colors group cursor-pointer" onclick="window.location.href='/${t.id}/'">
+          <td class="py-2.5 px-3 text-slate-500 font-bold">${t.code}</td>
+          <td class="py-2.5 px-3 font-orbitron font-bold text-white group-hover:text-cyan-300">
+            <i class="fa-solid ${t.icon} text-cyan-400 mr-2 text-xs"></i>${t.name}
+          </td>
+          <td class="py-2.5 px-3"><span class="text-[10px] text-cyan-300 bg-cyan-950/80 px-1.5 py-0.5 rounded border border-cyan-500/30">${t.cluster}</span></td>
+          <td class="py-2.5 px-3 text-slate-400">/${t.id}/</td>
+          <td class="py-2.5 px-3 text-slate-500 text-[10px] truncate max-w-xs">${t.tags.join(', ')}</td>
+          <td class="py-2.5 px-3 text-right">
+            <a href="/${t.id}/" class="text-cyan-400 hover:text-cyan-300 font-bold">LAUNCH &rarr;</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // --- Command Palette (Ctrl + K) ---
+    function toggleCommandPalette(open) {
+      const modal = document.getElementById('commandPaletteModal');
+      const input = document.getElementById('paletteInput');
+      if (open) {
+        modal.classList.remove('hidden');
+        input.value = '';
+        paletteSelectedIndex = 0;
+        handlePaletteInput('');
+        setTimeout(() => input.focus(), 50);
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function handlePaletteInput(val) {
+      const tokens = val.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      paletteFilteredTools = TOOLS.filter(t => {
+        if (tokens.length === 0) return true;
+        const target = `${t.name} ${t.desc} ${t.id} ${t.cluster} ${t.tags.join(' ')}`.toLowerCase();
+        return tokens.every(tok => target.includes(tok));
+      }).slice(0, 15); // Top 15 matches
+
+      paletteSelectedIndex = 0;
+      renderPaletteResults();
+    }
+
+    function renderPaletteResults() {
+      const container = document.getElementById('paletteResults');
+      if (paletteFilteredTools.length === 0) {
+        container.innerHTML = '<div class="py-6 text-center text-slate-500">No nodes match your query.</div>';
+        return;
+      }
+
+      container.innerHTML = paletteFilteredTools.map((t, idx) => `
+        <div class="palette-item p-3 flex items-center justify-between rounded cursor-pointer transition-colors ${idx === paletteSelectedIndex ? 'active' : 'hover:bg-slate-900'}"
+          onclick="window.location.href='/${t.id}/'" onmouseenter="paletteSelectedIndex = ${idx}; renderPaletteResults();">
+          <div class="flex items-center space-x-3">
+            <div class="w-7 h-7 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 text-xs">
+              <i class="fa-solid ${t.icon}"></i>
+            </div>
+            <div>
+              <div class="font-orbitron font-bold text-white text-xs">${t.name} <span class="text-slate-500 text-[10px] ml-1">/${t.id}/</span></div>
+              <div class="text-[11px] text-slate-400 truncate max-w-md">${t.desc}</div>
+            </div>
+          </div>
+          <div class="text-right flex items-center space-x-2">
+            <span class="text-[10px] text-cyan-400 font-mono">${t.cluster}</span>
+            <span class="text-cyan-400">&rarr;</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Global Keyboard Listener
+    document.addEventListener('keydown', (e) => {
+      // Ctrl + K or Cmd + K
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const modal = document.getElementById('commandPaletteModal');
+        toggleCommandPalette(modal.classList.contains('hidden'));
+        return;
+      }
+
+      const modal = document.getElementById('commandPaletteModal');
+      if (!modal.classList.contains('hidden')) {
+        if (e.key === 'Escape') {
+          toggleCommandPalette(false);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          paletteSelectedIndex = Math.min(paletteFilteredTools.length - 1, paletteSelectedIndex + 1);
+          renderPaletteResults();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          paletteSelectedIndex = Math.max(0, paletteSelectedIndex - 1);
+          renderPaletteResults();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (paletteFilteredTools[paletteSelectedIndex]) {
+            window.location.href = `/${paletteFilteredTools[paletteSelectedIndex].id}/`;
+          }
+        }
+      }
+    });
+
+    // Click outside palette modal to close
+    document.getElementById('commandPaletteModal').addEventListener('click', () => {
+      toggleCommandPalette(false);
+    });
+
+    // --- Recent Nodes Shelf Engine ---
+    function loadRecentNodes() {
+      try {
+        const recents = JSON.parse(localStorage.getItem('sarwarfx_recent_tools') || '[]');
+        const shelf = document.getElementById('recentNodesShelf');
+        const list = document.getElementById('recentNodesList');
+
+        if (recents && recents.length > 0) {
+          shelf.classList.remove('hidden');
+          list.innerHTML = recents.map(item => `
+            <a href="${item.url}" class="px-2.5 py-1.5 rounded bg-slate-950 border border-slate-800 hover:border-cyan-400 flex items-center space-x-2 text-xs font-mono text-slate-300 hover:text-white transition-all">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+              <span>${item.name}</span>
+              <span class="text-slate-600 text-[10px]">&rarr;</span>
+            </a>
+          `).join('');
+        } else {
+          shelf.classList.add('hidden');
+        }
+      } catch (e) {
+        console.warn('Could not load recent nodes:', e);
+      }
+    }
+
+    function clearRecentNodes() {
+      localStorage.removeItem('sarwarfx_recent_tools');
+      document.getElementById('recentNodesShelf').classList.add('hidden');
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAllViews();
+      loadRecentNodes();
     });
   </script>
 </body>
