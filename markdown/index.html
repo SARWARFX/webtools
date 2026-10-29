@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Preview Studio // Cheatsheet & Renderer - sarwarfx</title>
+  <meta name="description" content="Dual-pane live GFM Markdown editor and previewer with cyberpunk formatting toolbar, live HTML markup export, and markdown cheatsheet.">
+  <meta name="keywords" content="markdown preview online, gfm markdown editor, live markdown previewer, markdown to html converter, markdown cheatsheet, markdown table generator">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/markdown/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/markdown/" />
+  <meta property="og:title" content="Markdown Preview Studio // Cheatsheet & Renderer - sarwarfx" />
+  <meta property="og:description" content="Dual-pane live GFM Markdown editor and previewer with cyberpunk formatting toolbar, live HTML markup export, and markdown cheatsheet." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/markdown/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/markdown/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/markdown/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Markdown Preview Studio // Cheatsheet & Renderer - sarwarfx" />
+  <meta name="twitter:description" content="Dual-pane live GFM Markdown editor and previewer with cyberpunk formatting toolbar, live HTML markup export, and markdown cheatsheet." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/markdown/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Markdown Preview Studio & Cheatsheet",
+    "url": "https://apps.sarwarfx.cfd/markdown/",
+    "description": "Dual-pane live GFM Markdown editor and previewer with cyberpunk formatting toolbar, live HTML markup export, and markdown cheatsheet.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M3 3h18v18H3V3zm4 13h2v-5l2 2 2-2v5h2V8h-2l-2 2-2-2H7v8zm10-5h-2v3h-2v2h2v3h2v-3h2v-2h-2v-3z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">MARKDOWN_STUDIO</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x32</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(50)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero Title -->
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400">
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+        <span class="tracking-widest">[SYS_NODE: 0x32 // MARKDOWN PREVIEW STUDIO & GFM CHEATSHEET]</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wide">
+        MARKDOWN PREVIEW <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">STUDIO & RENDERER</span>
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm font-rajdhani text-base leading-relaxed max-w-3xl">
+        Dual-pane GitHub Flavored Markdown (GFM) editor, live parser, and cyberpunk rendering engine. Features an integrated formatting ribbon, real-time typography telemetry, raw HTML compiler, and collapsible syntax cheatsheet.
+      </p>
+    </div>
+
+    <!-- Telemetry HUD Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+      <div class="hud-card p-3 rounded">
+        <span class="text-[10px] text-slate-500 uppercase block">WORD COUNT</span>
+        <span class="text-base font-orbitron font-bold text-white" id="statWords">0</span>
+      </div>
+      <div class="hud-card p-3 rounded">
+        <span class="text-[10px] text-slate-500 uppercase block">CHAR METRICS</span>
+        <span class="text-base font-orbitron font-bold text-cyan-400" id="statChars">0</span>
+      </div>
+      <div class="hud-card p-3 rounded">
+        <span class="text-[10px] text-slate-500 uppercase block">LINE TOTAL</span>
+        <span class="text-base font-orbitron font-bold text-pink-400" id="statLines">0</span>
+      </div>
+      <div class="hud-card p-3 rounded">
+        <span class="text-[10px] text-slate-500 uppercase block">READ DURATION</span>
+        <span class="text-base font-orbitron font-bold text-emerald-400" id="statRead">~0 min</span>
+      </div>
+    </div>
+
+    <!-- Formatting Toolbar & Control Bar -->
+    <div class="hud-card p-3 rounded flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+      <!-- Toolbar Groups -->
+      <div class="flex flex-wrap items-center gap-1">
+        <!-- Headings -->
+        <button onclick="insertMd('# ')" title="Heading 1" class="hud-btn-secondary px-2 py-1 rounded text-[11px] font-bold">H1</button>
+        <button onclick="insertMd('## ')" title="Heading 2" class="hud-btn-secondary px-2 py-1 rounded text-[11px] font-bold">H2</button>
+        <button onclick="insertMd('### ')" title="Heading 3" class="hud-btn-secondary px-2 py-1 rounded text-[11px] font-bold">H3</button>
+
+        <div class="h-4 w-px bg-slate-800 mx-1"></div>
+
+        <!-- Inline Styling -->
+        <button onclick="wrapMd('**', '**')" title="Bold" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-bold"></i></button>
+        <button onclick="wrapMd('*', '*')" title="Italic" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-italic"></i></button>
+        <button onclick="wrapMd('~~', '~~')" title="Strikethrough" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-strikethrough"></i></button>
+        <button onclick="wrapMd('`', '`')" title="Inline Code" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-code"></i></button>
+
+        <div class="h-4 w-px bg-slate-800 mx-1"></div>
+
+        <!-- Blocks -->
+        <button onclick="insertMd('> ')" title="Blockquote" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-quote-left"></i></button>
+        <button onclick="wrapMd('```\n', '\n```')" title="Code Block" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-terminal"></i></button>
+        <button onclick="insertMd('- ')" title="Bullet List" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-list-ul"></i></button>
+        <button onclick="insertMd('1. ')" title="Numbered List" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-list-ol"></i></button>
+        <button onclick="insertMd('- [ ] ')" title="Task List" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-square-check"></i></button>
+        <button onclick="insertTable()" title="Insert Table" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-table"></i></button>
+        <button onclick="wrapMd('[', '](https://example.com)')" title="Hyperlink" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-link"></i></button>
+        <button onclick="wrapMd('![', '](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600)')" title="Image" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-image"></i></button>
+        <button onclick="insertMd('\n---\n')" title="Divider" class="hud-btn-secondary px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-minus"></i></button>
+      </div>
+
+      <!-- Action Utilities -->
+      <div class="flex items-center space-x-1.5">
+        <button onclick="toggleCheatsheet()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px] text-cyan-300">
+          <i class="fa-solid fa-book-open mr-1"></i>CHEATSHEET
+        </button>
+        <button onclick="loadSampleDoc()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px] text-pink-300">
+          <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>SAMPLE
+        </button>
+        <button onclick="clearEditor()" class="hud-btn-secondary px-2 py-1 rounded text-[11px] text-slate-400 hover:text-rose-400">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible GFM Syntax Cheatsheet Drawer -->
+    <div id="cheatsheetDrawer" class="hidden hud-card p-5 rounded font-mono text-xs border-cyan-500/40 bg-black/80 space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <div class="flex items-center space-x-2 text-cyan-400 font-bold">
+          <i class="fa-solid fa-terminal"></i>
+          <span>GFM (GITHUB FLAVORED MARKDOWN) SYNTAX REFERENCE</span>
+        </div>
+        <button onclick="toggleCheatsheet()" class="text-slate-400 hover:text-white">[CLOSE]</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-slate-300 text-[11px]">
+        <div class="space-y-1">
+          <strong class="text-cyan-300 block">Headers:</strong>
+          <code># H1 Title</code><br>
+          <code>## H2 Section</code><br>
+          <code>### H3 Subsection</code>
+        </div>
+        <div class="space-y-1">
+          <strong class="text-pink-300 block">Emphasis:</strong>
+          <code>**bold text**</code><br>
+          <code>*italicized text*</code><br>
+          <code>~~strikethrough~~</code>
+        </div>
+        <div class="space-y-1">
+          <strong class="text-emerald-300 block">Lists & Tasks:</strong>
+          <code>- Bullet item</code><br>
+          <code>1. Numbered item</code><br>
+          <code>- [x] Completed task</code>
+        </div>
+        <div class="space-y-1">
+          <strong class="text-amber-300 block">Code & Tables:</strong>
+          <code>`inline code`</code><br>
+          <code>```lang code block```</code><br>
+          <code>| A | B | / |---|---|</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual Split-Pane Workspace -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono text-xs">
+
+      <!-- Left: Raw Markdown Editor -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-pen-nib text-cyan-400 text-xs"></i>
+            <span class="font-bold tracking-wider text-slate-200 uppercase">MARKDOWN SOURCE</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="downloadMd()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px]">
+              <i class="fa-solid fa-download mr-1"></i>SAVE .MD
+            </button>
+            <button onclick="copyMd()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px]">
+              <i class="fa-solid fa-copy mr-1"></i>COPY MD
+            </button>
+          </div>
+        </div>
+
+        <textarea id="mdInput" oninput="renderMarkdown()" placeholder="Type or paste Markdown here..." class="flex-1 bg-black/70 border border-slate-800/80 rounded p-4 font-mono text-xs text-slate-200 focus:border-cyan-400 outline-none leading-relaxed min-h-[460px] select-all"></textarea>
+      </div>
+
+      <!-- Right: Live Rendered HUD Preview -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-eye text-pink-400 text-xs"></i>
+            <span class="font-bold tracking-wider text-slate-200 uppercase">LIVE HUD PREVIEW</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="downloadHtml()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px]">
+              <i class="fa-solid fa-file-code mr-1"></i>SAVE .HTML
+            </button>
+            <button onclick="copyHtml()" class="hud-btn-primary px-3 py-1 rounded text-[11px] flex items-center space-x-1">
+              <i class="fa-solid fa-code text-xs"></i>
+              <span>COPY HTML</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Rendered Display Container -->
+        <div id="mdPreview" class="flex-1 bg-black/70 border border-slate-800/80 rounded p-5 overflow-y-auto min-h-[460px] leading-relaxed select-text space-y-4">
+          <!-- Live rendered HTML elements will stream here -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Semantic Crawl Article & Technical Reference -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-mono text-xs sm:text-sm leading-relaxed border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide">
+          MARKDOWN SYNTAX SPECIFICATION, AST COMPILATION & GFM RENDERING PROTOCOLS
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Technical architecture for CommonMark compliance, GitHub Flavored Markdown (GFM) extensions, sanitizer safety, and airgapped client execution.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">1. Syntax Origins & The GFM Standard</h3>
+        <p>
+          Conceived by John Gruber and Aaron Swartz in 2004, Markdown provides a lightweight markup syntax intended to be cleanly readable in plain-text form while easily compiling into valid XHTML/HTML. GitHub subsequently codified the GitHub Flavored Markdown (GFM) standard (RFC 7763 compliant), introducing mission-critical developer extensions:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 pl-2 text-slate-400">
+          <li><strong class="text-cyan-300">Pipe Tables:</strong> Structured ASCII matrix grids delimited by vertical bars (<code class="text-cyan-300">|</code>) with column alignment modifiers (<code class="text-cyan-300">:---</code> for left, <code class="text-cyan-300">:---:</code> for center, <code class="text-cyan-300">---:</code> for right).</li>
+          <li><strong class="text-pink-300">Task Lists (Checklists):</strong> Markdown list items prefixed with <code class="text-pink-300">- [ ]</code> or <code class="text-pink-300">- [x]</code> compiled directly into native HTML checkbox input nodes.</li>
+          <li><strong class="text-amber-300">Strikethrough:</strong> Double tilde markers (<code class="text-amber-300">~~deleted text~~</code>) transpiled into semantic <code class="text-amber-300">&lt;del&gt;</code> HTML elements.</li>
+          <li><strong class="text-emerald-300">Fenced Code Blocks:</strong> Triple backticks (<code class="text-emerald-300">```lang</code>) with optional language identifiers for syntax highlighting lexers.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-4 pt-2">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">2. Client-Side Parsing Engine & Sanitization</h3>
+        <p>
+          This studio employs a zero-network client-side lexical scanner that parses Markdown tokens into HTML elements entirely within local browser thread memory. Malicious HTML script injection tags are neutralized during the lexical normalization phase, ensuring safe rendering of external documentation and code snippets.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Airgapped Safety</strong>
+          Your documentation, private notes, and source code never leave your device. Zero telemetry, zero analytics harvesting.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Dual Export Pipelines</strong>
+          Export pure raw Markdown (<code class="text-cyan-300">.md</code>) or compiled standalone HTML (<code class="text-cyan-300">.html</code>) with one click.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Live Typography HUD</strong>
+          Real-time telemetry computes word density, character metrics, line counters, and estimated reading time.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (50)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'markdown';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' },
+      { id: 'dns', name: 'DNS SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', code: '0x32' }
+    ];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    // Pure Client-side Markdown Lexer & Parser
+    function parseMarkdown(md) {
+      if (!md) return '';
+
+      // Escape HTML entities to prevent XSS
+      let html = md
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Code blocks (```lang ... ```)
+      html = html.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `<pre class="bg-black/90 border border-cyan-500/30 p-4 rounded text-xs font-mono text-cyan-300 overflow-x-auto my-3"><div class="text-[9px] text-slate-500 mb-1 border-b border-slate-800 pb-1 uppercase font-bold tracking-wider">${lang || 'CODE'}</div><code>${code.trim()}</code></pre>`;
+      });
+
+      // Inline code (`...`)
+      html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-900 border border-cyan-500/30 text-cyan-400 px-1.5 py-0.5 rounded font-mono text-xs">$1</code>');
+
+      // Tables (| A | B |)
+      html = html.replace(/((?:\|[^\n]+\|\r?\n)+)/g, (match) => {
+        const rows = match.trim().split(/\r?\n/).map(r => r.trim());
+        if (rows.length < 2) return match;
+
+        let tableHtml = '<div class="overflow-x-auto my-4"><table class="w-full text-left font-mono text-xs border border-cyan-500/30 border-collapse">';
+        let isHeader = true;
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          if (/^\|[\s:-|-]+\|$/.test(row)) {
+            isHeader = false;
+            continue; // Divider row
+          }
+          const cells = row.split('|').slice(1, -1).map(c => c.trim());
+          if (isHeader) {
+            tableHtml += '<thead class="bg-cyan-950/40 text-cyan-300 border-b border-cyan-500/30"><tr>';
+            cells.forEach(c => tableHtml += `<th class="p-2 border border-slate-800 font-bold">${c}</th>`);
+            tableHtml += '</tr></thead><tbody>';
+          } else {
+            tableHtml += '<tr class="border-b border-slate-800/60 hover:bg-slate-900/40">';
+            cells.forEach(c => tableHtml += `<td class="p-2 border border-slate-800 text-slate-300">${c}</td>`);
+            tableHtml += '</tr>';
+          }
+        }
+        tableHtml += '</tbody></table></div>';
+        return tableHtml;
+      });
+
+      // Headings
+      html = html.replace(/^### (.*$)/gim, '<h3 class="text-base font-orbitron font-bold text-cyan-400 mt-4 mb-2 tracking-wide">$1</h3>');
+      html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-orbitron font-bold text-white mt-5 mb-2.5 tracking-wide border-b border-cyan-500/20 pb-1">$1</h2>');
+      html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl sm:text-2xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 mt-6 mb-3 tracking-wider">$1</h1>');
+
+      // Blockquotes
+      html = html.replace(/^\> (.*$)/gim, '<blockquote class="border-l-4 border-cyan-400 bg-cyan-950/20 pl-4 py-2 italic text-slate-300 my-3 rounded-r">$1</blockquote>');
+
+      // Horizontal Rules
+      html = html.replace(/^---$/gim, '<hr class="border-cyan-500/20 my-5">');
+
+      // Task Lists (- [ ] or - [x])
+      html = html.replace(/^- \[ \] (.*$)/gim, '<div class="flex items-center space-x-2 my-1.5"><input type="checkbox" disabled class="rounded bg-slate-900 border-slate-700 text-cyan-500"><span class="text-slate-300">$1</span></div>');
+      html = html.replace(/^- \[x\] (.*$)/gim, '<div class="flex items-center space-x-2 my-1.5"><input type="checkbox" checked disabled class="rounded bg-slate-900 border-slate-700 text-cyan-500"><span class="text-slate-500 line-through">$1</span></div>');
+
+      // Unordered Lists (- item)
+      html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc text-slate-300 my-1">$1</li>');
+
+      // Ordered Lists (1. item)
+      html = html.replace(/^\d+\. (.*$)/gim, '<li class="ml-4 list-decimal text-slate-300 my-1">$1</li>');
+
+      // Images (![alt](url))
+      html = html.replace(/!\[([^\]]+)\]\(([^\)]+)\)/g, '<img src="$2" alt="$1" class="rounded border border-cyan-500/30 max-w-full my-3 shadow-lg">');
+
+      // Links ([title](url))
+      html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline decoration-cyan-500/50 hover:text-cyan-300 transition-colors">$1</a>');
+
+      // Bold & Italic & Strike
+      html = html.replace(/\*\*([^\*]+)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+      html = html.replace(/\*([^\*]+)\*/g, '<em class="italic text-slate-300">$1</em>');
+      html = html.replace(/~~([^~]+)~~/g, '<del class="line-through text-slate-500">$1</del>');
+
+      // Paragraphs & Line Breaks
+      const blocks = html.split(/\n\n+/);
+      html = blocks.map(b => {
+        const trimmed = b.trim();
+        if (
+          trimmed.startsWith('<h1') || 
+          trimmed.startsWith('<h2') || 
+          trimmed.startsWith('<h3') || 
+          trimmed.startsWith('<pre') || 
+          trimmed.startsWith('<div') || 
+          trimmed.startsWith('<table') || 
+          trimmed.startsWith('<blockquote') || 
+          trimmed.startsWith('<hr') || 
+          trimmed.startsWith('<li')
+        ) {
+          return trimmed;
+        }
+        return `<p class="my-2.5 leading-relaxed text-slate-300">${trimmed.replace(/\n/g, '<br>')}</p>`;
+      }).join('\n');
+
+      return html;
+    }
+
+    function renderMarkdown() {
+      const md = document.getElementById('mdInput').value;
+      const html = parseMarkdown(md);
+      document.getElementById('mdPreview').innerHTML = html;
+
+      // Update Telemetry
+      const words = md.trim() ? md.trim().split(/\s+/).length : 0;
+      const chars = md.length;
+      const lines = md.trim() ? md.split(/\r?\n/).length : 0;
+      const readMin = Math.ceil(words / 200);
+
+      document.getElementById('statWords').textContent = words;
+      document.getElementById('statChars').textContent = chars;
+      document.getElementById('statLines').textContent = lines;
+      document.getElementById('statRead').textContent = `~${readMin} min`;
+    }
+
+    function wrapMd(startTag, endTag) {
+      const textarea = document.getElementById('mdInput');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selected = textarea.value.substring(start, end) || 'text';
+      const replacement = startTag + selected + endTag;
+
+      textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+      textarea.focus();
+      textarea.setSelectionRange(start + startTag.length, start + startTag.length + selected.length);
+      renderMarkdown();
+    }
+
+    function insertMd(tag) {
+      const textarea = document.getElementById('mdInput');
+      const start = textarea.selectionStart;
+      textarea.value = textarea.value.substring(0, start) + tag + textarea.value.substring(start);
+      textarea.focus();
+      textarea.setSelectionRange(start + tag.length, start + tag.length);
+      renderMarkdown();
+    }
+
+    function insertTable() {
+      const tableTmpl = `
+| Node ID | Service Type | Status | Latency |
+| :--- | :--- | :---: | ---: |
+| 0x01 | Core Dispatcher | ONLINE | 4.2ms |
+| 0x02 | Neural Gateway | ACTIVE | 12.8ms |
+| 0x03 | Storage Enclave | STANDBY | 1.1ms |
+`;
+      insertMd(tableTmpl);
+    }
+
+    function toggleCheatsheet() {
+      const drawer = document.getElementById('cheatsheetDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function loadSampleDoc() {
+      const sample = `# CYBERTOOLS ARCHITECTURE v5.0
+
+Welcome to the **Markdown Preview Studio**. All Markdown syntax compiles *100% locally* inside your browser sandbox with zero network telemetry.
+
+---
+
+## 1. System Telemetry & Status Checklist
+
+- [x] Initialized Quantum Hash Engine (0x01)
+- [x] Secured Airgapped Local Memory Pipeline
+- [ ] Deploy Edge WebAssembly Transpiler
+
+## 2. Cluster Routing Matrix
+
+| Node ID | Cluster Name | Protocol | Security Enclave |
+| :--- | :--- | :---: | ---: |
+| 0x0A | Alpha Gateway | TLS 1.3 | AIRGAPPED |
+| 0x0B | Beta Mesh | WireGuard | VERIFIED |
+| 0x0C | Gamma Relay | WebSockets | ENCRYPTED |
+
+## 3. Implementation Code Example
+
+\`\`\`javascript
+// Client-side Zero-Knowledge Verification
+function verifyPayload(bytes, checksum) {
+  const digest = crypto.subtle.digest('SHA-256', bytes);
+  return digest === checksum;
+}
+\`\`\`
+
+> "In cyberspace, architecture is code. Airgap your critical utilities to eliminate third-party telemetry."
+
+Visit the [CyberTools Central Hub](https://apps.sarwarfx.cfd/) to inspect all 50 tactical nodes.
+`;
+
+      document.getElementById('mdInput').value = sample;
+      renderMarkdown();
+      showToast('LOADED SAMPLE DOCUMENT');
+    }
+
+    function clearEditor() {
+      document.getElementById('mdInput').value = '';
+      renderMarkdown();
+      showToast('CLEARED WORKSPACE');
+    }
+
+    function copyMd() {
+      const text = document.getElementById('mdInput').value;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED MARKDOWN');
+    }
+
+    function copyHtml() {
+      const html = document.getElementById('mdPreview').innerHTML;
+      navigator.clipboard.writeText(html);
+      showToast('COPIED HTML MARKUP');
+    }
+
+    function downloadMd() {
+      const text = document.getElementById('mdInput').value;
+      const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.md';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('SAVED DOCUMENT.MD');
+    }
+
+    function downloadHtml() {
+      const body = document.getElementById('mdPreview').innerHTML;
+      const doc = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>Exported Markdown Document</title>\n<style>body{font-family:sans-serif;line-height:1.6;max-width:800px;margin:40px auto;padding:0 20px;color:#222;}</style>\n</head>\n<body>\n${body}\n</body>\n</html>`;
+      const blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.html';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('SAVED DOCUMENT.HTML');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleDoc();
+    });
+  </script>
+</body>
+</html>

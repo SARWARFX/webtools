@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '44-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '50-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -342,6 +342,48 @@ const APPS = [
     subdomain: 'ports',
     title: 'CYBERTOOLS // PORTS',
     subtitle: 'TCP/UDP SERVICE PORT PROTOCOL RECON',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'minify',
+    subdomain: 'minify',
+    title: 'CYBERTOOLS // MINIFY',
+    subtitle: 'HTML, CSS & JS CODE CONDENSER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'unescape',
+    subdomain: 'unescape',
+    title: 'CYBERTOOLS // UNESCAPE',
+    subtitle: 'STRING ESCAPE & UNESCAPE MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'list',
+    subdomain: 'list',
+    title: 'CYBERTOOLS // LIST',
+    subtitle: 'ARRAY DEDUPLICATOR & LIST MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'units',
+    subdomain: 'units',
+    title: 'CYBERTOOLS // UNITS',
+    subtitle: 'DATA STORAGE & BANDWIDTH CALCULATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'ascii',
+    subdomain: 'ascii',
+    title: 'CYBERTOOLS // ASCII',
+    subtitle: 'ASCII CHARACTER TABLE TERMINAL',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'markdown',
+    subdomain: 'markdown',
+    title: 'CYBERTOOLS // MARKDOWN',
+    subtitle: 'MARKDOWN PREVIEW & CHEATSHEET STUDIO',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

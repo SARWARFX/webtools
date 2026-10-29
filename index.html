@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 44 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 44 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
+  <title>CyberTools HUD Terminal // 50 Free In-Browser Web Utilities - sarwarfx</title>
+  <meta name="description" content="Suite of 50 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
   <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 44 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 44 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools HUD Terminal // 50 Free In-Browser Web Utilities - sarwarfx" />
+  <meta property="og:description" content="Suite of 50 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 44 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 44 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools HUD Terminal // 50 Free In-Browser Web Utilities - sarwarfx" />
+  <meta name="twitter:description" content="Suite of 50 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,7 +35,7 @@
     "@type": "WebApplication",
     "name": "sarwarfx CyberTools Command Hub",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 44 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
+    "description": "Suite of 50 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 44 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 50 ACTIVE UTILITY NODES</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -236,13 +236,13 @@
           type="text" 
           id="toolSearch" 
           oninput="filterTools()" 
-          placeholder="FILTER_MODULES [dns, robots, meta, ua, chmod, lorem, ports, cert]..." 
+          placeholder="FILTER_MODULES [minify, unescape, list, units, ascii, markdown, dns, robots]..." 
           class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
         <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
       </div>
     </div>
 
-    <!-- 44 Tools Cards Grid -->
+    <!-- 50 Tools Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
       <!-- Injected dynamically by renderTools() -->
     </div>
@@ -313,7 +313,13 @@
       { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
       { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
       { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
-      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' }
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' }
     ];
 
     function getToolHref(tool) {
