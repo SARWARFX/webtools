@@ -2,29 +2,30 @@
 
 A high-performance, modular multi-tool monorepo containing **10 independent, 100% client-side web utilities**. Each utility resides in its own dedicated subfolder with an independent, zero-build `index.html` configured for instant static hosting on **Cloudflare Pages**.
 
-Every tool adheres strictly to the **Cyber-Minimalist Obsidian Dark Theme** design system:
-- **Palette**: Deep Obsidian/Slate (`#030712` / `bg-slate-950`) with translucent glassmorphic cards (`bg-slate-900/60 border-slate-800 backdrop-blur-md`).
-- **Accents**: Cyber neon glows with Electric Cyan (`text-cyan-400`, `border-cyan-500/50`, `shadow-cyan-500/20`), indigo, and emerald status indicators.
-- **Privacy & Security**: 100% in-browser JavaScript execution. Zero telemetry, zero external trackers, and zero backend server dependencies.
-- **Zero Build**: Pure HTML5, modern vanilla JavaScript, and Tailwind CSS via CDN. Deploys directly to static hosting with zero Node compilation.
+Every tool is built upon the **Cyber-HUD / High-Tech Cyberpunk Terminal Design System**:
+- **Typography**: Google Font `JetBrains Mono` (weights 300, 400, 500, 600, 700, 800) with micro-typography and wide tracking for tactical terminal aesthetics.
+- **Canvas & Grids**: Deep Obsidian/Slate (`#020617` / `#000000`) with lightweight CRT scanlines and 4px/6px micro-grid overlay gradients.
+- **HUD Framing**: Angular cyan target brackets (`.hud-card::before` and `::after`), neon glows (`#06b6d4`), and tactical corner reticles.
+- **Micro-Telemetry**: Hex system node stamps (`[SYS_NODE: 0x01]` to `0x0A`), cipher stamps (`[CIPHER: AES_256]`), and pulsing airgap privacy status: `● OPERATIONAL // AIRGAP_ZERO_LOGS`.
+- **Zero Build & Zero Backend**: 100% in-browser JavaScript execution. Zero telemetry, zero external trackers, and zero backend server dependencies. Deploys directly to static hosting with zero Node compilation.
 
 ---
 
 ## 🗺️ Subdomain & Directory Matrix
 
-| Folder | Target Subdomain | Utility Name | Core Capabilities |
-| :--- | :--- | :--- | :--- |
-| [`speed/`](speed/) | `speed.sarwarfx.cfd` | **Broadband Speed & Edge Ping** | OpenSpeedTest HTML5 gauge embed, real-time edge latency & jitter diagnostics (Cloudflare, Google, Fast, AWS), Network Information API telemetry, and quick external benchmark links. |
-| [`qr/`](qr/) | `qr.sarwarfx.cfd` | **QR Code Studio & Live Scanner** | High-density QR generator for Wi-Fi join strings, URLs, contact vCards & email, customizable colors/ECC, PNG/SVG downloads, plus live webcam scanner & image decoder. |
-| [`json/`](json/) | `json.sarwarfx.cfd` | **JSON Formatter & Tree Viewer** | Prettifier (2/4 space, tabs), single-line minifier, syntax error pointer with exact line & column coordinates, interactive collapsible tree inspector with search, and statistics. |
-| [`ip/`](ip/) | `ip.sarwarfx.cfd` | **Public IP & Network Intelligence** | Real-time IPv4/IPv6 detection, ISP & Autonomous System (ASN) lookup, city/region coordinates with an interactive dark Leaflet map, WebRTC leak tester, and DNS ping. |
-| [`diff/`](diff/) | `diff.sarwarfx.cfd` | **Code & Text Diff Checker** | Split (side-by-side) and unified difference viewer powered by JSDiff with line numbering, neon green additions (`+`) and red deletions (`-`), word/line granularity, and patch export. |
-| [`compress/`](compress/) | `compress.sarwarfx.cfd` | **In-Browser Image Compressor** | 100% client-side HTML5 Canvas compressor & WebP/JPEG converter with quality slider, aspect-ratio scaling, before/after visual comparison stage, and byte savings meter. |
-| [`base64/`](base64/) | `base64.sarwarfx.cfd` | **Base64 & Data URI Studio** | Two-way UTF-8 safe text Base64 encoder/decoder with URL-safe mode, file/image to Data URI generator with HTML `<img>` & CSS `background-image` snippets, and Base64-to-file reconstructor. |
-| [`clean/`](clean/) | `clean.sarwarfx.cfd` | **Text Cleaner & Case Switcher** | Case switcher (UPPERCASE, lowercase, Title, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE), line deduplication, whitespace stripper, slugifier, and live word/char analytics with undo/redo. |
-| [`clock/`](clock/) | `clock.sarwarfx.cfd` | **World Clock & Meeting Planner** | Real-time global clocks across 10 hubs with day/night status and business hours indicator, interactive 24-hour time scrubber slider, precision stopwatch, and countdown timer with audio chime. |
-| [`calc/`](calc/) | `calc.sarwarfx.cfd` | **Bandwidth, EMI & Margin Calc** | Bandwidth download time estimator across 10M to 10G broadband tiers, loan/mortgage EMI calculator with amortization table and CSV export, plus gross profit margin, markup & VAT calculator. |
-| [`index.html`](index.html) | `apps.sarwarfx.cfd` | **Suite Portal & Directory** | Central dark hub featuring searchable interactive cards linking to all 10 micro-tools. |
+| Node | Folder | Target Subdomain | Utility Name | Core Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| `0x01` | [`speed/`](speed/) | `speed.sarwarfx.cfd` | **Telemetry Network Benchmark HUD** | OpenSpeedTest HTML5 gauge embed, real-time edge latency & jitter diagnostics (Cloudflare, Google, Fast, AWS), Network Information API telemetry, and quick external benchmark links. |
+| `0x02` | [`qr/`](qr/) | `qr.sarwarfx.cfd` | **Optical Matrix Encoder & Scanner HUD** | High-density QR generator for Wi-Fi join strings, URLs, contact vCards & email, customizable colors/ECC, PNG/SVG downloads, plus live webcam scanner & image decoder. |
+| `0x03` | [`json/`](json/) | `json.sarwarfx.cfd` | **Data Payload Debugger & Tree Inspector** | Prettifier (2/4 space, tabs), single-line minifier, syntax error pointer with exact line & column coordinates, interactive collapsible tree inspector with search, and AST statistics. |
+| `0x04` | [`ip/`](ip/) | `ip.sarwarfx.cfd` | **Signal Intelligence & IP Recon Radar** | Real-time IPv4/IPv6 detection, ISP & Autonomous System (ASN) lookup, city/region coordinates with an interactive dark high-contrast Leaflet map, WebRTC leak tester, and DNS ping. |
+| `0x05` | [`diff/`](diff/) | `diff.sarwarfx.cfd` | **Checksum & Difference Analyzer HUD** | Split (side-by-side) and unified difference viewer powered by JSDiff with line numbering, neon green additions (`+`) and red deletions (`-`), word/line granularity, and patch export. |
+| `0x06` | [`compress/`](compress/) | `compress.sarwarfx.cfd` | **Pixel Matrix Optimizer & WebP Console** | 100% client-side HTML5 Canvas compressor & WebP/JPEG converter with quality slider, aspect-ratio scaling, before/after visual comparison stage, and byte savings meter. |
+| `0x07` | [`base64/`](base64/) | `base64.sarwarfx.cfd` | **Binary Cryptographic Cipher Studio** | Two-way UTF-8 safe text Base64 encoder/decoder with URL-safe mode, file/image to Data URI generator with HTML `<img>` & CSS `background-image` snippets, and Base64-to-file reconstructor. |
+| `0x08` | [`clean/`](clean/) | `clean.sarwarfx.cfd` | **Text Sanitization & Stream Purifier** | Case switcher (10 presets), line deduplication, whitespace stripper, slugifier, and live word/char analytics with multi-level undo/redo history. |
+| `0x09` | [`clock/`](clock/) | `clock.sarwarfx.cfd` | **Global UTC Orbital Chronograph** | Real-time global clocks across 10 hubs with day/night status and business hours indicator, interactive 24-hour timeline scrubber, precision stopwatch, and countdown timer with audio chime. |
+| `0x0A` | [`calc/`](calc/) | `calc.sarwarfx.cfd` | **Bandwidth Telemetry & Computation ALU** | Bandwidth download time estimator across 10M to 10G broadband tiers, loan/mortgage EMI calculator with amortization table and CSV export, plus gross profit margin, markup & VAT calculator. |
+| `ROOT` | [`index.html`](index.html) | `apps.sarwarfx.cfd` | **Central Suite Command Portal** | Central cyber-HUD terminal directory featuring searchable interactive module cards linking to all 10 micro-utilities. |
 
 ---
 
@@ -32,27 +33,27 @@ Every tool adheres strictly to the **Cyber-Minimalist Obsidian Dark Theme** desi
 
 ```text
 webtools/
-├── index.html           # apps.sarwarfx.cfd (Central suite portal & directory)
+├── index.html           # apps.sarwarfx.cfd (Central suite portal & directory - Command Hub)
 ├── speed/
-│   └── index.html       # speed.sarwarfx.cfd
+│   └── index.html       # speed.sarwarfx.cfd (Node 0x01: Broadband & Edge Latency)
 ├── qr/
-│   └── index.html       # qr.sarwarfx.cfd
+│   └── index.html       # qr.sarwarfx.cfd (Node 0x02: Optical Matrix & Scanner)
 ├── json/
-│   └── index.html       # json.sarwarfx.cfd
+│   └── index.html       # json.sarwarfx.cfd (Node 0x03: Data Payload Debugger)
 ├── ip/
-│   └── index.html       # ip.sarwarfx.cfd
+│   └── index.html       # ip.sarwarfx.cfd (Node 0x04: Signal Intelligence Radar)
 ├── diff/
-│   └── index.html       # diff.sarwarfx.cfd
+│   └── index.html       # diff.sarwarfx.cfd (Node 0x05: Binary & Code Diff Analyzer)
 ├── compress/
-│   └── index.html       # compress.sarwarfx.cfd
+│   └── index.html       # compress.sarwarfx.cfd (Node 0x06: Pixel Matrix Optimizer)
 ├── base64/
-│   └── index.html       # base64.sarwarfx.cfd
+│   └── index.html       # base64.sarwarfx.cfd (Node 0x07: Binary Cipher Studio)
 ├── clean/
-│   └── index.html       # clean.sarwarfx.cfd
+│   └── index.html       # clean.sarwarfx.cfd (Node 0x08: Stream Purifier)
 ├── clock/
-│   └── index.html       # clock.sarwarfx.cfd
+│   └── index.html       # clock.sarwarfx.cfd (Node 0x09: Orbital Chronograph)
 ├── calc/
-│   └── index.html       # calc.sarwarfx.cfd
+│   └── index.html       # calc.sarwarfx.cfd (Node 0x0A: Bandwidth & Finance ALU)
 └── README.md            # Monorepo architecture & setup guide
 ```
 

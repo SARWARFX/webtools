@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sarwarfx // clock - World Clock, Timezone Scrubber & Meeting Planner</title>
-  <meta name="description" content="100% client-side global world clock, interactive 24h meeting time planner, cyber stopwatch, and countdown timer.">
+  <title>sarwarfx // clock - Global UTC Orbital Chronograph & Timeline Scrubber HUD</title>
+  <meta name="description" content="100% client-side global world clock, interactive 24h meeting time planner, cyber stopwatch, and countdown timer styled as an advanced tactical HUD terminal.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z'/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -18,14 +18,13 @@
       theme: {
         extend: {
           colors: {
-            obsidian: '#030712',
-            card: 'rgba(15, 23, 42, 0.65)',
-            borderGlow: 'rgba(51, 65, 85, 0.7)',
-            cyanGlow: '#22d3ee',
+            obsidian: '#020617',
+            card: 'rgba(8, 15, 30, 0.75)',
+            cyanGlow: '#06b6d4',
           },
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', 'sans-serif'],
           }
         }
       }
@@ -33,62 +32,128 @@
   </script>
   <style>
     body {
-      background-color: #030712;
+      background-color: #020617;
       background-image: 
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
-        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent);
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.02), rgba(16, 185, 129, 0.01), rgba(6, 182, 212, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(6, 182, 212, 0.14), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
       min-height: 100vh;
       color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .glass-card {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(51, 65, 85, 0.7);
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.75);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.06), inset 0 0 15px rgba(6, 182, 212, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
     }
-    .neon-cyan-glow {
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      border-color: #22d3ee;
+      border-style: solid;
+      transition: all 0.2s ease;
     }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #030712; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+    .hud-card:hover {
+      border-color: rgba(34, 211, 238, 0.5);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(2, 132, 199, 0.8));
+      border: 1px solid rgba(34, 211, 238, 0.6);
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(14, 165, 233, 0.95));
+      border-color: #a5f3fc;
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.45);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(34, 211, 238, 0.5);
+      color: #22d3ee;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 0px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
   </style>
 </head>
-<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
 
-  <!-- Top Navigation Bar -->
-  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
       <!-- Brand Logo -->
       <a href="https://apps.sarwarfx.cfd" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
-          <i class="fa-solid fa-clock text-base"></i>
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all relative">
+          <i class="fa-solid fa-clock text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
         </div>
-        <div class="flex items-baseline space-x-1.5">
-          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
-          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
-          <span class="font-semibold text-slate-300 text-sm tracking-wide">clock</span>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">clock</span>
         </div>
       </a>
 
-      <!-- Center Status Badge -->
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x09]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-indigo-400 font-bold">[CHRONO: ATOMIC_SYNC_UTC]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
         </span>
-        <span class="text-slate-400 font-mono">HIGH-PRECISION CLOCK • ZERO DRIFT</span>
       </div>
 
       <!-- Right Action Controls -->
       <div class="flex items-center space-x-3">
-        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
-          <i class="fa-solid fa-grid-2"></i>
-          <span>Suite (10)</span>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-grid-2 text-cyan-400"></i>
+          <span>Modules (10)</span>
         </button>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
           <i class="fa-brands fa-github"></i>
         </a>
       </div>
@@ -96,29 +161,34 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
 
     <!-- Header & Mode Switcher -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
       <div>
-        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
-          <i class="fa-solid fa-earth-americas text-xs"></i>
-          <span>Global Time Synchronization</span>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-earth-americas text-xs text-cyan-400"></i>
+          <span>ORBITAL_CHRONOGRAPH // GLOBAL TIMEZONE & MEETING SCRUBBER</span>
         </div>
-        <h1 class="text-2xl font-extrabold text-white tracking-tight">World Clock & Interactive Meeting Time Planner</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          GLOBAL UTC ORBITAL CHRONOGRAPH
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          High-precision multi-city timezone matrix, 24-hour timeline scrubber, millisecond stopwatch, and countdown timer.
+        </p>
       </div>
 
       <!-- Main Tabs -->
-      <div class="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 shrink-0">
-        <button id="tabBtnWorld" onclick="switchClockTab('world')" class="px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20">
+      <div class="flex items-center p-1 bg-black/80 border border-slate-800 shrink-0 font-mono">
+        <button id="tabBtnWorld" onclick="switchClockTab('world')" class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-cyan-500 text-slate-950 flex items-center space-x-1.5">
           <i class="fa-solid fa-globe"></i>
-          <span>World Clocks</span>
+          <span>Timezones</span>
         </button>
-        <button id="tabBtnStopwatch" onclick="switchClockTab('stopwatch')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+        <button id="tabBtnStopwatch" onclick="switchClockTab('stopwatch')" class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-cyan-300 transition-all flex items-center space-x-1.5">
           <i class="fa-solid fa-stopwatch"></i>
           <span>Stopwatch</span>
         </button>
-        <button id="tabBtnTimer" onclick="switchClockTab('timer')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+        <button id="tabBtnTimer" onclick="switchClockTab('timer')" class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-cyan-300 transition-all flex items-center space-x-1.5">
           <i class="fa-solid fa-hourglass-half"></i>
           <span>Timer</span>
         </button>
@@ -129,43 +199,43 @@
     <div id="sectionWorld" class="space-y-6">
       
       <!-- Interactive Time Scrubber (Meeting Planner) Card -->
-      <div class="glass-card rounded-2xl p-5 border-cyan-500/30 neon-cyan-glow space-y-4">
+      <div class="hud-card p-5 space-y-4 font-mono">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div class="flex items-center space-x-2">
             <i class="fa-solid fa-sliders text-cyan-400 text-sm"></i>
-            <h2 class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Interactive Meeting Time Scrubber</h2>
+            <h2 class="text-xs font-bold text-white uppercase tracking-wider">[TIMELINE_SCRUBBER: GLOBAL_MEETING_PLANNER]</h2>
           </div>
-          <div class="flex items-center space-x-3 text-xs font-mono">
-            <span id="sliderOffsetBadge" class="px-2.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 font-bold">LIVE TIME (±0 hrs)</span>
-            <button onclick="resetToLiveTime()" class="text-slate-400 hover:text-white transition-colors">
+          <div class="flex items-center space-x-3 text-xs">
+            <span id="sliderOffsetBadge" class="px-2.5 py-0.5 bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 font-bold uppercase text-[10px]">LIVE TIME (±0 hrs)</span>
+            <button onclick="resetToLiveTime()" class="hud-btn-secondary px-2.5 py-1 text-[11px]">
               <i class="fa-solid fa-rotate-left mr-1"></i>Reset
             </button>
           </div>
         </div>
 
         <div class="space-y-2">
-          <div class="flex justify-between text-xs text-slate-400 font-mono">
-            <span>-12 Hours</span>
-            <span class="text-cyan-400 font-bold">Drag slider to simulate global time</span>
-            <span>+12 Hours</span>
+          <div class="flex justify-between text-xs text-slate-400 text-[11px]">
+            <span>-12 HOURS</span>
+            <span class="text-cyan-400 font-bold tracking-wider">[DRAG SLIDER TO SCRUB TIME AHEAD / BEHIND]</span>
+            <span>+12 HOURS</span>
           </div>
-          <input type="range" id="timeSlider" min="-12" max="12" step="0.5" value="0" oninput="onTimeSliderChange()" class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-950 rounded-lg">
-          <div class="flex justify-between text-[11px] text-slate-500 font-mono">
-            <span>Yesterday</span>
-            <span>Now</span>
-            <span>Tomorrow</span>
+          <input type="range" id="timeSlider" min="-12" max="12" step="0.5" value="0" oninput="onTimeSliderChange()" class="w-full accent-cyan-400 cursor-pointer h-2 bg-black rounded">
+          <div class="flex justify-between text-[10px] text-slate-500">
+            <span>PAST (YESTERDAY)</span>
+            <span>CURRENT TIME (NOW)</span>
+            <span>FUTURE (TOMORROW)</span>
           </div>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs font-mono text-slate-400 border-t border-slate-800/60">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Working Hours (9 AM - 6 PM)</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span> Outside Business Hours</span>
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 text-xs text-slate-400 border-t border-slate-800/80">
+          <div class="flex items-center space-x-4 text-[11px]">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-400"></span> ACTIVE BUSINESS (09:00 - 18:00)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-slate-700"></span> OFF-HOURS / SLEEP CYCLE</span>
           </div>
           <div class="flex items-center space-x-2">
-            <label class="flex items-center space-x-1.5 cursor-pointer">
-              <input type="checkbox" id="toggle24h" onchange="renderClocks()" class="rounded bg-slate-900 border-slate-800 text-cyan-500">
-              <span>24-Hour Format</span>
+            <label class="flex items-center space-x-1.5 cursor-pointer text-[11px] text-slate-300">
+              <input type="checkbox" id="toggle24h" onchange="renderClocks()" class="bg-black border-slate-800 text-cyan-500">
+              <span>24-HOUR MILITARY TIME</span>
             </label>
           </div>
         </div>
@@ -179,31 +249,31 @@
     </div>
 
     <!-- TAB 2: CYBER STOPWATCH -->
-    <div id="sectionStopwatch" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-8 max-w-xl mx-auto text-center space-y-6 neon-cyan-glow border-cyan-500/20">
+    <div id="sectionStopwatch" class="hidden space-y-6 font-mono">
+      <div class="hud-card p-8 max-w-xl mx-auto text-center space-y-6">
         
-        <div class="text-xs font-mono text-slate-500 uppercase tracking-widest">Precision Chronometer</div>
+        <div class="text-[10px] text-slate-500 uppercase tracking-widest">[HIGH_PRECISION_CHRONOMETER]</div>
 
         <!-- Stopwatch Display -->
-        <div id="stopwatchDisplay" class="text-5xl sm:text-6xl font-extrabold text-white font-mono tracking-tight text-cyan-400">
+        <div id="stopwatchDisplay" class="text-5xl sm:text-6xl font-extrabold text-cyan-400 font-mono tracking-tight">
           00:00:00.00
         </div>
 
         <!-- Controls -->
         <div class="flex items-center justify-center gap-3">
-          <button id="swStartBtn" onclick="toggleStopwatch()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+          <button id="swStartBtn" onclick="toggleStopwatch()" class="hud-btn-primary px-6 py-2.5">
             Start
           </button>
-          <button id="swLapBtn" onclick="recordLap()" disabled class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-semibold cursor-not-allowed">
+          <button id="swLapBtn" onclick="recordLap()" disabled class="hud-btn-secondary px-5 py-2.5 text-slate-600 cursor-not-allowed">
             Lap
           </button>
-          <button id="swResetBtn" onclick="resetStopwatch()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold">
+          <button id="swResetBtn" onclick="resetStopwatch()" class="hud-btn-secondary px-5 py-2.5">
             Reset
           </button>
         </div>
 
         <!-- Lap History -->
-        <div class="border-t border-slate-800 pt-4 space-y-2 text-left font-mono text-xs max-h-48 overflow-y-auto" id="lapHistory">
+        <div class="border-t border-slate-800 pt-4 space-y-2 text-left text-xs max-h-48 overflow-y-auto" id="lapHistory">
           <!-- Injected laps -->
         </div>
 
@@ -211,51 +281,51 @@
     </div>
 
     <!-- TAB 3: COUNTDOWN TIMER -->
-    <div id="sectionTimer" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-8 max-w-xl mx-auto text-center space-y-6 neon-cyan-glow border-cyan-500/20">
+    <div id="sectionTimer" class="hidden space-y-6 font-mono">
+      <div class="hud-card p-8 max-w-xl mx-auto text-center space-y-6">
         
-        <div class="text-xs font-mono text-slate-500 uppercase tracking-widest">Countdown Timer</div>
+        <div class="text-[10px] text-slate-500 uppercase tracking-widest">[TACTICAL_COUNTDOWN_TIMER]</div>
 
         <!-- Time Inputs (When stopped) -->
-        <div id="timerInputGroup" class="flex items-center justify-center gap-2 font-mono text-xl">
+        <div id="timerInputGroup" class="flex items-center justify-center gap-2 text-xl">
           <div class="flex flex-col items-center">
-            <input type="number" id="timerHours" min="0" max="99" value="00" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
-            <span class="text-[10px] text-slate-500 mt-1 uppercase">Hours</span>
+            <input type="number" id="timerHours" min="0" max="99" value="00" class="w-16 p-2 text-center bg-black/80 border border-slate-800 text-white outline-none focus:border-cyan-400">
+            <span class="text-[9px] text-slate-500 mt-1 uppercase">Hours</span>
           </div>
           <span class="text-slate-600">:</span>
           <div class="flex flex-col items-center">
-            <input type="number" id="timerMins" min="0" max="59" value="05" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
-            <span class="text-[10px] text-slate-500 mt-1 uppercase">Mins</span>
+            <input type="number" id="timerMins" min="0" max="59" value="05" class="w-16 p-2 text-center bg-black/80 border border-slate-800 text-white outline-none focus:border-cyan-400">
+            <span class="text-[9px] text-slate-500 mt-1 uppercase">Mins</span>
           </div>
           <span class="text-slate-600">:</span>
           <div class="flex flex-col items-center">
-            <input type="number" id="timerSecs" min="0" max="59" value="00" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
-            <span class="text-[10px] text-slate-500 mt-1 uppercase">Secs</span>
+            <input type="number" id="timerSecs" min="0" max="59" value="00" class="w-16 p-2 text-center bg-black/80 border border-slate-800 text-white outline-none focus:border-cyan-400">
+            <span class="text-[9px] text-slate-500 mt-1 uppercase">Secs</span>
           </div>
         </div>
 
         <!-- Timer Running Readout -->
-        <div id="timerDisplay" class="hidden text-5xl sm:text-6xl font-extrabold text-white font-mono tracking-tight text-cyan-400">
+        <div id="timerDisplay" class="hidden text-5xl sm:text-6xl font-extrabold text-cyan-400 tracking-tight">
           00:05:00
         </div>
 
         <!-- Controls -->
         <div class="flex items-center justify-center gap-3">
-          <button id="timerStartBtn" onclick="toggleTimer()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+          <button id="timerStartBtn" onclick="toggleTimer()" class="hud-btn-primary px-6 py-2.5">
             Start Timer
           </button>
-          <button onclick="resetTimer()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold">
+          <button onclick="resetTimer()" class="hud-btn-secondary px-5 py-2.5">
             Reset
           </button>
         </div>
 
         <!-- Presets -->
-        <div class="flex items-center justify-center gap-2 pt-2 text-xs font-mono text-slate-400">
-          <span>Presets:</span>
-          <button onclick="setTimerPreset(1)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">1m</button>
-          <button onclick="setTimerPreset(5)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">5m</button>
-          <button onclick="setTimerPreset(15)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">15m</button>
-          <button onclick="setTimerPreset(25)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">Pomodoro (25m)</button>
+        <div class="flex items-center justify-center gap-2 pt-2 text-xs text-slate-400">
+          <span class="text-[10px] uppercase text-slate-500">Presets:</span>
+          <button onclick="setTimerPreset(1)" class="hud-btn-secondary px-2.5 py-1 text-[10px]">1m</button>
+          <button onclick="setTimerPreset(5)" class="hud-btn-secondary px-2.5 py-1 text-[10px]">5m</button>
+          <button onclick="setTimerPreset(15)" class="hud-btn-secondary px-2.5 py-1 text-[10px]">15m</button>
+          <button onclick="setTimerPreset(25)" class="hud-btn-secondary px-2.5 py-1 text-[10px]">Pomodoro (25m)</button>
         </div>
 
       </div>
@@ -263,51 +333,55 @@
 
   </main>
 
-  <!-- Suite Switcher Modal -->
-  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
-    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+  <!-- Suite Switcher Modal (Tactical HUD) -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0 font-mono">
+    <div class="hud-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
+      <div class="flex items-center justify-between pb-4 border-b border-cyan-500/20">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div class="w-8 h-8 bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
             <i class="fa-solid fa-grid-2"></i>
           </div>
           <div>
-            <a href="https://apps.sarwarfx.cfd" class="text-base font-bold text-white hover:text-cyan-300 tracking-wide flex items-center gap-2 transition-colors">
+            <a href="https://apps.sarwarfx.cfd" class="text-sm font-bold text-white hover:text-cyan-300 tracking-wider uppercase flex items-center gap-2 transition-colors">
               <span>sarwarfx <span class="text-cyan-400">//</span> webtools suite</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
             </a>
-            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+            <p class="text-[11px] text-slate-500">10 Tactical Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
           </div>
         </div>
-        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 transition-all cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
-      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors font-mono">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid">
+        <!-- Dynamically Rendered by Shared Switcher Script -->
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors">
           <i class="fa-solid fa-house"></i>
-          <span>Return to Apps Hub (apps.sarwarfx.cfd)</span>
+          <span>[RETURN_TO_APPS_HUB: apps.sarwarfx.cfd]</span>
         </a>
-        <span class="text-[11px] font-mono text-slate-500">10 Client-Side Tools</span>
+        <span class="text-[10px] text-slate-600">[AIRGAP CLIENT SANDBOX]</span>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+  <!-- Shared Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none font-mono"></div>
 
   <!-- Footer -->
-  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
-        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-semibold transition-colors">sarwarfx // webtools</a>
-        <span>•</span>
-        <span>Zero Backend • 100% Client-Side Privacy</span>
+        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
           <i class="fa-brands fa-github mr-1"></i>GitHub
         </a>
       </div>
@@ -318,16 +392,16 @@
   <script>
     const CURRENT_TOOL_ID = 'clock';
     const TOOLS = [
-      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
-      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
-      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
-      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
-      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
-      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
-      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
-      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
-      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
-      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', code: '0x0A' },
     ];
 
     function getToolHref(tool) {
@@ -342,23 +416,23 @@
         const isActive = tool.id === CURRENT_TOOL_ID;
         const href = getToolHref(tool);
         return `
-          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
             isActive 
-              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
-              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800 hover:border-cyan-500/50 hover:bg-slate-900 cursor-pointer'
           }">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
-              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            <div class="w-8 h-8 flex items-center justify-center text-xs shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50' : 'bg-slate-900 text-slate-400 group-hover:text-cyan-400 group-hover:border-cyan-500/40 border border-slate-800'
             }">
               <i class="fa-solid ${tool.icon}"></i>
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
-                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+                <span class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors uppercase tracking-wider">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-950/80 px-1 border border-cyan-500/40">Active</span>' : ''}
               </div>
-              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
-              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+              <p class="text-[10px] text-slate-400 mt-0.5 leading-snug truncate font-mono">${tool.desc}</p>
+              <span class="text-[9px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
             </div>
           </a>
         `;
@@ -384,8 +458,8 @@
     function showToast(message) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 text-xs font-mono border bg-slate-950/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-cyan-300 border-cyan-400`;
+      toast.innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i><span>[SYSTEM]: ${message}</span>`;
       container.appendChild(toast);
       requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
       setTimeout(() => {
@@ -396,8 +470,8 @@
 
     // World Clock Cities Config
     const CITIES = [
-      { name: 'Local Time (Browser)', tz: Intl.DateTimeFormat().resolvedOptions().timeZone, tag: 'LOCAL' },
-      { name: 'UTC / Universal Time', tz: 'UTC', tag: 'ZULU' },
+      { name: 'Local Egress Node', tz: Intl.DateTimeFormat().resolvedOptions().timeZone, tag: 'LOCAL' },
+      { name: 'UTC / Universal Zulu', tz: 'UTC', tag: 'ZULU' },
       { name: 'New York (EST/EDT)', tz: 'America/New_York', tag: 'US-EAST' },
       { name: 'San Francisco (PST/PDT)', tz: 'America/Los_Angeles', tag: 'US-WEST' },
       { name: 'London (GMT/BST)', tz: 'Europe/London', tag: 'UK' },
@@ -415,11 +489,11 @@
       const badge = document.getElementById('sliderOffsetBadge');
       if (simulatedOffsetHours === 0) {
         badge.textContent = 'LIVE TIME (±0 hrs)';
-        badge.className = 'px-2.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 font-bold';
+        badge.className = 'px-2.5 py-0.5 bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 font-bold uppercase text-[10px]';
       } else {
         const sign = simulatedOffsetHours > 0 ? '+' : '';
         badge.textContent = `SIMULATED (${sign}${simulatedOffsetHours} hrs)`;
-        badge.className = 'px-2.5 py-0.5 rounded bg-indigo-950/40 border border-indigo-500/40 text-indigo-300 font-bold';
+        badge.className = 'px-2.5 py-0.5 bg-indigo-950/60 border border-indigo-500/50 text-indigo-300 font-bold uppercase text-[10px]';
       }
       renderClocks();
     }
@@ -427,7 +501,7 @@
     function resetToLiveTime() {
       document.getElementById('timeSlider').value = 0;
       onTimeSliderChange();
-      showToast('Reset to real-time synchronized clock');
+      showToast('SYNCHRONIZED TO ATOMIC UTC');
     }
 
     function renderClocks() {
@@ -460,7 +534,6 @@
           timeStr = is24h ? `${pMap.hour}:${pMap.minute}:${pMap.second}` : `${pMap.hour}:${pMap.minute}:${pMap.second} ${pMap.dayPeriod || ''}`;
           dateStr = `${pMap.weekday}, ${pMap.month} ${pMap.day}`;
 
-          // Calculate hour for business hours (9 to 18)
           const hour24Formatter = new Intl.DateTimeFormat('en-US', { timeZone: city.tz, hour12: false, hour: 'numeric' });
           hours = parseInt(hour24Formatter.format(now), 10);
         } catch (e) {
@@ -472,41 +545,41 @@
         const isDayTime = hours >= 6 && hours < 19;
 
         return `
-          <div class="glass-card rounded-2xl p-5 border transition-all ${
+          <div class="hud-card p-5 font-mono ${
             city.tag === 'LOCAL' 
-              ? 'border-cyan-500/50 bg-slate-900/80 shadow-[0_0_20px_rgba(34,211,238,0.15)]' 
-              : 'border-slate-800/80'
+              ? 'border-cyan-400/60 bg-cyan-950/20 shadow-[0_0_20px_rgba(6,182,212,0.2)]' 
+              : ''
           }">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
               <div class="flex items-center space-x-2">
                 <span class="text-sm ${isDayTime ? 'text-amber-400' : 'text-indigo-400'}">
                   <i class="fa-solid ${isDayTime ? 'fa-sun' : 'fa-moon'}"></i>
                 </span>
-                <span class="text-xs font-bold text-white tracking-wide">${city.name}</span>
+                <span class="text-xs font-bold text-white uppercase tracking-wider">${city.name}</span>
               </div>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded ${
+              <span class="text-[9px] font-mono px-2 py-0.5 uppercase tracking-wider ${
                 isWorkHours 
-                  ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-semibold' 
-                  : 'bg-slate-800 text-slate-500'
+                  ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 font-bold' 
+                  : 'bg-black/60 border border-slate-800 text-slate-500'
               }">
-                ${isWorkHours ? 'WORKING HOURS' : 'OFF HOURS'}
+                ${isWorkHours ? 'WORKING_HOURS' : 'OFF_HOURS'}
               </span>
             </div>
 
             <div class="py-4">
-              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight ${
-                city.tag === 'LOCAL' ? 'text-cyan-400' : ''
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight ${
+                city.tag === 'LOCAL' ? 'text-cyan-300' : 'text-white'
               }">
                 ${timeStr}
               </div>
-              <div class="text-xs font-mono text-slate-400 mt-1">
+              <div class="text-xs font-mono text-slate-400 mt-1 uppercase tracking-wider text-[11px]">
                 ${dateStr}
               </div>
             </div>
 
-            <div class="flex items-center justify-between pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-500">
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[10px] font-mono text-slate-500">
               <span>TZ: ${city.tz}</span>
-              <button onclick="navigator.clipboard.writeText('${city.name}: ${timeStr} (${dateStr})'); showToast('Time copied');" class="text-slate-400 hover:text-cyan-400 transition-colors">
+              <button onclick="navigator.clipboard.writeText('${city.name}: ${timeStr} (${dateStr})'); showToast('COPIED TIMEZONE RECORD');" class="text-slate-400 hover:text-cyan-400 transition-colors uppercase">
                 <i class="fa-solid fa-copy mr-1"></i>Copy
               </button>
             </div>
@@ -522,10 +595,10 @@
         const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
         if (t === tab) {
           sec.classList.remove('hidden');
-          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20';
+          btn.className = 'px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-cyan-500 text-slate-950 flex items-center space-x-1.5';
         } else {
           sec.classList.add('hidden');
-          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+          btn.className = 'px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-cyan-300 transition-all flex items-center space-x-1.5';
         }
       });
     }
@@ -544,14 +617,14 @@
         swStartTime = Date.now() - swElapsedTime;
         swInterval = setInterval(updateStopwatchDisplay, 10);
         btn.textContent = 'Pause';
-        btn.className = 'px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md transition-all';
+        btn.className = 'hud-btn-secondary px-6 py-2.5 text-amber-400 border-amber-500/50';
         lapBtn.disabled = false;
-        lapBtn.className = 'px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500 text-slate-300 hover:text-cyan-400 text-xs font-semibold cursor-pointer';
+        lapBtn.className = 'hud-btn-secondary px-5 py-2.5 text-cyan-300 cursor-pointer';
       } else {
         clearInterval(swInterval);
         swInterval = null;
         btn.textContent = 'Resume';
-        btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+        btn.className = 'hud-btn-primary px-6 py-2.5';
       }
     }
 
@@ -572,8 +645,8 @@
       swLaps.unshift(current);
       const container = document.getElementById('lapHistory');
       container.innerHTML = swLaps.map((lap, i) => `
-        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800">
-          <span class="text-slate-400">Lap ${swLaps.length - i}</span>
+        <div class="flex items-center justify-between p-2 bg-black/60 border border-slate-800">
+          <span class="text-slate-500 uppercase">[LAP ${swLaps.length - i}]</span>
           <span class="text-cyan-400 font-bold">${lap}</span>
         </div>
       `).join('');
@@ -588,10 +661,10 @@
       document.getElementById('lapHistory').innerHTML = '';
       const btn = document.getElementById('swStartBtn');
       btn.textContent = 'Start';
-      btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+      btn.className = 'hud-btn-primary px-6 py-2.5';
       const lapBtn = document.getElementById('swLapBtn');
       lapBtn.disabled = true;
-      lapBtn.className = 'px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-semibold cursor-not-allowed';
+      lapBtn.className = 'hud-btn-secondary px-5 py-2.5 text-slate-600 cursor-not-allowed';
     }
 
     // Countdown Timer
@@ -618,14 +691,14 @@
         }
 
         if (timerRemainingSecs <= 0) {
-          showToast('Please set a duration greater than 0');
+          showToast('ERR: DURATION MUST BE > 0');
           return;
         }
 
         inputGroup.classList.add('hidden');
         display.classList.remove('hidden');
         btn.textContent = 'Pause Timer';
-        btn.className = 'px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md transition-all';
+        btn.className = 'hud-btn-secondary px-6 py-2.5 text-amber-400 border-amber-500/50';
 
         updateTimerDisplay();
         timerInterval = setInterval(() => {
@@ -635,7 +708,7 @@
             clearInterval(timerInterval);
             timerInterval = null;
             playChime();
-            showToast('Timer Complete!');
+            showToast('COUNTDOWN TIMER EXPIRED');
             resetTimer();
           }
         }, 1000);
@@ -643,7 +716,7 @@
         clearInterval(timerInterval);
         timerInterval = null;
         btn.textContent = 'Resume Timer';
-        btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+        btn.className = 'hud-btn-primary px-6 py-2.5';
       }
     }
 
@@ -663,7 +736,7 @@
       document.getElementById('timerDisplay').classList.add('hidden');
       const btn = document.getElementById('timerStartBtn');
       btn.textContent = 'Start Timer';
-      btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+      btn.className = 'hud-btn-primary px-6 py-2.5';
     }
 
     // Audio chime with Web Audio API
@@ -675,7 +748,7 @@
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
         osc.start();

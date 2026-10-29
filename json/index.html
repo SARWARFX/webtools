@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sarwarfx // json - JSON Formatter, Validator & Tree Viewer</title>
-  <meta name="description" content="100% client-side JSON prettifier, syntax validator with line/column pointer, collapsible tree inspector, and minifier.">
+  <title>sarwarfx // json - Data Payload Debugger & Tree Inspector HUD</title>
+  <meta name="description" content="100% client-side JSON prettifier, syntax validator with line/column pointer, collapsible tree inspector, and minifier styled as an advanced tactical HUD terminal.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M4 5v14h4v-2H6V7h2V5H4zm12 0v2h2v10h-2v2h4V5h-4zm-7 6h2v2H9v-2zm4 0h2v2h-2v-2z'/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -18,14 +18,13 @@
       theme: {
         extend: {
           colors: {
-            obsidian: '#030712',
-            card: 'rgba(15, 23, 42, 0.65)',
-            borderGlow: 'rgba(51, 65, 85, 0.7)',
-            cyanGlow: '#22d3ee',
+            obsidian: '#020617',
+            card: 'rgba(8, 15, 30, 0.75)',
+            cyanGlow: '#06b6d4',
           },
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', 'sans-serif'],
           }
         }
       }
@@ -33,22 +32,83 @@
   </script>
   <style>
     body {
-      background-color: #030712;
+      background-color: #020617;
       background-image: 
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
-        radial-gradient(circle at 10% 80%, rgba(59, 130, 246, 0.08), transparent);
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.02), rgba(16, 185, 129, 0.01), rgba(6, 182, 212, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(6, 182, 212, 0.14), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
       min-height: 100vh;
       color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .glass-card {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(51, 65, 85, 0.7);
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.75);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.06), inset 0 0 15px rgba(6, 182, 212, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
     }
-    .neon-cyan-glow {
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      border-color: #22d3ee;
+      border-style: solid;
+      transition: all 0.2s ease;
     }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+    .hud-card:hover {
+      border-color: rgba(34, 211, 238, 0.5);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(2, 132, 199, 0.8));
+      border: 1px solid rgba(34, 211, 238, 0.6);
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(14, 165, 233, 0.95));
+      border-color: #a5f3fc;
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.45);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(34, 211, 238, 0.5);
+      color: #22d3ee;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+    }
+
     /* Tree view styling */
     .tree-node {
       font-family: 'JetBrains Mono', monospace;
@@ -62,46 +122,52 @@
     .tree-toggle:hover {
       color: #22d3ee;
     }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #030712; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 0px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
   </style>
 </head>
-<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
 
-  <!-- Top Navigation Bar -->
-  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
       <!-- Brand Logo -->
       <a href="https://apps.sarwarfx.cfd" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
-          <i class="fa-solid fa-code text-base"></i>
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all relative">
+          <i class="fa-solid fa-brackets-curly text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
         </div>
-        <div class="flex items-baseline space-x-1.5">
-          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
-          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
-          <span class="font-semibold text-slate-300 text-sm tracking-wide">json</span>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">json</span>
         </div>
       </a>
 
-      <!-- Center Status Badge -->
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x03]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-indigo-400 font-bold">[PARSER: V8_AST_STREAM]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
         </span>
-        <span class="text-slate-400 font-mono">100% IN-BROWSER • ZERO TELEMETRY</span>
       </div>
 
       <!-- Right Action Controls -->
       <div class="flex items-center space-x-3">
-        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
-          <i class="fa-solid fa-grid-2"></i>
-          <span>Suite (10)</span>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-grid-2 text-cyan-400"></i>
+          <span>Modules (10)</span>
         </button>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
           <i class="fa-brands fa-github"></i>
         </a>
       </div>
@@ -109,116 +175,122 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
 
-    <!-- Hero Title & Quick Actions Bar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+    <!-- Hero Title & Tactical Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
       <div>
-        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
-          <i class="fa-solid fa-brackets-curly text-xs"></i>
-          <span>Syntax Diagnostic & Interactive Tree</span>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-code text-xs text-cyan-400"></i>
+          <span>DATA_PAYLOAD_DEBUGGER // SYNTAX & TREE INSPECTOR HUD</span>
         </div>
-        <h1 class="text-2xl font-extrabold text-white tracking-tight">JSON Formatter, Validator & Tree Viewer</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          JSON SYNTAX VALIDATOR & HIERARCHY TREE
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Real-time parser, syntax error line/col pointer, collapsible node explorer, and one-click minifier.
+        </p>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Quick Action Buttons -->
       <div class="flex flex-wrap items-center gap-2">
-        <button onclick="loadSampleJson()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+        <button onclick="loadSampleJson()" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5">
           <i class="fa-solid fa-flask text-cyan-400"></i>
           <span>Sample</span>
         </button>
-        <label for="jsonFileInput" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer">
-          <i class="fa-solid fa-upload"></i>
+        <label for="jsonFileInput" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-upload text-cyan-400"></i>
           <span>Upload</span>
           <input type="file" id="jsonFileInput" accept=".json,.txt" class="hidden" onchange="handleFileUpload(event)">
         </label>
-        <button onclick="downloadJsonFile()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
-          <i class="fa-solid fa-download"></i>
-          <span>Download</span>
+        <button onclick="downloadJsonFile()" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5">
+          <i class="fa-solid fa-download text-cyan-400"></i>
+          <span>Export</span>
         </button>
-        <button onclick="clearAll()" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-rose-950/40 hover:border-rose-800/50 text-slate-400 hover:text-rose-400 text-xs transition-all">
-          <i class="fa-solid fa-trash mr-1"></i> Clear
+        <button onclick="clearAll()" class="hud-btn-secondary px-3 py-1.5 text-rose-400 hover:text-rose-300 border-rose-900/50 hover:border-rose-500/50">
+          <i class="fa-solid fa-trash mr-1"></i> Purge
         </button>
       </div>
     </div>
 
-    <!-- Error Banner (Hidden by default, shown when invalid JSON) -->
-    <div id="errorBanner" class="hidden p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 text-rose-300 text-xs font-mono space-y-1.5 transition-all">
+    <!-- Error Banner (Tactical Warning) -->
+    <div id="errorBanner" class="hidden p-4 hud-card border-rose-500/60 bg-rose-950/20 text-rose-300 text-xs font-mono space-y-1.5">
       <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2 font-bold text-rose-400">
+        <div class="flex items-center space-x-2 font-bold text-rose-400 uppercase tracking-wider">
           <i class="fa-solid fa-triangle-exclamation"></i>
-          <span id="errorTitle">JSON Syntax Error Detected</span>
+          <span id="errorTitle">[SYNTAX_ERROR_DETECTED]</span>
         </div>
-        <span id="errorCoords" class="px-2 py-0.5 rounded bg-rose-900/50 text-rose-200 text-[11px] font-semibold">Line: -- | Col: --</span>
+        <span id="errorCoords" class="px-2 py-0.5 bg-rose-900/60 border border-rose-500/50 text-rose-200 text-[11px] font-semibold tracking-wider font-mono">Line: -- | Col: --</span>
       </div>
-      <div id="errorMessage" class="text-rose-200/90 pl-6">Unexpected token at position...</div>
+      <div id="errorMessage" class="text-rose-200/90 pl-6 text-[11px]">Unexpected token at position...</div>
     </div>
 
     <!-- Workspace Controls Bar -->
-    <div class="glass-card rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="hud-card p-3 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
       
       <!-- Left Format Mode Options -->
-      <div class="flex items-center space-x-2">
-        <span class="text-slate-400 font-mono">Format:</span>
-        <button onclick="formatJson(2)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">2 Spaces</button>
-        <button onclick="formatJson(4)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">4 Spaces</button>
-        <button onclick="formatJson('\t')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Tabs</button>
-        <button onclick="minifyJson()" class="px-2.5 py-1 rounded-lg bg-cyan-950/30 hover:bg-cyan-900/40 text-cyan-400 border border-cyan-800/40">Minify (1-line)</button>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-slate-500 uppercase text-[10px] tracking-widest">[FORMAT]:</span>
+        <button onclick="formatJson(2)" class="px-2.5 py-1 bg-black/60 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-slate-300 text-[11px] uppercase transition-all">2 Spaces</button>
+        <button onclick="formatJson(4)" class="px-2.5 py-1 bg-black/60 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-slate-300 text-[11px] uppercase transition-all">4 Spaces</button>
+        <button onclick="formatJson('\t')" class="px-2.5 py-1 bg-black/60 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-slate-300 text-[11px] uppercase transition-all">Tabs</button>
+        <button onclick="minifyJson()" class="px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/50 hover:border-cyan-400 text-[11px] uppercase transition-all">Minify (1-Line)</button>
       </div>
 
       <!-- Right Output View Toggles -->
       <div class="flex items-center space-x-2">
-        <div class="p-0.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center">
-          <button id="viewCodeBtn" onclick="switchOutputView('code')" class="px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold">
-            <i class="fa-solid fa-code mr-1"></i> Text Code
+        <div class="p-0.5 bg-black/80 border border-slate-800 flex items-center">
+          <button id="viewCodeBtn" onclick="switchOutputView('code')" class="px-3 py-1 bg-cyan-500 text-slate-950 font-bold text-[11px] uppercase tracking-wider">
+            <i class="fa-solid fa-code mr-1"></i> Raw Code
           </button>
-          <button id="viewTreeBtn" onclick="switchOutputView('tree')" class="px-3 py-1 rounded-md text-slate-400 hover:text-white">
-            <i class="fa-solid fa-network-wired mr-1"></i> Tree Inspector
+          <button id="viewTreeBtn" onclick="switchOutputView('tree')" class="px-3 py-1 text-slate-400 hover:text-cyan-300 text-[11px] uppercase tracking-wider transition-colors">
+            <i class="fa-solid fa-network-wired mr-1"></i> Tree Map
           </button>
         </div>
-        <button onclick="copyFormattedJson()" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-medium">
-          <i class="fa-solid fa-copy mr-1"></i> Copy
+        <button onclick="copyFormattedJson()" class="hud-btn-primary px-3 py-1.5 flex items-center space-x-1.5">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copy</span>
         </button>
       </div>
 
     </div>
 
     <!-- Main Dual Editor / Viewer Stage -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
       <!-- Left Panel: Raw Input Editor -->
-      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[500px]">
-        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
-          <span class="flex items-center gap-1.5 text-slate-200 font-semibold">
-            <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Raw JSON Input
+      <div class="hud-card p-4 flex flex-col space-y-3 min-h-[520px]">
+        <div class="flex items-center justify-between text-xs font-mono pb-2 border-b border-slate-800/80">
+          <span class="flex items-center gap-1.5 text-white font-bold uppercase tracking-wider text-[11px]">
+            <i class="fa-solid fa-pen-to-square text-cyan-400"></i> [BUFFER: RAW_INPUT]
           </span>
-          <span id="inputCharCount">0 characters</span>
+          <span id="inputCharCount" class="text-slate-500 text-[10px]">0 characters</span>
         </div>
 
         <textarea 
           id="jsonInput" 
-          placeholder="Paste or type raw JSON here..."
-          class="flex-1 w-full bg-slate-950/80 border border-slate-800/80 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3.5 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed"
+          placeholder="Paste or type raw JSON data payload here..."
+          class="flex-1 w-full bg-black/80 border border-slate-800/90 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 p-3.5 text-xs font-mono text-cyan-100 placeholder-slate-600 outline-none resize-none leading-relaxed transition-all"
           oninput="onInputChanged()"></textarea>
       </div>
 
       <!-- Right Panel: Formatted Output / Interactive Tree -->
-      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[500px] border-cyan-500/20 neon-cyan-glow">
+      <div class="hud-card p-4 flex flex-col space-y-3 min-h-[520px]">
         
-        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
-          <span class="flex items-center gap-1.5 text-slate-200 font-semibold">
+        <div class="flex items-center justify-between text-xs font-mono pb-2 border-b border-slate-800/80">
+          <span class="flex items-center gap-1.5 text-white font-bold uppercase tracking-wider text-[11px]">
             <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> 
-            <span id="outputTitle">Formatted Output</span>
+            <span id="outputTitle">[RENDER: FORMATTED_PAYLOAD]</span>
           </span>
 
-          <div class="flex items-center space-x-3">
-            <span id="jsonMetrics" class="text-cyan-400">Valid JSON</span>
+          <div class="flex items-center space-x-3 text-[11px]">
+            <span id="jsonMetrics" class="text-emerald-400 font-bold uppercase tracking-wider">● Valid Syntax</span>
           </div>
         </div>
 
         <!-- Code View -->
-        <div id="codeViewContainer" class="flex-1 relative">
-          <pre id="jsonOutputPre" class="w-full h-full max-h-[460px] overflow-auto bg-slate-950/90 border border-slate-800/80 rounded-xl p-3.5 text-xs font-mono text-slate-200 leading-relaxed select-text"></pre>
+        <div id="codeViewContainer" class="flex-1 relative flex flex-col">
+          <pre id="jsonOutputPre" class="flex-1 w-full max-h-[460px] overflow-auto bg-black/80 border border-slate-800/90 p-3.5 text-xs font-mono text-slate-200 leading-relaxed select-text"></pre>
         </div>
 
         <!-- Tree View -->
@@ -226,94 +298,98 @@
           <!-- Tree Search Bar -->
           <div class="relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
-            <input type="text" id="treeSearchInput" oninput="filterTreeNodes()" placeholder="Search keys or values in tree..." class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-200 placeholder-slate-500 outline-none">
+            <input type="text" id="treeSearchInput" oninput="filterTreeNodes()" placeholder="Search keys or values in tree..." class="w-full pl-8 pr-3 py-1.5 bg-black/80 border border-slate-800 text-xs font-mono text-cyan-200 placeholder-slate-600 outline-none focus:border-cyan-400">
           </div>
 
           <!-- Tree Actions -->
-          <div class="flex items-center space-x-2 text-[11px] text-slate-400">
-            <button onclick="expandAllTreeNodes()" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-square-plus mr-1"></i>Expand All</button>
-            <span>•</span>
-            <button onclick="collapseAllTreeNodes()" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-square-minus mr-1"></i>Collapse All</button>
+          <div class="flex items-center space-x-3 text-[11px] text-slate-400 font-mono">
+            <button onclick="expandAllTreeNodes()" class="hover:text-cyan-400 uppercase tracking-wider transition-colors"><i class="fa-solid fa-square-plus mr-1"></i>Expand All</button>
+            <span class="text-slate-700">|</span>
+            <button onclick="collapseAllTreeNodes()" class="hover:text-cyan-400 uppercase tracking-wider transition-colors"><i class="fa-solid fa-square-minus mr-1"></i>Collapse All</button>
           </div>
 
-          <div id="treeContent" class="flex-1 max-h-[420px] overflow-auto bg-slate-950/90 border border-slate-800/80 rounded-xl p-3.5 space-y-1 tree-node"></div>
+          <div id="treeContent" class="flex-1 max-h-[420px] overflow-auto bg-black/80 border border-slate-800/90 p-3.5 space-y-1 tree-node"></div>
         </div>
 
       </div>
 
     </div>
 
-    <!-- JSON Statistics Footer Strip -->
+    <!-- JSON Statistics Tactical Strip -->
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs">
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Total Size</div>
-        <div id="statSize" class="text-white font-bold mt-0.5">0 B</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[TOTAL_SIZE]</div>
+        <div id="statSize" class="text-white font-bold mt-1 text-sm">0 B</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Total Keys</div>
-        <div id="statKeys" class="text-white font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[TOTAL_KEYS]</div>
+        <div id="statKeys" class="text-white font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Objects</div>
-        <div id="statObjects" class="text-cyan-400 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[OBJECTS]</div>
+        <div id="statObjects" class="text-cyan-400 font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Arrays</div>
-        <div id="statArrays" class="text-indigo-400 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[ARRAYS]</div>
+        <div id="statArrays" class="text-indigo-400 font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Max Depth</div>
-        <div id="statDepth" class="text-emerald-400 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[MAX_DEPTH]</div>
+        <div id="statDepth" class="text-emerald-400 font-bold mt-1 text-sm">0</div>
       </div>
     </div>
 
   </main>
 
-  <!-- Suite Switcher Modal -->
-  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
-    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+  <!-- Suite Switcher Modal (Tactical HUD) -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0 font-mono">
+    <div class="hud-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
+      <div class="flex items-center justify-between pb-4 border-b border-cyan-500/20">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div class="w-8 h-8 bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
             <i class="fa-solid fa-grid-2"></i>
           </div>
           <div>
-            <a href="https://apps.sarwarfx.cfd" class="text-base font-bold text-white hover:text-cyan-300 tracking-wide flex items-center gap-2 transition-colors">
+            <a href="https://apps.sarwarfx.cfd" class="text-sm font-bold text-white hover:text-cyan-300 tracking-wider uppercase flex items-center gap-2 transition-colors">
               <span>sarwarfx <span class="text-cyan-400">//</span> webtools suite</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
             </a>
-            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+            <p class="text-[11px] text-slate-500">10 Tactical Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
           </div>
         </div>
-        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 transition-all cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
-      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors font-mono">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid">
+        <!-- Dynamically Rendered by Shared Switcher Script -->
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors">
           <i class="fa-solid fa-house"></i>
-          <span>Return to Apps Hub (apps.sarwarfx.cfd)</span>
+          <span>[RETURN_TO_APPS_HUB: apps.sarwarfx.cfd]</span>
         </a>
-        <span class="text-[11px] font-mono text-slate-500">10 Client-Side Tools</span>
+        <span class="text-[10px] text-slate-600">[AIRGAP CLIENT SANDBOX]</span>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+  <!-- Shared Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none font-mono"></div>
 
   <!-- Footer -->
-  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
-        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-semibold transition-colors">sarwarfx // webtools</a>
-        <span>•</span>
-        <span>Zero Backend • 100% Client-Side Privacy</span>
+        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
           <i class="fa-brands fa-github mr-1"></i>GitHub
         </a>
       </div>
@@ -324,16 +400,16 @@
   <script>
     const CURRENT_TOOL_ID = 'json';
     const TOOLS = [
-      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
-      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
-      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
-      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
-      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
-      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
-      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
-      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
-      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
-      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', code: '0x0A' },
     ];
 
     function getToolHref(tool) {
@@ -348,23 +424,23 @@
         const isActive = tool.id === CURRENT_TOOL_ID;
         const href = getToolHref(tool);
         return `
-          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
             isActive 
-              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
-              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800 hover:border-cyan-500/50 hover:bg-slate-900 cursor-pointer'
           }">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
-              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            <div class="w-8 h-8 flex items-center justify-center text-xs shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50' : 'bg-slate-900 text-slate-400 group-hover:text-cyan-400 group-hover:border-cyan-500/40 border border-slate-800'
             }">
               <i class="fa-solid ${tool.icon}"></i>
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
-                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+                <span class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors uppercase tracking-wider">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-950/80 px-1 border border-cyan-500/40">Active</span>' : ''}
               </div>
-              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
-              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+              <p class="text-[10px] text-slate-400 mt-0.5 leading-snug truncate font-mono">${tool.desc}</p>
+              <span class="text-[9px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
             </div>
           </a>
         `;
@@ -390,8 +466,8 @@
     function showToast(message) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 text-xs font-mono border bg-slate-950/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-cyan-300 border-cyan-400`;
+      toast.innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i><span>[SYSTEM]: ${message}</span>`;
       container.appendChild(toast);
       requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
       setTimeout(() => {
@@ -406,7 +482,7 @@
 
     const SAMPLE_JSON = {
       "project": "sarwarfx-webtools",
-      "version": "1.0.0",
+      "version": "2.0.0-tactical",
       "active": true,
       "hosting": {
         "platform": "Cloudflare Pages",
@@ -415,13 +491,14 @@
         "edgeNodes": 280
       },
       "utilities": [
-        { "name": "speed", "subdomain": "speed.sarwarfx.cfd", "status": "online" },
-        { "name": "qr", "subdomain": "qr.sarwarfx.cfd", "status": "online" },
-        { "name": "json", "subdomain": "json.sarwarfx.cfd", "status": "online" }
+        { "node": "0x01", "name": "speed", "subdomain": "speed.sarwarfx.cfd", "status": "online" },
+        { "node": "0x02", "name": "qr", "subdomain": "qr.sarwarfx.cfd", "status": "online" },
+        { "node": "0x03", "name": "json", "subdomain": "json.sarwarfx.cfd", "status": "online" },
+        { "node": "0x04", "name": "ip", "subdomain": "ip.sarwarfx.cfd", "status": "online" }
       ],
-      "metrics": {
-        "clientPrivacy": 100,
-        "serverLatencyMs": 0,
+      "telemetry": {
+        "airgapPrivacy": 100,
+        "runtimeSandbox": "Client V8 Isolated",
         "externalTelemetry": null
       }
     };
@@ -430,7 +507,7 @@
       const input = document.getElementById('jsonInput');
       input.value = JSON.stringify(SAMPLE_JSON, null, 2);
       onInputChanged();
-      showToast('Loaded sample JSON dataset');
+      showToast('LOADED SAMPLE JSON AST');
     }
 
     function onInputChanged() {
@@ -464,7 +541,7 @@
       const coords = document.getElementById('errorCoords');
       banner.classList.remove('hidden');
 
-      // Attempt to extract line and column
+      // Extract line and column
       let line = 1, col = 1;
       const matchPos = err.message.match(/position\s+(\d+)/i);
       if (matchPos) {
@@ -475,14 +552,14 @@
         col = lines[lines.length - 1].length + 1;
       }
 
-      coords.textContent = `Line ${line} : Col ${col}`;
-      msg.textContent = err.message;
-      document.getElementById('jsonMetrics').innerHTML = `<span class="text-rose-400 font-semibold"><i class="fa-solid fa-circle-xmark mr-1"></i>Invalid Syntax</span>`;
+      coords.textContent = `LINE ${line} : COL ${col}`;
+      msg.textContent = err.message.toUpperCase();
+      document.getElementById('jsonMetrics').innerHTML = `<span class="text-rose-400 font-bold tracking-wider">▲ INVALID_SYNTAX</span>`;
     }
 
     function hideError() {
       document.getElementById('errorBanner').classList.add('hidden');
-      document.getElementById('jsonMetrics').innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i>Valid JSON</span>`;
+      document.getElementById('jsonMetrics').innerHTML = `<span class="text-emerald-400 font-bold tracking-wider">● VALID_AST</span>`;
     }
 
     function formatJson(indent) {
@@ -491,9 +568,9 @@
         const formatted = JSON.stringify(parsedJsonCache, null, indent);
         document.getElementById('jsonInput').value = formatted;
         onInputChanged();
-        showToast(`Formatted with ${indent === '\t' ? 'Tabs' : indent + ' spaces'}`);
+        showToast(`FORMATTED: ${indent === '\t' ? 'TABS' : indent + ' SPACES'}`);
       } else {
-        showToast('Please provide valid JSON first');
+        showToast('ERR: INVALID JSON PAYLOAD');
       }
     }
 
@@ -502,9 +579,9 @@
         const minified = JSON.stringify(parsedJsonCache);
         document.getElementById('jsonInput').value = minified;
         onInputChanged();
-        showToast('Minified JSON onto a single line');
+        showToast('MINIFIED SINGLE-LINE PAYLOAD');
       } else {
-        showToast('Please provide valid JSON first');
+        showToast('ERR: INVALID JSON PAYLOAD');
       }
     }
 
@@ -525,15 +602,15 @@
       if (view === 'code') {
         codeView.classList.remove('hidden');
         treeView.classList.add('hidden');
-        codeBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
-        treeBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
-        outputTitle.textContent = 'Formatted Code';
+        codeBtn.className = 'px-3 py-1 bg-cyan-500 text-slate-950 font-bold text-[11px] uppercase tracking-wider';
+        treeBtn.className = 'px-3 py-1 text-slate-400 hover:text-cyan-300 text-[11px] uppercase tracking-wider transition-colors';
+        outputTitle.textContent = '[RENDER: FORMATTED_PAYLOAD]';
       } else {
         codeView.classList.add('hidden');
         treeView.classList.remove('hidden');
-        treeBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
-        codeBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
-        outputTitle.textContent = 'Interactive Tree Inspector';
+        treeBtn.className = 'px-3 py-1 bg-cyan-500 text-slate-950 font-bold text-[11px] uppercase tracking-wider';
+        codeBtn.className = 'px-3 py-1 text-slate-400 hover:text-cyan-300 text-[11px] uppercase tracking-wider transition-colors';
+        outputTitle.textContent = '[RENDER: INTERACTIVE_TREE]';
         if (parsedJsonCache) renderTreeView();
       }
     }
@@ -542,7 +619,7 @@
     function renderTreeView() {
       const container = document.getElementById('treeContent');
       if (!parsedJsonCache) {
-        container.innerHTML = '<div class="text-slate-500 p-4">No valid JSON loaded.</div>';
+        container.innerHTML = '<div class="text-slate-500 p-4 font-mono">[NO_PAYLOAD_LOADED]</div>';
         return;
       }
       container.innerHTML = createTreeHtml(parsedJsonCache, 'root');
@@ -572,7 +649,7 @@
               <span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span>
               <span class="text-slate-400 font-mono">[${val.length}]</span>
             </span>
-            <div id="${id}" class="tree-children border-l border-slate-800 ml-1.5 pl-2 mt-0.5 space-y-0.5">
+            <div id="${id}" class="tree-children border-l border-cyan-500/20 ml-1.5 pl-2 mt-0.5 space-y-0.5">
               ${val.map((item, idx) => createTreeHtml(item, String(idx), depth + 1)).join('')}
             </div>
           </div>
@@ -589,7 +666,7 @@
               <span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span>
               <span class="text-slate-400 font-mono">{${keys.length}}</span>
             </span>
-            <div id="${id}" class="tree-children border-l border-slate-800 ml-1.5 pl-2 mt-0.5 space-y-0.5">
+            <div id="${id}" class="tree-children border-l border-cyan-500/20 ml-1.5 pl-2 mt-0.5 space-y-0.5">
               ${keys.map(k => createTreeHtml(val[k], k, depth + 1)).join('')}
             </div>
           </div>
@@ -604,18 +681,18 @@
       el.classList.toggle('hidden');
       const icon = el.previousElementSibling.querySelector('i');
       if (icon) {
-        icon.className = el.classList.contains('hidden') ? 'fa-solid fa-caret-right mr-1' : 'fa-solid fa-caret-down mr-1';
+        icon.className = el.classList.contains('hidden') ? 'fa-solid fa-caret-right mr-1 text-slate-500' : 'fa-solid fa-caret-down mr-1 text-cyan-400';
       }
     }
 
     function expandAllTreeNodes() {
       document.querySelectorAll('.tree-children').forEach(el => el.classList.remove('hidden'));
-      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-down mr-1');
+      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-down mr-1 text-cyan-400');
     }
 
     function collapseAllTreeNodes() {
       document.querySelectorAll('.tree-children').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-right mr-1');
+      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-right mr-1 text-slate-500');
     }
 
     function filterTreeNodes() {
@@ -677,9 +754,12 @@
     // File Operations
     function copyFormattedJson() {
       const text = document.getElementById('jsonOutputPre').textContent;
-      if (!text) return;
+      if (!text) {
+        showToast('ERR: NO CONTENT TO COPY');
+        return;
+      }
       navigator.clipboard.writeText(text);
-      showToast('Formatted JSON copied to clipboard');
+      showToast('PAYLOAD COPIED TO CLIPBOARD');
     }
 
     function handleFileUpload(e) {
@@ -689,7 +769,7 @@
       reader.onload = (ev) => {
         document.getElementById('jsonInput').value = ev.target.result;
         onInputChanged();
-        showToast(`Loaded ${file.name}`);
+        showToast(`LOADED FILE: ${file.name.toUpperCase()}`);
       };
       reader.readAsText(file);
     }
@@ -697,23 +777,23 @@
     function downloadJsonFile() {
       const text = document.getElementById('jsonOutputPre').textContent || document.getElementById('jsonInput').value;
       if (!text) {
-        showToast('No JSON to download');
+        showToast('ERR: NO CONTENT TO EXPORT');
         return;
       }
       const blob = new Blob([text], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `sarwarfx-data-${Date.now()}.json`;
+      a.download = `sarwarfx-telemetry-${Date.now()}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('JSON file downloaded');
+      showToast('EXPORTED JSON TO LOCAL DRIVE');
     }
 
     function clearAll() {
       document.getElementById('jsonInput').value = '';
       onInputChanged();
-      showToast('Editor cleared');
+      showToast('PURGED PAYLOAD BUFFER');
     }
 
     // Init

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sarwarfx // clean - Text Cleaner, Case Switcher & Line Deduplicator</title>
-  <meta name="description" content="100% client-side text manipulation studio: case converter, whitespace sanitizer, line deduplicator, slugifier, and live text analytics.">
+  <title>sarwarfx // clean - Text Sanitization & Stream Purifier HUD</title>
+  <meta name="description" content="100% client-side text manipulation studio: case converter, whitespace sanitizer, line deduplicator, slugifier, and live text analytics styled as an advanced tactical HUD terminal.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M19.36 10.04l-4.24-4.24 1.41-1.41c.78-.78 2.05-.78 2.83 0l1.41 1.41c.78.78.78 2.05 0 2.83l-1.41 1.41zm-5.66 1.42l-9.9 9.9H2v-3.8l9.9-9.9 3.8 3.8z'/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -18,14 +18,13 @@
       theme: {
         extend: {
           colors: {
-            obsidian: '#030712',
-            card: 'rgba(15, 23, 42, 0.65)',
-            borderGlow: 'rgba(51, 65, 85, 0.7)',
-            cyanGlow: '#22d3ee',
+            obsidian: '#020617',
+            card: 'rgba(8, 15, 30, 0.75)',
+            cyanGlow: '#06b6d4',
           },
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', 'sans-serif'],
           }
         }
       }
@@ -33,84 +32,153 @@
   </script>
   <style>
     body {
-      background-color: #030712;
+      background-color: #020617;
       background-image: 
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
-        radial-gradient(circle at 10% 80%, rgba(56, 189, 248, 0.08), transparent);
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.02), rgba(16, 185, 129, 0.01), rgba(6, 182, 212, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(6, 182, 212, 0.14), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
       min-height: 100vh;
       color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .glass-card {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(51, 65, 85, 0.7);
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.75);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.06), inset 0 0 15px rgba(6, 182, 212, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
     }
-    .neon-cyan-glow {
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      border-color: #22d3ee;
+      border-style: solid;
+      transition: all 0.2s ease;
     }
-    /* Action button */
-    .op-btn {
-      padding: 0.4rem 0.65rem;
-      border-radius: 0.65rem;
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+    .hud-card:hover {
+      border-color: rgba(34, 211, 238, 0.5);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(2, 132, 199, 0.8));
+      border: 1px solid rgba(34, 211, 238, 0.6);
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      font-weight: 500;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(51, 65, 85, 0.7);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(14, 165, 233, 0.95));
+      border-color: #a5f3fc;
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.45);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.8);
       color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(34, 211, 238, 0.5);
+      color: #22d3ee;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+    }
+
+    /* Tactical Operation Buttons */
+    .op-btn {
+      padding: 0.45rem 0.65rem;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(4, 9, 20, 0.7);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       transition: all 0.15s ease;
       cursor: pointer;
       text-align: left;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
     .op-btn:hover {
-      background: rgba(34, 211, 238, 0.12);
-      border-color: rgba(34, 211, 238, 0.4);
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(34, 211, 238, 0.6);
       color: #22d3ee;
-      transform: translateY(-1px);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
     }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #030712; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 0px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
   </style>
 </head>
-<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
 
-  <!-- Top Navigation Bar -->
-  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
       <!-- Brand Logo -->
       <a href="https://apps.sarwarfx.cfd" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
-          <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all relative">
+          <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
         </div>
-        <div class="flex items-baseline space-x-1.5">
-          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
-          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
-          <span class="font-semibold text-slate-300 text-sm tracking-wide">clean</span>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">clean</span>
         </div>
       </a>
 
-      <!-- Center Status Badge -->
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x08]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-indigo-400 font-bold">[STREAM: TEXT_PURIFIER_AST]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
         </span>
-        <span class="text-slate-400 font-mono">100% IN-BROWSER • ZERO TELEMETRY</span>
       </div>
 
       <!-- Right Action Controls -->
       <div class="flex items-center space-x-3">
-        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
-          <i class="fa-solid fa-grid-2"></i>
-          <span>Suite (10)</span>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-grid-2 text-cyan-400"></i>
+          <span>Modules (10)</span>
         </button>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
           <i class="fa-brands fa-github"></i>
         </a>
       </div>
@@ -118,56 +186,62 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
 
     <!-- Header & Quick Toolbar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
       <div>
-        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
-          <i class="fa-solid fa-broom text-xs"></i>
-          <span>String Sanitizer & Case Transformer</span>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-broom text-xs text-cyan-400"></i>
+          <span>STREAM_PURIFIER // STRING SANITIZER & CASE TRANSFORMER</span>
         </div>
-        <h1 class="text-2xl font-extrabold text-white tracking-tight">Text Cleaner, Case Switcher & Line Deduplicator</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          TEXT SANITIZATION & STREAM PURIFIER HUD
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          10-preset case converter, whitespace filter, line deduplicator, URL slug generator, and multi-level undo stack.
+        </p>
       </div>
 
       <!-- Quick Action Buttons -->
       <div class="flex flex-wrap items-center gap-2">
-        <button onclick="undo()" id="undoBtn" disabled class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-medium transition-all cursor-not-allowed">
+        <button onclick="undo()" id="undoBtn" disabled class="hud-btn-secondary px-3 py-1.5 text-slate-600 cursor-not-allowed">
           <i class="fa-solid fa-rotate-left mr-1"></i> Undo
         </button>
-        <button onclick="redo()" id="redoBtn" disabled class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-medium transition-all cursor-not-allowed">
+        <button onclick="redo()" id="redoBtn" disabled class="hud-btn-secondary px-3 py-1.5 text-slate-600 cursor-not-allowed">
           <i class="fa-solid fa-rotate-right mr-1"></i> Redo
         </button>
-        <button onclick="loadSampleText()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all">
-          <i class="fa-solid fa-flask mr-1 text-cyan-400"></i> Sample
+        <button onclick="loadSampleText()" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1">
+          <i class="fa-solid fa-flask text-cyan-400"></i>
+          <span>Sample</span>
         </button>
-        <button onclick="clearText()" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 text-xs transition-all">
-          <i class="fa-solid fa-trash mr-1"></i> Clear
+        <button onclick="clearText()" class="hud-btn-secondary px-3 py-1.5 text-rose-400 hover:text-rose-300 border-rose-900/50 hover:border-rose-500/50">
+          <i class="fa-solid fa-trash mr-1"></i> Purge
         </button>
       </div>
     </div>
 
     <!-- Live Text Analytics Counter Strip -->
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs">
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Characters</div>
-        <div id="statChars" class="text-white font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[CHARACTERS]</div>
+        <div id="statChars" class="text-white font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">No Spaces</div>
-        <div id="statCharsNoSpace" class="text-slate-300 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[NO_SPACES]</div>
+        <div id="statCharsNoSpace" class="text-slate-300 font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Words</div>
-        <div id="statWords" class="text-cyan-400 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[WORDS]</div>
+        <div id="statWords" class="text-cyan-400 font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Lines</div>
-        <div id="statLines" class="text-indigo-400 font-bold mt-0.5">0</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[LINES]</div>
+        <div id="statLines" class="text-indigo-400 font-bold mt-1 text-sm">0</div>
       </div>
-      <div class="glass-card rounded-xl p-3">
-        <div class="text-slate-500 text-[10px] uppercase">Reading Time</div>
-        <div id="statReadTime" class="text-emerald-400 font-bold mt-0.5">0s</div>
+      <div class="hud-card p-3">
+        <div class="text-slate-500 text-[10px] uppercase tracking-wider">[READ_ESTIMATE]</div>
+        <div id="statReadTime" class="text-emerald-400 font-bold mt-1 text-sm">0s</div>
       </div>
     </div>
 
@@ -178,10 +252,10 @@
       <div class="lg:col-span-5 space-y-5">
         
         <!-- Group 1: Case Switcher -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
+        <div class="hud-card p-4 space-y-3 font-mono">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Case Conversion</span>
-            <span class="text-[10px] text-cyan-400 font-mono">10 Presets</span>
+            <span class="text-xs font-bold text-white uppercase tracking-wider">[CASE_CONVERSION]</span>
+            <span class="text-[10px] text-cyan-400">10 PRESETS</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
@@ -193,63 +267,63 @@
             <button onclick="applyOp('pascal')" class="op-btn"><i class="fa-solid fa-code text-emerald-400"></i> PascalCase</button>
             <button onclick="applyOp('snake')" class="op-btn"><i class="fa-solid fa-minus text-amber-400"></i> snake_case</button>
             <button onclick="applyOp('kebab')" class="op-btn"><i class="fa-solid fa-minus text-amber-400"></i> kebab-case</button>
-            <button onclick="applyOp('constant')" class="op-btn"><i class="fa-solid fa-font text-rose-400"></i> CONSTANT_CASE</button>
+            <button onclick="applyOp('constant')" class="op-btn"><i class="fa-solid fa-font text-rose-400"></i> CONST_CASE</button>
             <button onclick="applyOp('dot')" class="op-btn"><i class="fa-solid fa-ellipsis text-rose-400"></i> dot.case</button>
           </div>
         </div>
 
         <!-- Group 2: Whitespace & Format Sanitizer -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
+        <div class="hud-card p-4 space-y-3 font-mono">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Whitespace & Formatting</span>
+            <span class="text-xs font-bold text-white uppercase tracking-wider">[WHITESPACE_SANITIZER]</span>
             <i class="fa-solid fa-broom text-xs text-slate-500"></i>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <button onclick="applyOp('trimLines')" class="op-btn"><i class="fa-solid fa-scissors text-cyan-400"></i> Trim All Lines</button>
-            <button onclick="applyOp('removeEmptyLines')" class="op-btn"><i class="fa-solid fa-align-justify text-cyan-400"></i> Remove Blank Lines</button>
+            <button onclick="applyOp('removeEmptyLines')" class="op-btn"><i class="fa-solid fa-align-justify text-cyan-400"></i> Strip Blank Lines</button>
             <button onclick="applyOp('collapseSpaces')" class="op-btn"><i class="fa-solid fa-compress text-indigo-400"></i> Collapse Multi-Spaces</button>
             <button onclick="applyOp('removeAllWhitespace')" class="op-btn"><i class="fa-solid fa-ban text-rose-400"></i> Strip All Spaces</button>
           </div>
         </div>
 
         <!-- Group 3: Lines & List Manipulation -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
+        <div class="hud-card p-4 space-y-3 font-mono">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">List & Line Sorting</span>
+            <span class="text-xs font-bold text-white uppercase tracking-wider">[LIST_&_LINE_SORTING]</span>
             <i class="fa-solid fa-list-ol text-xs text-slate-500"></i>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="applyOp('dedupe')" class="op-btn"><i class="fa-solid fa-filter text-cyan-400"></i> Deduplicate Lines</button>
+            <button onclick="applyOp('dedupe')" class="op-btn"><i class="fa-solid fa-filter text-cyan-400"></i> Dedupe Lines</button>
             <button onclick="applyOp('sortAz')" class="op-btn"><i class="fa-solid fa-arrow-down-a-z text-cyan-400"></i> Sort A to Z</button>
             <button onclick="applyOp('sortZa')" class="op-btn"><i class="fa-solid fa-arrow-down-z-a text-indigo-400"></i> Sort Z to A</button>
             <button onclick="applyOp('sortLength')" class="op-btn"><i class="fa-solid fa-ruler-horizontal text-indigo-400"></i> Sort by Length</button>
             <button onclick="applyOp('reverseLines')" class="op-btn"><i class="fa-solid fa-arrow-up-arrow-down text-emerald-400"></i> Reverse Lines</button>
-            <button onclick="applyOp('numberLines')" class="op-btn"><i class="fa-solid fa-list-numbered text-emerald-400"></i> Add Line Numbers</button>
+            <button onclick="applyOp('numberLines')" class="op-btn"><i class="fa-solid fa-list-numbered text-emerald-400"></i> Number Lines</button>
           </div>
 
           <!-- Prefix / Suffix Injector -->
           <div class="pt-2 border-t border-slate-800 space-y-2">
-            <div class="text-[11px] text-slate-400 font-mono">Prefix / Suffix Each Line:</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wider">[LINE_PREFIX_SUFFIX_INJECTOR]:</div>
             <div class="flex items-center gap-2">
-              <input type="text" id="inputPrefix" placeholder="Prefix (e.g. - )" class="w-1/2 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 outline-none">
-              <input type="text" id="inputSuffix" placeholder="Suffix (e.g. ,)" class="w-1/2 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 outline-none">
-              <button onclick="applyPrefixSuffix()" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/40 text-xs font-semibold shrink-0">Apply</button>
+              <input type="text" id="inputPrefix" placeholder="Prefix (e.g. - )" class="w-1/2 px-2.5 py-1 bg-black/80 border border-slate-800 text-xs font-mono text-cyan-200 outline-none focus:border-cyan-400">
+              <input type="text" id="inputSuffix" placeholder="Suffix (e.g. ,)" class="w-1/2 px-2.5 py-1 bg-black/80 border border-slate-800 text-xs font-mono text-cyan-200 outline-none focus:border-cyan-400">
+              <button onclick="applyPrefixSuffix()" class="hud-btn-primary px-3 py-1 text-xs shrink-0">Inject</button>
             </div>
           </div>
         </div>
 
         <!-- Group 4: Web & Dev Sanitization -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
+        <div class="hud-card p-4 space-y-3 font-mono">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Web Sanitization</span>
+            <span class="text-xs font-bold text-white uppercase tracking-wider">[WEB_SANITIZATION]</span>
             <i class="fa-solid fa-globe text-xs text-slate-500"></i>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="applyOp('stripHtml')" class="op-btn"><i class="fa-solid fa-code text-cyan-400"></i> Strip HTML Tags</button>
-            <button onclick="applyOp('slugify')" class="op-btn"><i class="fa-solid fa-link text-indigo-400"></i> Slugify (URL Safe)</button>
+            <button onclick="applyOp('stripHtml')" class="op-btn"><i class="fa-solid fa-code text-cyan-400"></i> Strip HTML</button>
+            <button onclick="applyOp('slugify')" class="op-btn"><i class="fa-solid fa-link text-indigo-400"></i> URL Slugify</button>
             <button onclick="applyOp('escapeHtml')" class="op-btn"><i class="fa-solid fa-shield text-emerald-400"></i> Escape HTML</button>
             <button onclick="applyOp('unescapeHtml')" class="op-btn"><i class="fa-solid fa-unlock text-emerald-400"></i> Unescape HTML</button>
           </div>
@@ -260,34 +334,34 @@
       <!-- Right Column: Text Editor & Export Actions (7 cols) -->
       <div class="lg:col-span-7 flex flex-col space-y-4">
         
-        <div class="glass-card rounded-2xl p-4 flex-1 flex flex-col space-y-3 neon-cyan-glow border-cyan-500/20 min-h-[580px]">
+        <div class="hud-card p-4 flex-1 flex flex-col space-y-3 min-h-[620px]">
           <div class="flex items-center justify-between text-xs font-mono pb-2 border-b border-slate-800/80">
-            <span class="text-white font-semibold flex items-center gap-1.5">
-              <i class="fa-solid fa-pen-nib text-cyan-400"></i> Interactive Text Canvas
+            <span class="text-white font-bold uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+              <i class="fa-solid fa-pen-nib text-cyan-400"></i> [BUFFER: STREAM_WORKSPACE]
             </span>
-            <span id="lastActionNotice" class="text-cyan-400">Ready</span>
+            <span id="lastActionNotice" class="text-cyan-400 text-[10px] uppercase tracking-wider">[STATUS: READY]</span>
           </div>
 
           <textarea 
             id="mainTextarea" 
-            placeholder="Type, paste or load dirty text here..."
-            class="flex-1 w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed"
+            placeholder="Type, paste, or load unformatted text payload here..."
+            class="flex-1 w-full bg-black/80 border border-slate-800/90 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 p-4 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed transition-all"
             oninput="onUserType()"></textarea>
 
           <!-- Action Buttons Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800 font-mono">
             <div class="flex items-center space-x-2">
-              <button onclick="copyCleanedText()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer">
+              <button onclick="copyCleanedText()" class="hud-btn-primary px-4 py-2 flex items-center space-x-1.5 cursor-pointer">
                 <i class="fa-solid fa-copy"></i>
-                <span>Copy Cleaned Text</span>
+                <span>Copy Stream</span>
               </button>
-              <button onclick="downloadAsTxt()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer">
-                <i class="fa-solid fa-download"></i>
-                <span>Download .txt</span>
+              <button onclick="downloadAsTxt()" class="hud-btn-secondary px-3.5 py-2 flex items-center space-x-1.5 cursor-pointer">
+                <i class="fa-solid fa-download text-cyan-400"></i>
+                <span>Export .TXT</span>
               </button>
             </div>
 
-            <span class="text-[11px] font-mono text-slate-500">100% Client-Side Memory</span>
+            <span class="text-[10px] text-slate-500">[100% CLIENT MEMORY ISOLATED]</span>
           </div>
         </div>
 
@@ -297,51 +371,55 @@
 
   </main>
 
-  <!-- Suite Switcher Modal -->
-  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
-    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+  <!-- Suite Switcher Modal (Tactical HUD) -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0 font-mono">
+    <div class="hud-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
+      <div class="flex items-center justify-between pb-4 border-b border-cyan-500/20">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div class="w-8 h-8 bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
             <i class="fa-solid fa-grid-2"></i>
           </div>
           <div>
-            <a href="https://apps.sarwarfx.cfd" class="text-base font-bold text-white hover:text-cyan-300 tracking-wide flex items-center gap-2 transition-colors">
+            <a href="https://apps.sarwarfx.cfd" class="text-sm font-bold text-white hover:text-cyan-300 tracking-wider uppercase flex items-center gap-2 transition-colors">
               <span>sarwarfx <span class="text-cyan-400">//</span> webtools suite</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">apps.sarwarfx.cfd</span>
             </a>
-            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+            <p class="text-[11px] text-slate-500">10 Tactical Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
           </div>
         </div>
-        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 transition-all cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
-      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors font-mono">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid">
+        <!-- Dynamically Rendered by Shared Switcher Script -->
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <a href="https://apps.sarwarfx.cfd" class="flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors">
           <i class="fa-solid fa-house"></i>
-          <span>Return to Apps Hub (apps.sarwarfx.cfd)</span>
+          <span>[RETURN_TO_APPS_HUB: apps.sarwarfx.cfd]</span>
         </a>
-        <span class="text-[11px] font-mono text-slate-500">10 Client-Side Tools</span>
+        <span class="text-[10px] text-slate-600">[AIRGAP CLIENT SANDBOX]</span>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+  <!-- Shared Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none font-mono"></div>
 
   <!-- Footer -->
-  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
-        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-semibold transition-colors">sarwarfx // webtools</a>
-        <span>•</span>
-        <span>Zero Backend • 100% Client-Side Privacy</span>
+        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
           <i class="fa-brands fa-github mr-1"></i>GitHub
         </a>
       </div>
@@ -352,16 +430,16 @@
   <script>
     const CURRENT_TOOL_ID = 'clean';
     const TOOLS = [
-      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
-      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
-      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
-      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
-      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
-      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
-      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
-      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
-      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
-      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', code: '0x0A' },
     ];
 
     function getToolHref(tool) {
@@ -376,23 +454,23 @@
         const isActive = tool.id === CURRENT_TOOL_ID;
         const href = getToolHref(tool);
         return `
-          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
             isActive 
-              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
-              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800 hover:border-cyan-500/50 hover:bg-slate-900 cursor-pointer'
           }">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
-              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            <div class="w-8 h-8 flex items-center justify-center text-xs shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50' : 'bg-slate-900 text-slate-400 group-hover:text-cyan-400 group-hover:border-cyan-500/40 border border-slate-800'
             }">
               <i class="fa-solid ${tool.icon}"></i>
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
-                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+                <span class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors uppercase tracking-wider">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-950/80 px-1 border border-cyan-500/40">Active</span>' : ''}
               </div>
-              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
-              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+              <p class="text-[10px] text-slate-400 mt-0.5 leading-snug truncate font-mono">${tool.desc}</p>
+              <span class="text-[9px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
             </div>
           </a>
         `;
@@ -418,8 +496,8 @@
     function showToast(message) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 text-xs font-mono border bg-slate-950/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-cyan-300 border-cyan-400`;
+      toast.innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i><span>[SYSTEM]: ${message}</span>`;
       container.appendChild(toast);
       requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
       setTimeout(() => {
@@ -434,7 +512,6 @@
 
     function pushHistory(val) {
       if (historyIndex >= 0 && historyStack[historyIndex] === val) return;
-      // Truncate future states if we branched
       historyStack.splice(historyIndex + 1);
       historyStack.push(val);
       historyIndex = historyStack.length - 1;
@@ -448,7 +525,7 @@
         document.getElementById('mainTextarea').value = val;
         updateMetrics(val);
         updateUndoRedoButtons();
-        showToast('Undo applied');
+        showToast('UNDO STEP RESTORED');
       }
     }
 
@@ -459,7 +536,7 @@
         document.getElementById('mainTextarea').value = val;
         updateMetrics(val);
         updateUndoRedoButtons();
-        showToast('Redo applied');
+        showToast('REDO STEP APPLIED');
       }
     }
 
@@ -469,13 +546,13 @@
 
       undoBtn.disabled = historyIndex <= 0;
       undoBtn.className = historyIndex > 0 
-        ? 'px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium cursor-pointer'
-        : 'px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-600 text-xs font-medium cursor-not-allowed';
+        ? 'hud-btn-secondary px-3 py-1.5 cursor-pointer text-cyan-300'
+        : 'hud-btn-secondary px-3 py-1.5 text-slate-600 cursor-not-allowed';
 
       redoBtn.disabled = historyIndex >= historyStack.length - 1;
       redoBtn.className = historyIndex < historyStack.length - 1
-        ? 'px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium cursor-pointer'
-        : 'px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-600 text-xs font-medium cursor-not-allowed';
+        ? 'hud-btn-secondary px-3 py-1.5 cursor-pointer text-cyan-300'
+        : 'hud-btn-secondary px-3 py-1.5 text-slate-600 cursor-not-allowed';
     }
 
     function onUserType() {
@@ -494,7 +571,6 @@
       const lines = text ? text.split('\n').length : 0;
       document.getElementById('statLines').textContent = lines;
 
-      // 200 words per minute average reading speed
       const readSeconds = Math.ceil((words / 200) * 60);
       document.getElementById('statReadTime').textContent = readSeconds > 60 
         ? `${Math.floor(readSeconds / 60)}m ${readSeconds % 60}s` 
@@ -506,7 +582,7 @@
       const area = document.getElementById('mainTextarea');
       let str = area.value;
       if (!str) {
-        showToast('Textarea is empty');
+        showToast('ERR: BUFFER IS EMPTY');
         return;
       }
 
@@ -516,117 +592,117 @@
       switch (op) {
         case 'upper':
           res = str.toUpperCase();
-          label = 'Converted to UPPERCASE';
+          label = 'APPLIED UPPERCASE';
           break;
         case 'lower':
           res = str.toLowerCase();
-          label = 'Converted to lowercase';
+          label = 'APPLIED LOWERCASE';
           break;
         case 'title':
           res = str.toLowerCase().replace(/(?:^|\s)\w/g, match => match.toUpperCase());
-          label = 'Converted to Title Case';
+          label = 'APPLIED TITLE CASE';
           break;
         case 'sentence':
           res = str.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
-          label = 'Converted to Sentence case';
+          label = 'APPLIED SENTENCE CASE';
           break;
         case 'camel':
           res = str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase()).replace(/^[A-Z]/, c => c.toLowerCase());
-          label = 'Converted to camelCase';
+          label = 'APPLIED CAMELCASE';
           break;
         case 'pascal':
           res = str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase()).replace(/^[a-z]/, c => c.toUpperCase());
-          label = 'Converted to PascalCase';
+          label = 'APPLIED PASCALCASE';
           break;
         case 'snake':
           res = str.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '');
-          label = 'Converted to snake_case';
+          label = 'APPLIED SNAKE_CASE';
           break;
         case 'kebab':
           res = str.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-          label = 'Converted to kebab-case';
+          label = 'APPLIED KEBAB-CASE';
           break;
         case 'constant':
           res = str.trim().toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '');
-          label = 'Converted to CONSTANT_CASE';
+          label = 'APPLIED CONSTANT_CASE';
           break;
         case 'dot':
           res = str.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.+|\.+$/g, '');
-          label = 'Converted to dot.case';
+          label = 'APPLIED DOT.CASE';
           break;
 
         // Whitespace ops
         case 'trimLines':
           res = str.split('\n').map(l => l.trim()).join('\n');
-          label = 'Trimmed leading & trailing spaces';
+          label = 'TRIMMED LINE BOUNDARIES';
           break;
         case 'removeEmptyLines':
           res = str.split('\n').filter(l => l.trim().length > 0).join('\n');
-          label = 'Removed empty / blank lines';
+          label = 'PURGED BLANK LINES';
           break;
         case 'collapseSpaces':
           res = str.replace(/[ \t]+/g, ' ');
-          label = 'Collapsed multiple spaces';
+          label = 'COLLAPSED MULTI-SPACES';
           break;
         case 'removeAllWhitespace':
           res = str.replace(/\s+/g, '');
-          label = 'Stripped all whitespace';
+          label = 'STRIPPED ALL WHITESPACE';
           break;
 
         // List ops
         case 'dedupe':
           const lines = str.split('\n');
           res = [...new Set(lines)].join('\n');
-          label = `Deduplicated lines (Removed ${lines.length - res.split('\n').length} duplicates)`;
+          label = `DEDUPLICATED (REMOVED ${lines.length - res.split('\n').length} DUPS)`;
           break;
         case 'sortAz':
           res = str.split('\n').sort((a, b) => a.localeCompare(b)).join('\n');
-          label = 'Sorted lines A to Z';
+          label = 'SORTED LINES A-Z';
           break;
         case 'sortZa':
           res = str.split('\n').sort((a, b) => b.localeCompare(a)).join('\n');
-          label = 'Sorted lines Z to A';
+          label = 'SORTED LINES Z-A';
           break;
         case 'sortLength':
           res = str.split('\n').sort((a, b) => a.length - b.length).join('\n');
-          label = 'Sorted lines by character length';
+          label = 'SORTED BY LINE LENGTH';
           break;
         case 'reverseLines':
           res = str.split('\n').reverse().join('\n');
-          label = 'Reversed line order';
+          label = 'REVERSED LINE ORDER';
           break;
         case 'numberLines':
           res = str.split('\n').map((l, i) => `${i + 1}. ${l}`).join('\n');
-          label = 'Added line numbering';
+          label = 'NUMBERED ALL LINES';
           break;
 
         // Web ops
         case 'stripHtml':
           res = str.replace(/<[^>]*>?/gm, '');
-          label = 'Stripped HTML tags';
+          label = 'STRIPPED HTML TAGS';
           break;
         case 'slugify':
           res = str.toLowerCase().trim()
             .replace(/[^\w\s-]/g, '')
             .replace(/[\s_-]+/g, '-')
             .replace(/^-+|-+$/g, '');
-          label = 'Generated URL-friendly slug';
+          label = 'GENERATED URL SLUG';
           break;
         case 'escapeHtml':
           res = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-          label = 'Escaped HTML entities';
+          label = 'ESCAPED HTML ENTITIES';
           break;
         case 'unescapeHtml':
           const doc = new DOMParser().parseFromString(str, 'text/html');
           res = doc.documentElement.textContent;
-          label = 'Unescaped HTML entities';
+          label = 'UNESCAPED HTML ENTITIES';
           break;
       }
 
       area.value = res;
       updateMetrics(res);
       pushHistory(res);
-      document.getElementById('lastActionNotice').textContent = label;
+      document.getElementById('lastActionNotice').textContent = `[OP: ${label}]`;
       showToast(label);
     }
 
@@ -639,7 +715,7 @@
       area.value = res;
       updateMetrics(res);
       pushHistory(res);
-      showToast('Applied prefix/suffix to all lines');
+      showToast('INJECTED LINE PREFIX/SUFFIX');
     }
 
     function loadSampleText() {
@@ -648,7 +724,7 @@
       area.value = sample;
       updateMetrics(sample);
       pushHistory(sample);
-      showToast('Loaded sample messy dataset');
+      showToast('LOADED SAMPLE DATASET');
     }
 
     function clearText() {
@@ -656,26 +732,32 @@
       area.value = '';
       updateMetrics('');
       pushHistory('');
-      showToast('Text cleared');
+      showToast('PURGED TEXT BUFFER');
     }
 
     function copyCleanedText() {
       const val = document.getElementById('mainTextarea').value;
-      if (!val) return;
+      if (!val) {
+        showToast('ERR: BUFFER IS EMPTY');
+        return;
+      }
       navigator.clipboard.writeText(val);
-      showToast('Cleaned text copied to clipboard');
+      showToast('BUFFER COPIED TO CLIPBOARD');
     }
 
     function downloadAsTxt() {
       const val = document.getElementById('mainTextarea').value;
-      if (!val) return;
+      if (!val) {
+        showToast('ERR: BUFFER IS EMPTY');
+        return;
+      }
       const blob = new Blob([val], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `sarwarfx-cleaned-${Date.now()}.txt`;
+      a.download = `sarwarfx-purified-${Date.now()}.txt`;
       a.click();
       URL.revokeObjectURL(a.href);
-      showToast('Downloaded as .txt file');
+      showToast('EXPORTED .TXT FILE');
     }
 
     // Init
