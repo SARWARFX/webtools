@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Numeral Converter & Chrono Cipher | CyberTools</title>
+  <meta name="description" content="Bidirectional Arabic to Roman numeral converter translating standard integers (1 to 3,999,999 with vinculum) with syntax validation & character breakdown.">
+  <meta name="keywords" content="roman numeral converter, roman numerals 1 to 1000, arabic to roman, roman to arabic, vinculum roman numerals, roman numeral calculator, mmxxvi roman numerals">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/roman/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/roman/" />
+  <meta property="og:title" content="Roman Numeral Converter & Chrono Cipher | CyberTools" />
+  <meta property="og:description" content="Bidirectional Arabic to Roman numeral converter translating standard integers (1 to 3,999,999 with vinculum) with syntax validation & character breakdown." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/roman/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/roman/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/roman/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Roman Numeral Converter & Chrono Cipher | CyberTools" />
+  <meta name="twitter:description" content="Bidirectional Arabic to Roman numeral converter translating standard integers (1 to 3,999,999 with vinculum) with syntax validation & character breakdown." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/roman/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Roman Numeral Converter & Chrono Cipher",
+    "url": "https://apps.sarwarfx.cfd/roman/",
+    "description": "Bidirectional Arabic to Roman numeral converter translating standard integers (1 to 3,999,999 with vinculum) with syntax validation & character breakdown.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">CHRONO_INDEX // ROMAN CIPHER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x47</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(72)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>CLASSICAL CHRONO DECODER // VINCULUM RADIX EXTENSION</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-wide">
+          ROMAN CIPHER <span class="text-cyan-400">// NUMERAL CONVERTER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Bidirectional conversion between decimal integers and classical Roman numerals (1 to 3,999,999) with syntax rule verification.
+        </p>
+      </div>
+
+      <!-- Historical Era Quick Shortcuts -->
+      <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+        <button onclick="setArabic(2026)" class="hud-btn-secondary px-2.5 py-1.5 rounded text-cyan-300">2026 (MMXXVI)</button>
+        <button onclick="setArabic(2000)" class="hud-btn-secondary px-2.5 py-1.5 rounded">2000 (MM)</button>
+        <button onclick="setArabic(1999)" class="hud-btn-secondary px-2.5 py-1.5 rounded">1999 (MCMXCIX)</button>
+        <button onclick="setArabic(1776)" class="hud-btn-secondary px-2.5 py-1.5 rounded">1776 (MDCCLXXVI)</button>
+        <button onclick="setArabic(42)" class="hud-btn-secondary px-2.5 py-1.5 rounded text-pink-300">42 (XLII)</button>
+      </div>
+    </div>
+
+    <!-- Converter Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Panel: Dual Bidirectional Inputs (6 cols) -->
+      <div class="lg:col-span-6 space-y-6">
+        
+        <!-- Arabic Input Card -->
+        <div class="hud-card p-5 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+            <span class="text-xs font-orbitron font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+              <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span> ARABIC INTEGER (BASE 10)
+            </span>
+            <button onclick="clearAll()" class="text-slate-500 hover:text-pink-400 uppercase text-[10px]">[CLEAR]</button>
+          </div>
+
+          <div class="relative">
+            <input type="number" id="arabicInput" min="1" max="3999999" value="2026" oninput="onArabicInput()" 
+              class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded p-3 text-xl sm:text-2xl font-orbitron font-bold text-cyan-300 tracking-wider outline-none">
+            <span class="absolute right-3.5 top-3.5 text-xs text-slate-500 font-mono">1 &ndash; 3,999,999</span>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+            <span>Range: Standard (1&ndash;3,999) + Vinculum (4,000+)</span>
+            <button onclick="copyField('arabicInput')" class="text-cyan-400 hover:text-white uppercase font-bold">[COPY INT]</button>
+          </div>
+        </div>
+
+        <!-- Roman Input Card -->
+        <div class="hud-card p-5 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+            <span class="text-xs font-orbitron font-bold text-pink-300 uppercase tracking-wider flex items-center gap-2">
+              <span class="w-1.5 h-1.5 bg-pink-400 rounded-full"></span> ROMAN NUMERAL STRING
+            </span>
+            <span id="validityPill" class="text-[9px] bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 px-1.5 py-0.5 rounded">VALID NOTATION</span>
+          </div>
+
+          <div class="relative">
+            <input type="text" id="romanInput" value="MMXXVI" oninput="onRomanInput()" placeholder="e.g. MMXXVI or MCMXCIX..." 
+              class="w-full bg-slate-950 border border-slate-800 focus:border-pink-400 rounded p-3 text-xl sm:text-2xl font-orbitron font-bold text-pink-300 tracking-widest uppercase outline-none">
+          </div>
+
+          <!-- Syntax Warning Banner -->
+          <div id="syntaxWarning" class="hidden p-2.5 rounded bg-pink-950/40 border border-pink-500/40 text-pink-300 text-[11px] flex items-center space-x-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span id="syntaxWarningMsg">Invalid subtractive notation detected</span>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+            <span>Subtractive syntax auto-validated</span>
+            <button onclick="copyField('romanInput')" class="text-pink-400 hover:text-white uppercase font-bold">[COPY ROMAN]</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Deconstruction Matrix & Character Reference (6 cols) -->
+      <div class="lg:col-span-6 space-y-6">
+        
+        <!-- Deconstruction Card -->
+        <div class="hud-card p-5 space-y-3 font-mono text-xs flex flex-col h-full">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
+            <span class="text-xs font-orbitron font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-cyan-400"></i> ADDITIVE DECONSTRUCTION BREAKDOWN
+            </span>
+            <span class="text-[10px] text-slate-500" id="deconstructTitle">2026</span>
+          </div>
+
+          <!-- Breakdown Visual Pills -->
+          <div id="breakdownContainer" class="flex-grow min-h-[120px] bg-black/90 p-3 rounded border border-slate-800 flex flex-wrap gap-2 content-start">
+            <!-- Injected component pills -->
+          </div>
+
+          <!-- Canonical Symbol Mapping Table -->
+          <div class="pt-2 border-t border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block mb-2">Canonical Numeral Values</span>
+            <div class="grid grid-cols-7 gap-1.5 text-center text-[10px]">
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">I</span>1</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">V</span>5</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">X</span>10</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">L</span>50</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">C</span>100</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">D</span>500</div>
+              <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800"><span class="text-cyan-400 font-bold block text-sm">M</span>1,000</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SEO Tactical Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 mt-12 space-y-6 text-slate-300 font-rajdhani text-sm sm:text-base leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          CHRONO INDEX // ROMAN NUMERAL ETYMOLOGY & SUBTRACTIVE RULES
+        </h2>
+        <p class="text-xs sm:text-sm text-cyan-400 font-mono mt-1">
+          Historical mechanics of ancient tally marks, Etruscan numeral evolution, and medieval subtractive standardization.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-scroll text-cyan-400"></i> The Standardized Subtractive Principle
+          </h3>
+          <p>
+            Early Roman counting marks were strictly additive (e.g. <code>IIII</code> for 4, <code>VIIII</code> for 9). To conserve parchment space and improve monument carving speed, subtractive pairs were formalized during the medieval era:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">Unit Subtractions:</strong> <code>I</code> can only precede <code>V</code> (yielding 4) and <code>X</code> (yielding 9). Formations like <code>IL</code> or <code>IC</code> are strictly invalid.</li>
+            <li><strong class="text-white">Ten Subtractions:</strong> <code>X</code> can precede only <code>L</code> (40) and <code>C</code> (90).</li>
+            <li><strong class="text-white">Hundred Subtractions:</strong> <code>C</code> can precede only <code>D</code> (400) and <code>M</code> (900).</li>
+            <li><strong class="text-white">Non-Repeating Halves:</strong> Symbols <code>V</code>, <code>L</code>, and <code>D</code> can never be repeated consecutively because <code>VV = X</code>, <code>LL = C</code>, and <code>DD = M</code>.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-monument text-pink-400"></i> Large Numbers & The Vinculum System
+          </h3>
+          <p>
+            Standard Roman numerals hit their computational limit at 3,999 (<code>MMMCMXCIX</code>). For quantities exceeding 4,000, classical mathematicians used the <strong>Vinculum</strong> (horizontal overline bar):
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">1,000&times; Multiplier:</strong> Any numeral group beneath a vinculum bar is multiplied by one thousand. E.g., <code>V̅ = 5,000</code>, <code>X̅ = 10,000</code>, <code>L̅ = 50,000</code>, <code>C̅ = 100,000</code>, and <code>M̅ = 1,000,000</code>.</li>
+            <li><strong class="text-white">Historical Usage:</strong> Widely employed in Roman imperial censuses, monumental military victory tallies, and financial treasury records.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-4 space-y-2">
+        <h3 class="text-sm font-orbitron font-semibold text-white uppercase tracking-wider">
+          Airgap Zero-Log Privacy Architecture
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400">
+          The Roman Cipher executes 100% locally in browser memory. No financial numbers, historical dates, or translation logs are recorded or uploaded to remote cloud infrastructure.
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (72)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'roman';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    const ROMAN_MAP = [
+      { val: 1000000, str: 'M̅' },
+      { val: 900000,  str: 'C̅M̅' },
+      { val: 500000,  str: 'D̅' },
+      { val: 400000,  str: 'C̅D̅' },
+      { val: 100000,  str: 'C̅' },
+      { val: 90000,   str: 'X̅C̅' },
+      { val: 50000,   str: 'L̅' },
+      { val: 40000,   str: 'X̅L̅' },
+      { val: 10000,   str: 'X̅' },
+      { val: 9000,    str: 'I̅X̅' },
+      { val: 5000,    str: 'V̅' },
+      { val: 4000,    str: 'I̅V̅' },
+      { val: 1000,    str: 'M' },
+      { val: 900,     str: 'CM' },
+      { val: 500,     str: 'D' },
+      { val: 400,     str: 'CD' },
+      { val: 100,     str: 'C' },
+      { val: 90,      str: 'XC' },
+      { val: 50,      str: 'L' },
+      { val: 40,      str: 'XL' },
+      { val: 10,      str: 'X' },
+      { val: 9,       str: 'IX' },
+      { val: 5,       str: 'V' },
+      { val: 4,       str: 'IV' },
+      { val: 1,       str: 'I' }
+    ];
+
+    function arabicToRoman(num) {
+      if (num < 1 || num > 3999999 || isNaN(num)) return '';
+      let remaining = num;
+      let result = '';
+      const parts = [];
+
+      for (const item of ROMAN_MAP) {
+        while (remaining >= item.val) {
+          result += item.str;
+          remaining -= item.val;
+          parts.push({ val: item.val, str: item.str });
+        }
+      }
+
+      return { roman: result, parts: parts };
+    }
+
+    function romanToArabic(roman) {
+      if (!roman) return 0;
+      let clean = roman.toUpperCase().trim();
+      
+      const charValues = {
+        'I': 1, 'V': 5, 'X': 10, 'L': 50,
+        'C': 100, 'D': 500, 'M': 1000
+      };
+
+      let total = 0;
+      let prevValue = 0;
+
+      for (let i = clean.length - 1; i >= 0; i--) {
+        const char = clean[i];
+        const val = charValues[char] || 0;
+        if (val === 0) return NaN;
+
+        if (val < prevValue) {
+          total -= val;
+        } else {
+          total += val;
+          prevValue = val;
+        }
+      }
+
+      return total;
+    }
+
+    function validateRomanSyntax(str) {
+      // Standard classical subtractive regex for 1-3999
+      const regex = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+      return regex.test(str.toUpperCase());
+    }
+
+    function onArabicInput() {
+      const val = parseInt(document.getElementById('arabicInput').value) || 0;
+      if (val < 1 || val > 3999999) {
+        document.getElementById('romanInput').value = '';
+        renderBreakdown([], val);
+        return;
+      }
+
+      const res = arabicToRoman(val);
+      document.getElementById('romanInput').value = res.roman;
+      updateValidityBadge(true);
+      renderBreakdown(res.parts, val);
+    }
+
+    function onRomanInput() {
+      const raw = document.getElementById('romanInput').value.trim();
+      if (!raw) {
+        document.getElementById('arabicInput').value = '';
+        renderBreakdown([], 0);
+        updateValidityBadge(true);
+        return;
+      }
+
+      const arabic = romanToArabic(raw);
+      if (isNaN(arabic) || arabic <= 0) {
+        document.getElementById('arabicInput').value = '';
+        updateValidityBadge(false, 'Contains invalid non-Roman characters');
+        renderBreakdown([], 0);
+        return;
+      }
+
+      document.getElementById('arabicInput').value = arabic;
+
+      // Strict subtractive notation validation
+      const isValid = validateRomanSyntax(raw);
+      if (!isValid && arabic <= 3999) {
+        const canonical = arabicToRoman(arabic).roman;
+        updateValidityBadge(false, `Non-standard notation. Canonical form: ${canonical}`);
+      } else {
+        updateValidityBadge(true);
+      }
+
+      const decomp = arabicToRoman(arabic);
+      renderBreakdown(decomp.parts, arabic);
+    }
+
+    function updateValidityBadge(valid, msg = '') {
+      const pill = document.getElementById('validityPill');
+      const banner = document.getElementById('syntaxWarning');
+      const warnMsg = document.getElementById('syntaxWarningMsg');
+
+      if (valid) {
+        pill.textContent = 'VALID NOTATION';
+        pill.className = 'text-[9px] bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 px-1.5 py-0.5 rounded';
+        banner.classList.add('hidden');
+      } else {
+        pill.textContent = 'NON-CANONICAL';
+        pill.className = 'text-[9px] bg-amber-950/60 border border-amber-500/40 text-amber-400 px-1.5 py-0.5 rounded';
+        banner.classList.remove('hidden');
+        warnMsg.textContent = msg;
+      }
+    }
+
+    function renderBreakdown(parts, total) {
+      const container = document.getElementById('breakdownContainer');
+      document.getElementById('deconstructTitle').textContent = total ? total.toLocaleString() : '---';
+
+      if (!parts || parts.length === 0) {
+        container.innerHTML = '<span class="text-slate-600 italic">Enter a valid numeral to inspect decomposition.</span>';
+        return;
+      }
+
+      container.innerHTML = parts.map(p => `
+        <div class="px-3 py-2 rounded bg-slate-900 border border-cyan-500/30 flex flex-col items-center">
+          <span class="text-base font-orbitron font-bold text-cyan-300">${p.str}</span>
+          <span class="text-[10px] text-slate-400">+${p.val.toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+
+    function setArabic(n) {
+      document.getElementById('arabicInput').value = n;
+      onArabicInput();
+      showToast(`LOADED: ${n}`);
+    }
+
+    function clearAll() {
+      document.getElementById('arabicInput').value = '';
+      document.getElementById('romanInput').value = '';
+      renderBreakdown([], 0);
+      updateValidityBadge(true);
+      showToast('CLEARED FIELDS');
+    }
+
+    function copyField(id) {
+      const text = document.getElementById(id).value;
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      showToast(`COPIED: ${text}`);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      onArabicInput();
+    });
+  </script>
+</body>
+</html>

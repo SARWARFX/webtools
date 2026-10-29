@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
+  <title>CyberTools HUD Terminal // 72 Free In-Browser Web Utilities - sarwarfx</title>
+  <meta name="description" content="Suite of 72 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
   <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools HUD Terminal // 72 Free In-Browser Web Utilities - sarwarfx" />
+  <meta property="og:description" content="Suite of 72 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools HUD Terminal // 72 Free In-Browser Web Utilities - sarwarfx" />
+  <meta name="twitter:description" content="Suite of 72 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,7 +35,7 @@
     "@type": "WebApplication",
     "name": "sarwarfx CyberTools Command Hub",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
+    "description": "Suite of 72 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 65 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 72 ACTIVE UTILITY NODES</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -236,13 +236,13 @@
           type="text" 
           id="toolSearch" 
           oninput="filterTools()" 
-          placeholder="FILTER_MODULES [clippath, screen, battery, shadow, imgpalette, tone, flexgrid, basecodec]..." 
+          placeholder="FILTER_MODULES [matrix, schema, percent, regexclean, rand, roman, b64img]..." 
           class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
         <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
       </div>
     </div>
 
-    <!-- 65 Tools Cards Grid -->
+    <!-- 72 Tools Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
       <!-- Injected dynamically by renderTools() -->
     </div>
@@ -334,7 +334,14 @@
       { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
       { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
       { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
-      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' }
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' }
     ];
 
     function getToolHref(tool) {

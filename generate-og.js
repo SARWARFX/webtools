@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '65-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '72-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -489,6 +489,55 @@ const APPS = [
     subdomain: 'basecodec',
     title: 'CYBERTOOLS // BASECODEC',
     subtitle: 'BASE32 & BASE58 CIPHER MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'matrix',
+    subdomain: 'matrix',
+    title: 'CYBERTOOLS // MATRIX',
+    subtitle: 'VECTOR CALCULUS & MATRIX OPERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'schema',
+    subdomain: 'schema',
+    title: 'CYBERTOOLS // SCHEMA',
+    subtitle: 'SEMANTIC CORE & JSON-LD GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'percent',
+    subdomain: 'percent',
+    title: 'CYBERTOOLS // PERCENT',
+    subtitle: 'VARIANCE RADAR & PERCENT MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'regexclean',
+    subdomain: 'regexclean',
+    title: 'CYBERTOOLS // REGEXCLEAN',
+    subtitle: 'PATTERN PURIFIER & REGEX SHIELD',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'rand',
+    subdomain: 'rand',
+    title: 'CYBERTOOLS // RAND',
+    subtitle: 'ENTROPY FLUX & CSPRNG SYNTHESIZER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'roman',
+    subdomain: 'roman',
+    title: 'CYBERTOOLS // ROMAN',
+    subtitle: 'CHRONO INDEX & ROMAN CIPHER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'b64img',
+    subdomain: 'b64img',
+    title: 'CYBERTOOLS // B64IMG',
+    subtitle: 'RASTER DECODE & BASE64 RADAR',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
