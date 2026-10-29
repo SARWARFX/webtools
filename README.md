@@ -24,7 +24,7 @@ Every tool adheres strictly to the **Cyber-Minimalist Obsidian Dark Theme** desi
 | [`clean/`](clean/) | `clean.sarwarfx.cfd` | **Text Cleaner & Case Switcher** | Case switcher (UPPERCASE, lowercase, Title, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE), line deduplication, whitespace stripper, slugifier, and live word/char analytics with undo/redo. |
 | [`clock/`](clock/) | `clock.sarwarfx.cfd` | **World Clock & Meeting Planner** | Real-time global clocks across 10 hubs with day/night status and business hours indicator, interactive 24-hour time scrubber slider, precision stopwatch, and countdown timer with audio chime. |
 | [`calc/`](calc/) | `calc.sarwarfx.cfd` | **Bandwidth, EMI & Margin Calc** | Bandwidth download time estimator across 10M to 10G broadband tiers, loan/mortgage EMI calculator with amortization table and CSV export, plus gross profit margin, markup & VAT calculator. |
-| [`index.html`](index.html) | `sarwarfx.cfd` | **Suite Portal & Directory** | Central dark hub featuring searchable interactive cards linking to all 10 micro-tools. |
+| [`index.html`](index.html) | `apps.sarwarfx.cfd` | **Suite Portal & Directory** | Central dark hub featuring searchable interactive cards linking to all 10 micro-tools. |
 
 ---
 
@@ -32,7 +32,7 @@ Every tool adheres strictly to the **Cyber-Minimalist Obsidian Dark Theme** desi
 
 ```text
 webtools/
-├── index.html           # Central suite portal & directory
+├── index.html           # apps.sarwarfx.cfd (Central suite portal & directory)
 ├── speed/
 │   └── index.html       # speed.sarwarfx.cfd
 ├── qr/
@@ -70,7 +70,7 @@ Because each application is completely standalone and contains zero Node/npm dep
    - **Build command**: *(Leave blank)*
    - **Build output directory**: `/` (or leave blank)
 4. Click **Save and Deploy**.
-5. Under **Custom Domains**, add `sarwarfx.cfd`.
+5. Under **Custom Domains**, add `apps.sarwarfx.cfd` (and optionally `sarwarfx.cfd`).
 6. To route subdomains on Cloudflare:
    - Configure a Cloudflare Transform Rule or Worker routing `speed.sarwarfx.cfd` to `/speed/index.html`, etc.
    - Or deploy individual sub-projects via Option B.
