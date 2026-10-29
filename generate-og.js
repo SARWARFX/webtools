@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '87-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '88-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -643,6 +643,13 @@ const APPS = [
     subdomain: 'storage',
     title: 'CYBERTOOLS // STORAGE',
     subtitle: 'CACHE SCRUBBER & LOCAL STORAGE HUD',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'watermark-img',
+    subdomain: 'watermark-img',
+    title: 'CYBERTOOLS // WATERMARK',
+    subtitle: 'BATCH PHOTO WATERMARKING STUDIO',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
