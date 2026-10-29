@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '57-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '65-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -433,6 +433,62 @@ const APPS = [
     subdomain: 'newlines',
     title: 'CYBERTOOLS // NEWLINES',
     subtitle: 'WHITESPACE PURIFIER & CRLF SANITIZER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'clippath',
+    subdomain: 'clippath',
+    title: 'CYBERTOOLS // CLIPPATH',
+    subtitle: 'VECTOR SHAPER & CLIP_PATH FORGE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'screen',
+    subdomain: 'screen',
+    title: 'CYBERTOOLS // SCREEN',
+    subtitle: 'VIEWPORT RADAR & DISPLAY METRICS',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'battery',
+    subdomain: 'battery',
+    title: 'CYBERTOOLS // BATTERY',
+    subtitle: 'POWER TELEMETRY & CELL DRAIN HUD',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'shadow',
+    subdomain: 'shadow',
+    title: 'CYBERTOOLS // SHADOW',
+    subtitle: 'NEON LUMEN & BOX_SHADOW FORGE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'imgpalette',
+    subdomain: 'imgpalette',
+    title: 'CYBERTOOLS // IMGPALETTE',
+    subtitle: 'CHROMA EXTRACTOR & PIXEL SAMPLER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'tone',
+    subdomain: 'tone',
+    title: 'CYBERTOOLS // TONE',
+    subtitle: 'SIGNAL SYNTH & FREQUENCY HUD',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'flexgrid',
+    subdomain: 'flexgrid',
+    title: 'CYBERTOOLS // FLEXGRID',
+    subtitle: 'GRID ARCHITECT & LAYOUT FORGE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'basecodec',
+    subdomain: 'basecodec',
+    title: 'CYBERTOOLS // BASECODEC',
+    subtitle: 'BASE32 & BASE58 CIPHER MATRIX',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

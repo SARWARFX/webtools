@@ -194,7 +194,7 @@
         <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
           <span class="hidden md:inline">SUITE SELECTOR</span>
-          <span class="text-cyan-400 font-bold">(57)</span>
+          <span class="text-cyan-400 font-bold">(65)</span>
         </button>
       </div>
     </div>
@@ -462,7 +462,7 @@
       <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (57)</span>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (65)</span>
         </div>
         <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
       </div>
@@ -497,7 +497,7 @@
   <script>
     const CURRENT_TOOL_ID = 'chmod';
     const TOOLS = [
-      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
       { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
       { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
       { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
@@ -553,8 +553,16 @@
       { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', code: '0x36' },
       { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', code: '0x37' },
       { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', code: '0x38' },
-      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', code: '0x39' }
-    ];
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', code: '0x41' }
+];
 
     function getToolHref(tool) {
       return `/${tool.id}/`;

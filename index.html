@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 57 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 57 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
+  <title>CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx</title>
+  <meta name="description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
   <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 57 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 57 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx" />
+  <meta property="og:description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 57 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 57 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools HUD Terminal // 65 Free In-Browser Web Utilities - sarwarfx" />
+  <meta name="twitter:description" content="Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,7 +35,7 @@
     "@type": "WebApplication",
     "name": "sarwarfx CyberTools Command Hub",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 57 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
+    "description": "Suite of 65 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 57 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 65 ACTIVE UTILITY NODES</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -236,13 +236,13 @@
           type="text" 
           id="toolSearch" 
           oninput="filterTools()" 
-          placeholder="FILTER_MODULES [textstat, caesar, morse, hexview, jsondiff, token, newlines]..." 
+          placeholder="FILTER_MODULES [clippath, screen, battery, shadow, imgpalette, tone, flexgrid, basecodec]..." 
           class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
         <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
       </div>
     </div>
 
-    <!-- 57 Tools Cards Grid -->
+    <!-- 65 Tools Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
       <!-- Injected dynamically by renderTools() -->
     </div>
@@ -326,7 +326,15 @@
       { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
       { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
       { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
-      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' }
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' }
     ];
 
     function getToolHref(tool) {

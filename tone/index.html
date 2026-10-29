@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Tone Generator & Frequency Synthesizer | CyberTools</title>
+  <meta name="description" content="Synthesize pure sine, square, sawtooth, and triangle audio waveforms from 20 Hz to 20,000 Hz with live volume gain, frequency sweep, and oscilloscope visualizer.">
+  <meta name="keywords" content="tone generator, audio frequency generator, sound synth, sine wave generator, 440hz tone, sound test, web audio api, audio visualizer, frequency sweep">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/tone/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/tone/" />
+  <meta property="og:title" content="Audio Tone Generator & Frequency Synthesizer | CyberTools" />
+  <meta property="og:description" content="Synthesize pure sine, square, sawtooth, and triangle audio waveforms from 20 Hz to 20,000 Hz with live volume gain, frequency sweep, and oscilloscope visualizer." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/tone/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/tone/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/tone/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Audio Tone Generator & Frequency Synthesizer | CyberTools" />
+  <meta name="twitter:description" content="Synthesize pure sine, square, sawtooth, and triangle audio waveforms from 20 Hz to 20,000 Hz with live volume gain, frequency sweep, and oscilloscope visualizer." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/tone/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Audio Tone Generator & Frequency Synthesizer",
+    "url": "https://apps.sarwarfx.cfd/tone/",
+    "description": "Synthesize pure sine, square, sawtooth, and triangle audio waveforms from 20 Hz to 20,000 Hz with live volume gain, frequency sweep, and oscilloscope visualizer.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📻</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">SIGNAL SYNTH // AUDIO FREQUENCY HUD</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x3F</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(65)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>WEB AUDIO API SYNTHESIZER // OSCILLATOR CORE</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-wide">
+          SIGNAL SYNTH <span class="text-cyan-400">// AUDIO FREQUENCY HUD</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Precision audio tone generation across human audible spectrum (20 Hz &ndash; 20,000 Hz) with live oscilloscope visualization.
+        </p>
+      </div>
+
+      <!-- Telemetry Strip -->
+      <div class="flex flex-wrap gap-2 text-[11px] font-mono">
+        <div class="bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded flex items-center space-x-2">
+          <span class="text-slate-500">STATE:</span>
+          <span id="audioStateBadge" class="text-amber-400 font-bold">STANDBY</span>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded flex items-center space-x-2">
+          <span class="text-slate-500">SAMPLE RATE:</span>
+          <span id="sampleRateBadge" class="text-cyan-400 font-bold">48,000 Hz</span>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded flex items-center space-x-2">
+          <span class="text-slate-500">BAND:</span>
+          <span id="bandBadge" class="text-purple-400 font-bold">MIDRANGE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Synth Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Panel: Controls (7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Master Power & Waveform Card -->
+        <div class="hud-card p-5 space-y-5">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+            <span class="text-xs font-orbitron font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-power-off text-cyan-400"></i> MASTER OSCILLATOR CONTROL
+            </span>
+            <div class="flex items-center space-x-2">
+              <button id="startStopBtn" onclick="toggleAudio()" class="hud-btn-primary px-5 py-2 rounded text-xs flex items-center space-x-2">
+                <i class="fa-solid fa-play" id="playIcon"></i>
+                <span id="playLabel">ACTIVATE SYNTH</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Waveform Selector Buttons -->
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-2">Waveform Geometry</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button onclick="setWaveform('sine')" id="wave-sine" class="wave-btn px-3 py-2.5 rounded border border-cyan-400 bg-cyan-950/40 text-cyan-300 font-mono text-xs flex flex-col items-center justify-center gap-1 transition-all">
+                <span class="text-base font-bold">∿</span>
+                <span class="text-[10px] tracking-wider uppercase font-semibold">SINE</span>
+              </button>
+              <button onclick="setWaveform('square')" id="wave-square" class="wave-btn px-3 py-2.5 rounded border border-slate-800 bg-slate-900/80 text-slate-400 font-mono text-xs flex flex-col items-center justify-center gap-1 hover:border-cyan-500/40 transition-all">
+                <span class="text-base font-bold">⊓</span>
+                <span class="text-[10px] tracking-wider uppercase font-semibold">SQUARE</span>
+              </button>
+              <button onclick="setWaveform('sawtooth')" id="wave-sawtooth" class="wave-btn px-3 py-2.5 rounded border border-slate-800 bg-slate-900/80 text-slate-400 font-mono text-xs flex flex-col items-center justify-center gap-1 hover:border-cyan-500/40 transition-all">
+                <span class="text-base font-bold">⧎</span>
+                <span class="text-[10px] tracking-wider uppercase font-semibold">SAWTOOTH</span>
+              </button>
+              <button onclick="setWaveform('triangle')" id="wave-triangle" class="wave-btn px-3 py-2.5 rounded border border-slate-800 bg-slate-900/80 text-slate-400 font-mono text-xs flex flex-col items-center justify-center gap-1 hover:border-cyan-500/40 transition-all">
+                <span class="text-base font-bold">⋀</span>
+                <span class="text-[10px] tracking-wider uppercase font-semibold">TRIANGLE</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Frequency Slider & Precise Input -->
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                Frequency (Hz)
+              </label>
+              <div class="flex items-center space-x-2">
+                <input type="number" id="freqNum" min="20" max="20000" value="440" step="1" 
+                  class="w-28 bg-slate-950 border border-cyan-500/40 rounded px-2 py-1 text-right font-mono text-sm text-cyan-300 font-bold focus:outline-none focus:border-cyan-400">
+                <span class="text-xs font-mono text-slate-400">Hz</span>
+              </div>
+            </div>
+
+            <!-- Logarithmic Slider -->
+            <input type="range" id="freqSlider" min="20" max="20000" value="440" 
+              class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+            
+            <div class="flex justify-between text-[10px] font-mono text-slate-500">
+              <span>20 Hz (SUB)</span>
+              <span>250 Hz (LOW)</span>
+              <span>1,000 Hz (MID)</span>
+              <span>4,000 Hz (HIGH)</span>
+              <span>20,000 Hz (ULTRA)</span>
+            </div>
+
+            <!-- Fine Nudge Buttons -->
+            <div class="flex items-center justify-center gap-1 pt-1 flex-wrap">
+              <button onclick="nudgeFreq(-100)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">-100</button>
+              <button onclick="nudgeFreq(-10)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">-10</button>
+              <button onclick="nudgeFreq(-1)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">-1</button>
+              <button onclick="nudgeFreq(-0.1)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">-0.1</button>
+              <button onclick="nudgeFreq(0.1)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">+0.1</button>
+              <button onclick="nudgeFreq(1)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">+1</button>
+              <button onclick="nudgeFreq(10)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">+10</button>
+              <button onclick="nudgeFreq(100)" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">+100</button>
+            </div>
+          </div>
+
+          <!-- Volume & Attenuation -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-volume-high text-cyan-400"></i> Master Gain / Amplitude
+              </label>
+              <span id="volumeVal" class="text-xs font-mono text-cyan-300 font-bold">25%</span>
+            </div>
+            <input type="range" id="volumeSlider" min="0" max="100" value="25" 
+              class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+            <p class="text-[10px] text-slate-500 font-mono italic">
+              Warning: High volumes or continuous frequencies may cause ear fatigue or speaker damage. Start at low levels.
+            </p>
+          </div>
+        </div>
+
+        <!-- Frequency Presets Card -->
+        <div class="hud-card p-5 space-y-3">
+          <span class="text-xs font-orbitron font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-bookmark text-cyan-400"></i> CALIBRATION & REFERENCE PRESETS
+          </span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
+            <button onclick="setPreset(50, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">50 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">EU AC Mains Hum</div>
+            </button>
+            <button onclick="setPreset(60, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">60 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">US AC Mains Hum</div>
+            </button>
+            <button onclick="setPreset(100, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">100 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">Sub-Woofer Bass</div>
+            </button>
+            <button onclick="setPreset(432, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">432 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">Verdi / Solfeggio</div>
+            </button>
+            <button onclick="setPreset(440, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-cyan-400 font-bold group-hover:text-cyan-300">440 Hz</div>
+              <div class="text-[9px] text-slate-400 truncate">Standard A4 Concert</div>
+            </button>
+            <button onclick="setPreset(1000, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">1,000 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">1 kHz Reference Bleep</div>
+            </button>
+            <button onclick="setPreset(4000, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">4,000 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">Human Peak Sensitivity</div>
+            </button>
+            <button onclick="setPreset(10000, 'sine')" class="p-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 rounded text-left transition-all group">
+              <div class="text-white font-bold group-hover:text-cyan-300">10,000 Hz</div>
+              <div class="text-[9px] text-slate-500 truncate">Treble Range Test</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Visualizer HUD & Telemetry (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Live Oscilloscope Canvas -->
+        <div class="hud-card p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+            <span class="text-xs font-orbitron font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-wave-square text-cyan-400"></i> REAL-TIME OSCILLOSCOPE
+            </span>
+            <div class="flex items-center space-x-1 text-[10px] font-mono">
+              <button onclick="setVisualizerMode('waveform')" id="viz-wave" class="px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300">WAVE</button>
+              <button onclick="setVisualizerMode('spectrum')" id="viz-spec" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">FFT</button>
+            </div>
+          </div>
+
+          <div class="relative w-full aspect-video bg-black/90 rounded border border-cyan-500/30 overflow-hidden flex items-center justify-center">
+            <canvas id="oscCanvas" class="w-full h-full block"></canvas>
+            <!-- Overlay Crosshairs -->
+            <div class="absolute inset-0 pointer-events-none border-b border-cyan-500/10 top-1/2 -translate-y-1/2"></div>
+            <div class="absolute inset-0 pointer-events-none border-r border-cyan-500/10 left-1/2 -translate-x-1/2"></div>
+          </div>
+
+          <!-- Dynamic Audio Parameters -->
+          <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded">
+              <span class="text-[10px] text-slate-500 block uppercase">Wavelength in Air (20°C)</span>
+              <span id="wavelengthBadge" class="text-sm font-bold text-cyan-300">0.78 m (78.0 cm)</span>
+            </div>
+            <div class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded">
+              <span class="text-[10px] text-slate-500 block uppercase">Musical Pitch Note</span>
+              <span id="musicalNoteBadge" class="text-sm font-bold text-pink-400">A4 (+0 ct)</span>
+            </div>
+            <div class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded">
+              <span class="text-[10px] text-slate-500 block uppercase">Period (Time / Cycle)</span>
+              <span id="periodBadge" class="text-sm font-bold text-slate-300">2.27 ms</span>
+            </div>
+            <div class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded">
+              <span class="text-[10px] text-slate-500 block uppercase">Active Harmonic Type</span>
+              <span id="harmonicBadge" class="text-sm font-bold text-purple-400">Pure Fundamental</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frequency Sweep & Binaural Mode Card -->
+        <div class="hud-card p-5 space-y-4">
+          <span class="text-xs font-orbitron font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-arrows-left-right text-pink-400"></i> AUTOMATED FREQUENCY SWEEP
+          </span>
+          <p class="text-[11px] text-slate-400 font-mono">
+            Execute linear frequency sweep test to evaluate speaker response curve or resonance nodes.
+          </p>
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div>
+              <label class="text-[10px] text-slate-500">START FREQ</label>
+              <input type="number" id="sweepStart" value="100" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500">END FREQ</label>
+              <input type="number" id="sweepEnd" value="5000" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200">
+            </div>
+          </div>
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <span class="text-[11px] font-mono text-slate-400">Duration: 5 Seconds</span>
+            <button onclick="runSweep()" id="sweepBtn" class="hud-btn-secondary px-3 py-1.5 rounded text-xs flex items-center space-x-1.5">
+              <i class="fa-solid fa-play text-pink-400"></i>
+              <span>START SWEEP</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SEO Tactical Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 mt-12 space-y-6 text-slate-300 font-rajdhani text-sm sm:text-base leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          SIGNAL SYNTH // TECHNICAL SPECIFICATION & ACOUSTIC FOUNDATIONS
+        </h2>
+        <p class="text-xs sm:text-sm text-cyan-400 font-mono mt-1">
+          Browser-native acoustic synthesis via Web Audio API, human audible frequency band physics & calibration standards.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-wave-square text-cyan-400"></i> Waveform Geometries & Harmonic Spectra
+          </h3>
+          <p>
+            Sound synthesis relies on alternating cyclic voltage patterns translated into speaker diaphragm motion. The nature of the waveform determines its timbre:
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">Sine Wave:</strong> Contains only the pure fundamental frequency with zero harmonic overtones. Essential for speaker testing and acoustic resonance profiling.</li>
+            <li><strong class="text-white">Square Wave:</strong> Rich in odd-numbered harmonics (1st, 3rd, 5th, 7th...) dropping at 1/n amplitude. Characteristic of 8-bit retro sound chips and chiptune synthesizers.</li>
+            <li><strong class="text-white">Sawtooth Wave:</strong> Contains all integer harmonics (both even and odd) falling at 1/n. Harsh, buzzy, and piercing; ideal for subtractive synth filters and brass emulation.</li>
+            <li><strong class="text-white">Triangle Wave:</strong> Contains only odd harmonics like the square wave, but falling rapidly at 1/n², yielding a warm, flute-like tone with soft highs.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-ear-listen text-cyan-400"></i> The Human Hearing Spectrum & Calibration
+          </h3>
+          <p>
+            Healthy human auditory perception typically spans from 20 Hz to 20,000 Hz, with peak sensitivity occurring between 2,000 Hz and 5,000 Hz according to the ISO 226 equal-loudness contours (Fletcher-Munson curves).
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-400 font-mono">
+            <li><strong class="text-white">Sub-Bass (20 Hz &ndash; 60 Hz):</strong> Felt through chest cavities and floors more than heard; produced by massive subwoofers.</li>
+            <li><strong class="text-white">Concert Pitch A4 (440 Hz):</strong> The worldwide musical standard pitch codified by ISO 16 in 1955, derived from orchestral violin tuning.</li>
+            <li><strong class="text-white">Verdi Tuning (432 Hz):</strong> An alternative scientific pitch favored by classical composers to reduce vocal cord strain.</li>
+            <li><strong class="text-white">Ultra-Highs (15 kHz &ndash; 20 kHz):</strong> Treble frequencies that rapidly diminish with age or acoustic exposure (presbycusis).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-4 space-y-2">
+        <h3 class="text-sm font-orbitron font-semibold text-white uppercase tracking-wider">
+          Airgap Zero-Log Client Architecture
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400">
+          The Signal Synth utility executes 100% locally on your machine utilizing the W3C Web Audio API hardware-accelerated sound card pipeline. No audio stream, frequency telemetry, or usage metrics are recorded, saved to cookies, or transmitted to any external server.
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (65)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'tone';
+    const TOOLS = [
+{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' },
+      { id: 'dns', name: 'DNS SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', code: '0x41' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    let audioCtx = null;
+    let oscillator = null;
+    let gainNode = null;
+    let analyser = null;
+    let isPlaying = false;
+    let currentWave = 'sine';
+    let vizMode = 'waveform'; // 'waveform' or 'spectrum'
+    let animFrame = null;
+
+    const SPEED_OF_SOUND = 343; // m/s in air at 20°C
+    const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        document.getElementById('sampleRateBadge').textContent = audioCtx.sampleRate.toLocaleString() + ' Hz';
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        stopAudio();
+      } else {
+        startAudio();
+      }
+    }
+
+    function startAudio() {
+      const ctx = getAudioContext();
+      if (isPlaying) return;
+
+      const freq = parseFloat(document.getElementById('freqNum').value) || 440;
+      const vol = parseFloat(document.getElementById('volumeSlider').value) / 100;
+
+      oscillator = ctx.createOscillator();
+      gainNode = ctx.createGain();
+
+      oscillator.type = currentWave;
+      oscillator.frequency.setValueAtTime(freq, ctx.currentTime);
+
+      // Smooth gain ramp to avoid clicks
+      gainNode.gain.setValueAtTime(0, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(vol * 0.5, ctx.currentTime + 0.05);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(analyser);
+      analyser.connect(ctx.destination);
+
+      oscillator.start();
+      isPlaying = true;
+
+      updateUIState(true);
+      startVisualizer();
+      showToast('AUDIO SYNTHESIS STARTED');
+    }
+
+    function stopAudio() {
+      if (!isPlaying || !oscillator) return;
+      const ctx = getAudioContext();
+
+      // Ramp down gain smoothly
+      gainNode.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
+      setTimeout(() => {
+        try {
+          if (oscillator) {
+            oscillator.stop();
+            oscillator.disconnect();
+          }
+        } catch(e) {}
+        isPlaying = false;
+        updateUIState(false);
+        showToast('AUDIO SYNTHESIS HALTED');
+      }, 50);
+    }
+
+    function updateUIState(active) {
+      const badge = document.getElementById('audioStateBadge');
+      const btn = document.getElementById('startStopBtn');
+      const label = document.getElementById('playLabel');
+      const icon = document.getElementById('playIcon');
+
+      if (active) {
+        badge.textContent = 'ACTIVE';
+        badge.className = 'text-cyan-400 font-bold animate-pulse';
+        label.textContent = 'HALT SYNTH';
+        icon.className = 'fa-solid fa-stop text-pink-400';
+        btn.className = 'hud-btn-secondary border-pink-500/50 text-pink-400 px-5 py-2 rounded text-xs flex items-center space-x-2';
+      } else {
+        badge.textContent = 'STANDBY';
+        badge.className = 'text-amber-400 font-bold';
+        label.textContent = 'ACTIVATE SYNTH';
+        icon.className = 'fa-solid fa-play';
+        btn.className = 'hud-btn-primary px-5 py-2 rounded text-xs flex items-center space-x-2';
+      }
+    }
+
+    function setWaveform(type) {
+      currentWave = type;
+      if (oscillator) {
+        oscillator.type = type;
+      }
+      document.querySelectorAll('.wave-btn').forEach(btn => {
+        btn.classList.remove('border-cyan-400', 'bg-cyan-950/40', 'text-cyan-300');
+        btn.classList.add('border-slate-800', 'bg-slate-900/80', 'text-slate-400');
+      });
+      const activeBtn = document.getElementById(`wave-${type}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('border-slate-800', 'bg-slate-900/80', 'text-slate-400');
+        activeBtn.classList.add('border-cyan-400', 'bg-cyan-950/40', 'text-cyan-300');
+      }
+
+      // Update harmonic badge
+      const harmonicBadge = document.getElementById('harmonicBadge');
+      if (type === 'sine') harmonicBadge.textContent = 'Pure Fundamental (1st)';
+      else if (type === 'square') harmonicBadge.textContent = 'Odd Harmonics (1/n)';
+      else if (type === 'sawtooth') harmonicBadge.textContent = 'Full Harmonic Series (1/n)';
+      else if (type === 'triangle') harmonicBadge.textContent = 'Odd Harmonics (1/n²)';
+    }
+
+    function updateFrequency(freq) {
+      freq = Math.max(20, Math.min(20000, freq));
+      document.getElementById('freqNum').value = freq;
+      document.getElementById('freqSlider').value = freq;
+
+      if (oscillator && audioCtx) {
+        oscillator.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.015);
+      }
+
+      // Telemetry updates
+      updateAcousticTelemetry(freq);
+    }
+
+    function nudgeFreq(delta) {
+      let current = parseFloat(document.getElementById('freqNum').value) || 440;
+      current = Math.round((current + delta) * 10) / 10;
+      updateFrequency(current);
+    }
+
+    function setPreset(freq, wave) {
+      setWaveform(wave);
+      updateFrequency(freq);
+      if (!isPlaying) {
+        startAudio();
+      }
+    }
+
+    function updateAcousticTelemetry(freq) {
+      // Band classification
+      const band = document.getElementById('bandBadge');
+      if (freq < 60) band.textContent = 'SUB-BASS';
+      else if (freq < 250) band.textContent = 'BASS';
+      else if (freq < 2000) band.textContent = 'MIDRANGE';
+      else if (freq < 6000) band.textContent = 'HIGH-MID';
+      else band.textContent = 'TREBLE / AIR';
+
+      // Wavelength: λ = v / f
+      const wavelengthM = SPEED_OF_SOUND / freq;
+      const wlBadge = document.getElementById('wavelengthBadge');
+      if (wavelengthM >= 1) {
+        wlBadge.textContent = `${wavelengthM.toFixed(2)} m (${(wavelengthM * 100).toFixed(0)} cm)`;
+      } else {
+        wlBadge.textContent = `${(wavelengthM * 100).toFixed(1)} cm (${(wavelengthM * 1000).toFixed(0)} mm)`;
+      }
+
+      // Period: T = 1 / f
+      const periodSec = 1 / freq;
+      const pBadge = document.getElementById('periodBadge');
+      if (periodSec >= 0.001) {
+        pBadge.textContent = `${(periodSec * 1000).toFixed(2)} ms`;
+      } else {
+        pBadge.textContent = `${(periodSec * 1000000).toFixed(1)} μs`;
+      }
+
+      // Musical Note calculation (A4 = 440Hz, MIDI 69)
+      const noteNum = 12 * (Math.log2(freq / 440)) + 69;
+      const roundedNote = Math.round(noteNum);
+      const cents = Math.round((noteNum - roundedNote) * 100);
+      const noteName = NOTE_NAMES[((roundedNote % 12) + 12) % 12];
+      const octave = Math.floor(roundedNote / 12) - 1;
+      const sign = cents >= 0 ? '+' : '';
+      document.getElementById('musicalNoteBadge').textContent = `${noteName}${octave} (${sign}${cents} ct)`;
+    }
+
+    function setVisualizerMode(mode) {
+      vizMode = mode;
+      document.getElementById('viz-wave').className = mode === 'waveform' ? 
+        'px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300' : 
+        'px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white';
+      document.getElementById('viz-spec').className = mode === 'spectrum' ? 
+        'px-2 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-cyan-300' : 
+        'px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white';
+    }
+
+    function startVisualizer() {
+      const canvas = document.getElementById('oscCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function draw() {
+        animFrame = requestAnimationFrame(draw);
+        const width = canvas.width = canvas.parentElement.clientWidth;
+        const height = canvas.height = canvas.parentElement.clientHeight;
+
+        ctx.fillStyle = '#05070d';
+        ctx.fillRect(0, 0, width, height);
+
+        // Grid lines
+        ctx.strokeStyle = 'rgba(0, 245, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 40) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < height; y += 30) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+
+        if (!isPlaying || !analyser) {
+          // Draw flat baseline
+          ctx.strokeStyle = 'rgba(0, 245, 255, 0.4)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(0, height / 2);
+          ctx.lineTo(width, height / 2);
+          ctx.stroke();
+          return;
+        }
+
+        if (vizMode === 'waveform') {
+          const bufferLength = analyser.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+          analyser.getByteTimeDomainData(dataArray);
+
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#00f5ff';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#00f5ff';
+          ctx.beginPath();
+
+          const sliceWidth = width * 1.0 / bufferLength;
+          let x = 0;
+
+          for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * height / 2;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += sliceWidth;
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        } else {
+          // FFT Spectrum mode
+          const bufferLength = analyser.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+          analyser.getByteFrequencyData(dataArray);
+
+          const barCount = 64;
+          const barWidth = width / barCount;
+          for (let i = 0; i < barCount; i++) {
+            const index = Math.floor(i * (bufferLength / barCount) * 0.4);
+            const val = dataArray[index] / 255;
+            const barHeight = val * (height - 10);
+            
+            const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
+            gradient.addColorStop(0, '#00f5ff');
+            gradient.addColorStop(1, '#ff2bd6');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+          }
+        }
+      }
+
+      if (!animFrame) {
+        draw();
+      }
+    }
+
+    function runSweep() {
+      const startFreq = parseFloat(document.getElementById('sweepStart').value) || 100;
+      const endFreq = parseFloat(document.getElementById('sweepEnd').value) || 5000;
+      const duration = 5.0; // 5 seconds
+
+      const ctx = getAudioContext();
+      if (!isPlaying) startAudio();
+
+      const btn = document.getElementById('sweepBtn');
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+
+      updateFrequency(startFreq);
+      if (oscillator) {
+        oscillator.frequency.cancelScheduledValues(ctx.currentTime);
+        oscillator.frequency.setValueAtTime(startFreq, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(endFreq, ctx.currentTime + duration);
+      }
+
+      showToast(`SWEEPING ${startFreq}Hz TO ${endFreq}Hz (${duration}s)`);
+
+      const startTime = performance.now();
+      const interval = setInterval(() => {
+        const elapsed = (performance.now() - startTime) / 1000;
+        if (elapsed >= duration) {
+          clearInterval(interval);
+          updateFrequency(endFreq);
+          btn.disabled = false;
+          btn.classList.remove('opacity-50');
+          showToast('SWEEP FINISHED');
+        } else {
+          // Logarithmic current estimate
+          const current = startFreq * Math.pow(endFreq / startFreq, elapsed / duration);
+          document.getElementById('freqNum').value = Math.round(current);
+          document.getElementById('freqSlider').value = Math.round(current);
+          updateAcousticTelemetry(current);
+        }
+      }, 50);
+    }
+
+    // Event listeners
+    document.getElementById('freqSlider').addEventListener('input', (e) => {
+      updateFrequency(parseFloat(e.target.value));
+    });
+
+    document.getElementById('freqNum').addEventListener('change', (e) => {
+      updateFrequency(parseFloat(e.target.value));
+    });
+
+    document.getElementById('volumeSlider').addEventListener('input', (e) => {
+      const vol = parseFloat(e.target.value);
+      document.getElementById('volumeVal').textContent = vol + '%';
+      if (gainNode && audioCtx && isPlaying) {
+        gainNode.gain.setTargetAtTime((vol / 100) * 0.5, audioCtx.currentTime, 0.02);
+      }
+    });
+
+    // Init on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      updateAcousticTelemetry(440);
+      startVisualizer();
+    });
+  </script>
+</body>
+</html>
