@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '80-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '87-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -594,6 +594,55 @@ const APPS = [
     subdomain: 'draw',
     title: 'CYBERTOOLS // DRAW',
     subtitle: 'TACTICAL SLATE & CANVAS VECTOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'short',
+    subdomain: 'short',
+    title: 'CYBERTOOLS // SHORT',
+    subtitle: 'URL CONDENSER & LINK COMPACTOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'tempmail',
+    subdomain: 'tempmail',
+    title: 'CYBERTOOLS // TEMPMAIL',
+    subtitle: 'DISPOSABLE INBOX & BURNER MAIL RADAR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'whoisip',
+    subdomain: 'whoisip',
+    title: 'CYBERTOOLS // WHOISIP',
+    subtitle: 'TELEMETRY PROBE & GEO ASN RADAR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'httpcode',
+    subdomain: 'httpcode',
+    title: 'CYBERTOOLS // HTTPCODE',
+    subtitle: 'PROTOCOL RADAR & HTTP STATUS INDEX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'webhook',
+    subdomain: 'webhook',
+    title: 'CYBERTOOLS // WEBHOOK',
+    subtitle: 'ENDPOINT PROBE & WEBHOOK DISPATCHER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'fx',
+    subdomain: 'fx',
+    title: 'CYBERTOOLS // FX',
+    subtitle: 'CHROMA EXCHANGE & FX RATE MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'storage',
+    subdomain: 'storage',
+    title: 'CYBERTOOLS // STORAGE',
+    subtitle: 'CACHE SCRUBBER & LOCAL STORAGE HUD',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
