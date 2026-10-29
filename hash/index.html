@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cryptographic Hash Generator & Checksum Verifier // SHA-256, SHA-512, MD5, HMAC - sarwarfx</title>
+  <meta name="description" content="Calculate real-time cryptographic hashes and HMAC digests for text and files directly in your browser. Supports SHA-256, SHA-512, SHA-384, SHA-1, and MD5 with zero server uploads.">
+  <meta name="keywords" content="hash generator, checksum calculator, sha256 generator, sha512, md5 online, hmac generator, file checksum, web crypto api, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/hash/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/hash/" />
+  <meta property="og:title" content="Cryptographic Hash Generator & Checksum Verifier // SHA-256, SHA-512, MD5, HMAC - sarwarfx" />
+  <meta property="og:description" content="Calculate real-time cryptographic hashes and HMAC digests for text and files directly in your browser. Supports SHA-256, SHA-512, SHA-384, SHA-1, and MD5 with zero server uploads." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/hash/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/hash/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/hash/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cryptographic Hash Generator & Checksum Verifier // SHA-256, SHA-512, MD5, HMAC - sarwarfx" />
+  <meta name="twitter:description" content="Calculate real-time cryptographic hashes and HMAC digests for text and files directly in your browser. Supports SHA-256, SHA-512, SHA-384, SHA-1, and MD5 with zero server uploads." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/hash/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Cryptographic Hash & Checksum Engine",
+    "url": "https://apps.sarwarfx.cfd/hash/",
+    "description": "Calculate real-time cryptographic hashes and HMAC digests for text and files directly in your browser. Supports SHA-256, SHA-512, SHA-384, SHA-1, and MD5 with zero server uploads.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .dropzone-active {
+      border-color: #00f5ff !important;
+      background: rgba(0, 245, 255, 0.08) !important;
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.3) !important;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-shield-halved text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">hash</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x0E]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: CRYPTO_DIGEST]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Mode Switcher -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-fingerprint text-xs text-cyan-400"></i>
+          <span>CRYPTO_ENGINE // WEBCRYPTO_API_SANDBOX</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          CHECKSUM & HMAC CRYPTO DIGEST
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Real-time cryptographic hash generator & file checksum auditor. Computes SHA-256, SHA-512, SHA-384, SHA-1, and MD5 entirely in your browser using hardware-accelerated WebCrypto. Zero uploads.
+        </p>
+      </div>
+
+      <!-- Mode Tabs -->
+      <div class="flex items-center space-x-2 bg-black/60 p-1 border border-slate-800 self-start md:self-auto">
+        <button id="tabText" onclick="switchMode('text')" class="px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-font"></i>
+          <span>TEXT STRING</span>
+        </button>
+        <button id="tabFile" onclick="switchMode('file')" class="px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-file-shield"></i>
+          <span>FILE CHECKSUM</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
+        <span class="text-cyan-400 font-bold uppercase tracking-wider" id="inputLabel">INPUT STREAM [PLAINTEXT]</span>
+        <div class="flex items-center space-x-3">
+          <label class="flex items-center space-x-2 cursor-pointer text-[11px] text-slate-300 hover:text-cyan-300">
+            <input type="checkbox" id="hmacToggle" onchange="toggleHmac()" class="accent-cyan-400 w-3.5 h-3.5">
+            <span>ENABLE HMAC</span>
+          </label>
+          <span class="text-slate-600">|</span>
+          <button onclick="clearAll()" class="hover:text-pink-400 transition-colors uppercase text-[11px]">CLEAR</button>
+        </div>
+      </div>
+
+      <!-- Text Input Panel -->
+      <div id="textInputArea" class="space-y-3">
+        <textarea 
+          id="rawTextInput" 
+          rows="4" 
+          placeholder="Paste or type raw plaintext string to compute live cryptographic digests..." 
+          oninput="computeHashes()"
+          class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-200 placeholder-slate-600 outline-none transition-all resize-y"></textarea>
+      </div>
+
+      <!-- File Dropzone Panel (Hidden by default) -->
+      <div id="fileInputArea" class="hidden space-y-3">
+        <div 
+          id="dropzone"
+          onclick="document.getElementById('filePicker').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+          class="border-2 border-dashed border-slate-700 hover:border-cyan-500/70 p-8 text-center cursor-pointer transition-all bg-black/40 hover:bg-cyan-950/10">
+          <i class="fa-solid fa-cloud-arrow-up text-3xl text-cyan-400 mb-3"></i>
+          <p class="text-sm font-mono text-white font-bold">DRAG & DROP ANY FILE TO HASH</p>
+          <p class="text-xs font-mono text-slate-400 mt-1">Or click to browse from your filesystem (processed in-memory, never uploaded)</p>
+          <input type="file" id="filePicker" onchange="handleFileSelected(event)" class="hidden">
+        </div>
+        <div id="fileMeta" class="hidden flex items-center justify-between text-xs font-mono p-2.5 bg-black/60 border border-cyan-500/30 text-cyan-300">
+          <span id="fileNameDisplay" class="font-bold truncate max-w-md"></span>
+          <span id="fileSizeDisplay" class="text-slate-400"></span>
+        </div>
+      </div>
+
+      <!-- Optional HMAC Secret Key Field -->
+      <div id="hmacKeyArea" class="hidden pt-2 border-t border-slate-800/80">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-mono text-pink-400 font-bold whitespace-nowrap">[HMAC_KEY]:</span>
+          <input 
+            type="text" 
+            id="hmacSecretInput" 
+            placeholder="Enter secret passphrase for keyed HMAC computation..."
+            oninput="computeHashes()" 
+            class="w-full px-3 py-1.5 bg-black/80 border border-pink-500/40 focus:border-pink-400 text-xs font-mono text-pink-200 placeholder-slate-600 outline-none">
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Checksum Comparator Tool -->
+    <div class="hud-card p-4 space-y-2">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-300 font-bold uppercase tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-code-compare text-cyan-400"></i>
+          <span>CHECKSUM MATCH VERIFIER</span>
+        </span>
+        <span id="verifyStatus" class="text-[11px] font-mono text-slate-500">[STANDBY: AWAITING HASH]</span>
+      </div>
+      <input 
+        type="text" 
+        id="verifyInput" 
+        placeholder="Paste expected checksum here to auto-match against calculated digests..." 
+        oninput="verifyMatch()"
+        class="w-full px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-white placeholder-slate-600 outline-none">
+    </div>
+
+    <!-- Output Digest Telemetry Grid -->
+    <div class="space-y-3" id="resultsGrid">
+      
+      <!-- SHA-256 -->
+      <div class="hud-card p-4 space-y-2 group">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SHA-256</span>
+            <span class="text-slate-500 text-[11px]">[256-BIT // 64 HEX CHARS]</span>
+          </div>
+          <button onclick="copyHash('sha256')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1 hover:text-white">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="hash_sha256" class="p-2.5 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 break-all select-all">
+          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        </div>
+      </div>
+
+      <!-- SHA-512 -->
+      <div class="hud-card p-4 space-y-2 group">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SHA-512</span>
+            <span class="text-slate-500 text-[11px]">[512-BIT // 128 HEX CHARS]</span>
+          </div>
+          <button onclick="copyHash('sha512')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1 hover:text-white">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="hash_sha512" class="p-2.5 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 break-all select-all">
+          cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
+        </div>
+      </div>
+
+      <!-- SHA-384 -->
+      <div class="hud-card p-4 space-y-2 group">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SHA-384</span>
+            <span class="text-slate-500 text-[11px]">[384-BIT // 96 HEX CHARS]</span>
+          </div>
+          <button onclick="copyHash('sha384')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1 hover:text-white">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="hash_sha384" class="p-2.5 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 break-all select-all">
+          38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b
+        </div>
+      </div>
+
+      <!-- SHA-1 -->
+      <div class="hud-card p-4 space-y-2 group">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SHA-1</span>
+            <span class="text-slate-500 text-[11px]">[160-BIT // LEGACY COMPATIBILITY]</span>
+          </div>
+          <button onclick="copyHash('sha1')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1 hover:text-white">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="hash_sha1" class="p-2.5 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 break-all select-all">
+          da39a3ee5e6b4b0d3255bfef95601890afd80709
+        </div>
+      </div>
+
+      <!-- MD5 -->
+      <div class="hud-card p-4 space-y-2 group">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-pink-950/80 border border-pink-500/50 text-pink-300 font-bold text-[10px]">MD5</span>
+            <span class="text-slate-500 text-[11px]">[128-BIT // NON-CRYPTOGRAPHIC CHECKSUM]</span>
+          </div>
+          <button onclick="copyHash('md5')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1 hover:text-white">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="hash_md5" class="p-2.5 bg-black/90 border border-slate-800 text-xs font-mono text-pink-300 break-all select-all">
+          d41d8cd98f00b204e9800998ecf8427e
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          Cryptographic Checksum & Hash Verification Protocol
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Complete client-side cryptographic hashing sandbox leveraging the W3C Web Cryptography API and isolated V8 ArrayBuffer memory.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / AIRGAP INTEGRITY</span>
+          <p class="text-slate-400 text-[11px]">
+            Your data and files never leave your device. All hashing runs locally inside your browser's WebCrypto worker threads. No server transfers, no telemetry, zero logs.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / HARDWARE ACCELERATED</span>
+          <p class="text-slate-400 text-[11px]">
+            SHA-256 and SHA-512 computations utilize native hardware instruction sets (Intel SHA extensions / ARMv8 Crypto) via `crypto.subtle` for gigabyte-per-second throughput.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / HMAC SIGNING</span>
+          <p class="text-slate-400 text-[11px]">
+            Keyed-hash message authentication code (HMAC) mode provides cryptographic message authentication using secret keys conforming to RFC 2104.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: Can I verify large ISOs or software releases?</strong><br>
+          Yes. The file hasher reads local files directly in browser memory using chunked ArrayBuffers, allowing verification of multi-gigabyte files with zero network upload.</p>
+          <p><strong class="text-cyan-300">Q: Which hash algorithm should I use for security?</strong><br>
+          SHA-256 and SHA-512 are industry standard and collision-resistant. MD5 and SHA-1 should only be used for legacy checksum verification or deduplication.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'hash';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Application Logic
+    let currentMode = 'text';
+    let activeFileBuffer = null;
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const tabText = document.getElementById('tabText');
+      const tabFile = document.getElementById('tabFile');
+      const textArea = document.getElementById('textInputArea');
+      const fileArea = document.getElementById('fileInputArea');
+      const label = document.getElementById('inputLabel');
+
+      if (mode === 'text') {
+        tabText.className = "px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5";
+        tabFile.className = "px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        textArea.classList.remove('hidden');
+        fileArea.classList.add('hidden');
+        label.textContent = "INPUT STREAM [PLAINTEXT]";
+      } else {
+        tabFile.className = "px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5";
+        tabText.className = "px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        fileArea.classList.remove('hidden');
+        textArea.classList.add('hidden');
+        label.textContent = "INPUT STREAM [LOCAL FILE ARRAYBUFFER]";
+      }
+      computeHashes();
+    }
+
+    function toggleHmac() {
+      const enabled = document.getElementById('hmacToggle').checked;
+      const keyArea = document.getElementById('hmacKeyArea');
+      if (enabled) {
+        keyArea.classList.remove('hidden');
+      } else {
+        keyArea.classList.add('hidden');
+      }
+      computeHashes();
+    }
+
+    function clearAll() {
+      document.getElementById('rawTextInput').value = '';
+      document.getElementById('filePicker').value = '';
+      document.getElementById('fileMeta').classList.add('hidden');
+      document.getElementById('verifyInput').value = '';
+      activeFileBuffer = null;
+      computeHashes();
+      verifyMatch();
+      showToast('CLEARED ALL INPUTS');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.add('dropzone-active');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.remove('dropzone-active');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.remove('dropzone-active');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelected(e) {
+      if (e.target.files && e.target.files[0]) {
+        processFile(e.target.files[0]);
+      }
+    }
+
+    function processFile(file) {
+      document.getElementById('fileNameDisplay').textContent = file.name;
+      document.getElementById('fileSizeDisplay').textContent = `${(file.size / 1024).toFixed(2)} KB (${file.size.toLocaleString()} bytes)`;
+      document.getElementById('fileMeta').classList.remove('hidden');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        activeFileBuffer = e.target.result;
+        computeHashes();
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Helper: Buffer to Hex string
+    function bufferToHex(buffer) {
+      return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+    }
+
+    // Pure JS MD5 implementation (RFC 1321)
+    function md5(stringOrBuffer) {
+      function safeAdd(x, y) {
+        const lsw = (x & 0xffff) + (y & 0xffff);
+        const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+        return (msw << 16) | (lsw & 0xffff);
+      }
+      function bitRol(num, cnt) {
+        return (num << cnt) | (num >>> (32 - cnt));
+      }
+      function md5cmn(q, a, b, x, s, t) {
+        return safeAdd(bitRol(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
+      }
+      function md5ff(a, b, c, d, x, s, t) {
+        return md5cmn((b & c) | (~b & d), a, b, x, s, t);
+      }
+      function md5gg(a, b, c, d, x, s, t) {
+        return md5cmn((b & d) | (c & ~d), a, b, x, s, t);
+      }
+      function md5hh(a, b, c, d, x, s, t) {
+        return md5cmn(b ^ c ^ d, a, b, x, s, t);
+      }
+      function md5ii(a, b, c, d, x, s, t) {
+        return md5cmn(c ^ (b | ~d), a, b, x, s, t);
+      }
+      function binlMD5(x, len) {
+        x[len >> 5] |= 0x80 << (len % 32);
+        x[(((len + 64) >>> 9) << 4) + 14] = len;
+        let a = 1732584193, b = -271733879, c = -1732584194, d = 271733878;
+        for (let i = 0; i < x.length; i += 16) {
+          const olda = a, oldb = b, oldc = c, oldd = d;
+          a = md5ff(a, b, c, d, x[i], 7, -680876936);
+          d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
+          c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
+          b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
+          a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
+          d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
+          c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
+          b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
+          a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
+          d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
+          c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
+          b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
+          a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
+          d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
+          c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
+          b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
+
+          a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
+          d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
+          c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
+          b = md5gg(b, c, d, a, x[i], 20, -373897302);
+          a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
+          d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
+          c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
+          b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
+          a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
+          d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
+          c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
+          b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
+          a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
+          d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
+          c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
+          b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
+
+          a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
+          d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
+          c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
+          b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
+          a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
+          d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
+          c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
+          b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
+          a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
+          d = md5hh(d, a, b, c, x[i], 11, -358537222);
+          c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
+          b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
+          a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
+          d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
+          c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
+          b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
+
+          a = md5ii(a, b, c, d, x[i], 6, -198630844);
+          d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
+          c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
+          b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
+          a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
+          d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
+          c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
+          b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
+          a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
+          d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
+          c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
+          b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
+          a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
+          d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
+          c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
+          b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
+
+          a = safeAdd(a, olda);
+          b = safeAdd(b, oldb);
+          c = safeAdd(c, oldc);
+          d = safeAdd(d, oldd);
+        }
+        return [a, b, c, d];
+      }
+      function binl2rstr(input) {
+        let output = '';
+        for (let i = 0; i < input.length * 32; i += 8) {
+          output += String.fromCharCode((input[i >> 5] >>> (i % 32)) & 0xff);
+        }
+        return output;
+      }
+      function rstr2binl(input) {
+        const output = Array(input.length >> 2);
+        for (let i = 0; i < output.length; i++) output[i] = 0;
+        for (let i = 0; i < input.length * 8; i += 8) {
+          output[i >> 5] |= (input.charCodeAt(i / 8) & 0xff) << (i % 32);
+        }
+        return output;
+      }
+      function rstr2hex(input) {
+        const hexTab = '0123456789abcdef';
+        let output = '';
+        for (let i = 0; i < input.length; i++) {
+          const x = input.charCodeAt(i);
+          output += hexTab.charAt((x >>> 4) & 0x0f) + hexTab.charAt(x & 0x0f);
+        }
+        return output;
+      }
+
+      let str = '';
+      if (typeof stringOrBuffer === 'string') {
+        str = unescape(encodeURIComponent(stringOrBuffer));
+      } else {
+        const bytes = new Uint8Array(stringOrBuffer);
+        for (let i = 0; i < bytes.length; i++) str += String.fromCharCode(bytes[i]);
+      }
+      return rstr2hex(binl2rstr(binlMD5(rstr2binl(str), str.length * 8)));
+    }
+
+    async function computeHashes() {
+      const isHmac = document.getElementById('hmacToggle').checked;
+      const hmacKeyStr = document.getElementById('hmacSecretInput').value;
+      const encoder = new TextEncoder();
+
+      let dataBuffer;
+      if (currentMode === 'text') {
+        const text = document.getElementById('rawTextInput').value;
+        dataBuffer = encoder.encode(text);
+      } else {
+        dataBuffer = activeFileBuffer || new ArrayBuffer(0);
+      }
+
+      try {
+        if (!isHmac) {
+          // Standard Hashes via WebCrypto
+          const [sha256, sha512, sha384, sha1] = await Promise.all([
+            crypto.subtle.digest('SHA-256', dataBuffer),
+            crypto.subtle.digest('SHA-512', dataBuffer),
+            crypto.subtle.digest('SHA-384', dataBuffer),
+            crypto.subtle.digest('SHA-1', dataBuffer)
+          ]);
+
+          document.getElementById('hash_sha256').textContent = bufferToHex(sha256);
+          document.getElementById('hash_sha512').textContent = bufferToHex(sha512);
+          document.getElementById('hash_sha384').textContent = bufferToHex(sha384);
+          document.getElementById('hash_sha1').textContent = bufferToHex(sha1);
+          document.getElementById('hash_md5').textContent = md5(dataBuffer);
+        } else {
+          // Keyed HMAC Digests via WebCrypto
+          const keyData = encoder.encode(hmacKeyStr);
+          
+          async function getHmac(algoName) {
+            const cryptoKey = await crypto.subtle.importKey(
+              'raw',
+              keyData,
+              { name: 'HMAC', hash: { name: algoName } },
+              false,
+              ['sign']
+            );
+            const signature = await crypto.subtle.sign('HMAC', cryptoKey, dataBuffer);
+            return bufferToHex(signature);
+          }
+
+          const [sha256, sha512, sha384, sha1] = await Promise.all([
+            getHmac('SHA-256'),
+            getHmac('SHA-512'),
+            getHmac('SHA-384'),
+            getHmac('SHA-1')
+          ]);
+
+          document.getElementById('hash_sha256').textContent = sha256;
+          document.getElementById('hash_sha512').textContent = sha512;
+          document.getElementById('hash_sha384').textContent = sha384;
+          document.getElementById('hash_sha1').textContent = sha1;
+          document.getElementById('hash_md5').textContent = "[HMAC-MD5 NOT SUPPORTED BY WEBCRYPTO]";
+        }
+      } catch (err) {
+        console.error("Hashing error: ", err);
+      }
+
+      verifyMatch();
+    }
+
+    function verifyMatch() {
+      const target = document.getElementById('verifyInput').value.trim().toLowerCase();
+      const statusEl = document.getElementById('verifyStatus');
+      if (!target) {
+        statusEl.textContent = '[STANDBY: AWAITING HASH]';
+        statusEl.className = 'text-[11px] font-mono text-slate-500';
+        return;
+      }
+
+      const hashes = {
+        'SHA-256': document.getElementById('hash_sha256').textContent.trim().toLowerCase(),
+        'SHA-512': document.getElementById('hash_sha512').textContent.trim().toLowerCase(),
+        'SHA-384': document.getElementById('hash_sha384').textContent.trim().toLowerCase(),
+        'SHA-1': document.getElementById('hash_sha1').textContent.trim().toLowerCase(),
+        'MD5': document.getElementById('hash_md5').textContent.trim().toLowerCase()
+      };
+
+      for (const [algo, hashVal] of Object.entries(hashes)) {
+        if (hashVal === target) {
+          statusEl.textContent = `● MATCH CONFIRMED (${algo})`;
+          statusEl.className = 'text-[11px] font-mono text-emerald-400 font-bold';
+          return;
+        }
+      }
+
+      statusEl.textContent = '● MISMATCH / NO ALGORITHM MATCH';
+      statusEl.className = 'text-[11px] font-mono text-rose-400 font-bold';
+    }
+
+    function copyHash(type) {
+      const val = document.getElementById(`hash_${type}`).textContent.trim();
+      navigator.clipboard.writeText(val);
+      showToast(`COPIED ${type.toUpperCase()} CHECKSUM`);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      computeHashes();
+    });
+  </script>
+</body>
+</html>

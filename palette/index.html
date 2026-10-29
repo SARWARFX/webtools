@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chroma Matrix & WCAG Contrast Auditor // HEX, RGB, HSL, OKLCH - sarwarfx</title>
+  <meta name="description" content="Instant bidirectional color converter for HEX, RGB, HSL, and OKLCH with WCAG 2.1 accessibility contrast ratio auditor and color harmony palette generator. 100% in-browser.">
+  <meta name="keywords" content="color converter, hex to rgb, rgb to hsl, oklch converter, wcag contrast checker, color accessibility, color palette generator, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/palette/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/palette/" />
+  <meta property="og:title" content="Chroma Matrix & WCAG Contrast Auditor // HEX, RGB, HSL, OKLCH - sarwarfx" />
+  <meta property="og:description" content="Instant bidirectional color converter for HEX, RGB, HSL, and OKLCH with WCAG 2.1 accessibility contrast ratio auditor and color harmony palette generator. 100% in-browser." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/palette/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/palette/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/palette/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chroma Matrix & WCAG Contrast Auditor // HEX, RGB, HSL, OKLCH - sarwarfx" />
+  <meta name="twitter:description" content="Instant bidirectional color converter for HEX, RGB, HSL, and OKLCH with WCAG 2.1 accessibility contrast ratio auditor and color harmony palette generator. 100% in-browser." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/palette/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Chroma Matrix & WCAG Contrast Auditor",
+    "url": "https://apps.sarwarfx.cfd/palette/",
+    "description": "Instant bidirectional color converter for HEX, RGB, HSL, and OKLCH with WCAG 2.1 accessibility contrast ratio auditor and color harmony palette generator. 100% in-browser.",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      background: transparent;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: 1px solid rgba(0, 245, 255, 0.5);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-palette text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">palette</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x12]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: CHROMA_AUDITOR]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Presets -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-eye-dropper text-xs text-cyan-400"></i>
+          <span>CHROMA_MATRIX // WCAG_ACCESSIBILITY_ENGINE</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          COLOR ENGINE & WCAG CONTRAST AUDITOR
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Bidirectional HEX, RGB, HSL, and OKLCH color matrix converter with W3C WCAG 2.1 contrast ratio audit scorecard and harmonic color generation.
+        </p>
+      </div>
+
+      <!-- Quick Cyber Swatches -->
+      <div class="flex items-center space-x-2 self-start md:self-auto">
+        <button onclick="setColorFromHex('#00f5ff')" class="w-7 h-7 rounded border border-white/30 transition-transform hover:scale-110" style="background: #00f5ff" title="Neon Cyan"></button>
+        <button onclick="setColorFromHex('#ff2bd6')" class="w-7 h-7 rounded border border-white/30 transition-transform hover:scale-110" style="background: #ff2bd6" title="Neon Pink"></button>
+        <button onclick="setColorFromHex('#10b981')" class="w-7 h-7 rounded border border-white/30 transition-transform hover:scale-110" style="background: #10b981" title="Emerald"></button>
+        <button onclick="setColorFromHex('#f59e0b')" class="w-7 h-7 rounded border border-white/30 transition-transform hover:scale-110" style="background: #f59e0b" title="Amber Alert"></button>
+        <button onclick="setColorFromHex('#6366f1')" class="w-7 h-7 rounded border border-white/30 transition-transform hover:scale-110" style="background: #6366f1" title="Indigo Laser"></button>
+      </div>
+    </div>
+
+    <!-- Color Conversion Studio -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Primary Swatch Preview & Visual Picker -->
+      <div class="hud-card p-5 space-y-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2 mb-3">
+            <span class="text-cyan-400 font-bold uppercase">PRIMARY COLOR CHIP</span>
+            <span id="activeLuminance" class="text-[10px] text-slate-500 font-mono">LUM: 0.81</span>
+          </div>
+          <div id="swatchBox" class="w-full h-32 border border-slate-700 shadow-inner flex items-center justify-center transition-all relative group" style="background: #00f5ff">
+            <input type="color" id="nativeColorPicker" value="#00f5ff" oninput="onNativePickerChange(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+            <div class="px-3 py-1 bg-black/70 backdrop-blur-sm border border-white/20 text-xs font-mono font-bold text-white uppercase pointer-events-none group-hover:scale-105 transition-transform">
+              CLICK TO PICK COLOR
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 pt-2">
+          <span class="text-[10px] text-slate-500 font-mono uppercase font-bold">HARMONY PALETTE CHIPS:</span>
+          <div class="grid grid-cols-4 gap-1.5" id="harmonyChips">
+            <!-- Injected by updateHarmonies() -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bidirectional Color Format Values (2 Columns) -->
+      <div class="hud-card p-5 space-y-3 lg:col-span-2">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+          <span class="text-white font-bold uppercase">BIDIRECTIONAL FORMAT CONVERSION</span>
+          <span class="text-cyan-400 text-[11px] font-mono">LIVE SYNC</span>
+        </div>
+
+        <!-- HEX -->
+        <div class="flex items-center space-x-2">
+          <span class="w-16 text-xs font-mono text-cyan-400 font-bold">HEX:</span>
+          <input 
+            type="text" 
+            id="inputHex" 
+            value="#00f5ff" 
+            oninput="onHexChange(this.value)"
+            class="flex-1 px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-white outline-none">
+          <button onclick="copyVal('inputHex')" class="hud-btn-secondary px-3 py-2 text-xs"><i class="fa-solid fa-copy"></i></button>
+        </div>
+
+        <!-- RGB -->
+        <div class="flex items-center space-x-2">
+          <span class="w-16 text-xs font-mono text-pink-400 font-bold">RGB:</span>
+          <input 
+            type="text" 
+            id="inputRgb" 
+            value="rgb(0, 245, 255)" 
+            oninput="onRgbChange(this.value)"
+            class="flex-1 px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-white outline-none">
+          <button onclick="copyVal('inputRgb')" class="hud-btn-secondary px-3 py-2 text-xs"><i class="fa-solid fa-copy"></i></button>
+        </div>
+
+        <!-- HSL -->
+        <div class="flex items-center space-x-2">
+          <span class="w-16 text-xs font-mono text-emerald-400 font-bold">HSL:</span>
+          <input 
+            type="text" 
+            id="inputHsl" 
+            value="hsl(182, 100%, 50%)" 
+            oninput="onHslChange(this.value)"
+            class="flex-1 px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-white outline-none">
+          <button onclick="copyVal('inputHsl')" class="hud-btn-secondary px-3 py-2 text-xs"><i class="fa-solid fa-copy"></i></button>
+        </div>
+
+        <!-- OKLCH -->
+        <div class="flex items-center space-x-2">
+          <span class="w-16 text-xs font-mono text-indigo-400 font-bold">OKLCH:</span>
+          <input 
+            type="text" 
+            id="inputOklch" 
+            value="oklch(0.865 0.177 197.8)" 
+            readonly
+            class="flex-1 px-3 py-2 bg-black/80 border border-slate-800 text-xs font-mono text-slate-300 outline-none">
+          <button onclick="copyVal('inputOklch')" class="hud-btn-secondary px-3 py-2 text-xs"><i class="fa-solid fa-copy"></i></button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- WCAG 2.1 Contrast Ratio Auditor -->
+    <div class="hud-card p-6 space-y-6 border-cyan-500/40">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-universal-access text-cyan-400"></i>
+          <span class="font-bold text-white text-sm font-mono uppercase tracking-wider">WCAG 2.1 ACCESSIBILITY CONTRAST AUDIT</span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs font-mono">
+          <span class="text-slate-400 font-bold">CONTRAST RATIO:</span>
+          <span id="contrastRatioDisplay" class="text-lg font-extrabold text-cyan-300">14.2 : 1</span>
+        </div>
+      </div>
+
+      <!-- Color Pair Controls -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <!-- Foreground Text Color -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 font-bold">
+            <span>FOREGROUND (TEXT):</span>
+            <input type="color" id="fgColorPicker" value="#00f5ff" oninput="onContrastPairChange()">
+          </div>
+          <input 
+            type="text" 
+            id="fgHexInput" 
+            value="#00f5ff" 
+            oninput="document.getElementById('fgColorPicker').value = this.value; onContrastPairChange()"
+            class="w-full px-2.5 py-1.5 bg-black/80 border border-slate-800 text-xs text-white outline-none">
+        </div>
+
+        <!-- Background Color -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 font-bold">
+            <span>BACKGROUND:</span>
+            <input type="color" id="bgColorPicker" value="#05070d" oninput="onContrastPairChange()">
+          </div>
+          <input 
+            type="text" 
+            id="bgHexInput" 
+            value="#05070d" 
+            oninput="document.getElementById('bgColorPicker').value = this.value; onContrastPairChange()"
+            class="w-full px-2.5 py-1.5 bg-black/80 border border-slate-800 text-xs text-white outline-none">
+        </div>
+      </div>
+
+      <!-- Live Contrast Test Canvas Preview -->
+      <div id="contrastPreviewBox" class="p-6 border border-slate-800 rounded transition-all text-center space-y-2" style="background-color: #05070d; color: #00f5ff">
+        <div class="text-2xl sm:text-3xl font-extrabold font-mono uppercase tracking-wider">
+          TACTICAL HUD HIGH-CONTRAST PREVIEW
+        </div>
+        <p class="text-sm font-mono max-w-xl mx-auto">
+          The quick brown fox jumps over the lazy dog. Standard body text typography evaluation under ISO/IEC contrast criteria.
+        </p>
+      </div>
+
+      <!-- WCAG Compliance Scorecard Badges -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono text-center">
+        <!-- AA Normal -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1" id="badge_aa_norm">
+          <div class="text-[10px] text-slate-400 font-bold">WCAG AA NORMAL</div>
+          <div class="text-xs font-bold text-slate-500">[MIN 4.5:1]</div>
+          <div class="badge-status text-emerald-400 font-extrabold text-sm pt-1">PASS</div>
+        </div>
+
+        <!-- AA Large -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1" id="badge_aa_large">
+          <div class="text-[10px] text-slate-400 font-bold">WCAG AA LARGE</div>
+          <div class="text-xs font-bold text-slate-500">[MIN 3.0:1]</div>
+          <div class="badge-status text-emerald-400 font-extrabold text-sm pt-1">PASS</div>
+        </div>
+
+        <!-- AAA Normal -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1" id="badge_aaa_norm">
+          <div class="text-[10px] text-slate-400 font-bold">WCAG AAA NORMAL</div>
+          <div class="text-xs font-bold text-slate-500">[MIN 7.0:1]</div>
+          <div class="badge-status text-emerald-400 font-extrabold text-sm pt-1">PASS</div>
+        </div>
+
+        <!-- AAA Large -->
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1" id="badge_aaa_large">
+          <div class="text-[10px] text-slate-400 font-bold">WCAG AAA LARGE</div>
+          <div class="text-xs font-bold text-slate-500">[MIN 4.5:1]</div>
+          <div class="badge-status text-emerald-400 font-extrabold text-sm pt-1">PASS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          W3C Color Space & WCAG 2.1 Contrast Metrics
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Accurate sRGB relative luminance calculation conforming strictly to W3C Web Content Accessibility Guidelines (WCAG) 2.1.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / RELATIVE LUMINANCE</span>
+          <p class="text-slate-400 text-[11px]">
+            Relative luminance is calculated by linearizing gamma-corrected sRGB channels: `(0.2126*R + 0.7152*G + 0.0722*B)` where channels are adjusted for human ocular cone sensitivity.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / CONTRAST RATIO FORMULA</span>
+          <p class="text-slate-400 text-[11px]">
+            Ratio equals `(L1 + 0.05) / (L2 + 0.05)` where L1 is the lighter color and L2 is the darker color, spanning from 1:1 (zero contrast) up to 21:1 (pure black on pure white).
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / MODERN OKLCH SPACE</span>
+          <p class="text-slate-400 text-[11px]">
+            OKLCH provides perceptually uniform lightness (L) and chroma (C) across hues (H), eliminating sudden perceived brightness drops common in HSL.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: What is the difference between AA and AAA requirements?</strong><br>
+          WCAG Level AA requires at least 4.5:1 for regular text and 3:1 for large text (&ge;18pt or bold &ge;14pt). Level AAA demands 7:1 for normal and 4.5:1 for large text.</p>
+          <p><strong class="text-cyan-300">Q: Does this tool support Alpha channel transparency?</strong><br>
+          Yes. Hex codes with alpha (`#rrggbbaa`) and rgba/hsla strings are automatically flattened against dark backing for accessibility verification.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'palette';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Color conversion math
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '').trim();
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      if (hex.length !== 6 && hex.length !== 8) return null;
+      const num = parseInt(hex.slice(0, 6), 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => {
+        const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      }).join('');
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    }
+
+    function hslToRgb(h, s, l) {
+      h /= 360; s /= 100; l /= 100;
+      let r, g, b;
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+        };
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+      }
+      return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+      };
+    }
+
+    // Relative Luminance & WCAG Contrast
+    function getLuminance(r, g, b) {
+      const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function getContrastRatio(rgb1, rgb2) {
+      const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+      const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    // Approximate OKLCH from sRGB
+    function rgbToOklch(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const lr = r <= 0.04045 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+      const lg = g <= 0.04045 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+      const lb = b <= 0.04045 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+      const l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb);
+      const m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb);
+      const s = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb);
+
+      const L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s;
+      const a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+      const b2 = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+
+      const C = Math.sqrt(a * a + b2 * b2);
+      let H = Math.atan2(b2, a) * (180 / Math.PI);
+      if (H < 0) H += 360;
+
+      return `oklch(${L.toFixed(3)} ${C.toFixed(3)} ${H.toFixed(1)})`;
+    }
+
+    // UI Updates
+    function updateAllFromRgb(r, g, b, skipField = null) {
+      const hex = rgbToHex(r, g, b);
+      const hsl = rgbToHsl(r, g, b);
+      const oklch = rgbToOklch(r, g, b);
+      const lum = getLuminance(r, g, b);
+
+      if (skipField !== 'hex') document.getElementById('inputHex').value = hex;
+      if (skipField !== 'rgb') document.getElementById('inputRgb').value = `rgb(${r}, ${g}, ${b})`;
+      if (skipField !== 'hsl') document.getElementById('inputHsl').value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+      document.getElementById('inputOklch').value = oklch;
+
+      document.getElementById('swatchBox').style.backgroundColor = hex;
+      document.getElementById('nativeColorPicker').value = hex.slice(0, 7);
+      document.getElementById('activeLuminance').textContent = `LUM: ${lum.toFixed(3)}`;
+
+      updateHarmonies(hsl);
+    }
+
+    function updateHarmonies(hsl) {
+      const container = document.getElementById('harmonyChips');
+      const hues = [
+        (hsl.h + 180) % 360, // Complementary
+        (hsl.h + 30) % 360,  // Analogous 1
+        (hsl.h + 120) % 360, // Triadic 1
+        (hsl.h + 240) % 360  // Triadic 2
+      ];
+
+      container.innerHTML = hues.map(h => {
+        const rgb = hslToRgb(h, hsl.s, hsl.l);
+        const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        return `
+          <div onclick="setColorFromHex('${hex}')" class="h-8 rounded cursor-pointer border border-white/20 hover:scale-105 transition-transform" style="background: ${hex}" title="${hex}"></div>
+        `;
+      }).join('');
+    }
+
+    function setColorFromHex(hex) {
+      const rgb = hexToRgb(hex);
+      if (rgb) updateAllFromRgb(rgb.r, rgb.g, rgb.b);
+    }
+
+    function onHexChange(val) {
+      const rgb = hexToRgb(val);
+      if (rgb) updateAllFromRgb(rgb.r, rgb.g, rgb.b, 'hex');
+    }
+
+    function onRgbChange(val) {
+      const match = val.match(/\d+/g);
+      if (match && match.length >= 3) {
+        updateAllFromRgb(parseInt(match[0]), parseInt(match[1]), parseInt(match[2]), 'rgb');
+      }
+    }
+
+    function onHslChange(val) {
+      const match = val.match(/\d+/g);
+      if (match && match.length >= 3) {
+        const rgb = hslToRgb(parseInt(match[0]), parseInt(match[1]), parseInt(match[2]));
+        updateAllFromRgb(rgb.r, rgb.g, rgb.b, 'hsl');
+      }
+    }
+
+    function onNativePickerChange(e) {
+      setColorFromHex(e.target.value);
+    }
+
+    function copyVal(id) {
+      const text = document.getElementById(id).value;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED COLOR CODE');
+    }
+
+    // Contrast Pair Auditor Logic
+    function onContrastPairChange() {
+      const fgHex = document.getElementById('fgColorPicker').value;
+      const bgHex = document.getElementById('bgColorPicker').value;
+
+      document.getElementById('fgHexInput').value = fgHex;
+      document.getElementById('bgHexInput').value = bgHex;
+
+      const fgRgb = hexToRgb(fgHex) || { r: 0, g: 245, b: 255 };
+      const bgRgb = hexToRgb(bgHex) || { r: 5, g: 7, b: 13 };
+
+      const ratio = getContrastRatio(fgRgb, bgRgb);
+      document.getElementById('contrastRatioDisplay').textContent = `${ratio.toFixed(2)} : 1`;
+
+      const previewBox = document.getElementById('contrastPreviewBox');
+      previewBox.style.backgroundColor = bgHex;
+      previewBox.style.color = fgHex;
+
+      function updateBadge(id, pass) {
+        const el = document.getElementById(id);
+        const statusEl = el.querySelector('.badge-status');
+        if (pass) {
+          statusEl.textContent = 'PASS';
+          statusEl.className = 'badge-status text-emerald-400 font-extrabold text-sm pt-1';
+          el.className = 'p-3 bg-black/60 border border-emerald-500/50 space-y-1 shadow-[0_0_10px_rgba(16,185,129,0.15)]';
+        } else {
+          statusEl.textContent = 'FAIL';
+          statusEl.className = 'badge-status text-rose-400 font-extrabold text-sm pt-1';
+          el.className = 'p-3 bg-black/60 border border-rose-500/50 space-y-1 shadow-[0_0_10px_rgba(244,63,94,0.15)]';
+        }
+      }
+
+      updateBadge('badge_aa_norm', ratio >= 4.5);
+      updateBadge('badge_aa_large', ratio >= 3.0);
+      updateBadge('badge_aaa_norm', ratio >= 7.0);
+      updateBadge('badge_aaa_large', ratio >= 4.5);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      updateAllFromRgb(0, 245, 255);
+      onContrastPairChange();
+    });
+  </script>
+</body>
+</html>

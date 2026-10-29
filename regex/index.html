@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx</title>
+  <meta name="description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser.">
+  <meta name="keywords" content="regex tester, regexp matrix, javascript regex, regular expression playground, capture groups, regex replace, regex highlighter">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/regex/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/regex/" />
+  <meta property="og:title" content="RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx" />
+  <meta property="og:description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx" />
+  <meta name="twitter:description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "RegExp Matrix & Pattern Synthesizer",
+    "url": "https://apps.sarwarfx.cfd/regex/",
+    "description": "Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2V15h2v1.5zm0-3.5h-2V7h2v6z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .flag-btn {
+      transition: all 0.15s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .flag-btn.active {
+      background-color: rgba(0, 245, 255, 0.2);
+      border-color: #00f5ff;
+      color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+    }
+
+    .regex-mark {
+      background: rgba(0, 245, 255, 0.35);
+      color: #ffffff;
+      border-bottom: 2px solid #00f5ff;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    .regex-mark:nth-child(even) {
+      background: rgba(255, 43, 214, 0.35);
+      border-bottom-color: #ff2bd6;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-asterisk text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">regex</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x10]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: REGEXP_SYNTHESIZER]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Presets -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-code text-xs text-cyan-400"></i>
+          <span>PARSING_ENGINE // REGEX_CAPTURE_MATRIX</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          PATTERN SYNTHESIZER & REGEX TESTER
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Interactive regular expression evaluator with synchronized match highlighting, capture group table breakdown, and instant search & replace preview.
+        </p>
+      </div>
+
+      <!-- Preset Pills -->
+      <div class="flex flex-wrap gap-1.5 self-start md:self-auto max-w-md">
+        <button onclick="applyPreset('email')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">EMAIL</button>
+        <button onclick="applyPreset('url')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">URL/DOMAIN</button>
+        <button onclick="applyPreset('ip')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">IPV4</button>
+        <button onclick="applyPreset('date')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">ISO DATE</button>
+        <button onclick="applyPreset('hex')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">HEX COLOR</button>
+      </div>
+    </div>
+
+    <!-- Regex Input Matrix -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
+        <span class="text-cyan-400 font-bold uppercase tracking-wider">REGEXP EXPRESSION & MODIFIER FLAGS</span>
+        <span id="regexError" class="text-rose-400 text-[11px] font-bold"></span>
+      </div>
+
+      <!-- Regex Input Bar -->
+      <div class="flex items-center bg-black/90 border border-slate-800 focus-within:border-cyan-400 focus-within:ring-1 focus-within:ring-cyan-400/40 p-2 font-mono text-xs">
+        <span class="text-cyan-400 font-bold px-2 text-base">/</span>
+        <input 
+          type="text" 
+          id="regexPattern" 
+          value="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
+          oninput="runRegex()" 
+          placeholder="Enter regular expression pattern..." 
+          class="flex-1 bg-transparent border-none text-cyan-200 outline-none font-bold text-sm">
+        <span class="text-cyan-400 font-bold px-2 text-base">/</span>
+
+        <!-- Flags -->
+        <div class="flex items-center space-x-1 pl-2 border-l border-slate-800">
+          <button onclick="toggleFlag('g')" id="flag_g" class="flag-btn active px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Global match">g</button>
+          <button onclick="toggleFlag('i')" id="flag_i" class="flag-btn active px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Case insensitive">i</button>
+          <button onclick="toggleFlag('m')" id="flag_m" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Multiline">m</button>
+          <button onclick="toggleFlag('s')" id="flag_s" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Dot matches newline (dotAll)">s</button>
+          <button onclick="toggleFlag('u')" id="flag_u" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Unicode">u</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test String & Visual Match Highlight Split -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Editable Test Area -->
+      <div class="hud-card p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+          <span class="text-cyan-400 font-bold uppercase">TEST CORPUS [EDITABLE]</span>
+          <button onclick="document.getElementById('testCorpus').value=''; runRegex();" class="text-slate-500 hover:text-pink-400 transition-colors uppercase text-[10px]">CLEAR</button>
+        </div>
+        <textarea 
+          id="testCorpus" 
+          rows="8" 
+          oninput="runRegex()"
+          placeholder="Paste or write text here to test against the regular expression..." 
+          class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-slate-200 outline-none resize-y leading-relaxed"></textarea>
+      </div>
+
+      <!-- Live Match Visualizer -->
+      <div class="hud-card p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+          <span class="text-pink-400 font-bold uppercase">SYNCHRONIZED MATCH HIGHLIGHT</span>
+          <span id="matchStats" class="text-[11px] text-cyan-300 font-bold">0 MATCHES</span>
+        </div>
+        <div 
+          id="highlightDisplay" 
+          class="w-full p-3 bg-black/90 border border-slate-800 text-xs font-mono text-slate-300 whitespace-pre-wrap break-all min-h-[190px] max-h-[300px] overflow-y-auto leading-relaxed select-all">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Capture Groups Table -->
+    <div class="hud-card p-5 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+        <span class="text-cyan-400 font-bold uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-table-list text-cyan-400"></i>
+          <span>CAPTURE GROUP MATRIX</span>
+        </span>
+        <span id="captureCount" class="text-[11px] text-slate-500">0 RECORDS</span>
+      </div>
+
+      <div class="overflow-x-auto max-h-[300px]">
+        <table class="w-full text-left font-mono text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-black/40 text-[10px] text-slate-400 uppercase tracking-wider">
+              <th class="py-2 px-3">#</th>
+              <th class="py-2 px-3">FULL MATCH</th>
+              <th class="py-2 px-3">RANGE</th>
+              <th class="py-2 px-3">CAPTURE GROUPS</th>
+            </tr>
+          </thead>
+          <tbody id="captureTableBody" class="divide-y divide-slate-800/60">
+            <tr>
+              <td colspan="4" class="py-4 text-center text-slate-600">NO ACTIVE MATCHES</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Search & Replace Preview Studio -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+        <span class="text-white font-bold uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-arrows-rotate text-cyan-400"></i>
+          <span>SEARCH & REPLACE PREVIEW</span>
+        </span>
+        <button onclick="copyReplaced()" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
+          <i class="fa-solid fa-copy text-cyan-400"></i>
+          <span>COPY RESULT</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center gap-3">
+        <div class="w-full md:w-1/3">
+          <input 
+            type="text" 
+            id="replacePattern" 
+            placeholder="Replacement string (e.g. [$1] or redacted)..." 
+            value="[MASKED_EMAIL]"
+            oninput="runRegex()"
+            class="w-full px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-pink-300 placeholder-slate-600 outline-none">
+        </div>
+        <div class="w-full md:w-2/3 p-3 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 whitespace-pre-wrap break-all min-h-[42px]" id="replaceOutput">
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          JavaScript RegExp Engine & Pattern Synthesizer
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          High-performance ECMAScript regular expression playground executing in your local browser runtime.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / REAL-TIME V8 COMPILATION</span>
+          <p class="text-slate-400 text-[11px]">
+            Pattern compilation utilizes the native browser JavaScript RegExp engine. Matches, indexes, and capture boundaries update with sub-millisecond latency on every keystroke.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / DEEP GROUP EXTRACTION</span>
+          <p class="text-slate-400 text-[11px]">
+            The capture group matrix extracts both positional indexed groups (`$1`, `$2`) and named capturing groups (`(?<name>...)`) for frictionless string extraction.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / ZERO DATA RETENTION</span>
+          <p class="text-slate-400 text-[11px]">
+            Your private code snippets, server access logs, and test data strings never leave your device. All parsing is isolated in browser RAM.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: What modifier flags are supported?</strong><br>
+          All standard modern JavaScript flags: `g` (global), `i` (case-insensitive), `m` (multiline `^` and `$`), `s` (dotAll wildcard matches `\n`), and `u` (full unicode code points).</p>
+          <p><strong class="text-cyan-300">Q: Can I use substitution variables in replacement?</strong><br>
+          Yes. Supports `$1`, `$2` for capture groups, `$&` for the whole match, and `$`` / `$'` for the preceding/following text.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'regex';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Flags
+    const activeFlags = new Set(['g', 'i']);
+
+    function toggleFlag(f) {
+      const btn = document.getElementById(`flag_${f}`);
+      if (activeFlags.has(f)) {
+        activeFlags.delete(f);
+        btn.classList.remove('active');
+      } else {
+        activeFlags.add(f);
+        btn.classList.add('active');
+      }
+      runRegex();
+    }
+
+    function getFlagString() {
+      return Array.from(activeFlags).join('');
+    }
+
+    function applyPreset(type) {
+      const patternInput = document.getElementById('regexPattern');
+      const testInput = document.getElementById('testCorpus');
+
+      if (type === 'email') {
+        patternInput.value = '([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})';
+        testInput.value = "Contact security team at ops@sarwarfx.cfd or admin@enclave.internal. System alerts to alerts-sec@domain.co.uk.";
+      } else if (type === 'url') {
+        patternInput.value = 'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)';
+        testInput.value = "Documentation is located at https://apps.sarwarfx.cfd/docs/api and backup mirror http://cdn.sarwarfx.cfd/static/v1.json.";
+      } else if (type === 'ip') {
+        patternInput.value = '\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b';
+        testInput.value = "Node routed from 192.168.1.1 to upstream gateway 10.0.0.254 and edge relay 172.217.16.206.";
+      } else if (type === 'date') {
+        patternInput.value = '(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])';
+        testInput.value = "Audit milestones: 2026-10-29 release launch, 2026-11-15 security patch, 2026-12-31 deprecation window.";
+      } else if (type === 'hex') {
+        patternInput.value = '#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\\b';
+        testInput.value = "Palette config: primary cyan #00f5ff, accent pink #ff2bd6, deep obsidian #05070d, slate #64748b.";
+      }
+
+      runRegex();
+      showToast(`APPLIED ${type.toUpperCase()} PRESET`);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function runRegex() {
+      const patternStr = document.getElementById('regexPattern').value;
+      const flags = getFlagString();
+      const text = document.getElementById('testCorpus').value;
+      const replacePat = document.getElementById('replacePattern').value;
+
+      const errorEl = document.getElementById('regexError');
+      const highlightEl = document.getElementById('highlightDisplay');
+      const statsEl = document.getElementById('matchStats');
+      const tableBody = document.getElementById('captureTableBody');
+      const countEl = document.getElementById('captureCount');
+      const replaceEl = document.getElementById('replaceOutput');
+
+      errorEl.textContent = '';
+
+      if (!patternStr) {
+        highlightEl.textContent = text;
+        statsEl.textContent = '0 MATCHES';
+        tableBody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-600">NO REGEX SPECIFIED</td></tr>';
+        countEl.textContent = '0 RECORDS';
+        replaceEl.textContent = text;
+        return;
+      }
+
+      let regex;
+      try {
+        regex = new RegExp(patternStr, flags);
+      } catch (err) {
+        errorEl.textContent = `[SYNTAX ERROR: ${err.message}]`;
+        highlightEl.textContent = text;
+        statsEl.textContent = 'ERROR';
+        return;
+      }
+
+      // Collect matches
+      let matches = [];
+      if (flags.includes('g')) {
+        let match;
+        // Avoid infinite loop on zero-width match
+        while ((match = regex.exec(text)) !== null) {
+          matches.push(match);
+          if (match.index === regex.lastIndex) regex.lastIndex++;
+        }
+      } else {
+        const m = regex.exec(text);
+        if (m) matches.push(m);
+      }
+
+      statsEl.textContent = `${matches.length} MATCH${matches.length === 1 ? '' : 'ES'}`;
+      countEl.textContent = `${matches.length} RECORD${matches.length === 1 ? '' : 'S'}`;
+
+      // Highlight rendering
+      if (matches.length === 0) {
+        highlightEl.textContent = text;
+        tableBody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-600">NO ACTIVE MATCHES</td></tr>';
+      } else {
+        let highlightedHtml = '';
+        let lastIdx = 0;
+
+        matches.forEach((m) => {
+          const matchStart = m.index;
+          const matchEnd = matchStart + m[0].length;
+          highlightedHtml += escapeHtml(text.slice(lastIdx, matchStart));
+          highlightedHtml += `<mark class="regex-mark">${escapeHtml(m[0])}</mark>`;
+          lastIdx = matchEnd;
+        });
+        highlightedHtml += escapeHtml(text.slice(lastIdx));
+        highlightEl.innerHTML = highlightedHtml || '&nbsp;';
+
+        // Table population
+        tableBody.innerHTML = matches.map((m, idx) => {
+          const fullMatch = escapeHtml(m[0]);
+          const range = `[${m.index} - ${m.index + m[0].length}]`;
+          const groups = m.slice(1).map((g, gIdx) => `
+            <div class="text-[11px]"><span class="text-pink-400 font-bold">$${gIdx + 1}:</span> ${g !== undefined ? escapeHtml(g) : '<span class="text-slate-600">undefined</span>'}</div>
+          `).join('');
+
+          return `
+            <tr class="hover:bg-slate-900/40">
+              <td class="py-2.5 px-3 text-cyan-400 font-bold">${idx + 1}</td>
+              <td class="py-2.5 px-3 font-bold text-white break-all">${fullMatch}</td>
+              <td class="py-2.5 px-3 text-slate-500 whitespace-nowrap">${range}</td>
+              <td class="py-2.5 px-3 space-y-0.5">${groups || '<span class="text-slate-600 text-[10px]">None</span>'}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Replace Preview
+      try {
+        const replaced = text.replace(regex, replacePat);
+        replaceEl.textContent = replaced;
+      } catch (err) {
+        replaceEl.textContent = `[Replace Error: ${err.message}]`;
+      }
+    }
+
+    function copyReplaced() {
+      const text = document.getElementById('replaceOutput').textContent;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED REPLACED STRING');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      applyPreset('email');
+    });
+  </script>
+</body>
+</html>

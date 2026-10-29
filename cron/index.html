@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cron Expression Parser & Schedule Generator // Cron Chronometer - sarwarfx</title>
+  <meta name="description" content="Parse standard 5-part and 6-part cron expressions into natural English descriptions and calculate the exact next 10 upcoming execution timestamps in your local timezone.">
+  <meta name="keywords" content="cron parser, cron expression generator, cron calculator, cron schedule, crontab tester, cron schedule human readable, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/cron/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/cron/" />
+  <meta property="og:title" content="Cron Expression Parser & Schedule Generator // Cron Chronometer - sarwarfx" />
+  <meta property="og:description" content="Parse standard 5-part and 6-part cron expressions into natural English descriptions and calculate the exact next 10 upcoming execution timestamps in your local timezone." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/cron/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/cron/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/cron/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cron Expression Parser & Schedule Generator // Cron Chronometer - sarwarfx" />
+  <meta name="twitter:description" content="Parse standard 5-part and 6-part cron expressions into natural English descriptions and calculate the exact next 10 upcoming execution timestamps in your local timezone." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/cron/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Cron Chronometer Schedule Parser",
+    "url": "https://apps.sarwarfx.cfd/cron/",
+    "description": "Parse standard 5-part and 6-part cron expressions into natural English descriptions and calculate the exact next 10 upcoming execution timestamps in your local timezone.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-calendar-days text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">cron</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x11]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: CRON_CHRONOMETER]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Presets -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-clock-rotate-left text-xs text-cyan-400"></i>
+          <span>SCHEDULE_VECTOR // RECURRENCE_PARSER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          CRON CHRONOMETER & SCHEDULE GENERATOR
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Parse standard 5-field and 6-field cron expressions into human-readable English syntax and compute the exact upcoming 10 execution timestamps in your local timezone.
+        </p>
+      </div>
+
+      <!-- Presets -->
+      <div class="flex flex-wrap gap-1.5 self-start md:self-auto max-w-md">
+        <button onclick="applyPreset('* * * * *')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">EVERY MINUTE</button>
+        <button onclick="applyPreset('*/15 * * * *')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">EVERY 15M</button>
+        <button onclick="applyPreset('0 * * * *')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">HOURLY :00</button>
+        <button onclick="applyPreset('0 0 * * *')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">MIDNIGHT</button>
+        <button onclick="applyPreset('30 8 * * 1-5')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">WEEKDAYS 08:30</button>
+        <button onclick="applyPreset('0 9 * * 1')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">MON 09:00</button>
+      </div>
+    </div>
+
+    <!-- Expression Input Card -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
+        <span class="text-cyan-400 font-bold uppercase tracking-wider">CRON SCHEDULE EXPRESSION</span>
+        <span id="cronError" class="text-rose-400 text-[11px] font-bold"></span>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <input 
+          type="text" 
+          id="cronInput" 
+          value="*/15 * * * *"
+          oninput="parseCron()"
+          placeholder="e.g. */15 * * * *" 
+          class="flex-1 p-3.5 bg-black/90 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-base font-mono font-extrabold text-cyan-300 outline-none uppercase tracking-widest">
+        <button onclick="copyCron()" class="hud-btn-primary px-4 py-3.5 text-xs font-mono flex items-center space-x-1.5">
+          <i class="fa-solid fa-copy"></i>
+          <span>COPY</span>
+        </button>
+      </div>
+
+      <!-- Visual 5-Field Breakdown Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
+        <div class="p-2.5 bg-black/60 border border-slate-800 text-center font-mono">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">MINUTE</div>
+          <div id="field_min" class="text-cyan-300 font-extrabold text-sm mt-0.5">*/15</div>
+          <div class="text-[9px] text-slate-500">0 - 59</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 text-center font-mono">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">HOUR</div>
+          <div id="field_hour" class="text-cyan-300 font-extrabold text-sm mt-0.5">*</div>
+          <div class="text-[9px] text-slate-500">0 - 23</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 text-center font-mono">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">DAY OF MONTH</div>
+          <div id="field_dom" class="text-cyan-300 font-extrabold text-sm mt-0.5">*</div>
+          <div class="text-[9px] text-slate-500">1 - 31</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 text-center font-mono">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">MONTH</div>
+          <div id="field_month" class="text-cyan-300 font-extrabold text-sm mt-0.5">*</div>
+          <div class="text-[9px] text-slate-500">1 - 12 (JAN-DEC)</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 text-center font-mono col-span-2 sm:col-span-1">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">DAY OF WEEK</div>
+          <div id="field_dow" class="text-cyan-300 font-extrabold text-sm mt-0.5">*</div>
+          <div class="text-[9px] text-slate-500">0 - 6 (SUN-SAT)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plain English Translation Hero -->
+    <div class="hud-card p-6 space-y-2 border-cyan-500/40 bg-cyan-950/20">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
+        <i class="fa-solid fa-bullseye"></i>
+        <span>NATURAL LANGUAGE SCHEDULE TRANSLATION</span>
+      </div>
+      <div id="englishTranslation" class="text-base sm:text-xl font-bold font-mono text-white tracking-wide">
+        "Every 15 minutes, every hour, every day."
+      </div>
+      <div class="flex items-center space-x-2 text-[11px] font-mono text-slate-400 pt-1">
+        <span>● NEXT EXECUTION IN:</span>
+        <span id="immediateNextRun" class="text-emerald-400 font-bold">calculating...</span>
+      </div>
+    </div>
+
+    <!-- Next 10 Executions Timeline -->
+    <div class="hud-card p-5 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+        <span class="text-cyan-400 font-bold uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-list-ol text-cyan-400"></i>
+          <span>UPCOMING 10 EXECUTION VECTORS [LOCAL TIMEZONE]</span>
+        </span>
+        <span id="timezoneBadge" class="text-[10px] text-slate-500 font-mono"></span>
+      </div>
+
+      <div class="space-y-1.5 font-mono text-xs" id="executionList">
+        <!-- Rendered by parseCron() -->
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          Cron Scheduling Vector Specification & Syntax Reference
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Complete POSIX crontab specification interpreter and future timestamp generator running purely client-side.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / POSIX COMPLIANCE</span>
+          <p class="text-slate-400 text-[11px]">
+            Supports standard 5-field crontab syntax (Minute, Hour, Day-of-Month, Month, Day-of-Week) and step values (`*/5`), ranges (`1-5`), and lists (`1,15,30`).
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / LOCAL TIMEZONE SYNCHRONIZATION</span>
+          <p class="text-slate-400 text-[11px]">
+            Execution projections resolve against the client device's native `Intl.DateTimeFormat` context to eliminate daylight savings time confusion.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / ZERO TRACKING RUNTIME</span>
+          <p class="text-slate-400 text-[11px]">
+            No server calls or third-party cron APIs. Scheduled expressions remain private and local to your workstation enclave.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: Does `* * * * *` run every second or minute?</strong><br>
+          In standard 5-part POSIX cron syntax, five asterisks signify execution every minute. Seconds are only supported in non-standard 6-part variants like Quartz.</p>
+          <p><strong class="text-cyan-300">Q: How does day of week indexing work?</strong><br>
+          0 and 7 both represent Sunday in standard Unix crontab engines, 1 is Monday, through 6 for Saturday.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'cron';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function applyPreset(expr) {
+      document.getElementById('cronInput').value = expr;
+      parseCron();
+      showToast('APPLIED PRESET SCHEDULE');
+    }
+
+    function copyCron() {
+      const val = document.getElementById('cronInput').value;
+      navigator.clipboard.writeText(val);
+      showToast('COPIED CRON EXPRESSION');
+    }
+
+    // Cron field matcher helper
+    function matchesPart(val, part) {
+      if (part === '*' || part === '?') return true;
+      if (part.includes(',')) {
+        return part.split(',').some(p => matchesPart(val, p.trim()));
+      }
+      if (part.startsWith('*/')) {
+        const step = parseInt(part.slice(2), 10);
+        return !isNaN(step) && step > 0 && (val % step === 0);
+      }
+      if (part.includes('-')) {
+        const [start, end] = part.split('-').map(Number);
+        return val >= start && val <= end;
+      }
+      return parseInt(part, 10) === val;
+    }
+
+    // Translate to English
+    function translateToEnglish(parts) {
+      const [min, hour, dom, month, dow] = parts;
+      const DOW_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+      let desc = '';
+
+      if (min === '*' && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+        return 'Every minute, every day.';
+      }
+      if (min.startsWith('*/') && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+        return `Every ${min.slice(2)} minutes, continuously.`;
+      }
+      if (min === '0' && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+        return 'Every hour, on the hour.';
+      }
+      if (min === '0' && hour.startsWith('*/')) {
+        return `Every ${hour.slice(2)} hours, on the hour.`;
+      }
+      if (min === '0' && hour === '0' && dom === '*' && month === '*' && dow === '*') {
+        return 'Every day at midnight (00:00).';
+      }
+
+      // Time of day
+      if (min.includes('*/')) {
+        desc += `Every ${min.slice(2)} minutes`;
+      } else {
+        const m = min === '*' ? 'every minute' : `at minute ${min}`;
+        const h = hour === '*' ? 'every hour' : `past hour ${hour.padStart(2, '0')}`;
+        desc += `${m} ${h}`;
+      }
+
+      // Day of week
+      if (dow !== '*') {
+        if (dow === '1-5') {
+          desc += ', Monday through Friday';
+        } else if (dow === '0,6' || dow === '6,0') {
+          desc += ', on weekends';
+        } else if (!isNaN(dow)) {
+          desc += `, on ${DOW_NAMES[parseInt(dow, 10)] || 'day ' + dow}`;
+        } else {
+          desc += `, on day-of-week ${dow}`;
+        }
+      }
+
+      // Day of month
+      if (dom !== '*') {
+        desc += `, on day ${dom} of the month`;
+      }
+
+      // Month
+      if (month !== '*') {
+        desc += `, in ${MONTH_NAMES[parseInt(month, 10)] || 'month ' + month}`;
+      }
+
+      return desc + '.';
+    }
+
+    function calculateNextRuns(parts, count = 10) {
+      const [minP, hourP, domP, monthP, dowP] = parts;
+      const results = [];
+      let current = new Date();
+      current.setSeconds(0, 0);
+      current.setMinutes(current.getMinutes() + 1); // Start next minute
+
+      let iterations = 0;
+      const maxIterations = 525600; // Look ahead up to 1 year of minutes
+
+      while (results.length < count && iterations < maxIterations) {
+        iterations++;
+        const minute = current.getMinutes();
+        const hour = current.getHours();
+        const dom = current.getDate();
+        const month = current.getMonth() + 1; // 1-12
+        const dow = current.getDay(); // 0-6
+
+        if (
+          matchesPart(minute, minP) &&
+          matchesPart(hour, hourP) &&
+          matchesPart(dom, domP) &&
+          matchesPart(month, monthP) &&
+          matchesPart(dow, dowP)
+        ) {
+          results.push(new Date(current));
+        }
+
+        current.setMinutes(current.getMinutes() + 1);
+      }
+
+      return results;
+    }
+
+    function parseCron() {
+      const input = document.getElementById('cronInput').value.trim();
+      const errorEl = document.getElementById('cronError');
+      const transEl = document.getElementById('englishTranslation');
+      const nextRunEl = document.getElementById('immediateNextRun');
+      const listEl = document.getElementById('executionList');
+
+      const parts = input.split(/\s+/).filter(Boolean);
+
+      if (parts.length < 5 || parts.length > 6) {
+        errorEl.textContent = '[ERROR: CRON EXPRESSION REQUIRES 5 OR 6 FIELDS]';
+        listEl.innerHTML = '<div class="p-3 text-slate-600 text-center">INVALID CRON SYNTAX</div>';
+        transEl.textContent = 'Invalid cron expression format.';
+        nextRunEl.textContent = '--';
+        return;
+      }
+
+      errorEl.textContent = '';
+
+      // Standardize to 5 fields
+      const standardParts = parts.length === 6 ? parts.slice(1) : parts;
+
+      // Update 5-field HUD badges
+      document.getElementById('field_min').textContent = standardParts[0] || '*';
+      document.getElementById('field_hour').textContent = standardParts[1] || '*';
+      document.getElementById('field_dom').textContent = standardParts[2] || '*';
+      document.getElementById('field_month').textContent = standardParts[3] || '*';
+      document.getElementById('field_dow').textContent = standardParts[4] || '*';
+
+      // English description
+      try {
+        transEl.textContent = `"${translateToEnglish(standardParts)}"`;
+      } catch (e) {
+        transEl.textContent = "Custom schedule expression.";
+      }
+
+      // Next 10 runs
+      const nextRuns = calculateNextRuns(standardParts, 10);
+
+      if (nextRuns.length === 0) {
+        listEl.innerHTML = '<div class="p-3 text-slate-500 text-center">NO MATCHING RUNS WITHIN THE NEXT 365 DAYS</div>';
+        nextRunEl.textContent = '--';
+        return;
+      }
+
+      // Immediate countdown
+      const diffMs = nextRuns[0].getTime() - Date.now();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffSecs = Math.floor((diffMs % 60000) / 1000);
+      nextRunEl.textContent = `${diffMins}m ${diffSecs}s (${nextRuns[0].toLocaleTimeString()})`;
+
+      // Render timeline list
+      listEl.innerHTML = nextRuns.map((date, idx) => {
+        const isFirst = idx === 0;
+        const iso = date.toISOString();
+        const formatted = date.toLocaleString(undefined, {
+          weekday: 'short',
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        return `
+          <div class="flex items-center justify-between p-2.5 bg-black/60 border ${isFirst ? 'border-cyan-500/60 bg-cyan-950/20' : 'border-slate-800/80'} hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center space-x-3">
+              <span class="w-6 text-[10px] ${isFirst ? 'text-cyan-400 font-extrabold' : 'text-slate-500'} font-bold">#${(idx + 1).toString().padStart(2, '0')}</span>
+              <span class="font-bold ${isFirst ? 'text-white' : 'text-slate-300'}">${formatted}</span>
+            </div>
+            <span class="text-[10px] text-slate-500 hidden sm:inline select-all">${iso}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('timezoneBadge').textContent = `[TZ: ${Intl.DateTimeFormat().resolvedOptions().timeZone}]`;
+      renderSuiteGrid();
+      parseCron();
+      setInterval(parseCron, 15000); // refresh every 15s
+    });
+  </script>
+</body>
+</html>

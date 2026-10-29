@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '13-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '19-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -125,6 +125,48 @@ const APPS = [
     subdomain: 'invoice',
     title: 'CYBERTOOLS // INVOICE',
     subtitle: 'INVOICE STUDIO // ZERO-LOGIN BILLING GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'hash',
+    subdomain: 'hash',
+    title: 'CYBERTOOLS // HASH',
+    subtitle: 'CHECKSUM & HMAC CRYPTO DIGEST ENGINE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'jwt',
+    subdomain: 'jwt',
+    title: 'CYBERTOOLS // JWT',
+    subtitle: 'AUTH PAYLOAD & TOKEN CLAIMS INSPECTOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'regex',
+    subdomain: 'regex',
+    title: 'CYBERTOOLS // REGEX',
+    subtitle: 'PATTERN SYNTHESIZER & REGEXP MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'cron',
+    subdomain: 'cron',
+    title: 'CYBERTOOLS // CRON',
+    subtitle: 'CHRONOMETER SCHEDULE & VECTOR PARSER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'palette',
+    subdomain: 'palette',
+    title: 'CYBERTOOLS // PALETTE',
+    subtitle: 'CHROMA MATRIX & WCAG CONTRAST AUDITOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'doc',
+    subdomain: 'doc',
+    title: 'CYBERTOOLS // DOC',
+    subtitle: 'TACTICAL DOSSIER & MARKDOWN TO VECTOR PDF',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
@@ -310,6 +352,7 @@ const baseDir = path.resolve(__dirname);
 
 APPS.forEach(app => {
   const targetDir = app.dir ? path.join(baseDir, app.dir) : baseDir;
+  if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
   const outPath = path.join(targetDir, 'og-cover.png');
   const buffer = generateBanner(app);
   fs.writeFileSync(outPath, buffer);

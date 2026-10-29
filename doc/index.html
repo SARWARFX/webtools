@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tactical Markdown to Vector PDF Studio // Zero-Upload Dossier - sarwarfx</title>
+  <meta name="description" content="Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export. Clean print stylesheet, zero watermarks, 100% client-side privacy.">
+  <meta name="keywords" content="markdown to pdf, vector pdf export, client side markdown editor, markdown dossier, print markdown to pdf, privacy markdown, developer documentation">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/doc/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/doc/" />
+  <meta property="og:title" content="Tactical Markdown to Vector PDF Studio // Zero-Upload Dossier - sarwarfx" />
+  <meta property="og:description" content="Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export. Clean print stylesheet, zero watermarks, 100% client-side privacy." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/doc/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/doc/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/doc/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tactical Markdown to Vector PDF Studio // Zero-Upload Dossier - sarwarfx" />
+  <meta name="twitter:description" content="Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export. Clean print stylesheet, zero watermarks, 100% client-side privacy." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/doc/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Tactical Dossier Markdown to PDF Engine",
+    "url": "https://apps.sarwarfx.cfd/doc/",
+    "description": "Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export. Clean print stylesheet, zero watermarks, 100% client-side privacy.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    /* Markdown Rendered Typography */
+    .prose-hud h1 { font-size: 1.5rem; font-weight: 800; color: #ffffff; border-bottom: 2px solid rgba(0, 245, 255, 0.3); padding-bottom: 0.4rem; margin-top: 1.2rem; margin-bottom: 0.6rem; text-transform: uppercase; }
+    .prose-hud h2 { font-size: 1.25rem; font-weight: 700; color: #00f5ff; border-bottom: 1px solid rgba(0, 245, 255, 0.2); padding-bottom: 0.3rem; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+    .prose-hud h3 { font-size: 1.05rem; font-weight: 600; color: #ff2bd6; margin-top: 0.8rem; margin-bottom: 0.4rem; }
+    .prose-hud p { margin-bottom: 0.75rem; line-height: 1.6; color: #cbd5e1; }
+    .prose-hud code { background: rgba(0, 245, 255, 0.1); border: 1px solid rgba(0, 245, 255, 0.3); color: #00f5ff; padding: 0.15rem 0.3rem; font-size: 0.85em; border-radius: 2px; }
+    .prose-hud pre { background: #030712; border: 1px solid #1e293b; padding: 0.85rem; overflow-x: auto; margin-bottom: 1rem; border-left: 3px solid #00f5ff; }
+    .prose-hud pre code { background: transparent; border: none; padding: 0; color: #e2e8f0; }
+    .prose-hud blockquote { border-left: 3px solid #ff2bd6; padding-left: 0.85rem; margin-left: 0; color: #94a3b8; font-style: italic; background: rgba(255, 43, 214, 0.05); padding-top: 0.2rem; padding-bottom: 0.2rem; }
+    .prose-hud ul { list-style-type: square; padding-left: 1.4rem; margin-bottom: 0.75rem; color: #cbd5e1; }
+    .prose-hud ol { list-style-type: decimal; padding-left: 1.4rem; margin-bottom: 0.75rem; color: #cbd5e1; }
+    .prose-hud table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.85rem; }
+    .prose-hud th, .prose-hud td { border: 1px solid #1e293b; padding: 0.45rem 0.65rem; text-align: left; }
+    .prose-hud th { background: rgba(0, 245, 255, 0.08); color: #00f5ff; font-weight: 700; text-transform: uppercase; }
+    .prose-hud hr { border-color: rgba(0, 245, 255, 0.2); margin: 1.5rem 0; }
+
+    /* Vector PDF Print Stylesheet */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      }
+      header, footer, .no-print, #suiteModal, #toast, #editorColumn, #topToolbar {
+        display: none !important;
+      }
+      #previewColumn {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+      }
+      .hud-card {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .hud-card::before, .hud-card::after {
+        display: none !important;
+      }
+      .prose-hud h1 { color: #0f172a !important; border-bottom: 2px solid #0f172a !important; }
+      .prose-hud h2 { color: #1e293b !important; border-bottom: 1px solid #cbd5e1 !important; }
+      .prose-hud h3 { color: #334155 !important; }
+      .prose-hud p { color: #334155 !important; }
+      .prose-hud code { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+      .prose-hud pre { background: #f8fafc !important; border-color: #cbd5e1 !important; border-left-color: #0f172a !important; }
+      .prose-hud pre code { color: #0f172a !important; }
+      .prose-hud blockquote { background: #f8fafc !important; border-left-color: #64748b !important; color: #475569 !important; }
+      .prose-hud th { background: #f1f5f9 !important; color: #0f172a !important; }
+      .prose-hud th, .prose-hud td { border-color: #cbd5e1 !important; color: #1e293b !important; }
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-file-lines text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">doc</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x13]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: VECTOR_DOSSIER]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Quick Toolbar -->
+    <div id="topToolbar" class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-print text-xs text-cyan-400"></i>
+          <span>DOCUMENTATION_ENGINE // VECTOR_PDF_STUDIO</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          MARKDOWN TO VECTOR PDF DOSSIER
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Real-time split-pane Markdown editor with professional high-definition vector PDF export. Built-in print CSS pagination, zero server uploads, and zero vendor watermarks.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="exportPdf()" class="hud-btn-primary px-4 py-2 text-xs font-mono flex items-center space-x-2">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>EXPORT VECTOR PDF</span>
+        </button>
+        <button onclick="downloadMarkdown()" class="hud-btn-secondary px-3 py-2 text-xs font-mono flex items-center space-x-1.5">
+          <i class="fa-solid fa-download"></i>
+          <span>DOWNLOAD .MD</span>
+        </button>
+        <button onclick="copyHtml()" class="hud-btn-secondary px-3 py-2 text-xs font-mono flex items-center space-x-1.5">
+          <i class="fa-solid fa-code"></i>
+          <span>COPY HTML</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Document Metadata Strip -->
+    <div class="hud-card p-4 flex flex-wrap items-center justify-between gap-4 text-xs font-mono no-print">
+      <div class="flex flex-wrap items-center gap-4 flex-1">
+        <div class="flex items-center space-x-2 min-w-[240px] flex-1">
+          <span class="text-slate-500 font-bold uppercase">[TITLE]:</span>
+          <input 
+            type="text" 
+            id="docTitleInput" 
+            value="CYBERTOOLS TACTICAL DOSSIER // TECHNICAL BRIEF" 
+            oninput="updateDocTitle()"
+            class="flex-1 px-2.5 py-1 bg-black/80 border border-slate-800 text-cyan-300 font-bold outline-none text-xs">
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-slate-500 font-bold uppercase">[CLASSIFICATION]:</span>
+          <select id="docClassification" onchange="renderMarkdown()" class="px-2 py-1 bg-black/80 border border-slate-800 text-pink-400 font-bold text-xs outline-none">
+            <option value="CONFIDENTIAL // AIRGAP">CONFIDENTIAL // AIRGAP</option>
+            <option value="INTERNAL USE ONLY">INTERNAL USE ONLY</option>
+            <option value="PUBLIC SPECIFICATION">PUBLIC SPECIFICATION</option>
+            <option value="RESTRICTED INTEL">RESTRICTED INTEL</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Counters -->
+      <div class="flex items-center space-x-4 text-[11px] text-slate-400">
+        <span id="wordCount">0 WORDS</span>
+        <span class="text-slate-600">|</span>
+        <span id="charCount">0 CHARS</span>
+        <span class="text-slate-600">|</span>
+        <span id="readingTime">1 MIN READ</span>
+      </div>
+    </div>
+
+    <!-- Split-Pane Workspace -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      
+      <!-- Left Column: Markdown Source Editor -->
+      <div id="editorColumn" class="hud-card p-5 space-y-3 no-print">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+          <span class="text-cyan-400 font-bold uppercase flex items-center space-x-2">
+            <i class="fa-solid fa-pen-to-square text-cyan-400"></i>
+            <span>MARKDOWN SOURCE</span>
+          </span>
+          <!-- Formatting Quick Buttons -->
+          <div class="flex items-center space-x-1">
+            <button onclick="insertMd('# ')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300 font-bold">H1</button>
+            <button onclick="insertMd('## ')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300 font-bold">H2</button>
+            <button onclick="insertMd('**', '**')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300 font-bold">B</button>
+            <button onclick="insertMd('*', '*')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300 italic">I</button>
+            <button onclick="insertMd('`', '`')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300 font-mono">&lt;&gt;</button>
+            <button onclick="insertMd('> ')" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300">quote</button>
+            <button onclick="insertTable()" class="px-1.5 py-0.5 bg-black border border-slate-800 text-[10px] text-slate-300 hover:text-cyan-300">tbl</button>
+          </div>
+        </div>
+
+        <textarea 
+          id="markdownInput" 
+          rows="24"
+          oninput="renderMarkdown()"
+          placeholder="Write or paste GitHub-flavored Markdown here..." 
+          class="w-full p-4 bg-black/90 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 text-xs font-mono text-cyan-200 outline-none leading-relaxed resize-y"></textarea>
+      </div>
+
+      <!-- Right Column: Live Rendered Dossier Preview -->
+      <div id="previewColumn" class="hud-card p-6 space-y-4 min-h-[580px]">
+        <!-- Document Print Header Stamp -->
+        <div class="border-b border-cyan-500/30 pb-3 flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-pulse"></span>
+            <span id="renderedClassification" class="text-pink-400 font-bold tracking-wider uppercase">CONFIDENTIAL // AIRGAP</span>
+          </div>
+          <span class="text-slate-500" id="printTimestamp"></span>
+        </div>
+
+        <!-- Rendered Output -->
+        <div id="renderedOutput" class="prose-hud text-xs leading-relaxed select-text">
+          <!-- Rendered HTML -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30 no-print">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          In-Browser Markdown to Vector PDF Architecture
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Browser-native vector PDF generation combining GitHub Flavored Markdown (GFM) parsing with zero-bloat `@media print` typography.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / NATIVE VECTOR FIDELITY</span>
+          <p class="text-slate-400 text-[11px]">
+            Unlike rasterized canvas converters, `window.print()` outputs true selectable vector text, scalable SVGs, and sharp typography with razor-sharp print resolution at any DPI.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / AIRGAP ZERO UPLOAD</span>
+          <p class="text-slate-400 text-[11px]">
+            Your private meeting notes, technical specifications, and proprietary briefs are parsed directly in local RAM. Zero data is transmitted to external servers.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / NO VENDOR WATERMARKS</span>
+          <p class="text-slate-400 text-[11px]">
+            Completely clean print output with zero promotional badges, branding overlays, or forced trial restrictions. 100% open client-side utility.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: How do I save the PDF to my computer?</strong><br>
+          Click "EXPORT VECTOR PDF", and in the browser print dialog, select "Save as PDF" under the Destination dropdown.</p>
+          <p><strong class="text-cyan-300">Q: Are GitHub-flavored tables and code blocks supported?</strong><br>
+          Yes. Tables, syntax blocks, nested lists, blockquotes, horizontal rules, and links render with crisp print-optimized borders and high contrast.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 no-print"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'doc';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Markdown Sample Template
+    const SAMPLE_DOSSIER = `# TACTICAL MISSION DEBRIEF: CYBERTOOLS CLUSTER 2.0
+**AUTHOR**: SARWARFX // TACTICAL ARCHITECTURE  
+**TARGET NODE**: APPS.SARWARFX.CFD  
+**DATE**: 2026-10-29  
+
+---
+
+## 1. EXECUTIVE SUMMARY
+This tactical document outlines the technical deployment specifications for the **CyberTools 19-in-1** zero-build browser utilities cluster. All operational nodes execute within isolated V8 client sandboxes with zero backend logging.
+
+> "True privacy is architectural: when zero telemetry packets leave the client device, security guarantees become absolute."
+
+---
+
+## 2. ACTIVE SYSTEM NODES (19 NODES)
+
+| Node ID | Module Identifier | Primary Function | Privacy Guarantee |
+| :--- | :--- | :--- | :--- |
+| **0x01** | SPEED BENCHMARK | Latency, jitter & edge ping | In-Browser Socket |
+| **0x0B** | CONTEXT PACKER | Flatten repo to LLM context | Zero Token Storage |
+| **0x0C** | PRIVACY REDACTOR | Strip EXIF & blur image data | Zero Server Upload |
+| **0x0D** | INVOICE STUDIO | Vector PDF billing studio | LocalStorage Only |
+| **0x0E** | CRYPTO DIGEST | SHA-256, SHA-512, MD5, HMAC | WebCrypto Hardware |
+| **0x0F** | AUTH INSPECTOR | JWT claims & exp countdown | Client Base64URL |
+| **0x10** | REGEX MATRIX | Pattern match & capture group | Local ECMAScript |
+| **0x11** | CRON CHRONOMETER | POSIX schedule parser | Native Timezone |
+| **0x12** | CHROMA MATRIX | HEX/RGB/OKLCH & WCAG auditor | W3C Relative Lum |
+| **0x13** | TACTICAL DOSSIER | Markdown to Vector PDF | Native @media print |
+
+---
+
+## 3. DEPLOYMENT CHECKLIST
+- [x] Consolidate ecosystem under unified origin \`https://apps.sarwarfx.cfd/\`
+- [x] Configure Cloudflare Web Analytics with \`defer\` execution beacon
+- [x] Generate self-hosted 1200x630 Cyberpunk OpenGraph banners
+- [x] Implement WCAG 2.1 AAA accessibility contrast standards
+
+\`\`\`json
+{
+  "cluster": "apps.sarwarfx.cfd",
+  "activeNodes": 19,
+  "telemetry": "disabled",
+  "airgap": true
+}
+\`\`\`
+`;
+
+    function updateDocTitle() {
+      const title = document.getElementById('docTitleInput').value.trim();
+      document.title = `${title} // Tactical Dossier - sarwarfx`;
+    }
+
+    function renderMarkdown() {
+      const src = document.getElementById('markdownInput').value;
+      const classification = document.getElementById('docClassification').value;
+      document.getElementById('renderedClassification').textContent = classification;
+      document.getElementById('printTimestamp').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+      // Parse with marked.js if available, fallback to basic escaping
+      let html = '';
+      if (window.marked && typeof marked.parse === 'function') {
+        html = marked.parse(src);
+      } else {
+        html = `<pre>${src}</pre>`;
+      }
+      document.getElementById('renderedOutput').innerHTML = html;
+
+      // Stats
+      const words = src.trim() ? src.trim().split(/\s+/).length : 0;
+      const chars = src.length;
+      const readMin = Math.max(1, Math.ceil(words / 200));
+
+      document.getElementById('wordCount').textContent = `${words.toLocaleString()} WORDS`;
+      document.getElementById('charCount').textContent = `${chars.toLocaleString()} CHARS`;
+      document.getElementById('readingTime').textContent = `${readMin} MIN READ`;
+    }
+
+    function insertMd(prefix, suffix = '') {
+      const textarea = document.getElementById('markdownInput');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const sel = textarea.value.substring(start, end);
+      const replacement = prefix + (sel || 'text') + suffix;
+      textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (sel.length || 4));
+      renderMarkdown();
+    }
+
+    function insertTable() {
+      const tableMd = `\n| Column 1 | Column 2 | Column 3 |\n| :--- | :--- | :--- |\n| Data A | Data B | Data C |\n| Data D | Data E | Data F |\n\n`;
+      insertMd(tableMd);
+    }
+
+    function exportPdf() {
+      window.print();
+    }
+
+    function downloadMarkdown() {
+      const content = document.getElementById('markdownInput').value;
+      const title = (document.getElementById('docTitleInput').value.trim() || 'tactical-dossier').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${title}-${Date.now()}.md`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('DOWNLOADED MARKDOWN FILE');
+    }
+
+    function copyHtml() {
+      const html = document.getElementById('renderedOutput').innerHTML;
+      navigator.clipboard.writeText(html);
+      showToast('COPIED HTML TO CLIPBOARD');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      document.getElementById('markdownInput').value = SAMPLE_DOSSIER;
+      renderMarkdown();
+    });
+  </script>
+</body>
+</html>

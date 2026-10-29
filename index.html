@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 13 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 13 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
+  <title>CyberTools HUD Terminal // 19 Free In-Browser Web Utilities - sarwarfx</title>
+  <meta name="description" content="Suite of 19 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
   <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 13 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 13 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools HUD Terminal // 19 Free In-Browser Web Utilities - sarwarfx" />
+  <meta property="og:description" content="Suite of 19 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 13 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 13 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools HUD Terminal // 19 Free In-Browser Web Utilities - sarwarfx" />
+  <meta name="twitter:description" content="Suite of 19 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,7 +35,7 @@
     "@type": "WebApplication",
     "name": "sarwarfx CyberTools Command Hub",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 13 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
+    "description": "Suite of 19 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 13 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 19 ACTIVE UTILITY NODES</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -236,7 +236,7 @@
           type="text" 
           id="toolSearch" 
           oninput="filterTools()" 
-          placeholder="FILTER_MODULES [pack, redact, invoice, qr, json]..." 
+          placeholder="FILTER_MODULES [hash, jwt, regex, cron, palette, doc, pack]..." 
           class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
         <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
       </div>
@@ -283,6 +283,12 @@
       { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
       { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
       { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
     ];
 
     function getToolHref(tool) {

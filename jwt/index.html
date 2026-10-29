@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx</title>
+  <meta name="description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side.">
+  <meta name="keywords" content="jwt decoder, jwt inspector, json web token, debug jwt, jwt exp timer, jwt claims viewer, jwt debugger, client side jwt">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/jwt/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/jwt/" />
+  <meta property="og:title" content="JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx" />
+  <meta property="og:description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx" />
+  <meta name="twitter:description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JWT Token Inspector & Claims Auditor",
+    "url": "https://apps.sarwarfx.cfd/jwt/",
+    "description": "Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M7 11V7a5 5 0 0 1 10 0v4h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1zm2-4a3 3 0 0 1 6 0v4H9V7zm3 7a1.5 1.5 0 0 0-1 2.62V19a1 1 0 0 0 2 0v-2.38A1.5 1.5 0 0 0 12 14z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-key text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">jwt</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x0F]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: AUTH_TOKEN_INSPECTOR]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(19)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Quick Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-fingerprint text-xs text-cyan-400"></i>
+          <span>AUTH_SECURITY // ZERO_LOG_CLIENT_DECODER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          JWT TOKEN INSPECTOR & CLAIMS AUDITOR
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Decode encoded JWT tokens, analyze payload claims, verify signature encoding, and inspect live expiration countdown timers in an airgapped browser sandbox.
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="loadSampleJwt()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5">
+          <i class="fa-solid fa-flask text-cyan-400"></i>
+          <span>LOAD SAMPLE</span>
+        </button>
+        <button onclick="clearJwt()" class="hud-btn-secondary px-3 py-1.5 text-xs text-pink-400 hover:text-white flex items-center space-x-1.5">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>CLEAR</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Token Input Area -->
+    <div class="hud-card p-5 space-y-3">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
+        <span class="text-cyan-400 font-bold uppercase tracking-wider">ENCODED JWT TOKEN [HEADER.PAYLOAD.SIGNATURE]</span>
+        <span id="tokenStatus" class="text-[11px] font-mono text-emerald-400 font-bold">● READY</span>
+      </div>
+      <textarea 
+        id="jwtInput" 
+        rows="4" 
+        placeholder="Paste your encoded JWT token here (e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)" 
+        oninput="parseJwt()"
+        class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none transition-all resize-y break-all"></textarea>
+    </div>
+
+    <!-- Expiration & Time Telemetry Card -->
+    <div class="hud-card p-5 space-y-4" id="expiryTelemetryCard">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-stopwatch text-cyan-400"></i>
+          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">TOKEN LIFECYCLE & EXPIRATION TELEMETRY</span>
+        </div>
+        <span id="expiryBadge" class="text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold">
+          [STANDBY]
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[EXP] EXPIRATION DATE:</span>
+          <div id="expDateDisplay" class="text-cyan-300 font-bold text-xs truncate">--</div>
+          <div id="expRelativeDisplay" class="text-[11px] text-slate-400">--</div>
+        </div>
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[IAT] ISSUED AT:</span>
+          <div id="iatDateDisplay" class="text-slate-300 font-bold text-xs truncate">--</div>
+          <div id="iatRelativeDisplay" class="text-[11px] text-slate-400">--</div>
+        </div>
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[NBF] NOT BEFORE:</span>
+          <div id="nbfDateDisplay" class="text-slate-300 font-bold text-xs truncate">--</div>
+          <div id="nbfRelativeDisplay" class="text-[11px] text-slate-400">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decoded Token Split Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Panel 1: Header -->
+      <div class="hud-card p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-pink-950/80 border border-pink-500/50 text-pink-300 font-bold text-[10px]">HEADER</span>
+            <span class="text-slate-500 text-[11px] font-mono">[ALGORITHM & TOKEN TYPE]</span>
+          </div>
+          <button onclick="copyContent('headerJson')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
+            <i class="fa-solid fa-copy text-pink-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <pre id="headerJson" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-pink-300 overflow-x-auto min-h-[140px] select-all">{}</pre>
+      </div>
+
+      <!-- Panel 2: Signature Status -->
+      <div class="hud-card p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SIGNATURE</span>
+            <span class="text-slate-500 text-[11px] font-mono">[DIGITAL CIPHER]</span>
+          </div>
+          <button onclick="copyContent('signatureRaw')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="signatureRaw" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-400 break-all min-h-[140px] select-all">
+          --
+        </div>
+      </div>
+
+      <!-- Panel 3: Payload Claims (Spans Full Width) -->
+      <div class="hud-card p-5 space-y-3 lg:col-span-2">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 bg-purple-950/80 border border-purple-500/50 text-purple-300 font-bold text-[10px]">PAYLOAD</span>
+            <span class="text-slate-500 text-[11px] font-mono">[DECODED CLAIMS & ENTITY DATA]</span>
+          </div>
+          <button onclick="copyContent('payloadJson')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
+            <i class="fa-solid fa-copy text-purple-400"></i>
+            <span>COPY PAYLOAD JSON</span>
+          </button>
+        </div>
+        <pre id="payloadJson" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-purple-300 overflow-x-auto min-h-[220px] select-all">{}</pre>
+      </div>
+
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          JSON Web Token (JWT) Zero-Upload Security Specification
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          RFC 7519 compliant client-side JWT parser designed for authentication telemetry, session debugging, and claim auditing.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / LOCAL BASE64URL DECODING</span>
+          <p class="text-slate-400 text-[11px]">
+            Your auth tokens, user identifiers, and private API claims are decoded in-memory using standard Base64URL decoding. Tokens are never transmitted to any third-party server.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / AUTOMATIC TIME RESOLUTION</span>
+          <p class="text-slate-400 text-[11px]">
+            Converts standard UNIX timestamps (`exp`, `iat`, `nbf`) into local timezone strings with real-time countdown alerts for instant session validity checks.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / STRUCTURAL VALIDATION</span>
+          <p class="text-slate-400 text-[11px]">
+            Validates tripartite token architecture (`header.payload.signature`) with real-time syntax checking and actionable error reporting on corrupted tokens.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: Does this tool verify the cryptographic signature?</strong><br>
+          This client-side tool inspects the token structure and checks expiration times. Verifying HMAC or RSA signatures requires your private server key or public certificate, which should never be exposed in a client browser.</p>
+          <p><strong class="text-cyan-300">Q: Is it safe to paste production bearer tokens?</strong><br>
+          Yes. This utility runs 100% in your local browser sandbox on Cloudflare Pages static edge hosting. No tokens are logged, stored, or sent across the network.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (19)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'jwt';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Base64URL decode helper
+    function base64UrlDecode(str) {
+      let output = str.replace(/-/g, '+').replace(/_/g, '/');
+      switch (output.length % 4) {
+        case 0: break;
+        case 2: output += '=='; break;
+        case 3: output += '='; break;
+        default: throw new Error('Illegal base64url string!');
+      }
+      return decodeURIComponent(escape(window.atob(output)));
+    }
+
+    let parsedPayload = null;
+    let tickerInterval = null;
+
+    function parseJwt() {
+      const token = document.getElementById('jwtInput').value.trim();
+      const statusEl = document.getElementById('tokenStatus');
+      const headerEl = document.getElementById('headerJson');
+      const payloadEl = document.getElementById('payloadJson');
+      const sigEl = document.getElementById('signatureRaw');
+
+      if (!token) {
+        statusEl.textContent = '● STANDBY: AWAITING TOKEN';
+        statusEl.className = 'text-[11px] font-mono text-slate-500 font-bold';
+        headerEl.textContent = '{}';
+        payloadEl.textContent = '{}';
+        sigEl.textContent = '--';
+        resetLifecycleDisplays();
+        parsedPayload = null;
+        return;
+      }
+
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        statusEl.textContent = '● ERROR: MALFORMED JWT (MUST HAVE 3 PARTS)';
+        statusEl.className = 'text-[11px] font-mono text-rose-400 font-bold';
+        return;
+      }
+
+      try {
+        const decodedHeader = JSON.parse(base64UrlDecode(parts[0]));
+        const decodedPayload = JSON.parse(base64UrlDecode(parts[1]));
+        const signature = parts[2];
+
+        headerEl.textContent = JSON.stringify(decodedHeader, null, 2);
+        payloadEl.textContent = JSON.stringify(decodedPayload, null, 2);
+        sigEl.textContent = signature || '[EMPTY SIGNATURE]';
+
+        statusEl.textContent = `● DECODED VALID JWT [ALG: ${decodedHeader.alg || 'UNKNOWN'}]`;
+        statusEl.className = 'text-[11px] font-mono text-emerald-400 font-bold';
+
+        parsedPayload = decodedPayload;
+        updateLifecycle();
+      } catch (err) {
+        statusEl.textContent = `● DECODE ERROR: ${err.message}`;
+        statusEl.className = 'text-[11px] font-mono text-rose-400 font-bold';
+      }
+    }
+
+    function formatTimestamp(epochSec) {
+      if (!epochSec || isNaN(epochSec)) return { formatted: '--', relative: '--', epoch: null };
+      const date = new Date(epochSec * 1000);
+      const formatted = date.toLocaleString();
+      const now = Date.now();
+      const diffSec = Math.floor((date.getTime() - now) / 1000);
+
+      let relative;
+      if (diffSec > 0) {
+        const hours = Math.floor(diffSec / 3600);
+        const mins = Math.floor((diffSec % 3600) / 60);
+        const secs = diffSec % 60;
+        relative = `Expires in ${hours}h ${mins}m ${secs}s`;
+      } else {
+        const past = Math.abs(diffSec);
+        const hours = Math.floor(past / 3600);
+        const mins = Math.floor((past % 3600) / 60);
+        const secs = past % 60;
+        relative = `Expired ${hours}h ${mins}m ${secs}s ago`;
+      }
+
+      return { formatted, relative, diffSec, epoch: epochSec };
+    }
+
+    function updateLifecycle() {
+      if (!parsedPayload) return;
+
+      const expInfo = formatTimestamp(parsedPayload.exp);
+      const iatInfo = formatTimestamp(parsedPayload.iat);
+      const nbfInfo = formatTimestamp(parsedPayload.nbf);
+
+      document.getElementById('expDateDisplay').textContent = expInfo.formatted;
+      document.getElementById('expRelativeDisplay').textContent = expInfo.relative;
+
+      document.getElementById('iatDateDisplay').textContent = iatInfo.formatted;
+      document.getElementById('iatRelativeDisplay').textContent = iatInfo.epoch ? new Date(iatInfo.epoch * 1000).toISOString() : '--';
+
+      document.getElementById('nbfDateDisplay').textContent = nbfInfo.formatted;
+      document.getElementById('nbfRelativeDisplay').textContent = nbfInfo.epoch ? new Date(nbfInfo.epoch * 1000).toISOString() : '--';
+
+      const badge = document.getElementById('expiryBadge');
+      if (expInfo.epoch) {
+        if (expInfo.diffSec > 0) {
+          badge.textContent = `● TOKEN ACTIVE (${expInfo.relative})`;
+          badge.className = "text-xs font-mono px-2.5 py-0.5 bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]";
+        } else {
+          badge.textContent = `● TOKEN EXPIRED (${expInfo.relative})`;
+          badge.className = "text-xs font-mono px-2.5 py-0.5 bg-rose-950/80 border border-rose-500/60 text-rose-300 font-bold shadow-[0_0_10px_rgba(244,63,94,0.3)]";
+        }
+      } else {
+        badge.textContent = "[NO EXP CLAIM PRESENT]";
+        badge.className = "text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold";
+      }
+    }
+
+    function resetLifecycleDisplays() {
+      document.getElementById('expDateDisplay').textContent = '--';
+      document.getElementById('expRelativeDisplay').textContent = '--';
+      document.getElementById('iatDateDisplay').textContent = '--';
+      document.getElementById('iatRelativeDisplay').textContent = '--';
+      document.getElementById('nbfDateDisplay').textContent = '--';
+      document.getElementById('nbfRelativeDisplay').textContent = '--';
+      const badge = document.getElementById('expiryBadge');
+      badge.textContent = '[STANDBY]';
+      badge.className = 'text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold';
+    }
+
+    function copyContent(elId) {
+      const text = document.getElementById(elId).textContent;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED TO CLIPBOARD');
+    }
+
+    function clearJwt() {
+      document.getElementById('jwtInput').value = '';
+      parseJwt();
+      showToast('CLEARED TOKEN');
+    }
+
+    function loadSampleJwt() {
+      const nowSec = Math.floor(Date.now() / 1000);
+      const expSec = nowSec + 7200; // 2 hours from now
+
+      const sampleHeader = {
+        alg: "HS256",
+        typ: "JWT"
+      };
+
+      const samplePayload = {
+        sub: "user_cyber_0x7F",
+        name: "Sarwar Tactical Ops",
+        role: "security_auditor",
+        iss: "https://apps.sarwarfx.cfd",
+        aud: "cybertools_cluster",
+        iat: nowSec,
+        exp: expSec,
+        permissions: ["read:telemetry", "write:sandbox", "exec:airgap"]
+      };
+
+      function toBase64Url(obj) {
+        const jsonStr = JSON.stringify(obj);
+        return btoa(unescape(encodeURIComponent(jsonStr)))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+      }
+
+      const h64 = toBase64Url(sampleHeader);
+      const p64 = toBase64Url(samplePayload);
+      const mockSig = "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+      document.getElementById('jwtInput').value = `${h64}.${p64}.${mockSig}`;
+      parseJwt();
+      showToast('LOADED SAMPLE ACTIVE JWT');
+    }
+
+    // Start 1-second ticker for live expiration countdown
+    setInterval(() => {
+      if (parsedPayload) {
+        updateLifecycle();
+      }
+    }, 1000);
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleJwt();
+    });
+  </script>
+</body>
+</html>
