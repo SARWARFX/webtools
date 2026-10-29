@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://apps.sarwarfx.cfd/sitemap.xml

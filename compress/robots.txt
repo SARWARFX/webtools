@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://compress.sarwarfx.cfd/sitemap.xml

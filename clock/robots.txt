@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://clock.sarwarfx.cfd/sitemap.xml

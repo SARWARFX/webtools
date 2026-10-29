@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://base64.sarwarfx.cfd/sitemap.xml
