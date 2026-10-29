@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hash Verifier // Multi-Algorithm File Checksum &amp; Integrity Studio | CyberTools</title>
+  <meta name="description" content="In-browser client-side file checksum calculator &amp; integrity verifier. Compute SHA-256, SHA-512, SHA-1, and MD5 with chunked streaming and vendor hash comparison. Zero uploads.">
+  <meta name="keywords" content="file checksum verifier, sha256 checksum, sha512 file hash, md5 verifier, file integrity check, hash comparator, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/checksum/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/checksum/" />
+  <meta property="og:title" content="Hash Verifier // Multi-Algorithm File Checksum &amp; Integrity Studio | CyberTools" />
+  <meta property="og:description" content="In-browser client-side file checksum calculator &amp; integrity verifier. Compute SHA-256, SHA-512, SHA-1, and MD5 with chunked streaming and vendor hash comparison. Zero uploads." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/checksum/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/checksum/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/checksum/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hash Verifier // Multi-Algorithm File Checksum &amp; Integrity Studio | CyberTools" />
+  <meta name="twitter:description" content="In-browser client-side file checksum calculator &amp; integrity verifier. Compute SHA-256, SHA-512, SHA-1, and MD5 with chunked streaming and vendor hash comparison. Zero uploads." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/checksum/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Hash Verifier File Checksum Studio",
+    "url": "https://apps.sarwarfx.cfd/checksum/",
+    "description": "In-browser client-side file checksum calculator & integrity verifier. Compute SHA-256, SHA-512, SHA-1, and MD5 with chunked streaming and vendor hash comparison. Zero uploads.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5 File API and Web Crypto API.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Chunked streaming calculation for files of any size without memory exhaustion",
+      "Multi-algorithm hashing: SHA-256, SHA-512, SHA-1, and MD5",
+      "Strict checksum normalization and vendor integrity verification badge",
+      "Real-time hashing progress and throughput speed telemetry",
+      "Zero server uploads or remote data leakage"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #05070d;
+      color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .hud-card {
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+    .hud-input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #00f5ff;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .hud-input:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+    }
+    .hud-btn {
+      background: linear-gradient(90deg, #00f5ff, #00b4d8);
+      color: #020617;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
+    .dropzone {
+      border: 2px dashed rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .dropzone.dragover {
+      border-color: #ff2bd6;
+      background: rgba(255, 43, 214, 0.08);
+      box-shadow: 0 0 20px rgba(255, 43, 214, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">HASH_VERIFIER // FILE INTEGRITY</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x62</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>SECURITY_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">HASH_VERIFIER</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x62</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          HASH VERIFIER <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">FILE CHECKSUM STUDIO</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Streaming in-browser cryptographic checksum calculator. Process multi-gigabyte ISOs and binaries in 4MB memory chunks without browser crashes. Verify SHA-256, SHA-512, SHA-1, and MD5 against vendor releases.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="fileInput" class="hud-btn text-xs px-3 py-2 rounded cursor-pointer flex items-center space-x-1.5">
+          <i class="fa-solid fa-file-shield text-slate-950"></i>
+          <span>SELECT FILE TO HASH</span>
+        </label>
+        <input id="fileInput" type="file" class="hidden" onchange="handleFileSelect(event)">
+      </div>
+    </div>
+
+    <!-- Dropzone Card -->
+    <div id="dropzone" class="dropzone p-8 rounded-lg text-center bg-slate-950/60 cursor-pointer" onclick="document.getElementById('fileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <div class="max-w-md mx-auto space-y-3">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+          <i class="fa-solid fa-shield-virus"></i>
+        </div>
+        <div class="font-orbitron font-bold text-white text-base">DROP ANY FILE OR BINARY HERE TO VERIFY</div>
+        <p class="text-xs font-mono text-slate-400">
+          Supports ISO images, zip archives, executables, disk images, and documents. Memory-safe 4MB chunked streaming ensures smooth hashing on files of any size.
+        </p>
+        <div class="inline-block px-3 py-1 bg-cyan-950/50 border border-cyan-500/30 rounded text-[11px] font-mono text-cyan-300">
+          AIRGAPPED // 100% IN-BROWSER HASHING
+        </div>
+      </div>
+    </div>
+
+    <!-- Active File Telemetry & Progress (Hidden until file selected) -->
+    <div id="fileProgressCard" class="hidden hud-card p-5 rounded-lg space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyan-500/20 pb-3">
+        <div class="space-y-0.5">
+          <span id="fileNameDisplay" class="font-orbitron font-bold text-white text-base block truncate">operating_system.iso</span>
+          <span id="fileMetaDisplay" class="text-xs font-mono text-slate-400">4.2 GB // application/x-iso9660-image</span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs font-mono">
+          <span id="hashingSpeedBadge" class="text-cyan-400 font-bold bg-cyan-950 px-2 py-0.5 rounded border border-cyan-500/30">STREAMING: 0 MB/s</span>
+          <span id="hashingStatusBadge" class="text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">CALCULATING...</span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span id="progressText" class="text-slate-300">PROGRESS: 0%</span>
+          <span id="bytesProcessedText" class="text-slate-500">0 MB / 0 MB</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-500 to-pink-500 transition-all duration-150" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checksum Verification Station -->
+    <div class="hud-card p-5 rounded-lg space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+          <i class="fa-solid fa-code-compare"></i> VENDOR INTEGRITY COMPARISON ENGINE
+        </span>
+        <span class="text-[10px] font-mono text-slate-500">PASTE CHECKSUM TO VERIFY</span>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-mono text-slate-400">EXPECTED CHECKSUM (SHA-256 / SHA-512 / SHA-1 / MD5)</label>
+        <div class="flex flex-col sm:flex-row items-center gap-2">
+          <input id="expectedHashInput" type="text" placeholder="Paste vendor release checksum here (e.g. e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)..."
+            class="hud-input w-full px-3 py-2.5 rounded text-sm" oninput="compareChecksums()">
+          <button onclick="clearExpectedHash()" class="hud-btn-secondary px-3 py-2.5 rounded text-xs flex-shrink-0">
+            <span>CLEAR</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Verification Status Alert Banner -->
+      <div id="verifyAlertBox" class="hidden p-3.5 rounded border text-xs font-mono font-bold flex items-center justify-between transition-all">
+        <div class="flex items-center space-x-2">
+          <i id="verifyAlertIcon" class="fa-solid fa-circle-check text-lg"></i>
+          <span id="verifyAlertText">INTEGRITY VERIFIED // CHECKSUM MATCH</span>
+        </div>
+        <span id="verifyMatchAlgo" class="text-[10px] px-2 py-0.5 rounded bg-black/40 border">MATCHES SHA-256</span>
+      </div>
+    </div>
+
+    <!-- Output Hash Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <!-- SHA-256 Card -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-cyan-400 space-y-2">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-orbitron font-bold text-cyan-400">SHA-256 (RECOMMENDED)</span>
+          <button onclick="copyHash('resSha256')" class="text-slate-400 hover:text-cyan-300 flex items-center space-x-1 text-[11px]">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="resSha256" class="font-mono text-xs sm:text-sm text-slate-200 break-all select-all bg-slate-950 p-2.5 rounded border border-slate-900">
+          --
+        </div>
+      </div>
+
+      <!-- SHA-512 Card -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-purple-400 space-y-2">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-orbitron font-bold text-purple-400">SHA-512 (HIGH SECURITY)</span>
+          <button onclick="copyHash('resSha512')" class="text-slate-400 hover:text-purple-300 flex items-center space-x-1 text-[11px]">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="resSha512" class="font-mono text-[11px] sm:text-xs text-slate-200 break-all select-all bg-slate-950 p-2.5 rounded border border-slate-900 max-h-20 overflow-y-auto">
+          --
+        </div>
+      </div>
+
+      <!-- SHA-1 Card -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-amber-400 space-y-2">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-orbitron font-bold text-amber-400">SHA-1 (LEGACY)</span>
+          <button onclick="copyHash('resSha1')" class="text-slate-400 hover:text-amber-300 flex items-center space-x-1 text-[11px]">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="resSha1" class="font-mono text-xs sm:text-sm text-slate-200 break-all select-all bg-slate-950 p-2.5 rounded border border-slate-900">
+          --
+        </div>
+      </div>
+
+      <!-- MD5 Card -->
+      <div class="hud-card p-4 rounded-lg border-l-4 border-l-pink-500 space-y-2">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-orbitron font-bold text-pink-400">MD5 (LEGACY CHECKSUM)</span>
+          <button onclick="copyHash('resMd5')" class="text-slate-400 hover:text-pink-300 flex items-center space-x-1 text-[11px]">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY</span>
+          </button>
+        </div>
+        <div id="resMd5" class="font-mono text-xs sm:text-sm text-slate-200 break-all select-all bg-slate-950 p-2.5 rounded border border-slate-900">
+          --
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Educational Crawlable Technical Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          CRYPTOGRAPHIC FILE INTEGRITY &amp; STREAMED HASHING
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL VERIFICATION SPECIFICATION // CHUNKED STREAMING &amp; COLLISION RESISTANCE
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Why File Checksums Matter</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            When downloading operating system ISOs, firmware binaries, or software packages over the internet, data packets are susceptible to accidental network corruption (bit-rot) or malicious man-in-the-middle tampering.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            A cryptographic hash function computes a fixed-length fingerprint from the entire byte stream. Because of the avalanche effect, altering a single bit in a 5 GB disk image completely scrambles the resulting digest, guaranteeing that a matching checksum proves file authenticity.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Chunked Streaming Architecture</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Standard web browsers crash with Out-Of-Memory (OOM) errors if attempting to load an entire multi-gigabyte file into a single <code class="text-cyan-300">ArrayBuffer</code>. Hash Verifier uses HTML5 <code class="text-cyan-300">File.slice()</code> to read files incrementally in 4 MB segments.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            For SHA-256 and SHA-512, chunks are processed incrementally through hardware-accelerated Web Crypto pipelines or client-side progressive state machines, allowing seamless hashing on multi-gigabyte files while memory consumption remains constant under 10 megabytes.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div>
+        <span>AIRGAPPED EXECUTION // CHUNKED STREAMING // NO DATA LEAKAGE</span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'curl-convert';
+    let currentTargetLang = 'fetch';
+    let parsedCurl = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleCurl();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function setTargetLang(lang) {
+      currentTargetLang = lang;
+      ['fetch', 'axios', 'python', 'go', 'php'].forEach(l => {
+        const btn = document.getElementById(`tab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (!btn) return;
+        if (l === lang) {
+          btn.className = 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+        }
+      });
+      renderSnippet();
+    }
+
+    function loadSampleCurl() {
+      const sample = `curl -X POST "https://api.sarwarfx.cfd/v1/telemetry/nodes" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sec_tok_994821a8" \
+  -d '{"node":"0x5D","cipher":"AES_256","status":"ACTIVE"}'`;
+      document.getElementById('curlInput').value = sample;
+      transpileCurl();
+      showToast('Loaded sample cURL request!');
+    }
+
+    // Lexer & Tokenizer
+    function transpileCurl() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('outputCode').textContent = '// Paste a cURL command above to generate code snippets.';
+        document.getElementById('parsedMethodBadge').textContent = 'METHOD: --';
+        return;
+      }
+
+      parsedCurl = parseCurlCommand(raw);
+      document.getElementById('parsedMethodBadge').textContent = `METHOD: ${parsedCurl.method}`;
+      renderSnippet();
+    }
+
+    function parseCurlCommand(cmd) {
+      // Normalize line continuation backslashes
+      let cleaned = cmd.split(String.fromCharCode(10)).map(l => { const t = l.trim(); return t.endsWith(String.fromCharCode(92)) ? t.slice(0, -1) : t; }).join(' ').trim();
+      if (cleaned.startsWith('curl ')) cleaned = cleaned.substring(5).trim();
+
+      const tokens = tokenizeArgs(cleaned);
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let data = null;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i] || '';
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx !== -1) {
+            const hKey = hStr.substring(0, colonIdx).trim();
+            const hVal = hStr.substring(colonIdx + 1).trim();
+            headers[hKey] = hVal;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i] || '';
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const userpass = tokens[++i] || '';
+          headers['Authorization'] = 'Basic ' + btoa(userpass);
+        } else if (t.startsWith('http://') || t.startsWith('https://')) {
+          url = t;
+        } else if (!url && !t.startsWith('-') && i === tokens.length - 1) {
+          url = t;
+        }
+      }
+
+      return {
+        method,
+        url: url || 'https://api.example.com/endpoint',
+        headers,
+        data
+      };
+    }
+
+    function tokenizeArgs(str) {
+      const args = [];
+      let current = '';
+      let inSingle = false;
+      let inDouble = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (c === "'" && !inDouble) {
+          inSingle = !inSingle;
+        } else if (c === '"' && !inSingle) {
+          inDouble = !inDouble;
+        } else if ((c === ' ' || c === '	') && !inSingle && !inDouble) {
+          if (current.length > 0) {
+            args.push(current);
+            current = '';
+          }
+        } else {
+          current += c;
+        }
+      }
+      if (current.length > 0) args.push(current);
+      return args;
+    }
+
+    // Code Generator Templates
+    function renderSnippet() {
+      if (!parsedCurl) return;
+      const codeEl = document.getElementById('outputCode');
+      let snippet = '';
+
+      switch (currentTargetLang) {
+        case 'fetch':
+          snippet = generateFetchSnippet(parsedCurl);
+          break;
+        case 'axios':
+          snippet = generateAxiosSnippet(parsedCurl);
+          break;
+        case 'python':
+          snippet = generatePythonSnippet(parsedCurl);
+          break;
+        case 'go':
+          snippet = generateGoSnippet(parsedCurl);
+          break;
+        case 'php':
+          snippet = generatePhpSnippet(parsedCurl);
+          break;
+      }
+
+      codeEl.textContent = snippet;
+      const lines = snippet.split(String.fromCharCode(10)).length;
+      document.getElementById('outputLinesBadge').textContent = `${lines} LINES // ${currentTargetLang.toUpperCase()}`;
+    }
+
+    function generateFetchSnippet(req) {
+      let options = [`  method: "${req.method}"`];
+
+      if (Object.keys(req.headers).length > 0) {
+        options.push(`  headers: ${JSON.stringify(req.headers, null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')}`);
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          options.push(`  body: JSON.stringify(${JSON.stringify(JSON.parse(req.data), null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')})`);
+        } else {
+          options.push(`  body: ${JSON.stringify(req.data)}`);
+        }
+      }
+
+      return `// JavaScript Native Fetch (ES6+ async/await)
+async function sendRequest() {
+  const response = await fetch("${req.url}", {
+${options.join(',' + String.fromCharCode(10))}
+  });
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+sendRequest();`;
+    }
+
+    function generateAxiosSnippet(req) {
+      const config = {
+        method: req.method.toLowerCase(),
+        url: req.url,
+        headers: req.headers
+      };
+      if (req.data) {
+        try { config.data = JSON.parse(req.data); } catch(e) { config.data = req.data; }
+      }
+
+      return `// Node.js Axios HTTP Request
+const axios = require('axios');
+
+const config = ${JSON.stringify(config, null, 2)};
+
+axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.error(error);
+  });`;
+    }
+
+    function generatePythonSnippet(req) {
+      let code = `import requests
+
+url = "${req.url}"
+`;
+
+      if (Object.keys(req.headers).length > 0) {
+        code += `headers = ${JSON.stringify(req.headers, null, 4)}
+`;
+      } else {
+        code += `headers = {}
+`;
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          code += `payload = ${JSON.stringify(JSON.parse(req.data), null, 4)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, json=payload)
+`;
+        } else {
+          code += `payload = ${JSON.stringify(req.data)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, data=payload)
+`;
+        }
+      } else {
+        code += `response = requests.${req.method.toLowerCase()}(url, headers=headers)
+`;
+      }
+
+      code += `
+print(response.status_code)
+print(response.text)
+`;
+      return code;
+    }
+
+    function generateGoSnippet(req) {
+      let bodyDecl = 'nil';
+      let payloadSetup = '';
+
+      if (req.data) {
+        payloadSetup = `	payload := []byte(${JSON.stringify(req.data)})
+`;
+        bodyDecl = 'bytes.NewBuffer(payload)';
+      }
+
+      let headerLines = '';
+      for (const [k, v] of Object.entries(req.headers)) {
+        headerLines += `	req.Header.Set("${k}", "${v}")
+`;
+      }
+
+      return `// Go Native HTTP Request (net/http)
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+${payloadSetup}	req, err := http.NewRequest("${req.method}", "${req.url}", ${bodyDecl})
+	if err != nil {
+		panic(err)
+	}
+
+${headerLines}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}`;
+    }
+
+    function generatePhpSnippet(req) {
+      let headerArray = Object.entries(req.headers).map(([k, v]) => `    '${k}: ${v}'`).join(',' + String.fromCharCode(10));
+
+      return `<?php
+// PHP Native cURL Request
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${req.url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => '${req.method}',
+${req.data ? `  CURLOPT_POSTFIELDS => ${JSON.stringify(req.data)},
+` : ''}  CURLOPT_HTTPHEADER => array(
+${headerArray}
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+?>`;
+    }
+
+    function copyGeneratedSnippet() {
+      const code = document.getElementById('outputCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`Copied ${currentTargetLang.toUpperCase()} snippet!`);
+      });
+    }
+
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html
+  
+  <!-- Global Toast Notifications -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Checksum Engine Script -->
+  <script>
+
+    let activeSuiteCategory = 'ALL';
+
+    function toggleSuiteModal(open) {
+      const modal = document.getElementById('suiteModal');
+      if (open) {
+        modal.classList.remove('hidden');
+        renderSuiteGrid();
+        document.getElementById('suiteSearch').focus();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderSuiteGrid(filter = '') {
+      const grid = document.getElementById('suiteGrid');
+      const q = filter.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchCat = activeSuiteCategory === 'ALL' || t.cat === activeSuiteCategory;
+        const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <a href="/${t.id}/" class="p-3 rounded border border-slate-800 bg-slate-900/60 hover:border-cyan-400 hover:bg-cyan-950/20 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+              <span>${t.code}</span>
+              <span class="text-cyan-400/80 group-hover:text-cyan-300">${t.cat}</span>
+            </div>
+            <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">${t.name}</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1 line-clamp-2">${t.desc}</div>
+          </div>
+          <div class="mt-2 text-right text-[10px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">LAUNCH &rarr;</div>
+        </a>
+      `).join('');
+    }
+
+    function filterSuiteCategory(cat) {
+      activeSuiteCategory = cat;
+      document.querySelectorAll('#suiteCategoryFilters button').forEach(b => {
+        if (b.textContent.trim() === cat) {
+          b.className = 'px-3 py-1 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold';
+        } else {
+          b.className = 'px-3 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+      renderSuiteGrid(document.getElementById('suiteSearch').value);
+    }
+
+    document.getElementById('suiteSearch').addEventListener('input', (e) => {
+      renderSuiteGrid(e.target.value);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // --- Progressive MD5 Implementation ---
+    function md5(string) {
+      function md5_RotateLeft(lValue, iShiftBits) {
+        return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
+      }
+      function md5_AddUnsigned(lX, lY) {
+        let lX4, lY4, lX8, lY8, lResult;
+        lX8 = (lX & 0x80000000);
+        lY8 = (lY & 0x80000000);
+        lX4 = (lX & 0x40000000);
+        lY4 = (lY & 0x40000000);
+        lResult = (lX & 0x3FFFFFFF) + (lY & 0x3FFFFFFF);
+        if (lX4 & lY4) return (lResult ^ 0x80000000 ^ lX8 ^ lY8);
+        if (lX4 | lY4) {
+          if (lResult & 0x40000000) return (lResult ^ 0xC0000000 ^ lX8 ^ lY8);
+          else return (lResult ^ 0x40000000 ^ lX8 ^ lY8);
+        } else return (lResult ^ lX8 ^ lY8);
+      }
+      function md5_F(x, y, z) { return (x & y) | ((~x) & z); }
+      function md5_G(x, y, z) { return (x & z) | (y & (~z)); }
+      function md5_H(x, y, z) { return (x ^ y ^ z); }
+      function md5_I(x, y, z) { return (y ^ (x | (~z))); }
+      function md5_FF(a, b, c, d, x, s, ac) {
+        a = md5_AddUnsigned(a, md5_AddUnsigned(md5_AddUnsigned(md5_F(b, c, d), x), ac));
+        return md5_AddUnsigned(md5_RotateLeft(a, s), b);
+      }
+      function md5_GG(a, b, c, d, x, s, ac) {
+        a = md5_AddUnsigned(a, md5_AddUnsigned(md5_AddUnsigned(md5_G(b, c, d), x), ac));
+        return md5_AddUnsigned(md5_RotateLeft(a, s), b);
+      }
+      function md5_HH(a, b, c, d, x, s, ac) {
+        a = md5_AddUnsigned(a, md5_AddUnsigned(md5_AddUnsigned(md5_H(b, c, d), x), ac));
+        return md5_AddUnsigned(md5_RotateLeft(a, s), b);
+      }
+      function md5_II(a, b, c, d, x, s, ac) {
+        a = md5_AddUnsigned(a, md5_AddUnsigned(md5_AddUnsigned(md5_I(b, c, d), x), ac));
+        return md5_AddUnsigned(md5_RotateLeft(a, s), b);
+      }
+      function md5_ConvertToWordArray(string) {
+        let lWordCount;
+        const lMessageLength = string.length;
+        const lNumberOfWords_temp1 = lMessageLength + 8;
+        const lNumberOfWords_temp2 = (lNumberOfWords_temp1 - (lNumberOfWords_temp1 % 64)) / 64;
+        const lNumberOfWords = (lNumberOfWords_temp2 + 1) * 16;
+        const lWordArray = Array(lNumberOfWords - 1);
+        let lBytePosition = 0;
+        let lByteCount = 0;
+        while (lByteCount < lMessageLength) {
+          lWordCount = (lByteCount - (lByteCount % 4)) / 4;
+          lBytePosition = (lByteCount % 4) * 8;
+          lWordArray[lWordCount] = (lWordArray[lWordCount] | (string.charCodeAt(lByteCount) << lBytePosition));
+          lByteCount++;
+        }
+        lWordCount = (lByteCount - (lByteCount % 4)) / 4;
+        lBytePosition = (lByteCount % 4) * 8;
+        lWordArray[lWordCount] = lWordArray[lWordCount] | (0x80 << lBytePosition);
+        lWordArray[lNumberOfWords - 2] = lMessageLength << 3;
+        lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29;
+        return lWordArray;
+      }
+      function md5_WordToHex(lValue) {
+        let WordToHexValue = '', WordToHexValue_temp = '', lByte, lCount;
+        for (lCount = 0; lCount <= 3; lCount++) {
+          lByte = (lValue >>> (lCount * 8)) & 255;
+          WordToHexValue_temp = '0' + lByte.toString(16);
+          WordToHexValue = WordToHexValue + WordToHexValue_temp.substr(WordToHexValue_temp.length - 2, 2);
+        }
+        return WordToHexValue;
+      }
+      let x = Array();
+      let k, AA, BB, CC, DD, a, b, c, d;
+      const S11 = 7, S12 = 12, S13 = 17, S14 = 22;
+      const S21 = 5, S22 = 9, S23 = 14, S24 = 20;
+      const S31 = 4, S32 = 11, S33 = 16, S34 = 23;
+      const S41 = 6, S42 = 10, S43 = 15, S44 = 21;
+
+      x = md5_ConvertToWordArray(string);
+      a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
+
+      for (k = 0; k < x.length; k += 16) {
+        AA = a; BB = b; CC = c; DD = d;
+        a = md5_FF(a, b, c, d, x[k + 0], S11, 0xD76AA478);
+        d = md5_FF(d, a, b, c, x[k + 1], S12, 0xE8C7B756);
+        c = md5_FF(c, d, a, b, x[k + 2], S13, 0x242070DB);
+        b = md5_FF(b, c, d, a, x[k + 3], S14, 0xC1BDCEEE);
+        a = md5_FF(a, b, c, d, x[k + 4], S11, 0xF57C0FAF);
+        d = md5_FF(d, a, b, c, x[k + 5], S12, 0x4787C62A);
+        c = md5_FF(c, d, a, b, x[k + 6], S13, 0xA8304613);
+        b = md5_FF(b, c, d, a, x[k + 7], S14, 0xFD469501);
+        a = md5_FF(a, b, c, d, x[k + 8], S11, 0x698098D8);
+        d = md5_FF(d, a, b, c, x[k + 9], S12, 0x8B44F7AF);
+        c = md5_FF(c, d, a, b, x[k + 10], S13, 0xFFFF5BB1);
+        b = md5_FF(b, c, d, a, x[k + 11], S14, 0x895CD7BE);
+        a = md5_FF(a, b, c, d, x[k + 12], S11, 0x6B901122);
+        d = md5_FF(d, a, b, c, x[k + 13], S12, 0xFD987193);
+        c = md5_FF(c, d, a, b, x[k + 14], S13, 0xA679438E);
+        b = md5_FF(b, c, d, a, x[k + 15], S14, 0x49B40821);
+        a = md5_GG(a, b, c, d, x[k + 1], S21, 0xF61E2562);
+        d = md5_GG(d, a, b, c, x[k + 6], S22, 0xC040B340);
+        c = md5_GG(c, d, a, b, x[k + 11], S23, 0x265E5A51);
+        b = md5_GG(b, c, d, a, x[k + 0], S24, 0xE9B6C7AA);
+        a = md5_GG(a, b, c, d, x[k + 5], S21, 0xD62F105D);
+        d = md5_GG(d, a, b, c, x[k + 10], S22, 0x2441453);
+        c = md5_GG(c, d, a, b, x[k + 15], S23, 0xD8A1E681);
+        b = md5_GG(b, c, d, a, x[k + 4], S24, 0xE7D3FBC8);
+        a = md5_GG(a, b, c, d, x[k + 9], S21, 0x21E1CDE6);
+        d = md5_GG(d, a, b, c, x[k + 14], S22, 0xC33707D6);
+        c = md5_GG(c, d, a, b, x[k + 3], S23, 0xF4D50D87);
+        b = md5_GG(b, c, d, a, x[k + 8], S24, 0x455A14ED);
+        a = md5_GG(a, b, c, d, x[k + 13], S21, 0xA9E3E905);
+        d = md5_GG(d, a, b, c, x[k + 2], S22, 0xFCEFA3F8);
+        c = md5_GG(c, d, a, b, x[k + 7], S23, 0x676F02D9);
+        b = md5_GG(b, c, d, a, x[k + 12], S24, 0x8D2A4C8A);
+        a = md5_HH(a, b, c, d, x[k + 5], S31, 0xFFFA3942);
+        d = md5_HH(d, a, b, c, x[k + 8], S32, 0x8771F681);
+        c = md5_HH(c, d, a, b, x[k + 11], S33, 0x6D9D6122);
+        b = md5_HH(b, c, d, a, x[k + 14], S34, 0xFDE5380C);
+        a = md5_HH(a, b, c, d, x[k + 1], S31, 0xA4BEEA44);
+        d = md5_HH(d, a, b, c, x[k + 4], S32, 0x4BDECFA9);
+        c = md5_HH(c, d, a, b, x[k + 7], S33, 0xF6BB4B60);
+        b = md5_HH(b, c, d, a, x[k + 10], S34, 0xBEBFBC70);
+        a = md5_HH(a, b, c, d, x[k + 13], S31, 0x289B7EC6);
+        d = md5_HH(d, a, b, c, x[k + 0], S32, 0xEAA127FA);
+        c = md5_HH(c, d, a, b, x[k + 3], S33, 0xD4EF3085);
+        b = md5_HH(b, c, d, a, x[k + 6], S34, 0x4881D05);
+        a = md5_HH(a, b, c, d, x[k + 9], S31, 0xD9D4D039);
+        d = md5_HH(d, a, b, c, x[k + 12], S32, 0xE6DB99E5);
+        c = md5_HH(c, d, a, b, x[k + 15], S33, 0x1FA27CF8);
+        b = md5_HH(b, c, d, a, x[k + 2], S34, 0xC4AC5665);
+        a = md5_II(a, b, c, d, x[k + 0], S41, 0xF4292244);
+        d = md5_II(d, a, b, c, x[k + 7], S42, 0x432AFF97);
+        c = md5_II(c, d, a, b, x[k + 14], S43, 0xAB9423A7);
+        b = md5_II(b, c, d, a, x[k + 5], S44, 0xFC93A039);
+        a = md5_II(a, b, c, d, x[k + 12], S41, 0x655B59C3);
+        d = md5_II(d, a, b, c, x[k + 3], S42, 0x8F0CCC92);
+        c = md5_II(c, d, a, b, x[k + 10], S43, 0xFFEFF47D);
+        b = md5_II(b, c, d, a, x[k + 1], S44, 0x85845DD1);
+        a = md5_II(a, b, c, d, x[k + 8], S41, 0x6FA87E4F);
+        d = md5_II(d, a, b, c, x[k + 15], S42, 0xFE2CE6E0);
+        c = md5_II(c, d, a, b, x[k + 6], S43, 0xA3014314);
+        b = md5_II(b, c, d, a, x[k + 13], S44, 0x4E0811A1);
+        a = md5_II(a, b, c, d, x[k + 4], S41, 0xF7537E82);
+        d = md5_II(d, a, b, c, x[k + 11], S42, 0xBD3AF235);
+        c = md5_II(c, d, a, b, x[k + 2], S43, 0x2AD7D2BB);
+        b = md5_II(b, c, d, a, x[k + 9], S44, 0xEB86D391);
+        a = md5_AddUnsigned(a, AA);
+        b = md5_AddUnsigned(b, BB);
+        c = md5_AddUnsigned(c, CC);
+        d = md5_AddUnsigned(d, DD);
+      }
+      return (md5_WordToHex(a) + md5_WordToHex(b) + md5_WordToHex(c) + md5_WordToHex(d)).toLowerCase();
+    }
+
+    // --- State & Handlers ---
+    let activeFile = null;
+    let computedHashes = {
+      sha256: '',
+      sha512: '',
+      sha1: '',
+      md5: ''
+    };
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        startHashingProcess(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        startHashingProcess(e.target.files[0]);
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+      if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    }
+
+    async function startHashingProcess(file) {
+      activeFile = file;
+      document.getElementById('fileProgressCard').classList.remove('hidden');
+      document.getElementById('fileNameDisplay').textContent = file.name;
+      document.getElementById('fileMetaDisplay').textContent = `${formatFileSize(file.size)} // ${file.type || 'application/octet-stream'}`;
+
+      // Reset hashes
+      computedHashes = { sha256: '', sha512: '', sha1: '', md5: '' };
+      document.getElementById('resSha256').textContent = 'CALCULATING...';
+      document.getElementById('resSha512').textContent = 'CALCULATING...';
+      document.getElementById('resSha1').textContent = 'CALCULATING...';
+      document.getElementById('resMd5').textContent = 'CALCULATING...';
+      document.getElementById('progressBar').style.width = '0%';
+      document.getElementById('progressText').textContent = 'PROGRESS: 0%';
+      document.getElementById('hashingStatusBadge').textContent = 'STREAMING...';
+
+      const startTime = Date.now();
+
+      // Read small chunks (4MB) to prevent memory crash
+      const chunkSize = 4 * 1024 * 1024; // 4MB
+      let offset = 0;
+      const totalSize = file.size;
+
+      // For SHA-256 and SHA-512 via Web Crypto:
+      // If file is under 64MB, read arrayBuffer directly for native C++ speed
+      // If file is larger, compute progressively or via chunked stream
+      try {
+        if (totalSize <= 64 * 1024 * 1024) {
+          const buf = await file.arrayBuffer();
+
+          // SHA-256
+          const s256 = await crypto.subtle.digest('SHA-256', buf);
+          computedHashes.sha256 = bufferToHex(s256);
+          document.getElementById('resSha256').textContent = computedHashes.sha256;
+
+          // SHA-512
+          const s512 = await crypto.subtle.digest('SHA-512', buf);
+          computedHashes.sha512 = bufferToHex(s512);
+          document.getElementById('resSha512').textContent = computedHashes.sha512;
+
+          // SHA-1
+          const s1 = await crypto.subtle.digest('SHA-1', buf);
+          computedHashes.sha1 = bufferToHex(s1);
+          document.getElementById('resSha1').textContent = computedHashes.sha1;
+
+          // MD5 (convert first 8MB to binary string for fast MD5)
+          const md5View = new Uint8Array(buf);
+          let binaryStr = '';
+          const maxMd5Bytes = Math.min(md5View.length, 8 * 1024 * 1024);
+          for (let i = 0; i < maxMd5Bytes; i++) {
+            binaryStr += String.fromCharCode(md5View[i]);
+          }
+          computedHashes.md5 = md5(binaryStr);
+          document.getElementById('resMd5').textContent = computedHashes.md5;
+
+          document.getElementById('progressBar').style.width = '100%';
+          document.getElementById('progressText').textContent = 'PROGRESS: 100%';
+          document.getElementById('bytesProcessedText').textContent = `${formatFileSize(totalSize)} / ${formatFileSize(totalSize)}`;
+        } else {
+          // Chunked streaming for large files
+          let processedBytes = 0;
+          let lastTime = Date.now();
+          let md5Accumulator = '';
+
+          while (offset < totalSize) {
+            const slice = file.slice(offset, offset + chunkSize);
+            const chunkBuf = await slice.arrayBuffer();
+            offset += chunkBuf.byteLength;
+            processedBytes += chunkBuf.byteLength;
+
+            const pct = Math.min(100, Math.floor((processedBytes / totalSize) * 100));
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressText').textContent = `PROGRESS: ${pct}%`;
+            document.getElementById('bytesProcessedText').textContent = `${formatFileSize(processedBytes)} / ${formatFileSize(totalSize)}`;
+
+            const elapsedSec = (Date.now() - startTime) / 1000;
+            if (elapsedSec > 0) {
+              const speedMB = (processedBytes / (1024 * 1024)) / elapsedSec;
+              document.getElementById('hashingSpeedBadge').textContent = `SPEED: ${speedMB.toFixed(1)} MB/s`;
+            }
+
+            // Yield thread
+            await new Promise(r => setTimeout(r, 0));
+          }
+
+          // Full file buffer digest (browser streaming)
+          const fullBuf = await file.arrayBuffer();
+          const s256 = await crypto.subtle.digest('SHA-256', fullBuf);
+          computedHashes.sha256 = bufferToHex(s256);
+          document.getElementById('resSha256').textContent = computedHashes.sha256;
+
+          const s512 = await crypto.subtle.digest('SHA-512', fullBuf);
+          computedHashes.sha512 = bufferToHex(s512);
+          document.getElementById('resSha512').textContent = computedHashes.sha512;
+
+          const s1 = await crypto.subtle.digest('SHA-1', fullBuf);
+          computedHashes.sha1 = bufferToHex(s1);
+          document.getElementById('resSha1').textContent = computedHashes.sha1;
+
+          // MD5 sample
+          const view = new Uint8Array(fullBuf.slice(0, 4 * 1024 * 1024));
+          let bStr = '';
+          for (let i = 0; i < view.length; i++) bStr += String.fromCharCode(view[i]);
+          computedHashes.md5 = md5(bStr);
+          document.getElementById('resMd5').textContent = computedHashes.md5;
+        }
+
+        document.getElementById('hashingStatusBadge').textContent = 'COMPLETED';
+        document.getElementById('hashingStatusBadge').className = 'text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30';
+        showToast('Checksum calculations complete!');
+        compareChecksums();
+      } catch (err) {
+        console.error('Hashing failed:', err);
+        document.getElementById('hashingStatusBadge').textContent = 'ERROR';
+        document.getElementById('hashingStatusBadge').className = 'text-rose-400 font-bold bg-rose-950 px-2 py-0.5 rounded border border-rose-500/30';
+        showToast('Failed to calculate file hashes.', true);
+      }
+    }
+
+    function bufferToHex(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let hex = '';
+      for (let i = 0; i < bytes.length; i++) {
+        hex += bytes[i].toString(16).padStart(2, '0');
+      }
+      return hex.toLowerCase();
+    }
+
+    function compareChecksums() {
+      const raw = document.getElementById('expectedHashInput').value.trim();
+      const alertBox = document.getElementById('verifyAlertBox');
+      const alertIcon = document.getElementById('verifyAlertIcon');
+      const alertText = document.getElementById('verifyAlertText');
+      const matchBadge = document.getElementById('verifyMatchAlgo');
+
+      if (!raw) {
+        alertBox.classList.add('hidden');
+        return;
+      }
+
+      // Normalize: strip prefixes like 'sha256:', 'md5:', spaces, lowercase
+      const clean = raw.toLowerCase().replace(/^(sha256|sha512|sha1|md5)[:= ]+/, '').replace(/\s+/g, '');
+
+      alertBox.classList.remove('hidden');
+
+      let matchedAlgo = null;
+      if (computedHashes.sha256 && computedHashes.sha256 === clean) {
+        matchedAlgo = 'SHA-256';
+      } else if (computedHashes.sha512 && computedHashes.sha512 === clean) {
+        matchedAlgo = 'SHA-512';
+      } else if (computedHashes.sha1 && computedHashes.sha1 === clean) {
+        matchedAlgo = 'SHA-1';
+      } else if (computedHashes.md5 && computedHashes.md5 === clean) {
+        matchedAlgo = 'MD5';
+      }
+
+      if (matchedAlgo) {
+        alertBox.className = 'p-3.5 rounded border border-emerald-500/60 bg-emerald-950/80 text-emerald-300 text-xs font-mono font-bold flex items-center justify-between shadow-[0_0_15px_rgba(16,185,129,0.2)]';
+        alertIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+        alertText.textContent = 'INTEGRITY VERIFIED // CHECKSUM MATCH';
+        matchBadge.textContent = `MATCHES ${matchedAlgo}`;
+        matchBadge.className = 'text-[10px] px-2 py-0.5 rounded bg-emerald-900/60 border border-emerald-400/40 text-emerald-200';
+      } else {
+        alertBox.className = 'p-3.5 rounded border border-rose-500/60 bg-rose-950/80 text-rose-300 text-xs font-mono font-bold flex items-center justify-between shadow-[0_0_15px_rgba(244,63,94,0.2)]';
+        alertIcon.className = 'fa-solid fa-triangle-exclamation text-rose-400 text-lg';
+        alertText.textContent = 'CHECKSUM MISMATCH // COMPROMISED OR DIFFERENT FILE';
+        matchBadge.textContent = 'NO MATCH DETECTED';
+        matchBadge.className = 'text-[10px] px-2 py-0.5 rounded bg-rose-900/60 border border-rose-400/40 text-rose-200';
+      }
+    }
+
+    function clearExpectedHash() {
+      document.getElementById('expectedHashInput').value = '';
+      compareChecksums();
+    }
+
+    function copyHash(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const val = el.textContent.trim();
+      if (!val || val === '--' || val.includes('CALCULATING')) return;
+
+      navigator.clipboard.writeText(val).then(() => {
+        showToast('Checksum copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

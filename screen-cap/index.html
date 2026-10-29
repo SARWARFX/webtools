@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Stream // In-Browser Screen & Audio Recorder | CyberTools</title>
+  <meta name="description" content="Client-side screen, tab, and desktop recorder with high-framerate 60 FPS capture, microphone injection, real-time audio visualizer, and instant WebM export. Zero telemetry.">
+  <meta name="keywords" content="screen recorder, in-browser screen recorder, screen capture with audio, microphone screen recording, webm recorder, mediarecorder, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/screen-cap/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/screen-cap/" />
+  <meta property="og:title" content="Display Stream // In-Browser Screen & Audio Recorder | CyberTools" />
+  <meta property="og:description" content="Client-side screen, tab, and desktop recorder with high-framerate 60 FPS capture, microphone injection, real-time audio visualizer, and instant WebM export. Zero telemetry." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/screen-cap/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/screen-cap/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/screen-cap/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Display Stream // In-Browser Screen & Audio Recorder | CyberTools" />
+  <meta name="twitter:description" content="Client-side screen, tab, and desktop recorder with high-framerate 60 FPS capture, microphone injection, real-time audio visualizer, and instant WebM export. Zero telemetry." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/screen-cap/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Display Stream Screen Recorder",
+    "url": "https://apps.sarwarfx.cfd/screen-cap/",
+    "description": "Client-side screen, tab, and desktop recorder with high-framerate 60 FPS capture, microphone injection, real-time audio visualizer, and instant WebM export. Zero telemetry.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Screen Capture API.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Up to 60 FPS DisplayMedia capture",
+      "Optional microphone input stream injection",
+      "Dual audio channel Web Audio API mixing",
+      "Real-time audio spectrum visualizer",
+      "Instant in-memory WebM container generation",
+      "Zero server uploads or remote telemetry"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #05070d;
+      color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .hud-card {
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+    .hud-btn {
+      background: linear-gradient(90deg, #00f5ff, #00b4d8);
+      color: #020617;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-danger {
+      background: linear-gradient(90deg, #ff2bd6, #e11d48);
+      color: #ffffff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn-danger:hover {
+      box-shadow: 0 0 15px rgba(255, 43, 214, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
+    .recording-pulse {
+      animation: recPulse 1.2s infinite;
+    }
+    @keyframes recPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.95); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">DISPLAY_STREAM // DESKTOP RECORDER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x5F</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>MULTIMEDIA_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">DISPLAY_STREAM</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x5F</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          DISPLAY STREAM <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">DESKTOP &amp; AUDIO RECORDER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Zero-backend, hardware-accelerated screen capture engine. Record entire screens, specific windows, or browser tabs with microphone mixing and direct in-memory WebM export.
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="recBadge" class="hidden px-2.5 py-1 rounded bg-rose-950/80 border border-rose-500/60 text-rose-300 font-mono text-xs font-bold recording-pulse flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+          <span>REC ●</span>
+          <span id="durationDisplay">00:00:00</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Recording Workspace -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Controls & Configuration Deck (4 cols) -->
+      <div class="lg:col-span-4 space-y-5">
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+              <i class="fa-solid fa-sliders"></i> CAPTURE CONFIGURATION
+            </span>
+            <span id="statusIndicator" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">STANDBY</span>
+          </div>
+
+          <!-- Primary Action Buttons -->
+          <div class="space-y-2 pt-1">
+            <button id="btnStartCapture" onclick="startCapture()" class="hud-btn w-full py-3 rounded text-sm flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-circle-play text-slate-950"></i>
+              <span>START CAPTURE</span>
+            </button>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btnPauseResume" onclick="togglePause()" disabled class="hud-btn-secondary py-2 rounded text-xs flex items-center justify-center space-x-1.5 opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-pause text-cyan-400"></i>
+                <span id="pauseBtnText">PAUSE</span>
+              </button>
+              <button id="btnStopRecording" onclick="stopCapture()" disabled class="hud-btn-danger py-2 rounded text-xs flex items-center justify-center space-x-1.5 opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-circle-stop"></i>
+                <span>STOP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Audio Channel Toggles -->
+          <div class="space-y-3 pt-3 border-t border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block font-semibold">AUDIO CHANNEL MATRIX</span>
+            <div class="space-y-2">
+              <label class="flex items-center justify-between p-2.5 rounded bg-slate-950/80 border border-slate-800 cursor-pointer hover:border-cyan-500/40 transition-colors">
+                <div class="flex items-center space-x-2 text-xs font-mono">
+                  <i class="fa-solid fa-volume-high text-cyan-400"></i>
+                  <span class="text-slate-200">System / Tab Audio</span>
+                </div>
+                <input id="toggleSysAudio" type="checkbox" checked class="accent-cyan-400 w-4 h-4 cursor-pointer">
+              </label>
+
+              <label class="flex items-center justify-between p-2.5 rounded bg-slate-950/80 border border-slate-800 cursor-pointer hover:border-cyan-500/40 transition-colors">
+                <div class="flex items-center space-x-2 text-xs font-mono">
+                  <i class="fa-solid fa-microphone text-pink-400"></i>
+                  <span class="text-slate-200">Microphone Narration</span>
+                </div>
+                <input id="toggleMic" type="checkbox" class="accent-pink-500 w-4 h-4 cursor-pointer">
+              </label>
+            </div>
+          </div>
+
+          <!-- Video Settings (FPS / Resolution hint) -->
+          <div class="space-y-3 pt-3 border-t border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block font-semibold">FRAMERATE &amp; FIDELITY</span>
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div>
+                <label class="text-[11px] text-slate-500 block mb-1">TARGET FPS</label>
+                <select id="selectFps" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-cyan-300 focus:border-cyan-400 outline-none">
+                  <option value="60" selected>60 FPS (Ultra Smooth)</option>
+                  <option value="30">30 FPS (Standard)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-500 block mb-1">MAX RESOLUTION</label>
+                <select id="selectResolution" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-cyan-300 focus:border-cyan-400 outline-none">
+                  <option value="native" selected>Native Display</option>
+                  <option value="1080">1080p (Full HD)</option>
+                  <option value="720">720p (HD)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Audio Spectrum Meter -->
+          <div class="space-y-2 pt-3 border-t border-slate-800">
+            <div class="flex justify-between items-center text-xs font-mono">
+              <span class="text-slate-400">AUDIO SPECTRUM METER</span>
+              <span id="audioRmsText" class="text-cyan-400 font-bold">-INF dB</span>
+            </div>
+            <canvas id="audioVisualizer" class="w-full h-12 bg-slate-950 rounded border border-slate-800"></canvas>
+          </div>
+        </div>
+
+        <!-- Telemetry Stats Card -->
+        <div class="hud-card p-4 rounded-lg space-y-2 text-xs font-mono">
+          <div class="text-slate-400 font-bold border-b border-slate-800 pb-1 flex justify-between items-center">
+            <span>STREAM TELEMETRY</span>
+            <span class="text-cyan-400">AIRGAP</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-500">Resolution</span>
+            <span id="streamResolutionBadge" class="text-slate-300 font-bold">-- x --</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-500">Framerate</span>
+            <span id="streamFpsBadge" class="text-slate-300 font-bold">-- FPS</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-900">
+            <span class="text-slate-500">Output Container</span>
+            <span id="codecBadge" class="text-cyan-300 font-bold">video/webm</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-500">Buffer Size</span>
+            <span id="recordedSizeBadge" class="text-slate-300 font-bold">0.00 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Mirror / Recorded Playback (8 cols) -->
+      <div class="lg:col-span-8 space-y-5">
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-tv text-cyan-400"></i> STREAM MONITOR &amp; PLAYBACK
+            </span>
+            <div class="flex items-center space-x-2 text-xs font-mono">
+              <button id="btnDownload" onclick="downloadRecording()" disabled class="hud-btn-secondary px-3 py-1 rounded text-xs opacity-50 cursor-not-allowed flex items-center space-x-1.5">
+                <i class="fa-solid fa-download text-cyan-400"></i>
+                <span>DOWNLOAD WEBM</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Monitor Container -->
+          <div class="relative w-full aspect-video bg-black rounded-lg border border-slate-800 overflow-hidden flex items-center justify-center">
+            <!-- Active Stream Video Mirror -->
+            <video id="liveVideo" autoplay playsinline muted class="w-full h-full object-contain hidden"></video>
+            
+            <!-- Final Playback Video Element -->
+            <video id="previewVideo" controls playsinline class="w-full h-full object-contain hidden"></video>
+
+            <!-- Standby Overlay -->
+            <div id="standbyPlaceholder" class="flex flex-col items-center justify-center space-y-3 p-6 text-center">
+              <div class="w-16 h-16 rounded-full bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+                <i class="fa-solid fa-display"></i>
+              </div>
+              <div class="text-sm font-orbitron font-bold text-white">STREAM CAPTURE ENGINE READY</div>
+              <p class="text-xs font-mono text-slate-500 max-w-sm">
+                Click [START CAPTURE] on the control deck to grant window, tab, or screen access. All chunks are encoded locally into browser memory.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Playback Action Bar -->
+          <div id="postRecordActions" class="hidden flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800">
+            <div class="text-xs font-mono text-emerald-400 flex items-center gap-2">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>RECORDING READY FOR EXPORT (<span id="finalDurationText">00:00</span>, <span id="finalSizeText">0 MB</span>)</span>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button onclick="downloadRecording()" class="hud-btn flex-grow sm:flex-grow-0 px-4 py-2 rounded text-xs flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span>SAVE RECORDING (.WEBM)</span>
+              </button>
+              <button onclick="resetCapture()" class="hud-btn-secondary px-3 py-2 rounded text-xs">
+                <span>NEW CAPTURE</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Educational Crawlable Technical Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          AIRGAPPED BROWSER SCREEN RECORDING ARCHITECTURE
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL STREAM SPECIFICATION // SCREEN CAPTURE API &amp; MEDIASTREAM MIXING
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Display Media &amp; Audio Mixing</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Modern Chromium, Firefox, and WebKit browsers expose the <code class="text-cyan-300">Screen Capture API</code> through <code class="text-cyan-300">navigator.mediaDevices.getDisplayMedia()</code>. This allows client scripts to request permission to record entire displays, specific application windows, or browser tabs at framerates up to 60 FPS without installing third-party desktop software or extensions.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            When both system tab audio and microphone narration are activated simultaneously, an in-memory <code class="text-cyan-300">AudioContext</code> combines both independent stream sources via a <code class="text-cyan-300">MediaStreamAudioDestinationNode</code>, synchronizing high-fidelity audio tracks with the outgoing video stream.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Zero-Telemetry Privacy Assurance</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Unlike commercial screen recording SaaS platforms that stream captured frames to cloud storage backends, CyberTools processes video streams strictly inside browser memory. Video and audio chunks received via the <code class="text-cyan-300">MediaRecorder.ondataavailable</code> event are accumulated in a local JavaScript array and compiled into an in-memory <code class="text-cyan-300">Blob</code>.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            No audio samples, video keyframes, or session metadata ever leave your computer. Once downloaded or discarded, memory buffers are immediately freed via <code class="text-cyan-300">URL.revokeObjectURL()</code>.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div>
+        <span>AIRGAPPED EXECUTION // NO EXTENSIONS // NO SERVER STORAGE</span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'curl-convert';
+    let currentTargetLang = 'fetch';
+    let parsedCurl = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleCurl();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function setTargetLang(lang) {
+      currentTargetLang = lang;
+      ['fetch', 'axios', 'python', 'go', 'php'].forEach(l => {
+        const btn = document.getElementById(`tab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (!btn) return;
+        if (l === lang) {
+          btn.className = 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+        }
+      });
+      renderSnippet();
+    }
+
+    function loadSampleCurl() {
+      const sample = `curl -X POST "https://api.sarwarfx.cfd/v1/telemetry/nodes" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sec_tok_994821a8" \
+  -d '{"node":"0x5D","cipher":"AES_256","status":"ACTIVE"}'`;
+      document.getElementById('curlInput').value = sample;
+      transpileCurl();
+      showToast('Loaded sample cURL request!');
+    }
+
+    // Lexer & Tokenizer
+    function transpileCurl() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('outputCode').textContent = '// Paste a cURL command above to generate code snippets.';
+        document.getElementById('parsedMethodBadge').textContent = 'METHOD: --';
+        return;
+      }
+
+      parsedCurl = parseCurlCommand(raw);
+      document.getElementById('parsedMethodBadge').textContent = `METHOD: ${parsedCurl.method}`;
+      renderSnippet();
+    }
+
+    function parseCurlCommand(cmd) {
+      // Normalize line continuation backslashes
+      let cleaned = cmd.split(String.fromCharCode(10)).map(l => { const t = l.trim(); return t.endsWith(String.fromCharCode(92)) ? t.slice(0, -1) : t; }).join(' ').trim();
+      if (cleaned.startsWith('curl ')) cleaned = cleaned.substring(5).trim();
+
+      const tokens = tokenizeArgs(cleaned);
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let data = null;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i] || '';
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx !== -1) {
+            const hKey = hStr.substring(0, colonIdx).trim();
+            const hVal = hStr.substring(colonIdx + 1).trim();
+            headers[hKey] = hVal;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i] || '';
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const userpass = tokens[++i] || '';
+          headers['Authorization'] = 'Basic ' + btoa(userpass);
+        } else if (t.startsWith('http://') || t.startsWith('https://')) {
+          url = t;
+        } else if (!url && !t.startsWith('-') && i === tokens.length - 1) {
+          url = t;
+        }
+      }
+
+      return {
+        method,
+        url: url || 'https://api.example.com/endpoint',
+        headers,
+        data
+      };
+    }
+
+    function tokenizeArgs(str) {
+      const args = [];
+      let current = '';
+      let inSingle = false;
+      let inDouble = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (c === "'" && !inDouble) {
+          inSingle = !inSingle;
+        } else if (c === '"' && !inSingle) {
+          inDouble = !inDouble;
+        } else if ((c === ' ' || c === '	') && !inSingle && !inDouble) {
+          if (current.length > 0) {
+            args.push(current);
+            current = '';
+          }
+        } else {
+          current += c;
+        }
+      }
+      if (current.length > 0) args.push(current);
+      return args;
+    }
+
+    // Code Generator Templates
+    function renderSnippet() {
+      if (!parsedCurl) return;
+      const codeEl = document.getElementById('outputCode');
+      let snippet = '';
+
+      switch (currentTargetLang) {
+        case 'fetch':
+          snippet = generateFetchSnippet(parsedCurl);
+          break;
+        case 'axios':
+          snippet = generateAxiosSnippet(parsedCurl);
+          break;
+        case 'python':
+          snippet = generatePythonSnippet(parsedCurl);
+          break;
+        case 'go':
+          snippet = generateGoSnippet(parsedCurl);
+          break;
+        case 'php':
+          snippet = generatePhpSnippet(parsedCurl);
+          break;
+      }
+
+      codeEl.textContent = snippet;
+      const lines = snippet.split(String.fromCharCode(10)).length;
+      document.getElementById('outputLinesBadge').textContent = `${lines} LINES // ${currentTargetLang.toUpperCase()}`;
+    }
+
+    function generateFetchSnippet(req) {
+      let options = [`  method: "${req.method}"`];
+
+      if (Object.keys(req.headers).length > 0) {
+        options.push(`  headers: ${JSON.stringify(req.headers, null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')}`);
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          options.push(`  body: JSON.stringify(${JSON.stringify(JSON.parse(req.data), null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')})`);
+        } else {
+          options.push(`  body: ${JSON.stringify(req.data)}`);
+        }
+      }
+
+      return `// JavaScript Native Fetch (ES6+ async/await)
+async function sendRequest() {
+  const response = await fetch("${req.url}", {
+${options.join(',' + String.fromCharCode(10))}
+  });
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+sendRequest();`;
+    }
+
+    function generateAxiosSnippet(req) {
+      const config = {
+        method: req.method.toLowerCase(),
+        url: req.url,
+        headers: req.headers
+      };
+      if (req.data) {
+        try { config.data = JSON.parse(req.data); } catch(e) { config.data = req.data; }
+      }
+
+      return `// Node.js Axios HTTP Request
+const axios = require('axios');
+
+const config = ${JSON.stringify(config, null, 2)};
+
+axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.error(error);
+  });`;
+    }
+
+    function generatePythonSnippet(req) {
+      let code = `import requests
+
+url = "${req.url}"
+`;
+
+      if (Object.keys(req.headers).length > 0) {
+        code += `headers = ${JSON.stringify(req.headers, null, 4)}
+`;
+      } else {
+        code += `headers = {}
+`;
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          code += `payload = ${JSON.stringify(JSON.parse(req.data), null, 4)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, json=payload)
+`;
+        } else {
+          code += `payload = ${JSON.stringify(req.data)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, data=payload)
+`;
+        }
+      } else {
+        code += `response = requests.${req.method.toLowerCase()}(url, headers=headers)
+`;
+      }
+
+      code += `
+print(response.status_code)
+print(response.text)
+`;
+      return code;
+    }
+
+    function generateGoSnippet(req) {
+      let bodyDecl = 'nil';
+      let payloadSetup = '';
+
+      if (req.data) {
+        payloadSetup = `	payload := []byte(${JSON.stringify(req.data)})
+`;
+        bodyDecl = 'bytes.NewBuffer(payload)';
+      }
+
+      let headerLines = '';
+      for (const [k, v] of Object.entries(req.headers)) {
+        headerLines += `	req.Header.Set("${k}", "${v}")
+`;
+      }
+
+      return `// Go Native HTTP Request (net/http)
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+${payloadSetup}	req, err := http.NewRequest("${req.method}", "${req.url}", ${bodyDecl})
+	if err != nil {
+		panic(err)
+	}
+
+${headerLines}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}`;
+    }
+
+    function generatePhpSnippet(req) {
+      let headerArray = Object.entries(req.headers).map(([k, v]) => `    '${k}: ${v}'`).join(',' + String.fromCharCode(10));
+
+      return `<?php
+// PHP Native cURL Request
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${req.url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => '${req.method}',
+${req.data ? `  CURLOPT_POSTFIELDS => ${JSON.stringify(req.data)},
+` : ''}  CURLOPT_HTTPHEADER => array(
+${headerArray}
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+?>`;
+    }
+
+    function copyGeneratedSnippet() {
+      const code = document.getElementById('outputCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`Copied ${currentTargetLang.toUpperCase()} snippet!`);
+      });
+    }
+
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html
+  
+  <!-- Global Toast Notifications -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Recording Engine Script -->
+  <script>
+
+    let activeSuiteCategory = 'ALL';
+
+    function toggleSuiteModal(open) {
+      const modal = document.getElementById('suiteModal');
+      if (open) {
+        modal.classList.remove('hidden');
+        renderSuiteGrid();
+        document.getElementById('suiteSearch').focus();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderSuiteGrid(filter = '') {
+      const grid = document.getElementById('suiteGrid');
+      const q = filter.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchCat = activeSuiteCategory === 'ALL' || t.cat === activeSuiteCategory;
+        const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <a href="/${t.id}/" class="p-3 rounded border border-slate-800 bg-slate-900/60 hover:border-cyan-400 hover:bg-cyan-950/20 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+              <span>${t.code}</span>
+              <span class="text-cyan-400/80 group-hover:text-cyan-300">${t.cat}</span>
+            </div>
+            <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">${t.name}</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1 line-clamp-2">${t.desc}</div>
+          </div>
+          <div class="mt-2 text-right text-[10px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">LAUNCH &rarr;</div>
+        </a>
+      `).join('');
+    }
+
+    function filterSuiteCategory(cat) {
+      activeSuiteCategory = cat;
+      document.querySelectorAll('#suiteCategoryFilters button').forEach(b => {
+        if (b.textContent.trim() === cat) {
+          b.className = 'px-3 py-1 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold';
+        } else {
+          b.className = 'px-3 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+      renderSuiteGrid(document.getElementById('suiteSearch').value);
+    }
+
+    document.getElementById('suiteSearch').addEventListener('input', (e) => {
+      renderSuiteGrid(e.target.value);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // --- Screen Capture & MediaRecorder Engine ---
+    let displayStream = null;
+    let micStream = null;
+    let combinedStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordStartTime = 0;
+    let timerInterval = null;
+    let currentBlobUrl = null;
+    let audioCtx = null;
+    let analyser = null;
+    let visualizerAnimFrame = null;
+
+    function getSupportedMimeType() {
+      const types = [
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm;codecs=h264,opus',
+        'video/webm',
+        'video/mp4'
+      ];
+      for (const t of types) {
+        if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+          return t;
+        }
+      }
+      return 'video/webm';
+    }
+
+    async function startCapture() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        showToast('Screen capture is not supported in this browser.', true);
+        return;
+      }
+
+      const targetFps = parseInt(document.getElementById('selectFps').value, 10) || 60;
+      const resChoice = document.getElementById('selectResolution').value;
+      const enableSysAudio = document.getElementById('toggleSysAudio').checked;
+      const enableMic = document.getElementById('toggleMic').checked;
+
+      const videoConstraints = {
+        frameRate: { ideal: targetFps, max: targetFps }
+      };
+
+      if (resChoice === '1080') {
+        videoConstraints.width = { ideal: 1920, max: 1920 };
+        videoConstraints.height = { ideal: 1080, max: 1080 };
+      } else if (resChoice === '720') {
+        videoConstraints.width = { ideal: 1280, max: 1280 };
+        videoConstraints.height = { ideal: 720, max: 720 };
+      }
+
+      try {
+        // Request Display Stream
+        displayStream = await navigator.mediaDevices.getDisplayMedia({
+          video: videoConstraints,
+          audio: enableSysAudio ? true : false
+        });
+
+        // Request Microphone Stream if toggled
+        if (enableMic) {
+          try {
+            micStream = await navigator.mediaDevices.getUserMedia({
+              audio: { echoCancellation: true, noiseSuppression: true }
+            });
+          } catch (micErr) {
+            console.warn('Microphone access denied or unavailable:', micErr);
+            showToast('Microphone unavailable; proceeding with display capture only.', true);
+            micStream = null;
+          }
+        }
+
+        // Audio Mixing & Stream Composition
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+
+        const mixedAudioDest = audioCtx.createMediaStreamDestination();
+        let hasAudio = false;
+
+        if (displayStream.getAudioTracks().length > 0) {
+          const sysSource = audioCtx.createMediaStreamSource(new MediaStream(displayStream.getAudioTracks()));
+          sysSource.connect(mixedAudioDest);
+          sysSource.connect(analyser);
+          hasAudio = true;
+        }
+
+        if (micStream && micStream.getAudioTracks().length > 0) {
+          const micSource = audioCtx.createMediaStreamSource(micStream);
+          micSource.connect(mixedAudioDest);
+          micSource.connect(analyser);
+          hasAudio = true;
+        }
+
+        // Combine video track + mixed audio track
+        combinedStream = new MediaStream();
+        displayStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
+        if (hasAudio) {
+          mixedAudioDest.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
+        }
+
+        // Setup visual monitor
+        const liveVideo = document.getElementById('liveVideo');
+        const standbyPlaceholder = document.getElementById('standbyPlaceholder');
+        const previewVideo = document.getElementById('previewVideo');
+        
+        liveVideo.srcObject = displayStream;
+        liveVideo.classList.remove('hidden');
+        previewVideo.classList.add('hidden');
+        standbyPlaceholder.classList.add('hidden');
+
+        // Extract Telemetry from active video track
+        const vTrack = displayStream.getVideoTracks()[0];
+        const settings = vTrack.getSettings ? vTrack.getSettings() : {};
+        document.getElementById('streamResolutionBadge').textContent = `${settings.width || '1920'} x ${settings.height || '1080'}`;
+        document.getElementById('streamFpsBadge').textContent = `${settings.frameRate || targetFps} FPS`;
+
+        // Auto-stop on native "Stop sharing" event
+        vTrack.addEventListener('ended', () => {
+          stopCapture();
+        });
+
+        // Initialize MediaRecorder
+        const mimeType = getSupportedMimeType();
+        document.getElementById('codecBadge').textContent = mimeType.split(';')[0];
+        
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            recordedChunks.push(e.data);
+            updateBufferSize();
+          }
+        };
+
+        mediaRecorder.onstop = finalizeRecording;
+
+        mediaRecorder.start(1000); // chunk every 1s
+        recordStartTime = Date.now();
+        startTimer();
+        startVisualizer();
+
+        // UI state updates
+        document.getElementById('recBadge').classList.remove('hidden');
+        document.getElementById('statusIndicator').className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/50 font-bold';
+        document.getElementById('statusIndicator').textContent = 'RECORDING';
+        document.getElementById('btnStartCapture').disabled = true;
+        document.getElementById('btnStartCapture').className = 'hud-btn w-full py-3 rounded text-sm opacity-50 cursor-not-allowed flex items-center justify-center space-x-2';
+        document.getElementById('btnPauseResume').disabled = false;
+        document.getElementById('btnPauseResume').className = 'hud-btn-secondary py-2 rounded text-xs flex items-center justify-center space-x-1.5 cursor-pointer';
+        document.getElementById('btnStopRecording').disabled = false;
+        document.getElementById('btnStopRecording').className = 'hud-btn-danger py-2 rounded text-xs flex items-center justify-center space-x-1.5 cursor-pointer';
+
+        showToast('Screen capture active!');
+      } catch (err) {
+        console.error('Capture initiation failed:', err);
+        showToast('Screen capture cancelled or blocked.', true);
+        resetCapture();
+      }
+    }
+
+    function togglePause() {
+      if (!mediaRecorder) return;
+      const btn = document.getElementById('pauseBtnText');
+      if (mediaRecorder.state === 'recording') {
+        mediaRecorder.pause();
+        btn.textContent = 'RESUME';
+        document.getElementById('statusIndicator').textContent = 'PAUSED';
+        document.getElementById('statusIndicator').className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/50 font-bold';
+      } else if (mediaRecorder.state === 'paused') {
+        mediaRecorder.resume();
+        btn.textContent = 'PAUSE';
+        document.getElementById('statusIndicator').textContent = 'RECORDING';
+        document.getElementById('statusIndicator').className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/50 font-bold';
+      }
+    }
+
+    function stopCapture() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+
+      // Stop all tracks
+      if (displayStream) {
+        displayStream.getTracks().forEach(t => t.stop());
+      }
+      if (micStream) {
+        micStream.getTracks().forEach(t => t.stop());
+      }
+
+      stopTimer();
+      stopVisualizer();
+
+      document.getElementById('recBadge').classList.add('hidden');
+      document.getElementById('statusIndicator').textContent = 'PROCESSED';
+      document.getElementById('statusIndicator').className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 font-bold';
+      
+      document.getElementById('btnStartCapture').disabled = false;
+      document.getElementById('btnStartCapture').className = 'hud-btn w-full py-3 rounded text-sm flex items-center justify-center space-x-2';
+      document.getElementById('btnPauseResume').disabled = true;
+      document.getElementById('btnPauseResume').className = 'hud-btn-secondary py-2 rounded text-xs flex items-center justify-center space-x-1.5 opacity-50 cursor-not-allowed';
+      document.getElementById('btnStopRecording').disabled = true;
+      document.getElementById('btnStopRecording').className = 'hud-btn-danger py-2 rounded text-xs flex items-center justify-center space-x-1.5 opacity-50 cursor-not-allowed';
+    }
+
+    function finalizeRecording() {
+      if (recordedChunks.length === 0) return;
+      const mimeType = getSupportedMimeType();
+      const blob = new Blob(recordedChunks, { type: mimeType });
+
+      if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+      currentBlobUrl = URL.createObjectURL(blob);
+
+      const liveVideo = document.getElementById('liveVideo');
+      const previewVideo = document.getElementById('previewVideo');
+      liveVideo.classList.add('hidden');
+      liveVideo.srcObject = null;
+
+      previewVideo.src = currentBlobUrl;
+      previewVideo.classList.remove('hidden');
+
+      const sizeMB = (blob.size / (1024 * 1024)).toFixed(2);
+      document.getElementById('finalDurationText').textContent = document.getElementById('durationDisplay').textContent;
+      document.getElementById('finalSizeText').textContent = `${sizeMB} MB`;
+
+      document.getElementById('postRecordActions').classList.remove('hidden');
+      document.getElementById('btnDownload').disabled = false;
+      document.getElementById('btnDownload').className = 'hud-btn-secondary px-3 py-1 rounded text-xs cursor-pointer flex items-center space-x-1.5';
+
+      showToast(`Recording finalized (${sizeMB} MB)!`);
+    }
+
+    function downloadRecording() {
+      if (!currentBlobUrl) return;
+      const a = document.createElement('a');
+      a.href = currentBlobUrl;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      a.download = `DISPLAY_STREAM_${timestamp}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('Downloading WebM recording...');
+    }
+
+    function resetCapture() {
+      if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = null;
+      }
+      recordedChunks = [];
+      document.getElementById('liveVideo').classList.add('hidden');
+      document.getElementById('previewVideo').classList.add('hidden');
+      document.getElementById('standbyPlaceholder').classList.remove('hidden');
+      document.getElementById('postRecordActions').classList.add('hidden');
+      document.getElementById('recordedSizeBadge').textContent = '0.00 MB';
+      document.getElementById('durationDisplay').textContent = '00:00:00';
+      document.getElementById('statusIndicator').textContent = 'STANDBY';
+      document.getElementById('statusIndicator').className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800';
+      document.getElementById('btnDownload').disabled = true;
+      document.getElementById('btnDownload').className = 'hud-btn-secondary px-3 py-1 rounded text-xs opacity-50 cursor-not-allowed flex items-center space-x-1.5';
+    }
+
+    function updateBufferSize() {
+      const totalBytes = recordedChunks.reduce((acc, c) => acc + c.size, 0);
+      const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+      document.getElementById('recordedSizeBadge').textContent = `${mb} MB`;
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+        const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+        const secs = String(elapsed % 60).padStart(2, '0');
+        document.getElementById('durationDisplay').textContent = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function startVisualizer() {
+      const canvas = document.getElementById('audioVisualizer');
+      if (!canvas || !analyser) return;
+      const ctx = canvas.getContext('2d');
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function draw() {
+        visualizerAnimFrame = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const barWidth = (canvas.width / bufferLength) * 1.8;
+        let x = 0;
+        let sum = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * canvas.height;
+          sum += dataArray[i];
+
+          const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+          gradient.addColorStop(0, '#00f5ff');
+          gradient.addColorStop(1, '#ff2bd6');
+
+          ctx.fillStyle = gradient;
+          ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+
+          x += barWidth;
+        }
+
+        const avg = sum / bufferLength;
+        const rms = avg > 0 ? (20 * Math.log10(avg / 255)).toFixed(1) : '-INF';
+        document.getElementById('audioRmsText').textContent = `${rms} dB`;
+      }
+
+      draw();
+    }
+
+    function stopVisualizer() {
+      if (visualizerAnimFrame) cancelAnimationFrame(visualizerAnimFrame);
+      const canvas = document.getElementById('audioVisualizer');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      document.getElementById('audioRmsText').textContent = '-INF dB';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sonic Slice // Waveform Audio Slicer &amp; Ringtone Studio | CyberTools</title>
+  <meta name="description" content="In-browser client-side waveform audio slicer, ringtone studio, and lossless WAV exporter. Precision millisecond trimming with zero server uploads.">
+  <meta name="keywords" content="audio trimmer, waveform slicer, ringtone maker, wav cutter, mp3 trimmer, in-browser audio cutter, web audio api, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/audio-trim/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/audio-trim/" />
+  <meta property="og:title" content="Sonic Slice // Waveform Audio Slicer &amp; Ringtone Studio | CyberTools" />
+  <meta property="og:description" content="In-browser client-side waveform audio slicer, ringtone studio, and lossless WAV exporter. Precision millisecond trimming with zero server uploads." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/audio-trim/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/audio-trim/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/audio-trim/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sonic Slice // Waveform Audio Slicer &amp; Ringtone Studio | CyberTools" />
+  <meta name="twitter:description" content="In-browser client-side waveform audio slicer, ringtone studio, and lossless WAV exporter. Precision millisecond trimming with zero server uploads." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/audio-trim/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sonic Slice Audio Trimmer",
+    "url": "https://apps.sarwarfx.cfd/audio-trim/",
+    "description": "In-browser client-side waveform audio slicer, ringtone studio, and lossless WAV exporter. Precision millisecond trimming with zero server uploads.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5 Web Audio API.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Client-side MP3, WAV, OGG, and AAC decoding",
+      "Interactive 2D waveform rendering with peak visualization",
+      "Millisecond precision start and end anchor trimming",
+      "Lossless 16-bit PCM WAV extraction and packaging",
+      "Zero server uploads or remote data leakage"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #05070d;
+      color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .hud-card {
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+    .hud-input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #00f5ff;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .hud-input:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+    }
+    .hud-btn {
+      background: linear-gradient(90deg, #00f5ff, #00b4d8);
+      color: #020617;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
+    .dropzone {
+      border: 2px dashed rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .dropzone.dragover {
+      border-color: #ff2bd6;
+      background: rgba(255, 43, 214, 0.08);
+      box-shadow: 0 0 20px rgba(255, 43, 214, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">SONIC_SLICE // AUDIO TRIMMER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x60</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>MULTIMEDIA_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">SONIC_SLICE</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x60</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          SONIC SLICE <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">WAVEFORM AUDIO TRIMMER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          In-browser waveform audio slicer and ringtone studio. Decodes MP3, WAV, OGG, and AAC via Web Audio API, extracts PCM samples with millisecond accuracy, and exports lossless WAV files.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="audioFileInput" class="hud-btn text-xs px-3 py-2 rounded cursor-pointer flex items-center space-x-1.5">
+          <i class="fa-solid fa-folder-open text-slate-950"></i>
+          <span>SELECT AUDIO FILE</span>
+        </label>
+        <input id="audioFileInput" type="file" accept="audio/*" class="hidden" onchange="handleFileSelect(event)">
+      </div>
+    </div>
+
+    <!-- Dropzone / Empty State Container -->
+    <div id="dropzoneContainer" class="dropzone p-8 rounded-lg text-center bg-slate-950/60 cursor-pointer" onclick="document.getElementById('audioFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <div class="max-w-md mx-auto space-y-3">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+          <i class="fa-solid fa-wave-square"></i>
+        </div>
+        <div class="font-orbitron font-bold text-white text-base">DROP AUDIO FILE HERE OR CLICK TO BROWSE</div>
+        <p class="text-xs font-mono text-slate-400">
+          Supports MP3, WAV, OGG, FLAC, M4A, and AAC. Decoding occurs locally in browser memory with zero network uploads.
+        </p>
+        <div class="inline-block px-3 py-1 bg-cyan-950/50 border border-cyan-500/30 rounded text-[11px] font-mono text-cyan-300">
+          100% CLIENT-SIDE AUDIO DECODING
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace (Hidden until file loaded) -->
+    <div id="audioWorkspace" class="hidden space-y-6">
+
+      <!-- Waveform Card -->
+      <div class="hud-card p-5 rounded-lg space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyan-500/20 pb-3">
+          <div class="flex items-center space-x-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+            <div>
+              <span id="trackNameText" class="font-orbitron font-bold text-white text-sm block">track.mp3</span>
+              <span id="trackMetaText" class="text-[11px] font-mono text-slate-400">44,100 Hz // STEREO // 03:42.120</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 text-xs font-mono">
+            <span class="text-slate-400">TRIM DURATION:</span>
+            <span id="trimDurationBadge" class="text-pink-400 font-bold bg-pink-950/80 px-2 py-0.5 rounded border border-pink-500/40">00:15.000</span>
+          </div>
+        </div>
+
+        <!-- Canvas Waveform Deck -->
+        <div class="relative w-full bg-slate-950 rounded-lg border border-slate-800 overflow-hidden select-none">
+          <canvas id="waveformCanvas" class="w-full h-44 cursor-crosshair block"></canvas>
+          
+          <!-- Waveform Overlay Hints -->
+          <div class="absolute top-2 left-2 flex items-center space-x-2 text-[10px] font-mono text-slate-400 pointer-events-none">
+            <span class="px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">START: <span id="overlayStartText">0.00s</span></span>
+            <span class="px-1.5 py-0.5 rounded bg-pink-950/80 border border-pink-500/30 text-pink-300">END: <span id="overlayEndText">15.00s</span></span>
+          </div>
+          <div class="absolute bottom-2 right-2 text-[10px] font-mono text-slate-500 pointer-events-none">
+            * Drag directly across waveform to set trim selection
+          </div>
+        </div>
+
+        <!-- Playback Deck Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div class="flex items-center space-x-2">
+            <button id="btnPlaySelection" onclick="playSelection()" class="hud-btn px-4 py-2 rounded text-xs flex items-center space-x-1.5">
+              <i id="playIcon" class="fa-solid fa-play text-slate-950"></i>
+              <span id="playBtnText">PLAY SELECTION</span>
+            </button>
+            <button id="btnStopPlayback" onclick="stopPlayback()" class="hud-btn-secondary px-3 py-2 rounded text-xs flex items-center space-x-1.5">
+              <i class="fa-solid fa-stop text-cyan-400"></i>
+              <span>STOP</span>
+            </button>
+            <label class="flex items-center space-x-2 px-3 py-1.5 rounded bg-slate-900 border border-slate-800 cursor-pointer text-xs font-mono hover:border-cyan-500/40">
+              <input id="toggleLoop" type="checkbox" class="accent-pink-500 w-3.5 h-3.5 cursor-pointer">
+              <span class="text-slate-300">LOOP PLAYBACK</span>
+            </label>
+          </div>
+
+          <!-- Quick Trim Presets -->
+          <div class="flex items-center space-x-1.5 text-xs font-mono">
+            <span class="text-slate-500 text-[11px] hidden sm:inline">PRESETS:</span>
+            <button onclick="setTrimPreset('all')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">ENTIRE TRACK</button>
+            <button onclick="setTrimPreset('first30')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">RINGTONE (30s)</button>
+            <button onclick="setTrimPreset('first15')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">STINGER (15s)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Precision Time Inputs & Export Station -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Precision Time Adjustments (6 cols) -->
+        <div class="lg:col-span-6 hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left"></i> PRECISION TIME TRIM CODES
+            </span>
+            <span class="text-[10px] font-mono text-slate-500">FORMAT: MM:SS.MS</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Start Time Input -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono text-slate-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span> START ANCHOR
+              </label>
+              <input id="inputStartTime" type="text" value="00:00.000" class="hud-input w-full px-3 py-2 rounded text-sm text-cyan-300 font-bold" onchange="handleTimeTextChange('start', this.value)">
+              <div class="flex gap-1 font-mono text-[10px]">
+                <button onclick="nudgeTime('start', -0.1)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-400">-0.1s</button>
+                <button onclick="nudgeTime('start', 0.1)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-400">+0.1s</button>
+                <button onclick="nudgeTime('start', -1.0)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-400">-1.0s</button>
+                <button onclick="nudgeTime('start', 1.0)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-400">+1.0s</button>
+              </div>
+            </div>
+
+            <!-- End Time Input -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono text-slate-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-pink-500"></span> END ANCHOR
+              </label>
+              <input id="inputEndTime" type="text" value="00:15.000" class="hud-input w-full px-3 py-2 rounded text-sm text-pink-400 font-bold" onchange="handleTimeTextChange('end', this.value)">
+              <div class="flex gap-1 font-mono text-[10px]">
+                <button onclick="nudgeTime('end', -0.1)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-pink-500 text-slate-400">-0.1s</button>
+                <button onclick="nudgeTime('end', 0.1)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-pink-500 text-slate-400">+0.1s</button>
+                <button onclick="nudgeTime('end', -1.0)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-pink-500 text-slate-400">-1.0s</button>
+                <button onclick="nudgeTime('end', 1.0)" class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-pink-500 text-slate-400">+1.0s</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lossless WAV Exporter (6 cols) -->
+        <div class="lg:col-span-6 hud-card p-5 rounded-lg space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+              <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-audio text-cyan-400"></i> LOSSLESS WAV SYNTHESIS
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">16-BIT PCM</span>
+            </div>
+            <p class="text-xs font-mono text-slate-400">
+              Extracts PCM samples directly from the decoded AudioBuffer and compiles a standard RIFF/WAVE container with an exact 44-byte binary header. Zero re-compression artifacts.
+            </p>
+          </div>
+
+          <div class="pt-2">
+            <button id="btnDownloadWav" onclick="extractAndExportWav()" class="hud-btn w-full py-3 rounded text-sm flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-download text-slate-950"></i>
+              <span>EXTRACT &amp; DOWNLOAD TRIMMED AUDIO (.WAV)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Educational Crawlable Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          CLIENT-SIDE WEB AUDIO PCM SLICING &amp; WAV SYNTHESIS
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL AUDIO SPECIFICATION // RIFF WAVE ENCODING &amp; HARDWARE BUFFERS
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">In-Browser Decoding &amp; Waveform Peaks</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            The HTML5 <code class="text-cyan-300">Web Audio API</code> provides the <code class="text-cyan-300">AudioContext.decodeAudioData()</code> method, which asynchronously decompresses encoded audio formats (MP3, AAC, OGG, FLAC) into raw 32-bit floating-point linear PCM samples stored within an <code class="text-cyan-300">AudioBuffer</code>.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            To visualize the waveform across a canvas, the raw sample array is downsampled across pixel columns. Peak positive and negative amplitudes within each sample bucket are calculated to paint high-contrast neon peaks with zero latency.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Canonical 44-Byte RIFF/WAVE Packaging</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Exporting uncompressed audio without third-party server encoders requires procedural binary assembly. Sonic Slice allocates an <code class="text-cyan-300">ArrayBuffer</code> and populates the canonical 44-byte RIFF/WAVE header using a JavaScript <code class="text-cyan-300">DataView</code>:
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            Bytes 0–3 identify the chunk ID (<code class="text-cyan-300">RIFF</code>), followed by total filesize, format descriptor (<code class="text-cyan-300">WAVE</code>), subchunk 1 (<code class="text-cyan-300">fmt </code>), audio format (1 for uncompressed PCM), channel count, sample rate (e.g. 44100 Hz), byte rate, block alignment, and bits per sample (16-bit). Floating-point samples are clamped and converted to signed 16-bit integers (<code class="text-cyan-300">-32768 to 32767</code>) before generating a local Blob.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div>
+        <span>AIRGAPPED EXECUTION // LOSSLESS PCM // ZERO NETWORK TRANSMISSION</span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'curl-convert';
+    let currentTargetLang = 'fetch';
+    let parsedCurl = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleCurl();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function setTargetLang(lang) {
+      currentTargetLang = lang;
+      ['fetch', 'axios', 'python', 'go', 'php'].forEach(l => {
+        const btn = document.getElementById(`tab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (!btn) return;
+        if (l === lang) {
+          btn.className = 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+        }
+      });
+      renderSnippet();
+    }
+
+    function loadSampleCurl() {
+      const sample = `curl -X POST "https://api.sarwarfx.cfd/v1/telemetry/nodes" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sec_tok_994821a8" \
+  -d '{"node":"0x5D","cipher":"AES_256","status":"ACTIVE"}'`;
+      document.getElementById('curlInput').value = sample;
+      transpileCurl();
+      showToast('Loaded sample cURL request!');
+    }
+
+    // Lexer & Tokenizer
+    function transpileCurl() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('outputCode').textContent = '// Paste a cURL command above to generate code snippets.';
+        document.getElementById('parsedMethodBadge').textContent = 'METHOD: --';
+        return;
+      }
+
+      parsedCurl = parseCurlCommand(raw);
+      document.getElementById('parsedMethodBadge').textContent = `METHOD: ${parsedCurl.method}`;
+      renderSnippet();
+    }
+
+    function parseCurlCommand(cmd) {
+      // Normalize line continuation backslashes
+      let cleaned = cmd.split(String.fromCharCode(10)).map(l => { const t = l.trim(); return t.endsWith(String.fromCharCode(92)) ? t.slice(0, -1) : t; }).join(' ').trim();
+      if (cleaned.startsWith('curl ')) cleaned = cleaned.substring(5).trim();
+
+      const tokens = tokenizeArgs(cleaned);
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let data = null;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i] || '';
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx !== -1) {
+            const hKey = hStr.substring(0, colonIdx).trim();
+            const hVal = hStr.substring(colonIdx + 1).trim();
+            headers[hKey] = hVal;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i] || '';
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const userpass = tokens[++i] || '';
+          headers['Authorization'] = 'Basic ' + btoa(userpass);
+        } else if (t.startsWith('http://') || t.startsWith('https://')) {
+          url = t;
+        } else if (!url && !t.startsWith('-') && i === tokens.length - 1) {
+          url = t;
+        }
+      }
+
+      return {
+        method,
+        url: url || 'https://api.example.com/endpoint',
+        headers,
+        data
+      };
+    }
+
+    function tokenizeArgs(str) {
+      const args = [];
+      let current = '';
+      let inSingle = false;
+      let inDouble = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (c === "'" && !inDouble) {
+          inSingle = !inSingle;
+        } else if (c === '"' && !inSingle) {
+          inDouble = !inDouble;
+        } else if ((c === ' ' || c === '	') && !inSingle && !inDouble) {
+          if (current.length > 0) {
+            args.push(current);
+            current = '';
+          }
+        } else {
+          current += c;
+        }
+      }
+      if (current.length > 0) args.push(current);
+      return args;
+    }
+
+    // Code Generator Templates
+    function renderSnippet() {
+      if (!parsedCurl) return;
+      const codeEl = document.getElementById('outputCode');
+      let snippet = '';
+
+      switch (currentTargetLang) {
+        case 'fetch':
+          snippet = generateFetchSnippet(parsedCurl);
+          break;
+        case 'axios':
+          snippet = generateAxiosSnippet(parsedCurl);
+          break;
+        case 'python':
+          snippet = generatePythonSnippet(parsedCurl);
+          break;
+        case 'go':
+          snippet = generateGoSnippet(parsedCurl);
+          break;
+        case 'php':
+          snippet = generatePhpSnippet(parsedCurl);
+          break;
+      }
+
+      codeEl.textContent = snippet;
+      const lines = snippet.split(String.fromCharCode(10)).length;
+      document.getElementById('outputLinesBadge').textContent = `${lines} LINES // ${currentTargetLang.toUpperCase()}`;
+    }
+
+    function generateFetchSnippet(req) {
+      let options = [`  method: "${req.method}"`];
+
+      if (Object.keys(req.headers).length > 0) {
+        options.push(`  headers: ${JSON.stringify(req.headers, null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')}`);
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          options.push(`  body: JSON.stringify(${JSON.stringify(JSON.parse(req.data), null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')})`);
+        } else {
+          options.push(`  body: ${JSON.stringify(req.data)}`);
+        }
+      }
+
+      return `// JavaScript Native Fetch (ES6+ async/await)
+async function sendRequest() {
+  const response = await fetch("${req.url}", {
+${options.join(',' + String.fromCharCode(10))}
+  });
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+sendRequest();`;
+    }
+
+    function generateAxiosSnippet(req) {
+      const config = {
+        method: req.method.toLowerCase(),
+        url: req.url,
+        headers: req.headers
+      };
+      if (req.data) {
+        try { config.data = JSON.parse(req.data); } catch(e) { config.data = req.data; }
+      }
+
+      return `// Node.js Axios HTTP Request
+const axios = require('axios');
+
+const config = ${JSON.stringify(config, null, 2)};
+
+axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.error(error);
+  });`;
+    }
+
+    function generatePythonSnippet(req) {
+      let code = `import requests
+
+url = "${req.url}"
+`;
+
+      if (Object.keys(req.headers).length > 0) {
+        code += `headers = ${JSON.stringify(req.headers, null, 4)}
+`;
+      } else {
+        code += `headers = {}
+`;
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          code += `payload = ${JSON.stringify(JSON.parse(req.data), null, 4)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, json=payload)
+`;
+        } else {
+          code += `payload = ${JSON.stringify(req.data)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, data=payload)
+`;
+        }
+      } else {
+        code += `response = requests.${req.method.toLowerCase()}(url, headers=headers)
+`;
+      }
+
+      code += `
+print(response.status_code)
+print(response.text)
+`;
+      return code;
+    }
+
+    function generateGoSnippet(req) {
+      let bodyDecl = 'nil';
+      let payloadSetup = '';
+
+      if (req.data) {
+        payloadSetup = `	payload := []byte(${JSON.stringify(req.data)})
+`;
+        bodyDecl = 'bytes.NewBuffer(payload)';
+      }
+
+      let headerLines = '';
+      for (const [k, v] of Object.entries(req.headers)) {
+        headerLines += `	req.Header.Set("${k}", "${v}")
+`;
+      }
+
+      return `// Go Native HTTP Request (net/http)
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+${payloadSetup}	req, err := http.NewRequest("${req.method}", "${req.url}", ${bodyDecl})
+	if err != nil {
+		panic(err)
+	}
+
+${headerLines}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}`;
+    }
+
+    function generatePhpSnippet(req) {
+      let headerArray = Object.entries(req.headers).map(([k, v]) => `    '${k}: ${v}'`).join(',' + String.fromCharCode(10));
+
+      return `<?php
+// PHP Native cURL Request
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${req.url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => '${req.method}',
+${req.data ? `  CURLOPT_POSTFIELDS => ${JSON.stringify(req.data)},
+` : ''}  CURLOPT_HTTPHEADER => array(
+${headerArray}
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+?>`;
+    }
+
+    function copyGeneratedSnippet() {
+      const code = document.getElementById('outputCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`Copied ${currentTargetLang.toUpperCase()} snippet!`);
+      });
+    }
+
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html
+  
+  <!-- Global Toast Notifications -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Audio Slicer Engine Script -->
+  <script>
+
+    let activeSuiteCategory = 'ALL';
+
+    function toggleSuiteModal(open) {
+      const modal = document.getElementById('suiteModal');
+      if (open) {
+        modal.classList.remove('hidden');
+        renderSuiteGrid();
+        document.getElementById('suiteSearch').focus();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderSuiteGrid(filter = '') {
+      const grid = document.getElementById('suiteGrid');
+      const q = filter.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchCat = activeSuiteCategory === 'ALL' || t.cat === activeSuiteCategory;
+        const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <a href="/${t.id}/" class="p-3 rounded border border-slate-800 bg-slate-900/60 hover:border-cyan-400 hover:bg-cyan-950/20 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+              <span>${t.code}</span>
+              <span class="text-cyan-400/80 group-hover:text-cyan-300">${t.cat}</span>
+            </div>
+            <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">${t.name}</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1 line-clamp-2">${t.desc}</div>
+          </div>
+          <div class="mt-2 text-right text-[10px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">LAUNCH &rarr;</div>
+        </a>
+      `).join('');
+    }
+
+    function filterSuiteCategory(cat) {
+      activeSuiteCategory = cat;
+      document.querySelectorAll('#suiteCategoryFilters button').forEach(b => {
+        if (b.textContent.trim() === cat) {
+          b.className = 'px-3 py-1 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold';
+        } else {
+          b.className = 'px-3 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+      renderSuiteGrid(document.getElementById('suiteSearch').value);
+    }
+
+    document.getElementById('suiteSearch').addEventListener('input', (e) => {
+      renderSuiteGrid(e.target.value);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // --- Web Audio Slicing Engine ---
+    let audioCtx = null;
+    let decodedBuffer = null;
+    let activeSourceNode = null;
+    let isPlaying = false;
+    let playbackStartTime = 0;
+    let playbackOffset = 0;
+    let animFrame = null;
+    let activeFileName = 'trimmed_audio.wav';
+
+    let trimStart = 0; // seconds
+    let trimEnd = 15;  // seconds
+    let isDragging = false;
+    let dragMode = null; // 'range', 'start', 'end'
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropzoneContainer').classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('dropzoneContainer').classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropzoneContainer').classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processAudioFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processAudioFile(e.target.files[0]);
+      }
+    }
+
+    async function processAudioFile(file) {
+      initAudioContext();
+      showToast(`Loading: ${file.name}...`);
+      activeFileName = file.name.replace(/\.[^/.]+$/, '') + '_trimmed.wav';
+
+      try {
+        const arrayBuf = await file.arrayBuffer();
+        decodedBuffer = await audioCtx.decodeAudioData(arrayBuf);
+
+        document.getElementById('trackNameText').textContent = file.name;
+        const durStr = formatTime(decodedBuffer.duration);
+        const chStr = decodedBuffer.numberOfChannels === 1 ? 'MONO' : 'STEREO';
+        document.getElementById('trackMetaText').textContent = `${decodedBuffer.sampleRate.toLocaleString()} Hz // ${chStr} // ${durStr}`;
+
+        // Initialize trim points (default 0 to min(15s, duration))
+        trimStart = 0;
+        trimEnd = Math.min(15, decodedBuffer.duration);
+
+        updateTimeDisplays();
+        document.getElementById('dropzoneContainer').classList.add('hidden');
+        document.getElementById('audioWorkspace').classList.remove('hidden');
+
+        renderWaveform();
+        showToast('Audio decoded successfully!');
+      } catch (err) {
+        console.error('Audio decode failure:', err);
+        showToast('Failed to decode audio file format.', true);
+      }
+    }
+
+    function formatTime(sec) {
+      const mins = Math.floor(sec / 60);
+      const secs = Math.floor(sec % 60);
+      const ms = Math.floor((sec - Math.floor(sec)) * 1000);
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(ms).padStart(3, '0')}`;
+    }
+
+    function parseTime(str) {
+      const parts = str.trim().split(':');
+      if (parts.length === 2) {
+        const mins = parseFloat(parts[0]) || 0;
+        const secs = parseFloat(parts[1]) || 0;
+        return mins * 60 + secs;
+      }
+      return parseFloat(str) || 0;
+    }
+
+    function updateTimeDisplays() {
+      if (!decodedBuffer) return;
+      trimStart = Math.max(0, Math.min(trimStart, decodedBuffer.duration));
+      trimEnd = Math.max(trimStart + 0.05, Math.min(trimEnd, decodedBuffer.duration));
+
+      document.getElementById('inputStartTime').value = formatTime(trimStart);
+      document.getElementById('inputEndTime').value = formatTime(trimEnd);
+      document.getElementById('overlayStartText').textContent = `${trimStart.toFixed(2)}s`;
+      document.getElementById('overlayEndText').textContent = `${trimEnd.toFixed(2)}s`;
+
+      const diff = trimEnd - trimStart;
+      document.getElementById('trimDurationBadge').textContent = formatTime(diff);
+    }
+
+    function handleTimeTextChange(type, val) {
+      const sec = parseTime(val);
+      if (type === 'start') {
+        trimStart = sec;
+      } else {
+        trimEnd = sec;
+      }
+      updateTimeDisplays();
+      renderWaveform();
+    }
+
+    function nudgeTime(type, delta) {
+      if (type === 'start') {
+        trimStart += delta;
+      } else {
+        trimEnd += delta;
+      }
+      updateTimeDisplays();
+      renderWaveform();
+    }
+
+    function setTrimPreset(preset) {
+      if (!decodedBuffer) return;
+      if (preset === 'all') {
+        trimStart = 0;
+        trimEnd = decodedBuffer.duration;
+      } else if (preset === 'first30') {
+        trimStart = 0;
+        trimEnd = Math.min(30, decodedBuffer.duration);
+      } else if (preset === 'first15') {
+        trimStart = 0;
+        trimEnd = Math.min(15, decodedBuffer.duration);
+      }
+      updateTimeDisplays();
+      renderWaveform();
+    }
+
+    // --- Waveform Rendering & Interaction ---
+    function renderWaveform(cursorTime = null) {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas || !decodedBuffer) return;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * (window.devicePixelRatio || 1);
+      canvas.height = rect.height * (window.devicePixelRatio || 1);
+
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Background
+      ctx.fillStyle = '#05070d';
+      ctx.fillRect(0, 0, w, h);
+
+      // Grid Lines
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < h; y += h / 4) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Draw Waveform Data
+      const channelData = decodedBuffer.getChannelData(0);
+      const totalSamples = channelData.length;
+      const step = Math.ceil(totalSamples / w);
+      const amp = h / 2;
+
+      ctx.fillStyle = '#00f5ff';
+      for (let i = 0; i < w; i++) {
+        let min = 1.0;
+        let max = -1.0;
+        for (let j = 0; j < step; j++) {
+          const datum = channelData[i * step + j];
+          if (datum < min) min = datum;
+          if (datum > max) max = datum;
+        }
+
+        const barY = (1 + min) * amp;
+        const barH = Math.max(1, (max - min) * amp);
+
+        const progressSec = (i / w) * decodedBuffer.duration;
+        const isSelected = progressSec >= trimStart && progressSec <= trimEnd;
+
+        ctx.fillStyle = isSelected ? '#ff2bd6' : '#00f5ff';
+        ctx.fillRect(i, barY, 1, barH);
+      }
+
+      // Selected Region Shading Overlay
+      const startX = (trimStart / decodedBuffer.duration) * w;
+      const endX = (trimEnd / decodedBuffer.duration) * w;
+
+      ctx.fillStyle = 'rgba(255, 43, 214, 0.15)';
+      ctx.fillRect(startX, 0, endX - startX, h);
+
+      // Anchor Boundaries
+      ctx.strokeStyle = '#00f5ff';
+      ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+      ctx.beginPath();
+      ctx.moveTo(startX, 0);
+      ctx.lineTo(startX, h);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ff2bd6';
+      ctx.beginPath();
+      ctx.moveTo(endX, 0);
+      ctx.lineTo(endX, h);
+      ctx.stroke();
+
+      // Playback Cursor
+      if (cursorTime !== null && cursorTime >= 0) {
+        const curX = (cursorTime / decodedBuffer.duration) * w;
+        ctx.strokeStyle = '#ffe600';
+        ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+        ctx.beginPath();
+        ctx.moveTo(curX, 0);
+        ctx.lineTo(curX, h);
+        ctx.stroke();
+      }
+    }
+
+    // Canvas Mouse Interaction for Trimming
+    const canvas = document.getElementById('waveformCanvas');
+    canvas.addEventListener('mousedown', (e) => {
+      if (!decodedBuffer) return;
+      isDragging = true;
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickSec = (clickX / rect.width) * decodedBuffer.duration;
+
+      trimStart = clickSec;
+      trimEnd = clickSec + 0.1;
+      updateTimeDisplays();
+      renderWaveform();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging || !decodedBuffer) return;
+      const rect = canvas.getBoundingClientRect();
+      const currentX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+      const currentSec = (currentX / rect.width) * decodedBuffer.duration;
+
+      if (currentSec >= trimStart) {
+        trimEnd = currentSec;
+      } else {
+        trimStart = currentSec;
+      }
+
+      updateTimeDisplays();
+      renderWaveform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        updateTimeDisplays();
+        renderWaveform();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (decodedBuffer) renderWaveform();
+    });
+
+    // --- Audio Playback Engine ---
+    function playSelection() {
+      if (!decodedBuffer) return;
+      initAudioContext();
+      stopPlayback();
+
+      activeSourceNode = audioCtx.createBufferSource();
+      activeSourceNode.buffer = decodedBuffer;
+      activeSourceNode.connect(audioCtx.destination);
+
+      const loop = document.getElementById('toggleLoop').checked;
+      activeSourceNode.loop = loop;
+      if (loop) {
+        activeSourceNode.loopStart = trimStart;
+        activeSourceNode.loopEnd = trimEnd;
+      }
+
+      const dur = trimEnd - trimStart;
+      activeSourceNode.start(0, trimStart, loop ? undefined : dur);
+      isPlaying = true;
+      playbackStartTime = audioCtx.currentTime;
+
+      document.getElementById('playBtnText').textContent = 'PLAYING...';
+      document.getElementById('playIcon').className = 'fa-solid fa-volume-high text-slate-950 animate-pulse';
+
+      activeSourceNode.onended = () => {
+        if (!document.getElementById('toggleLoop').checked) {
+          stopPlayback();
+        }
+      };
+
+      animatePlaybackCursor();
+    }
+
+    function stopPlayback() {
+      if (activeSourceNode) {
+        try { activeSourceNode.stop(); } catch (e) {}
+        activeSourceNode.disconnect();
+        activeSourceNode = null;
+      }
+      isPlaying = false;
+      cancelAnimationFrame(animFrame);
+      document.getElementById('playBtnText').textContent = 'PLAY SELECTION';
+      document.getElementById('playIcon').className = 'fa-solid fa-play text-slate-950';
+      renderWaveform();
+    }
+
+    function animatePlaybackCursor() {
+      if (!isPlaying || !audioCtx) return;
+      const elapsed = audioCtx.currentTime - playbackStartTime;
+      const currentPos = trimStart + elapsed;
+
+      if (currentPos <= trimEnd) {
+        renderWaveform(currentPos);
+        animFrame = requestAnimationFrame(animatePlaybackCursor);
+      } else {
+        if (document.getElementById('toggleLoop').checked) {
+          playbackStartTime = audioCtx.currentTime;
+          animFrame = requestAnimationFrame(animatePlaybackCursor);
+        } else {
+          stopPlayback();
+        }
+      }
+    }
+
+    // --- Lossless WAV Encoding Engine ---
+    function extractAndExportWav() {
+      if (!decodedBuffer) return;
+      showToast('Extracting PCM samples...');
+
+      const sampleRate = decodedBuffer.sampleRate;
+      const numChannels = decodedBuffer.numberOfChannels;
+      const startSample = Math.floor(trimStart * sampleRate);
+      const endSample = Math.floor(trimEnd * sampleRate);
+      const numFrames = endSample - startSample;
+
+      if (numFrames <= 0) {
+        showToast('Invalid trim range specified.', true);
+        return;
+      }
+
+      // Build 16-bit PCM WAV ArrayBuffer
+      const bytesPerSample = 2;
+      const blockAlign = numChannels * bytesPerSample;
+      const byteRate = sampleRate * blockAlign;
+      const dataSize = numFrames * blockAlign;
+      const buffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(buffer);
+
+      // 44-byte Canonical RIFF/WAVE Header
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 36 + dataSize, true); // chunkSize
+      writeString(view, 8, 'WAVE');
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true);           // subchunk1Size
+      view.setUint16(20, 1, true);            // audioFormat (1 = PCM)
+      view.setUint16(22, numChannels, true);  // numChannels
+      view.setUint32(24, sampleRate, true);   // sampleRate
+      view.setUint32(28, byteRate, true);     // byteRate
+      view.setUint16(32, blockAlign, true);   // blockAlign
+      view.setUint16(34, 16, true);           // bitsPerSample
+      writeString(view, 36, 'data');
+      view.setUint32(40, dataSize, true);     // subchunk2Size
+
+      // Interleave & write 16-bit PCM samples
+      const channels = [];
+      for (let ch = 0; ch < numChannels; ch++) {
+        channels.push(decodedBuffer.getChannelData(ch));
+      }
+
+      let offset = 44;
+      for (let i = startSample; i < endSample; i++) {
+        for (let ch = 0; ch < numChannels; ch++) {
+          let s = Math.max(-1, Math.min(1, channels[ch][i]));
+          // Convert float32 to int16
+          s = s < 0 ? s * 0x8000 : s * 0x7FFF;
+          view.setInt16(offset, s, true);
+          offset += 2;
+        }
+      }
+
+      const blob = new Blob([buffer], { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = activeFileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      showToast(`Exported ${activeFileName} (${(blob.size / 1024).toFixed(1)} KB)!`);
+    }
+
+    function writeString(view, offset, str) {
+      for (let i = 0; i < str.length; i++) {
+        view.setUint8(offset + i, str.charCodeAt(i));
+      }
+    }
+  </script>
+</body>
+</html>

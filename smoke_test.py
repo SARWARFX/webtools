@@ -4,49 +4,60 @@ import sys
 import subprocess
 
 def test_apps():
-    print("=== CYBERTOOLS BATCH 15 SMOKE TEST SUITE ===")
+    print("=== CYBERTOOLS BATCH 16 SMOKE TEST SUITE (100-APP MILESTONE) ===")
     errors = []
 
     apps = {
-        'jwt': {
+        'screen-cap': {
             'required_ids': [
-                'jwtInput', 'headerJson', 'payloadJson', 'signatureRaw',
-                'secretKeyInput', 'sigVerifyBadge', 'expiryStatusBadge',
-                'expDateDisplay', 'suiteModal'
+                'btnStartCapture', 'btnStopRecording', 'btnPauseResume',
+                'toggleSysAudio', 'toggleMic', 'selectFps', 'selectResolution',
+                'audioVisualizer', 'liveVideo', 'previewVideo', 'btnDownload', 'suiteModal'
             ],
             'required_terms': [
-                'subtle', 'HMAC', 'sign', 'importKey', 'SHA-256', '346689d4f4b0498393005cfe06ff2f5b'
+                'getDisplayMedia', 'MediaRecorder', 'AudioContext',
+                'createMediaStreamDestination', '346689d4f4b0498393005cfe06ff2f5b'
             ]
         },
-        'cron': {
+        'audio-trim': {
             'required_ids': [
-                'cronInput', 'cronFormatBadge', 'englishTranslation',
-                'immediateNextRunText', 'immediateDeltaBadge', 'tzIndicator',
-                'executionFeed', 'suiteModal'
+                'audioFileInput', 'dropzoneContainer', 'audioWorkspace',
+                'waveformCanvas', 'btnPlaySelection', 'btnStopPlayback',
+                'inputStartTime', 'inputEndTime', 'btnDownloadWav', 'suiteModal'
             ],
             'required_terms': [
-                'UTC', 'minute', 'hour', '346689d4f4b0498393005cfe06ff2f5b'
-            ]
-        },
-        'curl-convert': {
-            'required_ids': [
-                'curlInput', 'outputCode', 'tabFetch', 'tabAxios',
-                'tabPython', 'tabGo', 'tabPhp', 'parsedMethodBadge',
-                'outputLinesBadge', 'suiteModal'
-            ],
-            'required_terms': [
-                'requests', 'fetch', 'axios', 'http.NewRequest', 'curl_setopt',
+                'decodeAudioData', 'AudioBuffer', 'DataView', 'RIFF', 'WAVE',
                 '346689d4f4b0498393005cfe06ff2f5b'
             ]
         },
-        'cidr': {
+        'pass-gen': {
             'required_ids': [
-                'ipInput', 'cidrNumInput', 'cidrSlider', 'sliderValueBadge',
-                'octetVisualizerGrid', 'resNetIp', 'resBroadcastIp', 'resSubnetMask',
-                'resWildcardMask', 'resUsableRange', 'resUsableHosts', 'resScope', 'suiteModal'
+                'passwordOutput', 'charCountBadge', 'entropyBitsBadge',
+                'entropyBar', 'tabAlphanumeric', 'tabDiceware', 'tabHex',
+                'sliderLength', 'batchContainer', 'suiteModal'
             ],
             'required_terms': [
-                'RFC 1918', 'wildcard', 'prefix', '346689d4f4b0498393005cfe06ff2f5b'
+                'crypto.getRandomValues', 'entropy', 'diceware', 'Uint32Array',
+                '346689d4f4b0498393005cfe06ff2f5b'
+            ]
+        },
+        'checksum': {
+            'required_ids': [
+                'fileInput', 'dropzone', 'fileProgressCard', 'expectedHashInput',
+                'verifyAlertBox', 'resSha256', 'resSha512', 'resSha1', 'resMd5', 'suiteModal'
+            ],
+            'required_terms': [
+                'slice', 'ArrayBuffer', 'crypto.subtle.digest', 'SHA-256', 'MD5',
+                '346689d4f4b0498393005cfe06ff2f5b'
+            ]
+        },
+        'regex': {
+            'required_ids': [
+                'regexInput', 'testInput', 'highlightContainer',
+                'matchesContainer', 'flag_g', 'flag_i', 'suiteModal'
+            ],
+            'required_terms': [
+                'RegExp', 'exec', 'lastIndex', '346689d4f4b0498393005cfe06ff2f5b'
             ]
         }
     }
@@ -80,7 +91,7 @@ def test_apps():
 
         print(f"[PASS] {app_name} DOM and architecture verified.")
 
-    # 2. Test Node.js Script Syntax for all 4 apps
+    # 2. Test Node.js Script Syntax for all 5 apps
     for app_name in apps.keys():
         file_path = f"{app_name}/index.html"
         cmd = [
@@ -113,7 +124,7 @@ def test_apps():
         url = f"https://apps.sarwarfx.cfd/{app_name}/"
         if url not in sitemap:
             errors.append(f"[sitemap.xml] Missing URL: {url}")
-    print("[PASS] sitemap.xml contains all 4 Batch 15 URLs.")
+    print("[PASS] sitemap.xml contains all 5 Batch 16 URLs.")
 
     # 4. Test index.html
     with open('index.html', 'r', encoding='utf-8') as f:
@@ -121,9 +132,9 @@ def test_apps():
     for app_name in apps.keys():
         if f"id: '{app_name}'" not in index_html:
             errors.append(f"[index.html] Missing tool registration: {app_name}")
-    if "94 ACTIVE UTILITY NODES" not in index_html:
-        errors.append("[index.html] Missing 94 active utility nodes badge")
-    print("[PASS] index.html registered all Batch 15 tools and displays 94 nodes.")
+    if "100/100 APPS DEPLOYED" not in index_html:
+        errors.append("[index.html] Missing 100/100 APPS DEPLOYED counter badge")
+    print("[PASS] index.html registered all Batch 16 tools and displays 100/100 APPS DEPLOYED.")
 
     if errors:
         print("\n=== SMOKE TEST FAILED ===")

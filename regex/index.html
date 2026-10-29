@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx</title>
-  <meta name="description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser.">
-  <meta name="keywords" content="regex tester, regexp matrix, javascript regex, regular expression playground, capture groups, regex replace, regex highlighter">
+  <title>Regex Scanner // Real-Time Pattern Engine &amp; Group Inspector | CyberTools</title>
+  <meta name="description" content="High-performance client-side regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard. Zero telemetry.">
+  <meta name="keywords" content="regex tester, regex scanner, regular expression group inspector, redos protection, javascript regex, pattern engine, cybertools">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/regex/" />
   <meta name="theme-color" content="#020617">
 
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/regex/" />
-  <meta property="og:title" content="RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx" />
-  <meta property="og:description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser." />
+  <meta property="og:title" content="Regex Scanner // Real-Time Pattern Engine &amp; Group Inspector | CyberTools" />
+  <meta property="og:description" content="High-performance client-side regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard. Zero telemetry." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RegExp Matrix & Pattern Synthesizer // JavaScript Regex Tester - sarwarfx" />
-  <meta name="twitter:description" content="Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser." />
+  <meta name="twitter:title" content="Regex Scanner // Real-Time Pattern Engine &amp; Group Inspector | CyberTools" />
+  <meta name="twitter:description" content="High-performance client-side regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard. Zero telemetry." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/regex/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -33,9 +33,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "RegExp Matrix & Pattern Synthesizer",
+    "name": "Regex Scanner Pattern Engine",
     "url": "https://apps.sarwarfx.cfd/regex/",
-    "description": "Real-time JavaScript regular expression tester with live match highlighting, capture group table breakdown, flag toggles, and instant search/replace preview. 100% in-browser.",
+    "description": "High-performance client-side regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard. Zero telemetry.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -43,397 +43,320 @@
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
-    }
+    },
+    "featureList": [
+      "Real-time regex compilation and iterative match highlighting",
+      "Interactive flag matrix supporting g, i, m, s, and u flags",
+      "Capture group and named capture group breakdown tree",
+      "Catastrophic backtracking guard with 5000-iteration execution ceiling",
+      "Integrated tactical pattern library for rapid insertion",
+      "Zero server telemetry or remote execution"
+    ]
   }
   </script>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2V15h2v1.5zm0-3.5h-2V7h2v6z'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            obsidian: '#05070d',
-            card: 'rgba(8, 15, 30, 0.78)',
-            cyanGlow: '#00f5ff',
-            pinkGlow: '#ff2bd6',
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
           },
           fontFamily: {
-            mono: ['JetBrains Mono', 'monospace'],
             orbitron: ['Orbitron', 'sans-serif'],
             rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
           }
         }
       }
     }
   </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     body {
       background-color: #05070d;
-      background-image: 
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
-        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
-      background-size: 100% 4px, 6px 100%, 100% 100%;
-      min-height: 100vh;
-      color: #f1f5f9;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .hud-card {
-      position: relative;
-      background: rgba(8, 15, 30, 0.78);
-      border: 1px solid rgba(0, 245, 255, 0.25);
-      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
-      backdrop-filter: blur(12px);
-      transition: all 0.2s ease;
-    }
-    .hud-card::before, .hud-card::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border-color: #00f5ff;
-      border-style: solid;
-      pointer-events: none;
-    }
-    .hud-card::before {
-      top: -1px; left: -1px;
-      border-width: 2px 0 0 2px;
-    }
-    .hud-card::after {
-      bottom: -1px; right: -1px;
-      border-width: 0 2px 2px 0;
-    }
-
-    .hud-btn-primary {
-      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
-      border: 1px solid rgba(0, 245, 255, 0.8);
-      color: #000000;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
-      transition: all 0.2s ease;
-    }
-    .hud-btn-primary:hover {
-      background: linear-gradient(135deg, #00f5ff, #38bdf8);
-      border-color: #ffffff;
-      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
-      transform: translateY(-1px);
-    }
-
-    .hud-btn-secondary {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(51, 65, 85, 0.85);
       color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .hud-card {
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+    .hud-input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #00f5ff;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      transition: all 0.2s ease;
+      outline: none;
+      transition: all 0.2s;
     }
-    .hud-btn-secondary:hover {
-      background: rgba(0, 245, 255, 0.12);
-      border-color: rgba(0, 245, 255, 0.6);
-      color: #00f5ff;
-      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
-    }
-
-    .flag-btn {
-      transition: all 0.15s ease;
-      cursor: pointer;
-      user-select: none;
-    }
-    .flag-btn.active {
-      background-color: rgba(0, 245, 255, 0.2);
+    .hud-input:focus {
       border-color: #00f5ff;
-      color: #00f5ff;
       box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
     }
-
-    .regex-mark {
-      background: rgba(0, 245, 255, 0.35);
-      color: #ffffff;
+    .hud-btn {
+      background: linear-gradient(90deg, #00f5ff, #00b4d8);
+      color: #020617;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
+    .match-cyan {
+      background-color: rgba(0, 245, 255, 0.25);
       border-bottom: 2px solid #00f5ff;
-      padding: 0 2px;
+      color: #ffffff;
       border-radius: 2px;
     }
-    .regex-mark:nth-child(even) {
-      background: rgba(255, 43, 214, 0.35);
-      border-bottom-color: #ff2bd6;
+    .match-pink {
+      background-color: rgba(255, 43, 214, 0.25);
+      border-bottom: 2px solid #ff2bd6;
+      color: #ffffff;
+      border-radius: 2px;
     }
-
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #05070d; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; }
-    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
   </style>
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
-<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
-  <!-- Top Tactical HUD Bar -->
-  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
-          <i class="fa-solid fa-asterisk text-sm"></i>
-          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
-          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
-        </div>
-        <div class="flex items-baseline space-x-1.5 font-mono">
-          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
-          <span class="text-cyan-400 text-xs font-bold">//</span>
-          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">regex</span>
-        </div>
-      </a>
-
-      <!-- Center Micro-Telemetry -->
-      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
-        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x10]</span>
-        <span class="text-slate-600">|</span>
-        <span class="text-fuchsia-400 font-bold">[ENGINE: REGEXP_SYNTHESIZER]</span>
-        <span class="text-slate-600">|</span>
-        <span class="flex items-center space-x-1.5 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
-        </span>
-      </div>
-
-      <!-- Right Action Controls -->
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">REGEX_SCANNER // PATTERN ENGINE</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x10</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
-          <span class="sm:hidden">HUB</span>
-        </a>
-        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
-          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
-          <span class="hidden sm:inline">PORTFOLIO</span>
-        </a>
-        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
-          <i class="fa-solid fa-bars text-cyan-400"></i>
-          <span class="hidden md:inline">(87)</span>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(100)</span>
         </button>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
-
-    <!-- Header & Presets -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Hero / Title -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
       <div>
-        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
-          <i class="fa-solid fa-code text-xs text-cyan-400"></i>
-          <span>PARSING_ENGINE // REGEX_CAPTURE_MATRIX</span>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>DEVELOPER_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">REGEX_SCANNER</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x10</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
-          PATTERN SYNTHESIZER & REGEX TESTER
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          REGEX SCANNER <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">PATTERN ENGINE &amp; GROUP INSPECTOR</span>
         </h1>
-        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
-          Interactive regular expression evaluator with synchronized match highlighting, capture group table breakdown, and instant search & replace preview.
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Real-time JavaScript regular expression analyzer, capture group tree inspector, and execution benchmark gauge. Built-in catastrophic backtracking guard with zero network telemetry.
         </p>
       </div>
-
-      <!-- Preset Pills -->
-      <div class="flex flex-wrap gap-1.5 self-start md:self-auto max-w-md">
-        <button onclick="applyPreset('email')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">EMAIL</button>
-        <button onclick="applyPreset('url')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">URL/DOMAIN</button>
-        <button onclick="applyPreset('ip')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">IPV4</button>
-        <button onclick="applyPreset('date')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">ISO DATE</button>
-        <button onclick="applyPreset('hex')" class="px-2 py-1 text-[10px] font-mono bg-black/60 border border-slate-800 text-slate-300 hover:border-cyan-400 hover:text-cyan-300 transition-all">HEX COLOR</button>
-      </div>
-    </div>
-
-    <!-- Regex Input Matrix -->
-    <div class="hud-card p-5 space-y-4">
-      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
-        <span class="text-cyan-400 font-bold uppercase tracking-wider">REGEXP EXPRESSION & MODIFIER FLAGS</span>
-        <span id="regexError" class="text-rose-400 text-[11px] font-bold"></span>
-      </div>
-
-      <!-- Regex Input Bar -->
-      <div class="flex items-center bg-black/90 border border-slate-800 focus-within:border-cyan-400 focus-within:ring-1 focus-within:ring-cyan-400/40 p-2 font-mono text-xs">
-        <span class="text-cyan-400 font-bold px-2 text-base">/</span>
-        <input 
-          type="text" 
-          id="regexPattern" 
-          value="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
-          oninput="runRegex()" 
-          placeholder="Enter regular expression pattern..." 
-          class="flex-1 bg-transparent border-none text-cyan-200 outline-none font-bold text-sm">
-        <span class="text-cyan-400 font-bold px-2 text-base">/</span>
-
-        <!-- Flags -->
-        <div class="flex items-center space-x-1 pl-2 border-l border-slate-800">
-          <button onclick="toggleFlag('g')" id="flag_g" class="flag-btn active px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Global match">g</button>
-          <button onclick="toggleFlag('i')" id="flag_i" class="flag-btn active px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Case insensitive">i</button>
-          <button onclick="toggleFlag('m')" id="flag_m" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Multiline">m</button>
-          <button onclick="toggleFlag('s')" id="flag_s" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Dot matches newline (dotAll)">s</button>
-          <button onclick="toggleFlag('u')" id="flag_u" class="flag-btn px-2 py-0.5 border border-slate-800 text-xs font-mono font-bold" title="Unicode">u</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Test String & Visual Match Highlight Split -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      
-      <!-- Editable Test Area -->
-      <div class="hud-card p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
-          <span class="text-cyan-400 font-bold uppercase">TEST CORPUS [EDITABLE]</span>
-          <button onclick="document.getElementById('testCorpus').value=''; runRegex();" class="text-slate-500 hover:text-pink-400 transition-colors uppercase text-[10px]">CLEAR</button>
-        </div>
-        <textarea 
-          id="testCorpus" 
-          rows="8" 
-          oninput="runRegex()"
-          placeholder="Paste or write text here to test against the regular expression..." 
-          class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-slate-200 outline-none resize-y leading-relaxed"></textarea>
-      </div>
-
-      <!-- Live Match Visualizer -->
-      <div class="hud-card p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
-          <span class="text-pink-400 font-bold uppercase">SYNCHRONIZED MATCH HIGHLIGHT</span>
-          <span id="matchStats" class="text-[11px] text-cyan-300 font-bold">0 MATCHES</span>
-        </div>
-        <div 
-          id="highlightDisplay" 
-          class="w-full p-3 bg-black/90 border border-slate-800 text-xs font-mono text-slate-300 whitespace-pre-wrap break-all min-h-[190px] max-h-[300px] overflow-y-auto leading-relaxed select-all">
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Capture Groups Table -->
-    <div class="hud-card p-5 space-y-3">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
-        <span class="text-cyan-400 font-bold uppercase flex items-center space-x-2">
-          <i class="fa-solid fa-table-list text-cyan-400"></i>
-          <span>CAPTURE GROUP MATRIX</span>
-        </span>
-        <span id="captureCount" class="text-[11px] text-slate-500">0 RECORDS</span>
-      </div>
-
-      <div class="overflow-x-auto max-h-[300px]">
-        <table class="w-full text-left font-mono text-xs border-collapse">
-          <thead>
-            <tr class="border-b border-slate-800 bg-black/40 text-[10px] text-slate-400 uppercase tracking-wider">
-              <th class="py-2 px-3">#</th>
-              <th class="py-2 px-3">FULL MATCH</th>
-              <th class="py-2 px-3">RANGE</th>
-              <th class="py-2 px-3">CAPTURE GROUPS</th>
-            </tr>
-          </thead>
-          <tbody id="captureTableBody" class="divide-y divide-slate-800/60">
-            <tr>
-              <td colspan="4" class="py-4 text-center text-slate-600">NO ACTIVE MATCHES</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Search & Replace Preview Studio -->
-    <div class="hud-card p-5 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
-        <span class="text-white font-bold uppercase flex items-center space-x-2">
-          <i class="fa-solid fa-arrows-rotate text-cyan-400"></i>
-          <span>SEARCH & REPLACE PREVIEW</span>
-        </span>
-        <button onclick="copyReplaced()" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
-          <i class="fa-solid fa-copy text-cyan-400"></i>
-          <span>COPY RESULT</span>
+      <div class="flex items-center gap-2">
+        <button onclick="loadSampleRegex('email')" class="hud-btn-secondary text-xs px-3 py-1.5 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-rotate text-cyan-400"></i>
+          <span>RESET SAMPLE</span>
         </button>
       </div>
+    </div>
 
-      <div class="flex flex-col md:flex-row items-center gap-3">
-        <div class="w-full md:w-1/3">
-          <input 
-            type="text" 
-            id="replacePattern" 
-            placeholder="Replacement string (e.g. [$1] or redacted)..." 
-            value="[MASKED_EMAIL]"
-            oninput="runRegex()"
-            class="w-full px-3 py-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs font-mono text-pink-300 placeholder-slate-600 outline-none">
+    <!-- Top Expression Bar Card -->
+    <div class="hud-card p-5 rounded-lg space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-asterisk text-cyan-400"></i> REGULAR EXPRESSION PATTERN
+        </span>
+        <div class="flex items-center space-x-2 text-xs font-mono">
+          <span id="evalStatusBadge" class="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold">READY</span>
+          <span id="evalTimeBadge" class="text-[10px] text-slate-400 font-mono">0.00 ms</span>
         </div>
-        <div class="w-full md:w-2/3 p-3 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-300 whitespace-pre-wrap break-all min-h-[42px]" id="replaceOutput">
+      </div>
+
+      <!-- Pattern Input & Flags Bar -->
+      <div class="flex flex-col md:flex-row items-stretch gap-2 font-mono text-sm">
+        <div class="flex-grow flex items-center bg-slate-950 rounded border border-cyan-500/40 px-3 py-2 shadow-[inset_0_0_15px_rgba(0,245,255,0.05)]">
+          <span class="text-cyan-400 font-bold text-lg mr-2">/</span>
+          <input id="regexInput" type="text" value="([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})" placeholder="Enter regular expression pattern..."
+            class="w-full bg-transparent text-cyan-300 font-mono font-bold outline-none" oninput="executeRegex()">
+          <span class="text-cyan-400 font-bold text-lg ml-2">/</span>
         </div>
+
+        <!-- Flag Toggles -->
+        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded border border-slate-800">
+          <button id="flag_g" onclick="toggleFlag('g')" class="px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-cyan-400 bg-cyan-950/80 text-cyan-300" title="Global: Find all matches">g</button>
+          <button id="flag_i" onclick="toggleFlag('i')" class="px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-cyan-400 bg-cyan-950/80 text-cyan-300" title="Case-Insensitive">i</button>
+          <button id="flag_m" onclick="toggleFlag('m')" class="px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white" title="Multiline">m</button>
+          <button id="flag_s" onclick="toggleFlag('s')" class="px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white" title="DotAll: Allow . to match newline">s</button>
+          <button id="flag_u" onclick="toggleFlag('u')" class="px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white" title="Unicode">u</button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Buttons -->
+      <div class="pt-2 border-t border-slate-800 flex flex-wrap items-center gap-1.5 font-mono text-xs">
+        <span class="text-slate-500 text-[11px] mr-1">QUICK INSERTS:</span>
+        <button onclick="loadSampleRegex('email')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">Email Address</button>
+        <button onclick="loadSampleRegex('url')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">URL Protocol</button>
+        <button onclick="loadSampleRegex('ipv4')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">IPv4 Address</button>
+        <button onclick="loadSampleRegex('date')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">ISO Date</button>
+        <button onclick="loadSampleRegex('hex')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">Hex Color</button>
+        <button onclick="loadSampleRegex('html')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">HTML Tag</button>
+        <button onclick="loadSampleRegex('uuid')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 text-[11px]">UUID / GUID</button>
       </div>
     </div>
 
-    <!-- SEO Knowledge Base & Explainer -->
-    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+    <!-- Workspace Split Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left: Test String Editor & Highlighting View (7 cols) -->
+      <div class="lg:col-span-7 hud-card p-5 rounded-lg space-y-4">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-align-left text-cyan-400"></i> TEST CORPUS &amp; LIVE HIGHLIGHTS
+          </span>
+          <span id="matchCountBadge" class="text-xs font-mono font-bold text-pink-400 bg-pink-950/80 px-2 py-0.5 rounded border border-pink-500/40">2 MATCHES</span>
+        </div>
+
+        <!-- Highlight Preview View -->
+        <div class="space-y-1">
+          <label class="text-[11px] font-mono text-slate-400 block">LIVE HIGHLIGHT OVERLAY VIEW</label>
+          <div id="highlightContainer" class="w-full min-h-[140px] max-h-60 overflow-y-auto bg-slate-950 border border-slate-800 rounded p-3 font-mono text-xs sm:text-sm text-slate-300 whitespace-pre-wrap break-all leading-relaxed">
+            <!-- Highlighted tokens rendered here -->
+          </div>
+        </div>
+
+        <!-- Editable Input Textarea -->
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-[11px] font-mono text-slate-400">
+            <span>EDITABLE TEST STRING</span>
+            <button onclick="clearTestString()" class="text-slate-500 hover:text-cyan-400">CLEAR</button>
+          </div>
+          <textarea id="testInput" rows="6" placeholder="Paste test string here to match..."
+            class="hud-input w-full p-3 rounded text-xs sm:text-sm text-slate-200 font-mono resize-y" oninput="executeRegex()"></textarea>
+        </div>
+      </div>
+
+      <!-- Right: Match Inspector & Group Tree (5 cols) -->
+      <div class="lg:col-span-5 hud-card p-5 rounded-lg space-y-4 flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-cyan-400"></i> CAPTURE GROUP INSPECTOR
+            </span>
+            <span class="text-[10px] font-mono text-slate-500">MAX 5,000 SAFE LIMIT</span>
+          </div>
+
+          <!-- Match List Container -->
+          <div id="matchesContainer" class="space-y-2 max-h-[380px] overflow-y-auto font-mono text-xs pr-1">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800 text-[11px] font-mono text-slate-500 flex justify-between items-center">
+          <span>* Alternating Cyan &amp; Pink match bands</span>
+          <button onclick="copyAllMatches()" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY ALL MATCHES</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Educational Crawlable Technical Article -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
       <div class="border-b border-cyan-500/20 pb-4">
-        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
-          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
-          JavaScript RegExp Engine & Pattern Synthesizer
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          REGULAR EXPRESSION PARSING &amp; ReDoS DEFENSE MECHANICS
         </h2>
-        <p class="text-slate-400 text-xs mt-1">
-          High-performance ECMAScript regular expression playground executing in your local browser runtime.
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL REGEX SPECIFICATION // BACKTRACKING CONTROLS &amp; CAPTURE TREE
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">01 / REAL-TIME V8 COMPILATION</span>
-          <p class="text-slate-400 text-[11px]">
-            Pattern compilation utilizes the native browser JavaScript RegExp engine. Matches, indexes, and capture boundaries update with sub-millisecond latency on every keystroke.
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Catastrophic Backtracking (ReDoS) Protection</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Non-deterministic Finite Automaton (NFA) regular expression engines (standard in JavaScript V8, SpiderMonkey, and JavaScriptCore) explore recursive match states. When poorly constructed patterns with overlapping quantifiers (e.g. <code class="text-cyan-300">(a+)+$</code>) encounter non-matching input strings, the engine's time complexity increases exponentially ($O(2^n)$), causing the browser tab to freeze completely.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            Regex Scanner integrates an execution circuit-breaker: iterations of <code class="text-cyan-300">RegExp.exec()</code> are bound by a 5,000-match ceiling and benchmark timers, immediately terminating problematic evaluations to safeguard client browser threads.
           </p>
         </div>
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">02 / DEEP GROUP EXTRACTION</span>
-          <p class="text-slate-400 text-[11px]">
-            The capture group matrix extracts both positional indexed groups (`$1`, `$2`) and named capturing groups (`(?<name>...)`) for frictionless string extraction.
-          </p>
-        </div>
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">03 / ZERO DATA RETENTION</span>
-          <p class="text-slate-400 text-[11px]">
-            Your private code snippets, server access logs, and test data strings never leave your device. All parsing is isolated in browser RAM.
-          </p>
-        </div>
-      </div>
 
-      <div class="space-y-3 pt-4 border-t border-slate-800">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
-        <div class="space-y-2 text-[11px] text-slate-400">
-          <p><strong class="text-cyan-300">Q: What modifier flags are supported?</strong><br>
-          All standard modern JavaScript flags: `g` (global), `i` (case-insensitive), `m` (multiline `^` and `$`), `s` (dotAll wildcard matches `\n`), and `u` (full unicode code points).</p>
-          <p><strong class="text-cyan-300">Q: Can I use substitution variables in replacement?</strong><br>
-          Yes. Supports `$1`, `$2` for capture groups, `$&` for the whole match, and `$`` / `$'` for the preceding/following text.</p>
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Numbered vs. Named Capture Groups</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Parentheses in regular expressions create capture groups. Numbered capture groups are indexed sequentially starting at <code class="text-cyan-300">$1</code> from left to right based on the opening parenthesis. Modern ECMAScript engines also support named capture groups via the syntax <code class="text-cyan-300">(?&lt;groupName&gt;...)</code>, allowing structured object extraction directly into <code class="text-cyan-300">match.groups</code>.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            Non-capturing groups <code class="text-cyan-300">(?:...)</code> provide logical grouping and alternation without assigning memory slots in the capture array, reducing memory footprint during high-frequency parsing.
+          </p>
         </div>
       </div>
     </article>
-
   </main>
 
-  <!-- Global Suite Quick Switcher Modal -->
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // 100-NODE ECOSYSTEM</span>
+      </div>
+      <div>
+        <span>AIRGAPPED EXECUTION // SAFE BACKTRACKING CEILING // ZERO SERVER TELEMETRY</span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Suite Selector Modal -->
   <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
-      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (88)</span>
-        </div>
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
         <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
@@ -442,333 +365,835 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center space-x-2">
-        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
-          sarwarfx // webtools
-        </a>
-        <span class="text-slate-600">|</span>
-        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
-          <i class="fa-brands fa-github mr-1"></i>GitHub
-        </a>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Application Engine Script -->
   <script>
-    const CURRENT_TOOL_ID = 'regex';
-    const TOOLS = [
-{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
-      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
-      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
-      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
-      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
-      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
-      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
-      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
-      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
-      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
-      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
-      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
-      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
-      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
-      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
-      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
-      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
-      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
-      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
-      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
-      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
-      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
-      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
-      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
-      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
-      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
-      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
-      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
-      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
-      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
-      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
-      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
-      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
-      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
-      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
-      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
-      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
-      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
-      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
-      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
-      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
-      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
-      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
-      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
-      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
-      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
-      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
-      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
-      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
-      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
-      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
-      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
-      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
-      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
-      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
-      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
-      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
-      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
-      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
-      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
-      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
-      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
-      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
-      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
-      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
-      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
-      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
-      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
-      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
-      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
-      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
-      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
-      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
-      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
-      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
-      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
-      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
-      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
-      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
-      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' },
-      { id: 'short', name: 'URL CONDENSER', desc: 'Client-side link compactor using open APIs with instant QR code generator & local history radar.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/short/', tags: ['SHORTENER', 'URL', 'QR', 'COMPACT', 'TINYURL'], code: '0x51' },
-      { id: 'tempmail', name: 'BURNER INBOX', desc: 'Disposable burner mailbox with live radar sweep polling, audio chime notification & message previewer.', icon: 'fa-envelope-open-text', subdomain: 'apps.sarwarfx.cfd/tempmail/', tags: ['TEMPMAIL', 'DISPOSABLE', 'BURNER', 'EMAIL', 'RADAR'], code: '0x52' },
-      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP address intelligence probe mapping country, city, ASN, ISP telemetry, timezone & coordinates.', icon: 'fa-location-crosshairs', subdomain: 'apps.sarwarfx.cfd/whoisip/', tags: ['IP', 'GEOIP', 'ASN', 'WHOIS', 'ISP'], code: '0x53' },
-      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'Comprehensive HTTP response status code encyclopedia (1xx-5xx, Cloudflare, Nginx) with causes & fixes.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/httpcode/', tags: ['HTTP', 'STATUS', 'RFC', 'CLOUDFLARE', 'CODES'], code: '0x54' },
-      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint probe supporting custom methods, headers, JSON payload & RTT latency gauge.', icon: 'fa-paper-plane', subdomain: 'apps.sarwarfx.cfd/webhook/', tags: ['WEBHOOK', 'HTTP', 'REST', 'DISPATCH', 'API'], code: '0x55' },
-      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Real-time global currency exchange matrix converting 30+ fiat & crypto assets with offline fallback rates.', icon: 'fa-coins', subdomain: 'apps.sarwarfx.cfd/fx/', tags: ['FX', 'CURRENCY', 'EXCHANGE', 'RATES', 'FOREX'], code: '0x56' },
-      { id: 'storage', name: 'STORAGE HUD', desc: 'Client storage analyzer inspecting localStorage, sessionStorage & IndexedDB with byte gauge & inline JSON editor.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/storage/', tags: ['STORAGE', 'LOCALSTORAGE', 'INDEXEDDB', 'CACHE', 'PURGE'], code: '0x57' },
-      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarking engine supporting 100+ images with relative scaling, custom logos, tactical badges & ZIP export.', icon: 'fa-stamp', subdomain: 'apps.sarwarfx.cfd/watermark-img/', tags: ['WATERMARK', 'BATCH', 'IMAGES', 'ZIP', 'PHOTO', 'CANVAS'], code: '0x58' }
-];
+    const CURRENT_TOOL_ID = 'curl-convert';
+    let currentTargetLang = 'fetch';
+    let parsedCurl = null;
 
-    function getToolHref(tool) {
-      return `/${tool.id}/`;
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleCurl();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
     }
 
+    function setTargetLang(lang) {
+      currentTargetLang = lang;
+      ['fetch', 'axios', 'python', 'go', 'php'].forEach(l => {
+        const btn = document.getElementById(`tab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (!btn) return;
+        if (l === lang) {
+          btn.className = 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+        }
+      });
+      renderSnippet();
+    }
+
+    function loadSampleCurl() {
+      const sample = `curl -X POST "https://api.sarwarfx.cfd/v1/telemetry/nodes" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sec_tok_994821a8" \
+  -d '{"node":"0x5D","cipher":"AES_256","status":"ACTIVE"}'`;
+      document.getElementById('curlInput').value = sample;
+      transpileCurl();
+      showToast('Loaded sample cURL request!');
+    }
+
+    // Lexer & Tokenizer
+    function transpileCurl() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('outputCode').textContent = '// Paste a cURL command above to generate code snippets.';
+        document.getElementById('parsedMethodBadge').textContent = 'METHOD: --';
+        return;
+      }
+
+      parsedCurl = parseCurlCommand(raw);
+      document.getElementById('parsedMethodBadge').textContent = `METHOD: ${parsedCurl.method}`;
+      renderSnippet();
+    }
+
+    function parseCurlCommand(cmd) {
+      // Normalize line continuation backslashes
+      let cleaned = cmd.split(String.fromCharCode(10)).map(l => { const t = l.trim(); return t.endsWith(String.fromCharCode(92)) ? t.slice(0, -1) : t; }).join(' ').trim();
+      if (cleaned.startsWith('curl ')) cleaned = cleaned.substring(5).trim();
+
+      const tokens = tokenizeArgs(cleaned);
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let data = null;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i] || '';
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx !== -1) {
+            const hKey = hStr.substring(0, colonIdx).trim();
+            const hVal = hStr.substring(colonIdx + 1).trim();
+            headers[hKey] = hVal;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i] || '';
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const userpass = tokens[++i] || '';
+          headers['Authorization'] = 'Basic ' + btoa(userpass);
+        } else if (t.startsWith('http://') || t.startsWith('https://')) {
+          url = t;
+        } else if (!url && !t.startsWith('-') && i === tokens.length - 1) {
+          url = t;
+        }
+      }
+
+      return {
+        method,
+        url: url || 'https://api.example.com/endpoint',
+        headers,
+        data
+      };
+    }
+
+    function tokenizeArgs(str) {
+      const args = [];
+      let current = '';
+      let inSingle = false;
+      let inDouble = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (c === "'" && !inDouble) {
+          inSingle = !inSingle;
+        } else if (c === '"' && !inSingle) {
+          inDouble = !inDouble;
+        } else if ((c === ' ' || c === '	') && !inSingle && !inDouble) {
+          if (current.length > 0) {
+            args.push(current);
+            current = '';
+          }
+        } else {
+          current += c;
+        }
+      }
+      if (current.length > 0) args.push(current);
+      return args;
+    }
+
+    // Code Generator Templates
+    function renderSnippet() {
+      if (!parsedCurl) return;
+      const codeEl = document.getElementById('outputCode');
+      let snippet = '';
+
+      switch (currentTargetLang) {
+        case 'fetch':
+          snippet = generateFetchSnippet(parsedCurl);
+          break;
+        case 'axios':
+          snippet = generateAxiosSnippet(parsedCurl);
+          break;
+        case 'python':
+          snippet = generatePythonSnippet(parsedCurl);
+          break;
+        case 'go':
+          snippet = generateGoSnippet(parsedCurl);
+          break;
+        case 'php':
+          snippet = generatePhpSnippet(parsedCurl);
+          break;
+      }
+
+      codeEl.textContent = snippet;
+      const lines = snippet.split(String.fromCharCode(10)).length;
+      document.getElementById('outputLinesBadge').textContent = `${lines} LINES // ${currentTargetLang.toUpperCase()}`;
+    }
+
+    function generateFetchSnippet(req) {
+      let options = [`  method: "${req.method}"`];
+
+      if (Object.keys(req.headers).length > 0) {
+        options.push(`  headers: ${JSON.stringify(req.headers, null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')}`);
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          options.push(`  body: JSON.stringify(${JSON.stringify(JSON.parse(req.data), null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')})`);
+        } else {
+          options.push(`  body: ${JSON.stringify(req.data)}`);
+        }
+      }
+
+      return `// JavaScript Native Fetch (ES6+ async/await)
+async function sendRequest() {
+  const response = await fetch("${req.url}", {
+${options.join(',' + String.fromCharCode(10))}
+  });
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+sendRequest();`;
+    }
+
+    function generateAxiosSnippet(req) {
+      const config = {
+        method: req.method.toLowerCase(),
+        url: req.url,
+        headers: req.headers
+      };
+      if (req.data) {
+        try { config.data = JSON.parse(req.data); } catch(e) { config.data = req.data; }
+      }
+
+      return `// Node.js Axios HTTP Request
+const axios = require('axios');
+
+const config = ${JSON.stringify(config, null, 2)};
+
+axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.error(error);
+  });`;
+    }
+
+    function generatePythonSnippet(req) {
+      let code = `import requests
+
+url = "${req.url}"
+`;
+
+      if (Object.keys(req.headers).length > 0) {
+        code += `headers = ${JSON.stringify(req.headers, null, 4)}
+`;
+      } else {
+        code += `headers = {}
+`;
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          code += `payload = ${JSON.stringify(JSON.parse(req.data), null, 4)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, json=payload)
+`;
+        } else {
+          code += `payload = ${JSON.stringify(req.data)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, data=payload)
+`;
+        }
+      } else {
+        code += `response = requests.${req.method.toLowerCase()}(url, headers=headers)
+`;
+      }
+
+      code += `
+print(response.status_code)
+print(response.text)
+`;
+      return code;
+    }
+
+    function generateGoSnippet(req) {
+      let bodyDecl = 'nil';
+      let payloadSetup = '';
+
+      if (req.data) {
+        payloadSetup = `	payload := []byte(${JSON.stringify(req.data)})
+`;
+        bodyDecl = 'bytes.NewBuffer(payload)';
+      }
+
+      let headerLines = '';
+      for (const [k, v] of Object.entries(req.headers)) {
+        headerLines += `	req.Header.Set("${k}", "${v}")
+`;
+      }
+
+      return `// Go Native HTTP Request (net/http)
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+${payloadSetup}	req, err := http.NewRequest("${req.method}", "${req.url}", ${bodyDecl})
+	if err != nil {
+		panic(err)
+	}
+
+${headerLines}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}`;
+    }
+
+    function generatePhpSnippet(req) {
+      let headerArray = Object.entries(req.headers).map(([k, v]) => `    '${k}: ${v}'`).join(',' + String.fromCharCode(10));
+
+      return `<?php
+// PHP Native cURL Request
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${req.url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => '${req.method}',
+${req.data ? `  CURLOPT_POSTFIELDS => ${JSON.stringify(req.data)},
+` : ''}  CURLOPT_HTTPHEADER => array(
+${headerArray}
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+?>`;
+    }
+
+    function copyGeneratedSnippet() {
+      const code = document.getElementById('outputCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`Copied ${currentTargetLang.toUpperCase()} snippet!`);
+      });
+    }
+
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
     function renderSuiteGrid() {
-      const grid = document.getElementById('suiteGrid');
-      if (!grid) return;
-      grid.innerHTML = TOOLS.map(tool => {
-        const isActive = tool.id === CURRENT_TOOL_ID;
-        const href = getToolHref(tool);
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
         return `
-          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
-            isActive 
-              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
-              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
-          }">
-            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
-              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
-            } transition-colors">
-              <i class="fa-solid ${tool.icon} text-xs"></i>
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
-                <span class="text-[9px] text-slate-500">${tool.code}</span>
-              </div>
-              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
-            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
           </a>
         `;
       }).join('');
     }
+  </script>
+</body>
+</html
+  
+  <!-- Global Toast Notifications -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-    function toggleSuiteModal(show) {
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Regex Scanner Engine Script -->
+  <script>
+
+    let activeSuiteCategory = 'ALL';
+
+    function toggleSuiteModal(open) {
       const modal = document.getElementById('suiteModal');
-      if (show) {
+      if (open) {
         modal.classList.remove('hidden');
+        renderSuiteGrid();
+        document.getElementById('suiteSearch').focus();
       } else {
         modal.classList.add('hidden');
       }
     }
 
+    function renderSuiteGrid(filter = '') {
+      const grid = document.getElementById('suiteGrid');
+      const q = filter.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchCat = activeSuiteCategory === 'ALL' || t.cat === activeSuiteCategory;
+        const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <a href="/${t.id}/" class="p-3 rounded border border-slate-800 bg-slate-900/60 hover:border-cyan-400 hover:bg-cyan-950/20 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+              <span>${t.code}</span>
+              <span class="text-cyan-400/80 group-hover:text-cyan-300">${t.cat}</span>
+            </div>
+            <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">${t.name}</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1 line-clamp-2">${t.desc}</div>
+          </div>
+          <div class="mt-2 text-right text-[10px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">LAUNCH &rarr;</div>
+        </a>
+      `).join('');
+    }
+
+    function filterSuiteCategory(cat) {
+      activeSuiteCategory = cat;
+      document.querySelectorAll('#suiteCategoryFilters button').forEach(b => {
+        if (b.textContent.trim() === cat) {
+          b.className = 'px-3 py-1 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold';
+        } else {
+          b.className = 'px-3 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+      renderSuiteGrid(document.getElementById('suiteSearch').value);
+    }
+
+    document.getElementById('suiteSearch').addEventListener('input', (e) => {
+      renderSuiteGrid(e.target.value);
+    });
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') toggleSuiteModal(false);
     });
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      toast.classList.add('opacity-100');
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
       setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 2000);
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
     }
 
-    // Flags
-    const activeFlags = new Set(['g', 'i']);
+    // --- Regex Scanner Engine ---
+    const activeFlags = {
+      g: true,
+      i: true,
+      m: false,
+      s: false,
+      u: false
+    };
+
+    let extractedMatchesList = [];
+
+    const SAMPLES = {
+      email: {
+        pattern: '([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})',
+        flags: 'gi',
+        text: 'Tactical Recon Node Registry:\n- Operator: agent.zero@sarwarfx.cfd (Primary Dispatch)\n- Security: security-ops@corp.internal\n- Fallback: support+priority@domain.co.uk'
+      },
+      url: {
+        pattern: '(https?:\\/\\/)([\\w.-]+)(:[0-9]+)?(\\S*)',
+        flags: 'gi',
+        text: 'External gateway nodes:\nhttps://api.sarwarfx.cfd/v1/telemetry?node=0x10\nhttp://localhost:8080/metrics\nhttps://cdn.cloudflare.net/beacon.min.js'
+      },
+      ipv4: {
+        pattern: '\\b((?:[0-9]{1,3}\\.){3}[0-9]{1,3})\\b',
+        flags: 'g',
+        text: 'Router routing table:\nGateway: 192.168.1.1\nDNS Server: 1.1.1.1\nPrivate Subnet: 10.240.0.50\nBroadcast: 255.255.255.255'
+      },
+      date: {
+        pattern: '(\\d{4})-(\\d{2})-(\\d{2})',
+        flags: 'g',
+        text: 'Deployment telemetry logs:\nTimestamp A: 2026-10-29T12:00:00Z\nTimestamp B: 2026-10-30T01:45:00+06:00'
+      },
+      hex: {
+        pattern: '#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\\b',
+        flags: 'gi',
+        text: 'Cyberpunk HUD Palette:\nBackground: #05070d\nCyan Glow: #00f5ff\nPink Accent: #ff2bd6\nDark Border: #1b2234'
+      },
+      html: {
+        pattern: '<([a-zA-Z0-9]+)([^>]*)>(.*?)<\\/\\1>',
+        flags: 'gi',
+        text: '<div class="hud-card"><h1>CYBERTOOLS</h1><p>Zero telemetry toolkit.</p></div>'
+      },
+      uuid: {
+        pattern: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+        flags: 'gi',
+        text: 'Session tokens:\nUUID 1: 93345f11-2fb3-41b9-ac80-b24c84088119\nUUID 2: c4ba4350-0000-4000-8000-000000000000'
+      }
+    };
 
     function toggleFlag(f) {
+      activeFlags[f] = !activeFlags[f];
       const btn = document.getElementById(`flag_${f}`);
-      if (activeFlags.has(f)) {
-        activeFlags.delete(f);
-        btn.classList.remove('active');
+      if (activeFlags[f]) {
+        btn.className = 'px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-cyan-400 bg-cyan-950/80 text-cyan-300';
       } else {
-        activeFlags.add(f);
-        btn.classList.add('active');
+        btn.className = 'px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
       }
-      runRegex();
+      executeRegex();
     }
 
     function getFlagString() {
-      return Array.from(activeFlags).join('');
+      let str = '';
+      ['g', 'i', 'm', 's', 'u'].forEach(f => {
+        if (activeFlags[f]) str += f;
+      });
+      return str;
     }
 
-    function applyPreset(type) {
-      const patternInput = document.getElementById('regexPattern');
-      const testInput = document.getElementById('testCorpus');
+    function loadSampleRegex(key) {
+      const sample = SAMPLES[key];
+      if (!sample) return;
 
-      if (type === 'email') {
-        patternInput.value = '([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})';
-        testInput.value = "Contact security team at ops@sarwarfx.cfd or admin@enclave.internal. System alerts to alerts-sec@domain.co.uk.";
-      } else if (type === 'url') {
-        patternInput.value = 'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)';
-        testInput.value = "Documentation is located at https://apps.sarwarfx.cfd/docs/api and backup mirror http://cdn.sarwarfx.cfd/static/v1.json.";
-      } else if (type === 'ip') {
-        patternInput.value = '\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b';
-        testInput.value = "Node routed from 192.168.1.1 to upstream gateway 10.0.0.254 and edge relay 172.217.16.206.";
-      } else if (type === 'date') {
-        patternInput.value = '(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])';
-        testInput.value = "Audit milestones: 2026-10-29 release launch, 2026-11-15 security patch, 2026-12-31 deprecation window.";
-      } else if (type === 'hex') {
-        patternInput.value = '#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\\b';
-        testInput.value = "Palette config: primary cyan #00f5ff, accent pink #ff2bd6, deep obsidian #05070d, slate #64748b.";
+      document.getElementById('regexInput').value = sample.pattern;
+      document.getElementById('testInput').value = sample.text;
+
+      // Update flag buttons
+      ['g', 'i', 'm', 's', 'u'].forEach(f => {
+        activeFlags[f] = sample.flags.includes(f);
+        const btn = document.getElementById(`flag_${f}`);
+        if (activeFlags[f]) {
+          btn.className = 'px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-cyan-400 bg-cyan-950/80 text-cyan-300';
+        } else {
+          btn.className = 'px-2.5 py-1.5 rounded text-xs font-mono font-bold border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+
+      executeRegex();
+      showToast(`Loaded ${key.toUpperCase()} pattern!`);
+    }
+
+    function clearTestString() {
+      document.getElementById('testInput').value = '';
+      executeRegex();
+    }
+
+    function executeRegex() {
+      const patternStr = document.getElementById('regexInput').value;
+      const testText = document.getElementById('testInput').value;
+      const flagStr = getFlagString();
+
+      const statusBadge = document.getElementById('evalStatusBadge');
+      const timeBadge = document.getElementById('evalTimeBadge');
+      const countBadge = document.getElementById('matchCountBadge');
+      const highlightBox = document.getElementById('highlightContainer');
+      const matchesBox = document.getElementById('matchesContainer');
+
+      if (!patternStr) {
+        statusBadge.textContent = 'STANDBY';
+        statusBadge.className = 'text-[10px] px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 font-bold';
+        countBadge.textContent = '0 MATCHES';
+        highlightBox.textContent = testText;
+        matchesBox.innerHTML = '<div class="text-slate-500 text-center py-6">Enter a regex pattern above to scan.</div>';
+        extractedMatchesList = [];
+        return;
       }
 
-      runRegex();
-      showToast(`APPLIED ${type.toUpperCase()} PRESET`);
+      let regex = null;
+      try {
+        regex = new RegExp(patternStr, flagStr);
+      } catch (err) {
+        statusBadge.textContent = 'SYNTAX ERROR';
+        statusBadge.className = 'text-[10px] px-2 py-0.5 rounded bg-rose-950/80 text-rose-400 border border-rose-500/40 font-bold';
+        countBadge.textContent = 'ERROR';
+        highlightBox.textContent = testText;
+        matchesBox.innerHTML = `<div class="p-3 rounded bg-rose-950/60 border border-rose-500/50 text-rose-300 font-mono text-xs">${escapeHtml(err.message)}</div>`;
+        extractedMatchesList = [];
+        return;
+      }
+
+      const startTime = performance.now();
+      const matches = [];
+      const MAX_SAFE_MATCHES = 5000;
+
+      if (activeFlags.g) {
+        let match;
+        let lastIndex = -1;
+        while ((match = regex.exec(testText)) !== null) {
+          matches.push(match);
+          if (matches.length >= MAX_SAFE_MATCHES) {
+            showToast('Match limit reached (5,000 max matches).', true);
+            break;
+          }
+          // Prevent infinite loops on zero-length matches
+          if (regex.lastIndex === lastIndex) {
+            regex.lastIndex++;
+          }
+          lastIndex = regex.lastIndex;
+        }
+      } else {
+        const match = regex.exec(testText);
+        if (match) matches.push(match);
+      }
+
+      const elapsed = performance.now() - startTime;
+      timeBadge.textContent = `${elapsed.toFixed(2)} ms`;
+
+      statusBadge.textContent = 'VALID';
+      statusBadge.className = 'text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold';
+      countBadge.textContent = `${matches.length} MATCH${matches.length === 1 ? '' : 'ES'}`;
+
+      extractedMatchesList = matches.map(m => m[0]);
+
+      // Render Highlights
+      renderHighlightOverlay(testText, matches);
+
+      // Render Match Cards
+      renderMatchCards(matches);
+    }
+
+    function renderHighlightOverlay(text, matches) {
+      const box = document.getElementById('highlightContainer');
+      if (matches.length === 0) {
+        box.textContent = text;
+        return;
+      }
+
+      let html = '';
+      let cursor = 0;
+
+      for (let i = 0; i < matches.length; i++) {
+        const m = matches[i];
+        const start = m.index;
+        const end = start + m[0].length;
+
+        if (start > cursor) {
+          html += escapeHtml(text.slice(cursor, start));
+        }
+
+        const matchClass = (i % 2 === 0) ? 'match-cyan' : 'match-pink';
+        html += `<span class="${matchClass}" title="Match ${i + 1}: ${escapeHtml(m[0])}">${escapeHtml(m[0])}</span>`;
+        cursor = end;
+      }
+
+      if (cursor < text.length) {
+        html += escapeHtml(text.slice(cursor));
+      }
+
+      box.innerHTML = html;
+    }
+
+    function renderMatchCards(matches) {
+      const container = document.getElementById('matchesContainer');
+      if (matches.length === 0) {
+        container.innerHTML = '<div class="text-slate-500 text-center py-6">No pattern matches found in test corpus.</div>';
+        return;
+      }
+
+      container.innerHTML = matches.map((m, idx) => {
+        const fullMatch = m[0];
+        const matchLen = fullMatch.length;
+        const groups = m.slice(1);
+        const namedGroups = m.groups ? Object.entries(m.groups) : [];
+
+        let groupsHtml = '';
+        if (groups.length > 0 || namedGroups.length > 0) {
+          groupsHtml = '<div class="mt-2 pt-2 border-t border-slate-900 space-y-1">';
+          groups.forEach((g, gIdx) => {
+            groupsHtml += `
+              <div class="flex items-center justify-between text-[11px] font-mono">
+                <span class="text-slate-500 font-bold">$${gIdx + 1}:</span>
+                <span class="text-cyan-300 truncate max-w-[200px] select-all">${g !== undefined ? escapeHtml(g) : '<em class="text-slate-600">undefined</em>'}</span>
+              </div>
+            `;
+          });
+          namedGroups.forEach(([k, v]) => {
+            groupsHtml += `
+              <div class="flex items-center justify-between text-[11px] font-mono">
+                <span class="text-pink-400 font-bold">&lt;${escapeHtml(k)}&gt;:</span>
+                <span class="text-slate-200 truncate max-w-[200px] select-all">${v !== undefined ? escapeHtml(v) : '<em class="text-slate-600">undefined</em>'}</span>
+              </div>
+            `;
+          });
+          groupsHtml += '</div>';
+        }
+
+        const borderClass = (idx % 2 === 0) ? 'border-cyan-500/40' : 'border-pink-500/40';
+        const numColor = (idx % 2 === 0) ? 'text-cyan-400' : 'text-pink-400';
+
+        return `
+          <div class="p-3 rounded bg-slate-950 border ${borderClass} space-y-1 hover:border-cyan-400 transition-colors">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="${numColor} font-bold font-orbitron">MATCH #${idx + 1}</span>
+              <span class="text-slate-500 font-mono">INDEX [${m.index} &rarr; ${m.index + matchLen}] (${matchLen} chars)</span>
+            </div>
+            <div class="text-slate-100 font-mono font-bold select-all break-all bg-slate-900/80 p-2 rounded border border-slate-800">
+              ${escapeHtml(fullMatch)}
+            </div>
+            ${groupsHtml}
+          </div>
+        `;
+      }).join('');
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    function runRegex() {
-      const patternStr = document.getElementById('regexPattern').value;
-      const flags = getFlagString();
-      const text = document.getElementById('testCorpus').value;
-      const replacePat = document.getElementById('replacePattern').value;
-
-      const errorEl = document.getElementById('regexError');
-      const highlightEl = document.getElementById('highlightDisplay');
-      const statsEl = document.getElementById('matchStats');
-      const tableBody = document.getElementById('captureTableBody');
-      const countEl = document.getElementById('captureCount');
-      const replaceEl = document.getElementById('replaceOutput');
-
-      errorEl.textContent = '';
-
-      if (!patternStr) {
-        highlightEl.textContent = text;
-        statsEl.textContent = '0 MATCHES';
-        tableBody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-600">NO REGEX SPECIFIED</td></tr>';
-        countEl.textContent = '0 RECORDS';
-        replaceEl.textContent = text;
-        return;
-      }
-
-      let regex;
-      try {
-        regex = new RegExp(patternStr, flags);
-      } catch (err) {
-        errorEl.textContent = `[SYNTAX ERROR: ${err.message}]`;
-        highlightEl.textContent = text;
-        statsEl.textContent = 'ERROR';
-        return;
-      }
-
-      // Collect matches
-      let matches = [];
-      if (flags.includes('g')) {
-        let match;
-        // Avoid infinite loop on zero-width match
-        while ((match = regex.exec(text)) !== null) {
-          matches.push(match);
-          if (match.index === regex.lastIndex) regex.lastIndex++;
-        }
-      } else {
-        const m = regex.exec(text);
-        if (m) matches.push(m);
-      }
-
-      statsEl.textContent = `${matches.length} MATCH${matches.length === 1 ? '' : 'ES'}`;
-      countEl.textContent = `${matches.length} RECORD${matches.length === 1 ? '' : 'S'}`;
-
-      // Highlight rendering
-      if (matches.length === 0) {
-        highlightEl.textContent = text;
-        tableBody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-600">NO ACTIVE MATCHES</td></tr>';
-      } else {
-        let highlightedHtml = '';
-        let lastIdx = 0;
-
-        matches.forEach((m) => {
-          const matchStart = m.index;
-          const matchEnd = matchStart + m[0].length;
-          highlightedHtml += escapeHtml(text.slice(lastIdx, matchStart));
-          highlightedHtml += `<mark class="regex-mark">${escapeHtml(m[0])}</mark>`;
-          lastIdx = matchEnd;
-        });
-        highlightedHtml += escapeHtml(text.slice(lastIdx));
-        highlightEl.innerHTML = highlightedHtml || '&nbsp;';
-
-        // Table population
-        tableBody.innerHTML = matches.map((m, idx) => {
-          const fullMatch = escapeHtml(m[0]);
-          const range = `[${m.index} - ${m.index + m[0].length}]`;
-          const groups = m.slice(1).map((g, gIdx) => `
-            <div class="text-[11px]"><span class="text-pink-400 font-bold">$${gIdx + 1}:</span> ${g !== undefined ? escapeHtml(g) : '<span class="text-slate-600">undefined</span>'}</div>
-          `).join('');
-
-          return `
-            <tr class="hover:bg-slate-900/40">
-              <td class="py-2.5 px-3 text-cyan-400 font-bold">${idx + 1}</td>
-              <td class="py-2.5 px-3 font-bold text-white break-all">${fullMatch}</td>
-              <td class="py-2.5 px-3 text-slate-500 whitespace-nowrap">${range}</td>
-              <td class="py-2.5 px-3 space-y-0.5">${groups || '<span class="text-slate-600 text-[10px]">None</span>'}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      // Replace Preview
-      try {
-        const replaced = text.replace(regex, replacePat);
-        replaceEl.textContent = replaced;
-      } catch (err) {
-        replaceEl.textContent = `[Replace Error: ${err.message}]`;
-      }
+    function copyAllMatches() {
+      if (extractedMatchesList.length === 0) return;
+      const text = extractedMatchesList.join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied ${extractedMatchesList.length} matches!`);
+      });
     }
 
-    function copyReplaced() {
-      const text = document.getElementById('replaceOutput').textContent;
-      navigator.clipboard.writeText(text);
-      showToast('COPIED REPLACED STRING');
-    }
-
-    // Init
-    window.addEventListener('DOMContentLoaded', () => {
-      renderSuiteGrid();
-      applyPreset('email');
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSampleRegex('email');
     });
   </script>
 </body>

@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 94 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 100/100 APPS DEPLOYED</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -242,7 +242,7 @@
       </div>
     </div>
 
-    <!-- 94 Tools Cards Grid -->
+    <!-- 100 Tools Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
       <!-- Injected dynamically by renderTools() -->
     </div>
@@ -285,7 +285,7 @@
       { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
       { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
       { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
-      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
+      { id: 'regex', name: 'REGEX SCANNER', desc: 'Real-time regular expression tester, pattern scanner, and capture group inspector with catastrophic backtracking guard.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEX', 'SCANNER', 'PATTERN', 'GROUPS', 'REDOS'], code: '0x10' },
       { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
       { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
       { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
@@ -363,7 +363,11 @@
       { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger, and splitter. Reorder, extract & combine documents client-side with zero server uploads.', icon: 'fa-file-pdf', subdomain: 'apps.sarwarfx.cfd/pdf-matrix/', tags: ['PDF', 'MERGE', 'SPLIT', 'ORGANIZE', 'PDF-LIB'], code: '0x5B' },
       { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code. Strip editor namespaces, round coordinates & eliminate metadata with live dual preview.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg-clean/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE', 'CLEAN'], code: '0x5C' },
       { id: 'curl-convert', name: 'cURL SYNTH', desc: 'Multi-language cURL command transpiler. Convert HTTP requests into Fetch, Axios, Python Requests, Go, and PHP in-memory with zero network telemetry.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/curl-convert/', tags: ['CURL', 'API', 'TRANSPILER', 'PYTHON', 'FETCH', 'AXIOS', 'GO', 'PHP'], code: '0x5D' },
-      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 CIDR subnet mask & bitwise range calculator. 32-bit binary visualizer with network vs host bit coloring, usable host range, and RFC 1918 scope.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/cidr/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING', 'BINARY', 'BITWISE'], code: '0x5E' }
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 CIDR subnet mask & bitwise range calculator. 32-bit binary visualizer with network vs host bit coloring, usable host range, and RFC 1918 scope.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/cidr/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING', 'BINARY', 'BITWISE'], code: '0x5E' },
+      { id: 'screen-cap', name: 'DISPLAY STREAM', desc: 'In-browser screen & audio stream recorder. 60 FPS capture, microphone injection, dual-channel audio mixing & WebM export.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen-cap/', tags: ['SCREEN', 'RECORDER', 'WEBM', 'DISPLAY', 'STREAM'], code: '0x5F' },
+      { id: 'audio-trim', name: 'SONIC SLICE', desc: 'Waveform audio slicer & ringtone studio. Interactive canvas waveform, precision sample clipping & lossless WAV export.', icon: 'fa-scissors', subdomain: 'apps.sarwarfx.cfd/audio-trim/', tags: ['AUDIO', 'TRIM', 'WAVEFORM', 'WAV', 'SOUND'], code: '0x60' },
+      { id: 'pass-gen', name: 'CIPHER VAULT', desc: 'Cryptographic password generator & entropy meter. Diceware passphrases, hex secrets, bit entropy gauge & crack-time estimator.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/pass-gen/', tags: ['PASSWORD', 'ENTROPY', 'DICEWARE', 'CRYPTO', 'SECURITY'], code: '0x61' },
+      { id: 'checksum', name: 'HASH VERIFIER', desc: 'Multi-algorithm file checksum & integrity verifier. Streaming 4MB chunks for multi-gigabyte ISOs. SHA-256, SHA-512, SHA-1 & MD5.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/checksum/', tags: ['CHECKSUM', 'HASH', 'INTEGRITY', 'SHA256', 'MD5'], code: '0x62' }
 ];
 
     function getToolHref(tool) {
