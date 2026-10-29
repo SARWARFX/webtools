@@ -4,51 +4,49 @@ import sys
 import subprocess
 
 def test_apps():
-    print("=== CYBERTOOLS BATCH 14 SMOKE TEST SUITE ===")
+    print("=== CYBERTOOLS BATCH 15 SMOKE TEST SUITE ===")
     errors = []
 
     apps = {
-        'watermark-video': {
+        'jwt': {
             'required_ids': [
-                'hwCores', 'hwMemory', 'hwCodec', 'queueSlotsText', 'pipelineStatusText',
-                'fileInput', 'videoDropzone', 'deckTextConfig', 'deckBadgeConfig', 'deckLogoConfig',
-                'previewCanvas', 'previewVideo', 'videoScrubber', 'btnPlayPause',
-                'btnBatchRender', 'btnAbort', 'queueContainer', 'suiteModal'
+                'jwtInput', 'headerJson', 'payloadJson', 'signatureRaw',
+                'secretKeyInput', 'sigVerifyBadge', 'expiryStatusBadge',
+                'expDateDisplay', 'suiteModal'
             ],
             'required_terms': [
-                'hardwareConcurrency', 'captureStream', 'MediaRecorder',
-                '120', 'revokeObjectURL', '346689d4f4b0498393005cfe06ff2f5b'
+                'subtle', 'HMAC', 'sign', 'importKey', 'SHA-256', '346689d4f4b0498393005cfe06ff2f5b'
             ]
         },
-        'exif-strip': {
+        'cron': {
             'required_ids': [
-                'statIngested', 'statGpsCount', 'statDevicesPurged', 'exifDropzone',
-                'fileInput', 'gpsAlertBanner', 'gpsCoordsList', 'auditTableBody',
-                'btnZipExport', 'suiteModal'
+                'cronInput', 'cronFormatBadge', 'englishTranslation',
+                'immediateNextRunText', 'immediateDeltaBadge', 'tzIndicator',
+                'executionFeed', 'suiteModal'
             ],
             'required_terms': [
-                'jszip', '0xFFE1', '0x8825', 'toBlob', '346689d4f4b0498393005cfe06ff2f5b'
+                'UTC', 'minute', 'hour', '346689d4f4b0498393005cfe06ff2f5b'
             ]
         },
-        'pdf-matrix': {
+        'curl-convert': {
             'required_ids': [
-                'tabMerge', 'tabSplit', 'pdfDropzone', 'pdfFileInput',
-                'mergeWorkspace', 'splitWorkspace', 'mergeList', 'pagesGrid',
-                'pageRangeInput', 'btnCompile', 'suiteModal'
+                'curlInput', 'outputCode', 'tabFetch', 'tabAxios',
+                'tabPython', 'tabGo', 'tabPhp', 'parsedMethodBadge',
+                'outputLinesBadge', 'suiteModal'
             ],
             'required_terms': [
-                'pdf-lib', 'PDFDocument', 'copyPages', '346689d4f4b0498393005cfe06ff2f5b'
+                'requests', 'fetch', 'axios', 'http.NewRequest', 'curl_setopt',
+                '346689d4f4b0498393005cfe06ff2f5b'
             ]
         },
-        'svg-clean': {
+        'cidr': {
             'required_ids': [
-                'rawSvgInput', 'cleanSvgOutput', 'optComments', 'optDoctype',
-                'optNamespaces', 'optHidden', 'optDecimals', 'optCollapse',
-                'beforeSvgContainer', 'afterSvgContainer', 'statOrigSize',
-                'statOptSize', 'statSavings', 'suiteModal'
+                'ipInput', 'cidrNumInput', 'cidrSlider', 'sliderValueBadge',
+                'octetVisualizerGrid', 'resNetIp', 'resBroadcastIp', 'resSubnetMask',
+                'resWildcardMask', 'resUsableRange', 'resUsableHosts', 'resScope', 'suiteModal'
             ],
             'required_terms': [
-                'DOMParser', 'XMLSerializer', '346689d4f4b0498393005cfe06ff2f5b'
+                'RFC 1918', 'wildcard', 'prefix', '346689d4f4b0498393005cfe06ff2f5b'
             ]
         }
     }
@@ -115,7 +113,7 @@ def test_apps():
         url = f"https://apps.sarwarfx.cfd/{app_name}/"
         if url not in sitemap:
             errors.append(f"[sitemap.xml] Missing URL: {url}")
-    print("[PASS] sitemap.xml contains all 4 Batch 14 URLs.")
+    print("[PASS] sitemap.xml contains all 4 Batch 15 URLs.")
 
     # 4. Test index.html
     with open('index.html', 'r', encoding='utf-8') as f:
@@ -123,9 +121,9 @@ def test_apps():
     for app_name in apps.keys():
         if f"id: '{app_name}'" not in index_html:
             errors.append(f"[index.html] Missing tool registration: {app_name}")
-    if "92 ACTIVE UTILITY NODES" not in index_html:
-        errors.append("[index.html] Missing 92 active utility nodes badge")
-    print("[PASS] index.html registered all 4 tools and displays 92 nodes.")
+    if "94 ACTIVE UTILITY NODES" not in index_html:
+        errors.append("[index.html] Missing 94 active utility nodes badge")
+    print("[PASS] index.html registered all Batch 15 tools and displays 94 nodes.")
 
     if errors:
         print("\n=== SMOKE TEST FAILED ===")

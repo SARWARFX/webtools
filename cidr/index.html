@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Net Mask // IPv4 CIDR Subnet Calculator & Bitwise Visualizer | CyberTools</title>
+  <meta name="description" content="High-precision IPv4 CIDR subnet mask calculator, bitwise range visualizer, RFC 1918 detector, and address breakdown engine. In-browser client-side execution with zero telemetry.">
+  <meta name="keywords" content="cidr calculator, ipv4 subnet calculator, subnet mask, wildcard mask, network address, broadcast address, rfc 1918, binary ip visualizer, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/cidr/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/cidr/" />
+  <meta property="og:title" content="Net Mask // IPv4 CIDR Subnet Calculator & Bitwise Visualizer | CyberTools" />
+  <meta property="og:description" content="High-precision IPv4 CIDR subnet mask calculator, bitwise range visualizer, RFC 1918 detector, and address breakdown engine. In-browser client-side execution with zero telemetry." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/cidr/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/cidr/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/cidr/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Net Mask // IPv4 CIDR Subnet Calculator & Bitwise Visualizer | CyberTools" />
+  <meta name="twitter:description" content="High-precision IPv4 CIDR subnet mask calculator, bitwise range visualizer, RFC 1918 detector, and address breakdown engine. In-browser client-side execution with zero telemetry." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/cidr/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Net Mask CIDR Calculator",
+    "url": "https://apps.sarwarfx.cfd/cidr/",
+    "description": "High-precision IPv4 CIDR subnet mask calculator, bitwise range visualizer, RFC 1918 detector, and address breakdown engine. In-browser client-side execution with zero telemetry.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Bitwise IPv4 subnet calculation",
+      "32-bit binary visualizer with network vs host bit coloring",
+      "Usable IP host range computation",
+      "RFC 1918 private network and class detection",
+      "Cisco CLI network statement export",
+      "Zero server telemetry"
+    ]
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#05070d',
+              card: '#090d16',
+              border: '#1b2234',
+              neon: '#00f5ff',
+              pink: '#ff2bd6',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #05070d;
+      color: #cbd5e1;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .hud-card {
+      background: linear-gradient(135deg, rgba(9, 13, 22, 0.95), rgba(5, 7, 13, 0.98));
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.05);
+    }
+    .hud-card:hover {
+      border-color: rgba(0, 245, 255, 0.4);
+    }
+    .hud-input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #00f5ff;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .hud-input:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+    }
+    .hud-btn {
+      background: linear-gradient(90deg, #00f5ff, #00b4d8);
+      color: #020617;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .hud-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+    }
+    .bit-box {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .bit-box:hover {
+      transform: scale(1.1);
+    }
+    .bit-net {
+      background: rgba(0, 245, 255, 0.15);
+      border-color: #00f5ff;
+      color: #00f5ff;
+      box-shadow: 0 0 6px rgba(0, 245, 255, 0.3);
+    }
+    .bit-host {
+      background: rgba(255, 43, 214, 0.12);
+      border-color: #ff2bd6;
+      color: #ff2bd6;
+      box-shadow: 0 0 6px rgba(255, 43, 214, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">NET_MASK // CIDR CALCULATOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x5E</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(94)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>NETWORKING</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">NET_MASK</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x5E</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          NET MASK <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">IPv4 CIDR SUBNET CALCULATOR</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          High-precision IPv4 subnet mask, wildcard, network, and broadcast range engine with interactive 32-bit binary visualizer. All bitwise operations run in-memory with zero network telemetry.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="loadSampleIp('192.168.1.1', 24)" class="hud-btn-secondary text-xs px-3 py-1.5 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-rotate text-cyan-400"></i>
+          <span>RESET 192.168.1.1/24</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left / Top: Input & Configuration (5 cols) -->
+      <div class="lg:col-span-5 space-y-5">
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-cyan-400 flex items-center gap-2">
+              <i class="fa-solid fa-network-wired"></i> ADDRESS &amp; PREFIX INPUT
+            </span>
+            <span id="ipStatusBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/40">VALID IPv4</span>
+          </div>
+
+          <!-- IP & CIDR Input -->
+          <div class="space-y-2">
+            <label class="block text-xs font-mono text-slate-300">IPv4 ADDRESS / CIDR SUFFIX</label>
+            <div class="flex items-center gap-2">
+              <div class="relative flex-grow">
+                <input id="ipInput" type="text" value="192.168.1.50" placeholder="e.g. 192.168.1.50 or 10.0.0.1/16" 
+                  class="hud-input w-full px-3 py-2 text-sm rounded font-mono" oninput="handleIpInput(this.value)">
+              </div>
+              <span class="text-slate-500 font-bold text-lg font-mono">/</span>
+              <div class="w-20">
+                <input id="cidrNumInput" type="number" min="0" max="32" value="24"
+                  class="hud-input w-full px-3 py-2 text-sm rounded font-mono text-center font-bold text-cyan-400" oninput="handleCidrNumInput(this.value)">
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 font-mono">You can enter a standalone IP or append a slash notation (e.g. <code class="text-cyan-400">10.240.0.1/20</code>).</p>
+          </div>
+
+          <!-- CIDR Slider -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <div class="flex justify-between items-center text-xs font-mono">
+              <span class="text-slate-400">CIDR PREFIX MASK LENGTH:</span>
+              <span id="sliderValueBadge" class="text-cyan-400 font-orbitron font-bold text-sm bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-500/30">/24</span>
+            </div>
+            <input id="cidrSlider" type="range" min="0" max="32" value="24" step="1"
+              class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg" oninput="handleSliderChange(this.value)">
+            <div class="flex justify-between text-[10px] font-mono text-slate-500 px-0.5">
+              <span>/0 (Internet)</span>
+              <span>/8 (Class A)</span>
+              <span>/16 (Class B)</span>
+              <span>/24 (Class C)</span>
+              <span>/32 (Host)</span>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <label class="block text-xs font-mono text-slate-400">COMMON SUBNET PRESETS</label>
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 font-mono text-xs">
+              <button onclick="setPrefix(8)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/8 (16.7M)</button>
+              <button onclick="setPrefix(16)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/16 (65.5K)</button>
+              <button onclick="setPrefix(20)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/20 (4,094)</button>
+              <button onclick="setPrefix(24)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-cyan-400 text-cyan-300 font-bold text-center">/24 (254)</button>
+              <button onclick="setPrefix(27)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/27 (30)</button>
+              <button onclick="setPrefix(28)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/28 (14)</button>
+              <button onclick="setPrefix(29)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/29 (6)</button>
+              <button onclick="setPrefix(30)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/30 (P2P 2)</button>
+              <button onclick="setPrefix(32)" class="preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center">/32 (Host 1)</button>
+            </div>
+          </div>
+
+          <!-- Quick IP Samples -->
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <label class="block text-xs font-mono text-slate-400">SAMPLE IP VECTORS</label>
+            <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+              <button onclick="loadSampleIp('10.0.0.1', 8)" class="px-2 py-1 rounded bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-white text-left truncate">10.0.0.1/8 (RFC 1918)</button>
+              <button onclick="loadSampleIp('172.16.5.10', 12)" class="px-2 py-1 rounded bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-white text-left truncate">172.16.5.10/12 (RFC 1918)</button>
+              <button onclick="loadSampleIp('192.168.1.1', 24)" class="px-2 py-1 rounded bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-white text-left truncate">192.168.1.1/24 (LAN Gateway)</button>
+              <button onclick="loadSampleIp('1.1.1.1', 24)" class="px-2 py-1 rounded bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-white text-left truncate">1.1.1.1/24 (Cloudflare Public)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action / Export Card -->
+        <div class="hud-card p-4 rounded-lg space-y-3">
+          <div class="text-xs font-orbitron font-bold text-cyan-400 flex items-center justify-between">
+            <span><i class="fa-solid fa-share-nodes mr-1.5"></i> EXPORT SYNTHESIS</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button onclick="copySubnetJson()" class="hud-btn-secondary px-3 py-2 rounded text-xs flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-code text-cyan-400"></i>
+              <span>JSON SPECS</span>
+            </button>
+            <button onclick="copyCiscoCommand()" class="hud-btn-secondary px-3 py-2 rounded text-xs flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-terminal text-cyan-400"></i>
+              <span>CISCO CLI</span>
+            </button>
+            <button onclick="copyTextSummary()" class="hud-btn-secondary px-3 py-2 rounded text-xs flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-copy text-cyan-400"></i>
+              <span>TEXT BRIEF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Bitwise Visualizer & Telemetry Cards (7 cols) -->
+      <div class="lg:col-span-7 space-y-5">
+
+        <!-- 32-Bit Binary Visualizer Panel -->
+        <div class="hud-card p-5 rounded-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <span class="text-xs font-orbitron font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-microchip text-cyan-400"></i> 32-BIT BINARY OCTET VISUALIZER
+            </span>
+            <div class="flex items-center space-x-3 text-[11px] font-mono">
+              <span class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded-sm bg-cyan-400 inline-block shadow-[0_0_6px_#00f5ff]"></span>
+                <span class="text-cyan-400 font-bold" id="netBitsCount">24 NET BITS</span>
+              </span>
+              <span class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded-sm bg-pink-500 inline-block shadow-[0_0_6px_#ff2bd6]"></span>
+                <span class="text-pink-400 font-bold" id="hostBitsCount">8 HOST BITS</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Visual Bit Grid Container -->
+          <div class="space-y-3 font-mono">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3" id="octetVisualizerGrid">
+              <!-- Rendered via JS: 4 octets with 8 bits each -->
+            </div>
+            <div class="text-[11px] text-slate-500 flex justify-between items-center px-1">
+              <span>* Click on any bit box to immediately calibrate the CIDR prefix mask.</span>
+              <span class="text-cyan-400/80 font-mono">MSB (Bit 1) &rarr; LSB (Bit 32)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Subnet Metrics Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <!-- Network Address Card -->
+          <div class="hud-card p-4 rounded-lg border-l-4 border-l-cyan-400 space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>NETWORK ADDRESS (ID)</span>
+              <button onclick="copyFieldValue('resNetIp')" class="text-slate-500 hover:text-cyan-300"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <div id="resNetIp" class="text-lg font-orbitron font-bold text-white tracking-wide">192.168.1.0</div>
+            <div id="resNetIpBin" class="text-[10px] font-mono text-cyan-400/80 truncate">11000000.10101000.00000001.00000000</div>
+          </div>
+
+          <!-- Broadcast Address Card -->
+          <div class="hud-card p-4 rounded-lg border-l-4 border-l-pink-500 space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>BROADCAST ADDRESS</span>
+              <button onclick="copyFieldValue('resBroadcastIp')" class="text-slate-500 hover:text-pink-300"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <div id="resBroadcastIp" class="text-lg font-orbitron font-bold text-white tracking-wide">192.168.1.255</div>
+            <div id="resBroadcastIpBin" class="text-[10px] font-mono text-pink-400/80 truncate">11000000.10101000.00000001.11111111</div>
+          </div>
+
+          <!-- Subnet Mask Card -->
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>SUBNET MASK</span>
+              <button onclick="copyFieldValue('resSubnetMask')" class="text-slate-500 hover:text-cyan-300"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <div id="resSubnetMask" class="text-base font-orbitron font-bold text-cyan-300">255.255.255.0</div>
+            <div id="resSubnetMaskHex" class="text-[10px] font-mono text-slate-400">HEX: 0xFFFFFF00</div>
+          </div>
+
+          <!-- Wildcard Mask Card -->
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>WILDCARD (CISCO ACL)</span>
+              <button onclick="copyFieldValue('resWildcardMask')" class="text-slate-500 hover:text-cyan-300"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <div id="resWildcardMask" class="text-base font-orbitron font-bold text-slate-200">0.0.0.255</div>
+            <div id="resWildcardMaskHex" class="text-[10px] font-mono text-slate-400">HEX: 0x000000FF</div>
+          </div>
+
+          <!-- Usable Host Range -->
+          <div class="hud-card p-4 rounded-lg space-y-1 sm:col-span-2">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>USABLE HOST IP RANGE</span>
+              <button onclick="copyFieldValue('resUsableRange')" class="text-slate-500 hover:text-cyan-300"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <div id="resUsableRange" class="text-base sm:text-lg font-orbitron font-bold text-emerald-400">192.168.1.1 &rarr; 192.168.1.254</div>
+            <div class="flex justify-between items-center text-[11px] font-mono text-slate-400 pt-1">
+              <span>FIRST HOST: <span id="resFirstHost" class="text-slate-200 font-bold">192.168.1.1</span></span>
+              <span>LAST HOST: <span id="resLastHost" class="text-slate-200 font-bold">192.168.1.254</span></span>
+            </div>
+          </div>
+
+          <!-- Total Usable Hosts -->
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>USABLE HOST CAPACITY</span>
+              <span class="text-[10px] font-mono text-cyan-400">2^(32-N) - 2</span>
+            </div>
+            <div id="resUsableHosts" class="text-xl font-orbitron font-extrabold text-cyan-400">254</div>
+            <div id="resTotalAddresses" class="text-[11px] font-mono text-slate-400">Total Addresses: 256</div>
+          </div>
+
+          <!-- IP Class & Scope -->
+          <div class="hud-card p-4 rounded-lg space-y-1">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>CLASS &amp; RFC SCOPE</span>
+              <span id="resClassBadge" class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-300">CLASS C</span>
+            </div>
+            <div id="resScope" class="text-base font-orbitron font-bold text-amber-400">RFC 1918 PRIVATE</div>
+            <div id="resScopeNote" class="text-[10px] font-mono text-slate-400 truncate">Non-routable LAN space (192.168.0.0/16)</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Technical Guide / Educational Article Section -->
+    <article class="hud-card p-6 sm:p-8 rounded-lg mt-8 space-y-6 text-slate-300 text-sm leading-relaxed border border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white tracking-wide">
+          UNDERSTANDING IPv4 CIDR SUBNETTING &amp; BITWISE MASKS
+        </h2>
+        <p class="text-xs font-mono text-cyan-400 mt-1">
+          TACTICAL NETWORKING SPECIFICATION // RFC 4632 &amp; RFC 1918 ARCHITECTURE
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">What is CIDR Notation?</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            Classless Inter-Domain Routing (CIDR) replaced the rigid classful network system (Class A, B, and C) in 1993. In CIDR notation, an IPv4 address is paired with a forward slash followed by the prefix length (e.g., <code class="text-cyan-300">/24</code>), indicating how many of the 32 bits represent the network prefix, leaving the remaining bits to identify specific host machines.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            Every bit shifted from the host portion to the network portion doubles the number of available subnets while halving the number of hosts per subnet.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-orbitron font-bold text-cyan-300">Subnet Mask vs. Wildcard Mask</h3>
+          <p class="text-xs text-slate-400 leading-normal">
+            A <strong>Subnet Mask</strong> features consecutive contiguous ones (1s) from left to right representing the network portion, followed by contiguous zeros (0s) for the host portion. For example, a <code class="text-cyan-300">/24</code> prefix produces <code class="text-cyan-300">255.255.255.0</code>.
+          </p>
+          <p class="text-xs text-slate-400 leading-normal">
+            A <strong>Wildcard Mask</strong> (used in Cisco IOS Access Control Lists and OSPF network statements) is the bitwise inverse of the subnet mask (<code class="text-cyan-300">255.255.255.255 - Subnet Mask</code>). For a <code class="text-cyan-300">/24</code> network, the wildcard mask is <code class="text-cyan-300">0.0.0.255</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-base font-orbitron font-bold text-white">RFC 1918 Private Address Blocks</h3>
+        <p class="text-xs text-slate-400">
+          The Internet Assigned Numbers Authority (IANA) reserved three blocks of IPv4 space for private enterprise and local area networks that are never routed on the public internet:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs pt-2">
+          <div class="bg-slate-950/80 p-3 rounded border border-slate-800">
+            <div class="text-cyan-400 font-bold">10.0.0.0 /8</div>
+            <div class="text-slate-400 text-[11px] mt-1">10.0.0.0 - 10.255.255.255</div>
+            <div class="text-slate-500 text-[10px] mt-0.5">16,777,216 Total Addresses</div>
+          </div>
+          <div class="bg-slate-950/80 p-3 rounded border border-slate-800">
+            <div class="text-cyan-400 font-bold">172.16.0.0 /12</div>
+            <div class="text-slate-400 text-[11px] mt-1">172.16.0.0 - 172.31.255.255</div>
+            <div class="text-slate-500 text-[10px] mt-0.5">1,048,576 Total Addresses</div>
+          </div>
+          <div class="bg-slate-950/80 p-3 rounded border border-slate-800">
+            <div class="text-cyan-400 font-bold">192.168.0.0 /16</div>
+            <div class="text-slate-400 text-[11px] mt-1">192.168.0.0 - 192.168.255.255</div>
+            <div class="text-slate-500 text-[10px] mt-0.5">65,536 Total Addresses</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-base font-orbitron font-bold text-white">Edge Case Handling: /31 &amp; /32 Subnets</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-400">
+          <div class="bg-slate-950/60 p-3 rounded border border-slate-800">
+            <span class="text-cyan-300 font-bold block mb-1">RFC 3021: 31-Bit Prefixes (/31)</span>
+            Point-to-point router links traditionally required a <code class="text-cyan-300">/30</code> subnet (wasting 2 out of 4 addresses on network ID and broadcast). RFC 3021 permits <code class="text-cyan-300">/31</code> subnets for point-to-point interfaces where both addresses are directly assignable to hosts with no broadcast address needed.
+          </div>
+          <div class="bg-slate-950/60 p-3 rounded border border-slate-800">
+            <span class="text-cyan-300 font-bold block mb-1">Host Routes: 32-Bit Prefixes (/32)</span>
+            A <code class="text-cyan-300">/32</code> subnet represents a single specific endpoint (host route or loopback interface). It has zero host bits, no broadcast address, and exactly one usable address.
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 bg-slate-950/90 py-6 mt-12 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span class="text-slate-400">CYBERTOOLS TACTICAL SUITE // ZERO-BACKEND BITWISE ENGINE</span>
+      </div>
+      <div>
+        <span>AIRGAPPED EXECUTION // NO COOKIES // NO TELEMETRY</span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'curl-convert';
+    let currentTargetLang = 'fetch';
+    let parsedCurl = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleCurl();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function setTargetLang(lang) {
+      currentTargetLang = lang;
+      ['fetch', 'axios', 'python', 'go', 'php'].forEach(l => {
+        const btn = document.getElementById(`tab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (!btn) return;
+        if (l === lang) {
+          btn.className = 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+        }
+      });
+      renderSnippet();
+    }
+
+    function loadSampleCurl() {
+      const sample = `curl -X POST "https://api.sarwarfx.cfd/v1/telemetry/nodes" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sec_tok_994821a8" \
+  -d '{"node":"0x5D","cipher":"AES_256","status":"ACTIVE"}'`;
+      document.getElementById('curlInput').value = sample;
+      transpileCurl();
+      showToast('Loaded sample cURL request!');
+    }
+
+    // Lexer & Tokenizer
+    function transpileCurl() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('outputCode').textContent = '// Paste a cURL command above to generate code snippets.';
+        document.getElementById('parsedMethodBadge').textContent = 'METHOD: --';
+        return;
+      }
+
+      parsedCurl = parseCurlCommand(raw);
+      document.getElementById('parsedMethodBadge').textContent = `METHOD: ${parsedCurl.method}`;
+      renderSnippet();
+    }
+
+    function parseCurlCommand(cmd) {
+      // Normalize line continuation backslashes
+      let cleaned = cmd.split(String.fromCharCode(10)).map(l => { const t = l.trim(); return t.endsWith(String.fromCharCode(92)) ? t.slice(0, -1) : t; }).join(' ').trim();
+      if (cleaned.startsWith('curl ')) cleaned = cleaned.substring(5).trim();
+
+      const tokens = tokenizeArgs(cleaned);
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let data = null;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i] || '';
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx !== -1) {
+            const hKey = hStr.substring(0, colonIdx).trim();
+            const hVal = hStr.substring(colonIdx + 1).trim();
+            headers[hKey] = hVal;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i] || '';
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const userpass = tokens[++i] || '';
+          headers['Authorization'] = 'Basic ' + btoa(userpass);
+        } else if (t.startsWith('http://') || t.startsWith('https://')) {
+          url = t;
+        } else if (!url && !t.startsWith('-') && i === tokens.length - 1) {
+          url = t;
+        }
+      }
+
+      return {
+        method,
+        url: url || 'https://api.example.com/endpoint',
+        headers,
+        data
+      };
+    }
+
+    function tokenizeArgs(str) {
+      const args = [];
+      let current = '';
+      let inSingle = false;
+      let inDouble = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        if (c === "'" && !inDouble) {
+          inSingle = !inSingle;
+        } else if (c === '"' && !inSingle) {
+          inDouble = !inDouble;
+        } else if ((c === ' ' || c === '	') && !inSingle && !inDouble) {
+          if (current.length > 0) {
+            args.push(current);
+            current = '';
+          }
+        } else {
+          current += c;
+        }
+      }
+      if (current.length > 0) args.push(current);
+      return args;
+    }
+
+    // Code Generator Templates
+    function renderSnippet() {
+      if (!parsedCurl) return;
+      const codeEl = document.getElementById('outputCode');
+      let snippet = '';
+
+      switch (currentTargetLang) {
+        case 'fetch':
+          snippet = generateFetchSnippet(parsedCurl);
+          break;
+        case 'axios':
+          snippet = generateAxiosSnippet(parsedCurl);
+          break;
+        case 'python':
+          snippet = generatePythonSnippet(parsedCurl);
+          break;
+        case 'go':
+          snippet = generateGoSnippet(parsedCurl);
+          break;
+        case 'php':
+          snippet = generatePhpSnippet(parsedCurl);
+          break;
+      }
+
+      codeEl.textContent = snippet;
+      const lines = snippet.split(String.fromCharCode(10)).length;
+      document.getElementById('outputLinesBadge').textContent = `${lines} LINES // ${currentTargetLang.toUpperCase()}`;
+    }
+
+    function generateFetchSnippet(req) {
+      let options = [`  method: "${req.method}"`];
+
+      if (Object.keys(req.headers).length > 0) {
+        options.push(`  headers: ${JSON.stringify(req.headers, null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')}`);
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          options.push(`  body: JSON.stringify(${JSON.stringify(JSON.parse(req.data), null, 4).split(String.fromCharCode(10)).join(String.fromCharCode(10) + '  ')})`);
+        } else {
+          options.push(`  body: ${JSON.stringify(req.data)}`);
+        }
+      }
+
+      return `// JavaScript Native Fetch (ES6+ async/await)
+async function sendRequest() {
+  const response = await fetch("${req.url}", {
+${options.join(',' + String.fromCharCode(10))}
+  });
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+sendRequest();`;
+    }
+
+    function generateAxiosSnippet(req) {
+      const config = {
+        method: req.method.toLowerCase(),
+        url: req.url,
+        headers: req.headers
+      };
+      if (req.data) {
+        try { config.data = JSON.parse(req.data); } catch(e) { config.data = req.data; }
+      }
+
+      return `// Node.js Axios HTTP Request
+const axios = require('axios');
+
+const config = ${JSON.stringify(config, null, 2)};
+
+axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.error(error);
+  });`;
+    }
+
+    function generatePythonSnippet(req) {
+      let code = `import requests
+
+url = "${req.url}"
+`;
+
+      if (Object.keys(req.headers).length > 0) {
+        code += `headers = ${JSON.stringify(req.headers, null, 4)}
+`;
+      } else {
+        code += `headers = {}
+`;
+      }
+
+      if (req.data) {
+        let isJson = false;
+        try { JSON.parse(req.data); isJson = true; } catch(e) {}
+        if (isJson) {
+          code += `payload = ${JSON.stringify(JSON.parse(req.data), null, 4)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, json=payload)
+`;
+        } else {
+          code += `payload = ${JSON.stringify(req.data)}
+`;
+          code += `response = requests.${req.method.toLowerCase()}(url, headers=headers, data=payload)
+`;
+        }
+      } else {
+        code += `response = requests.${req.method.toLowerCase()}(url, headers=headers)
+`;
+      }
+
+      code += `
+print(response.status_code)
+print(response.text)
+`;
+      return code;
+    }
+
+    function generateGoSnippet(req) {
+      let bodyDecl = 'nil';
+      let payloadSetup = '';
+
+      if (req.data) {
+        payloadSetup = `	payload := []byte(${JSON.stringify(req.data)})
+`;
+        bodyDecl = 'bytes.NewBuffer(payload)';
+      }
+
+      let headerLines = '';
+      for (const [k, v] of Object.entries(req.headers)) {
+        headerLines += `	req.Header.Set("${k}", "${v}")
+`;
+      }
+
+      return `// Go Native HTTP Request (net/http)
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+${payloadSetup}	req, err := http.NewRequest("${req.method}", "${req.url}", ${bodyDecl})
+	if err != nil {
+		panic(err)
+	}
+
+${headerLines}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}`;
+    }
+
+    function generatePhpSnippet(req) {
+      let headerArray = Object.entries(req.headers).map(([k, v]) => `    '${k}: ${v}'`).join(',' + String.fromCharCode(10));
+
+      return `<?php
+// PHP Native cURL Request
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${req.url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => '${req.method}',
+${req.data ? `  CURLOPT_POSTFIELDS => ${JSON.stringify(req.data)},
+` : ''}  CURLOPT_HTTPHEADER => array(
+${headerArray}
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+?>`;
+    }
+
+    function copyGeneratedSnippet() {
+      const code = document.getElementById('outputCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`Copied ${currentTargetLang.toUpperCase()} snippet!`);
+      });
+    }
+
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html
+  <!-- Global Toast Notifications -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script>
+
+  <!-- Main Calculator Engine Script -->
+  <script>
+
+    let activeSuiteCategory = 'ALL';
+
+    function toggleSuiteModal(open) {
+      const modal = document.getElementById('suiteModal');
+      if (open) {
+        modal.classList.remove('hidden');
+        renderSuiteGrid();
+        document.getElementById('suiteSearch').focus();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderSuiteGrid(filter = '') {
+      const grid = document.getElementById('suiteGrid');
+      const q = filter.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchCat = activeSuiteCategory === 'ALL' || t.cat === activeSuiteCategory;
+        const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <a href="/${t.id}/" class="p-3 rounded border border-slate-800 bg-slate-900/60 hover:border-cyan-400 hover:bg-cyan-950/20 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+              <span>${t.code}</span>
+              <span class="text-cyan-400/80 group-hover:text-cyan-300">${t.cat}</span>
+            </div>
+            <div class="font-orbitron font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">${t.name}</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1 line-clamp-2">${t.desc}</div>
+          </div>
+          <div class="mt-2 text-right text-[10px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">LAUNCH &rarr;</div>
+        </a>
+      `).join('');
+    }
+
+    function filterSuiteCategory(cat) {
+      activeSuiteCategory = cat;
+      document.querySelectorAll('#suiteCategoryFilters button').forEach(b => {
+        if (b.textContent.trim() === cat) {
+          b.className = 'px-3 py-1 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold';
+        } else {
+          b.className = 'px-3 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white';
+        }
+      });
+      renderSuiteGrid(document.getElementById('suiteSearch').value);
+    }
+
+    document.getElementById('suiteSearch').addEventListener('input', (e) => {
+      renderSuiteGrid(e.target.value);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    // Toast Engine
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // --- CIDR Bitwise Engine ---
+    let currentIp = '192.168.1.50';
+    let currentPrefix = 24;
+
+    function handleIpInput(val) {
+      val = val.trim();
+      if (val.includes('/')) {
+        const parts = val.split('/');
+        const ipPart = parts[0].trim();
+        const cidrPart = parseInt(parts[1].trim(), 10);
+        if (!isNaN(cidrPart) && cidrPart >= 0 && cidrPart <= 32) {
+          currentPrefix = cidrPart;
+          document.getElementById('cidrSlider').value = currentPrefix;
+          document.getElementById('cidrNumInput').value = currentPrefix;
+          document.getElementById('sliderValueBadge').textContent = `/${currentPrefix}`;
+        }
+        currentIp = ipPart;
+      } else {
+        currentIp = val;
+      }
+      recalculate();
+    }
+
+    function handleSliderChange(val) {
+      currentPrefix = parseInt(val, 10);
+      document.getElementById('cidrNumInput').value = currentPrefix;
+      document.getElementById('sliderValueBadge').textContent = `/${currentPrefix}`;
+      updatePresetButtons();
+      recalculate();
+    }
+
+    function handleCidrNumInput(val) {
+      let p = parseInt(val, 10);
+      if (isNaN(p)) return;
+      if (p < 0) p = 0;
+      if (p > 32) p = 32;
+      currentPrefix = p;
+      document.getElementById('cidrSlider').value = currentPrefix;
+      document.getElementById('sliderValueBadge').textContent = `/${currentPrefix}`;
+      updatePresetButtons();
+      recalculate();
+    }
+
+    function setPrefix(p) {
+      currentPrefix = p;
+      document.getElementById('cidrSlider').value = p;
+      document.getElementById('cidrNumInput').value = p;
+      document.getElementById('sliderValueBadge').textContent = `/${p}`;
+      updatePresetButtons();
+      recalculate();
+      showToast(`Prefix set to /${p}`);
+    }
+
+    function updatePresetButtons() {
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        const text = btn.textContent;
+        if (text.startsWith(`/${currentPrefix} `) || text === `/${currentPrefix}`) {
+          btn.className = 'preset-btn px-2 py-1.5 rounded bg-slate-900 border border-cyan-400 text-cyan-300 font-bold text-center';
+        } else {
+          btn.className = 'preset-btn px-2 py-1.5 rounded bg-slate-900 border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-center';
+        }
+      });
+    }
+
+    function loadSampleIp(ip, prefix) {
+      currentIp = ip;
+      currentPrefix = prefix;
+      document.getElementById('ipInput').value = ip;
+      document.getElementById('cidrSlider').value = prefix;
+      document.getElementById('cidrNumInput').value = prefix;
+      document.getElementById('sliderValueBadge').textContent = `/${prefix}`;
+      updatePresetButtons();
+      recalculate();
+      showToast(`Loaded ${ip}/${prefix}`);
+    }
+
+    // IP Bitwise Helpers
+    function ipToInt(ip) {
+      const octets = ip.split('.').map(o => parseInt(o, 10));
+      if (octets.length !== 4 || octets.some(o => isNaN(o) || o < 0 || o > 255)) {
+        return null;
+      }
+      return ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0;
+    }
+
+    function intToIp(intVal) {
+      return [
+        (intVal >>> 24) & 255,
+        (intVal >>> 16) & 255,
+        (intVal >>> 8) & 255,
+        intVal & 255
+      ].join('.');
+    }
+
+    function prefixToMaskInt(prefix) {
+      if (prefix === 0) return 0 >>> 0;
+      return ((0xFFFFFFFF << (32 - prefix)) & 0xFFFFFFFF) >>> 0;
+    }
+
+    function intToBinaryStr(intVal) {
+      const b32 = (intVal >>> 0).toString(2).padStart(32, '0');
+      return [b32.slice(0, 8), b32.slice(8, 16), b32.slice(16, 24), b32.slice(24, 32)].join('.');
+    }
+
+    function intToHex(intVal) {
+      return '0x' + (intVal >>> 0).toString(16).toUpperCase().padStart(8, '0');
+    }
+
+    // RFC Scope & Class Detector
+    function getIpClass(oct1) {
+      if (oct1 >= 0 && oct1 <= 127) return 'CLASS A';
+      if (oct1 >= 128 && oct1 <= 191) return 'CLASS B';
+      if (oct1 >= 192 && oct1 <= 223) return 'CLASS C';
+      if (oct1 >= 224 && oct1 <= 239) return 'CLASS D (MULTICAST)';
+      return 'CLASS E (EXPERIMENTAL)';
+    }
+
+    function getIpScope(intVal) {
+      // 10.0.0.0/8
+      if ((intVal & 0xFF000000) === 0x0A000000) {
+        return { name: 'RFC 1918 PRIVATE', note: '10.0.0.0/8 Enterprise LAN space', isPrivate: true };
+      }
+      // 172.16.0.0/12
+      if ((intVal & 0xFFF00000) === 0xAC100000) {
+        return { name: 'RFC 1918 PRIVATE', note: '172.16.0.0/12 Enterprise LAN space', isPrivate: true };
+      }
+      // 192.168.0.0/16
+      if ((intVal & 0xFFFF0000) === 0xC0A80000) {
+        return { name: 'RFC 1918 PRIVATE', note: '192.168.0.0/16 Home / Small Business LAN', isPrivate: true };
+      }
+      // 127.0.0.0/8 Loopback
+      if ((intVal & 0xFF000000) === 0x7F000000) {
+        return { name: 'RFC 1122 LOOPBACK', note: '127.0.0.0/8 Host Internal Loopback', isPrivate: true };
+      }
+      // 169.254.0.0/16 Link-Local
+      if ((intVal & 0xFFFF0000) === 0xA9FE0000) {
+        return { name: 'RFC 3927 LINK-LOCAL', note: '169.254.0.0/16 Automatic Private IP (APIPA)', isPrivate: true };
+      }
+      // 100.64.0.0/10 Carrier-Grade NAT
+      if ((intVal & 0xFFC00000) === 0x64400000) {
+        return { name: 'RFC 6598 CGNAT', note: '100.64.0.0/10 ISP Carrier-Grade NAT', isPrivate: true };
+      }
+      // Multicast
+      if ((intVal & 0xF0000000) === 0xE0000000) {
+        return { name: 'RFC 5771 MULTICAST', note: '224.0.0.0/4 Multicast Network Group', isPrivate: false };
+      }
+      return { name: 'PUBLIC INTERNET', note: 'Globally routable public IPv4 address', isPrivate: false };
+    }
+
+    let calculatedData = null;
+
+    function recalculate() {
+      const ipVal = ipToInt(currentIp);
+      const badge = document.getElementById('ipStatusBadge');
+
+      if (ipVal === null) {
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-400 border border-rose-500/40';
+        badge.textContent = 'INVALID IPv4';
+        return;
+      }
+
+      badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/40';
+      badge.textContent = 'VALID IPv4';
+
+      const maskInt = prefixToMaskInt(currentPrefix);
+      const wildcardInt = (~maskInt) >>> 0;
+      const netInt = (ipVal & maskInt) >>> 0;
+      const broadcastInt = (netInt | wildcardInt) >>> 0;
+
+      const oct1 = (ipVal >>> 24) & 255;
+      const ipClass = getIpClass(oct1);
+      const scope = getIpScope(ipVal);
+
+      // Usable Host Calculation
+      let totalAddresses = Math.pow(2, 32 - currentPrefix);
+      let usableHosts = 0;
+      let firstHostInt = 0;
+      let lastHostInt = 0;
+      let usableRangeStr = '';
+
+      if (currentPrefix === 32) {
+        usableHosts = 1;
+        firstHostInt = netInt;
+        lastHostInt = netInt;
+        usableRangeStr = `${intToIp(firstHostInt)} (Single Host Route)`;
+      } else if (currentPrefix === 31) {
+        // RFC 3021
+        usableHosts = 2;
+        firstHostInt = netInt;
+        lastHostInt = broadcastInt;
+        usableRangeStr = `${intToIp(firstHostInt)} &rarr; ${intToIp(lastHostInt)} (RFC 3021 Point-to-Point)`;
+      } else {
+        usableHosts = Math.max(0, totalAddresses - 2);
+        firstHostInt = (netInt + 1) >>> 0;
+        lastHostInt = (broadcastInt - 1) >>> 0;
+        usableRangeStr = `${intToIp(firstHostInt)} &rarr; ${intToIp(lastHostInt)}`;
+      }
+
+      calculatedData = {
+        ip: currentIp,
+        prefix: currentPrefix,
+        netIp: intToIp(netInt),
+        broadcastIp: currentPrefix >= 31 ? (currentPrefix === 32 ? 'N/A (Host Route)' : intToIp(broadcastInt) + ' (P2P Host)') : intToIp(broadcastInt),
+        subnetMask: intToIp(maskInt),
+        wildcardMask: intToIp(wildcardInt),
+        firstHost: intToIp(firstHostInt),
+        lastHost: intToIp(lastHostInt),
+        usableRange: usableRangeStr,
+        usableHosts: usableHosts.toLocaleString(),
+        totalAddresses: totalAddresses.toLocaleString(),
+        ipClass: ipClass,
+        scope: scope.name,
+        scopeNote: scope.note,
+        netIntHex: intToHex(netInt),
+        maskIntHex: intToHex(maskInt),
+        wildcardHex: intToHex(wildcardInt),
+        netBinary: intToBinaryStr(netInt),
+        maskBinary: intToBinaryStr(maskInt),
+        broadcastBinary: intToBinaryStr(broadcastInt)
+      };
+
+      // Populate UI Fields
+      document.getElementById('resNetIp').textContent = calculatedData.netIp;
+      document.getElementById('resNetIpBin').textContent = calculatedData.netBinary;
+      document.getElementById('resBroadcastIp').textContent = calculatedData.broadcastIp;
+      document.getElementById('resBroadcastIpBin').textContent = calculatedData.broadcastBinary;
+
+      document.getElementById('resSubnetMask').textContent = calculatedData.subnetMask;
+      document.getElementById('resSubnetMaskHex').textContent = `HEX: ${calculatedData.maskIntHex}`;
+      document.getElementById('resWildcardMask').textContent = calculatedData.wildcardMask;
+      document.getElementById('resWildcardMaskHex').textContent = `HEX: ${calculatedData.wildcardHex}`;
+
+      document.getElementById('resUsableRange').innerHTML = calculatedData.usableRange;
+      document.getElementById('resFirstHost').textContent = calculatedData.firstHost;
+      document.getElementById('resLastHost').textContent = calculatedData.lastHost;
+
+      document.getElementById('resUsableHosts').textContent = calculatedData.usableHosts;
+      document.getElementById('resTotalAddresses').textContent = `Total Addresses: ${calculatedData.totalAddresses}`;
+
+      document.getElementById('resClassBadge').textContent = calculatedData.ipClass;
+      document.getElementById('resScope').textContent = calculatedData.scope;
+      document.getElementById('resScopeNote').textContent = calculatedData.scopeNote;
+
+      document.getElementById('netBitsCount').textContent = `${currentPrefix} NET BITS`;
+      document.getElementById('hostBitsCount').textContent = `${32 - currentPrefix} HOST BITS`;
+
+      renderOctetVisualizer(ipVal, currentPrefix);
+    }
+
+    function renderOctetVisualizer(ipVal, prefix) {
+      const container = document.getElementById('octetVisualizerGrid');
+      const b32 = (ipVal >>> 0).toString(2).padStart(32, '0');
+      let html = '';
+
+      for (let oct = 0; oct < 4; oct++) {
+        const octetVal = (ipVal >>> ((3 - oct) * 8)) & 255;
+        html += `
+          <div class="bg-slate-950/80 p-3 rounded-lg border border-slate-800 space-y-2">
+            <div class="flex justify-between items-center text-[11px] font-mono border-b border-slate-800/80 pb-1">
+              <span class="text-slate-400 font-bold">OCTET ${oct + 1}</span>
+              <span class="text-cyan-400 font-bold">${octetVal}</span>
+            </div>
+            <div class="grid grid-cols-8 gap-1">
+        `;
+
+        for (let b = 0; b < 8; b++) {
+          const bitIndex = oct * 8 + b;
+          const bitVal = b32[bitIndex];
+          const isNet = bitIndex < prefix;
+          const bitClass = isNet ? 'bit-net' : 'bit-host';
+
+          html += `
+            <div onclick="setPrefix(${bitIndex + 1})" title="Bit ${bitIndex + 1}: ${isNet ? 'Network Bit' : 'Host Bit'} (Click to set /${bitIndex + 1})"
+              class="bit-box ${bitClass} border rounded p-1 text-center font-mono font-bold text-xs flex flex-col items-center justify-center">
+              <span>${bitVal}</span>
+            </div>
+          `;
+        }
+
+        html += `
+            </div>
+            <div class="flex justify-between text-[9px] text-slate-500 font-mono">
+              <span>128</span><span>64</span><span>32</span><span>16</span><span>8</span><span>4</span><span>2</span><span>1</span>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // Export Helpers
+    function copyFieldValue(fieldId) {
+      const el = document.getElementById(fieldId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied: ${text}`);
+      });
+    }
+
+    function copySubnetJson() {
+      if (!calculatedData) return;
+      const json = JSON.stringify(calculatedData, null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        showToast('Copied Subnet JSON specifications!');
+      });
+    }
+
+    function copyCiscoCommand() {
+      if (!calculatedData) return;
+      const cmd = `! Cisco IOS Subnet & OSPF Network Configuration
+` +
+                  `ip address ${calculatedData.ip} ${calculatedData.subnetMask}
+` +
+                  `network ${calculatedData.netIp} ${calculatedData.wildcardMask} area 0
+` +
+                  `access-list 10 permit ${calculatedData.netIp} ${calculatedData.wildcardMask}`;
+      navigator.clipboard.writeText(cmd).then(() => {
+        showToast('Copied Cisco CLI statements!');
+      });
+    }
+
+    function copyTextSummary() {
+      if (!calculatedData) return;
+      const summary = `=== CYBERTOOLS NET_MASK BRIEF ===
+` +
+                      `IP Address:      ${calculatedData.ip}/${calculatedData.prefix}
+` +
+                      `Network ID:      ${calculatedData.netIp}
+` +
+                      `Broadcast:       ${calculatedData.broadcastIp}
+` +
+                      `Subnet Mask:     ${calculatedData.subnetMask}
+` +
+                      `Wildcard Mask:   ${calculatedData.wildcardMask}
+` +
+                      `Usable Range:    ${calculatedData.firstHost} -> ${calculatedData.lastHost}
+` +
+                      `Usable Hosts:    ${calculatedData.usableHosts} of ${calculatedData.totalAddresses}
+` +
+                      `Classification:  ${calculatedData.ipClass} // ${calculatedData.scope}
+` +
+                      `Subnet (Hex):    ${calculatedData.maskIntHex}`;
+      navigator.clipboard.writeText(summary).then(() => {
+        showToast('Copied tactical text summary!');
+      });
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      recalculate();
+    });
+  </script>
+</body>
+</html>

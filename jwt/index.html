@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx</title>
-  <meta name="description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side.">
-  <meta name="keywords" content="jwt decoder, jwt inspector, json web token, debug jwt, jwt exp timer, jwt claims viewer, jwt debugger, client side jwt">
+  <title>JWT Radar // Token Claims & HMAC Signature Inspector | CyberTools</title>
+  <meta name="description" content="Client-side JWT inspector and cryptographic HMAC signature verifier. Analyze token header, payload claims, expiration telemetry, and verify HS256/HS384/HS512 in-memory.">
+  <meta name="keywords" content="jwt radar, jwt inspector, jwt signature verifier, hmac jwt verify, decode json web token, jwt expiration countdown, cybertools">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/jwt/" />
   <meta name="theme-color" content="#020617">
 
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/jwt/" />
-  <meta property="og:title" content="JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx" />
-  <meta property="og:description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side." />
+  <meta property="og:title" content="JWT Radar // Token Claims & HMAC Signature Inspector | CyberTools" />
+  <meta property="og:description" content="Client-side JWT inspector and cryptographic HMAC signature verifier. Analyze token header, payload claims, expiration telemetry, and verify HS256/HS384/HS512 in-memory." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="JWT Token Inspector & Decoder // Debug JSON Web Tokens - sarwarfx" />
-  <meta name="twitter:description" content="Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side." />
+  <meta name="twitter:title" content="JWT Radar // Token Claims & HMAC Signature Inspector | CyberTools" />
+  <meta name="twitter:description" content="Client-side JWT inspector and cryptographic HMAC signature verifier. Analyze token header, payload claims, expiration telemetry, and verify HS256/HS384/HS512 in-memory." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/jwt/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -33,10 +33,10 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "JWT Token Inspector & Claims Auditor",
+    "name": "JWT Radar Token Inspector",
     "url": "https://apps.sarwarfx.cfd/jwt/",
-    "description": "Decode, inspect, and debug JSON Web Tokens (JWT) in real-time. Analyze header, payload claims, signature, and monitor live token expiration countdowns. 100% client-side.",
-    "applicationCategory": "DeveloperApplication",
+    "description": "Client-side JWT inspector and cryptographic HMAC signature verifier. Analyze token header, payload claims, expiration telemetry, and verify HS256/HS384/HS512 in-memory.",
+    "applicationCategory": "SecurityApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "offers": {
@@ -51,8 +51,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -68,22 +68,34 @@
             mono: ['JetBrains Mono', 'monospace'],
             orbitron: ['Orbitron', 'sans-serif'],
             rajdhani: ['Rajdhani', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
           }
         }
       }
     }
   </script>
+
   <style>
     body {
       background-color: #05070d;
       background-image: 
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
-        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
-      background-size: 100% 4px, 6px 100%, 100% 100%;
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
       min-height: 100vh;
-      color: #f1f5f9;
-      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
     }
 
     .hud-card {
@@ -99,23 +111,23 @@
       position: absolute;
       width: 8px;
       height: 8px;
-      border-color: #00f5ff;
-      border-style: solid;
       pointer-events: none;
     }
     .hud-card::before {
       top: -1px; left: -1px;
-      border-width: 2px 0 0 2px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
     }
     .hud-card::after {
       bottom: -1px; right: -1px;
-      border-width: 0 2px 2px 0;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
     }
 
     .hud-btn-primary {
-      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
-      border: 1px solid rgba(0, 245, 255, 0.8);
-      color: #000000;
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 800;
@@ -148,137 +160,89 @@
       color: #00f5ff;
       box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
     }
-
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #05070d; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; }
-    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
   </style>
   <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
-<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
 
-  <!-- Top Tactical HUD Bar -->
-  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
-        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
-          <i class="fa-solid fa-key text-sm"></i>
-          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
-          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
-        </div>
-        <div class="flex items-baseline space-x-1.5 font-mono">
-          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
-          <span class="text-cyan-400 text-xs font-bold">//</span>
-          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">jwt</span>
-        </div>
-      </a>
-
-      <!-- Center Micro-Telemetry -->
-      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
-        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x0F]</span>
-        <span class="text-slate-600">|</span>
-        <span class="text-fuchsia-400 font-bold">[ENGINE: AUTH_TOKEN_INSPECTOR]</span>
-        <span class="text-slate-600">|</span>
-        <span class="flex items-center space-x-1.5 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
-        </span>
-      </div>
-
-      <!-- Right Action Controls -->
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">JWT_RADAR // TOKEN INSPECTOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x0F</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
           <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
-          <span class="sm:hidden">HUB</span>
-        </a>
-        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
-          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
-          <span class="hidden sm:inline">PORTFOLIO</span>
-        </a>
-        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
-          <i class="fa-solid fa-bars text-cyan-400"></i>
-          <span class="hidden md:inline">(87)</span>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(94)</span>
         </button>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
-
-    <!-- Header & Quick Toolbar -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
       <div>
-        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
-          <i class="fa-solid fa-fingerprint text-xs text-cyan-400"></i>
-          <span>AUTH_SECURITY // ZERO_LOG_CLIENT_DECODER</span>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>SECURITY_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">JWT_RADAR</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x0F</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
-          JWT TOKEN INSPECTOR & CLAIMS AUDITOR
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          JWT RADAR <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">TOKEN &amp; HMAC INSPECTOR</span>
         </h1>
-        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
-          Decode encoded JWT tokens, analyze payload claims, verify signature encoding, and inspect live expiration countdown timers in an airgapped browser sandbox.
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Client-side JWT claims analyzer and cryptographic HMAC signature verifier. Parse header, claims, and expiration countdowns with zero server logging.
         </p>
       </div>
 
-      <!-- Quick Action Buttons -->
-      <div class="flex items-center space-x-2">
-        <button onclick="loadSampleJwt()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5">
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleToken()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
           <i class="fa-solid fa-flask text-cyan-400"></i>
-          <span>LOAD SAMPLE</span>
+          <span>LOAD SAMPLE TOKEN</span>
         </button>
-        <button onclick="clearJwt()" class="hud-btn-secondary px-3 py-1.5 text-xs text-pink-400 hover:text-white flex items-center space-x-1.5">
+        <button onclick="clearJwtInput()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-pink-400 hover:text-white">
           <i class="fa-solid fa-trash-can"></i>
           <span>CLEAR</span>
         </button>
       </div>
     </div>
 
-    <!-- Token Input Area -->
-    <div class="hud-card p-5 space-y-3">
-      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800/80 pb-2">
-        <span class="text-cyan-400 font-bold uppercase tracking-wider">ENCODED JWT TOKEN [HEADER.PAYLOAD.SIGNATURE]</span>
-        <span id="tokenStatus" class="text-[11px] font-mono text-emerald-400 font-bold">● READY</span>
-      </div>
-      <textarea 
-        id="jwtInput" 
-        rows="4" 
-        placeholder="Paste your encoded JWT token here (e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)" 
-        oninput="parseJwt()"
-        class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none transition-all resize-y break-all"></textarea>
-    </div>
-
-    <!-- Expiration & Time Telemetry Card -->
-    <div class="hud-card p-5 space-y-4" id="expiryTelemetryCard">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+    <!-- Token Lifecycle Telemetry Bar -->
+    <div class="hud-card p-4 rounded border-cyan-500/30 font-mono text-xs space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-2.5">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-stopwatch text-cyan-400"></i>
-          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">TOKEN LIFECYCLE & EXPIRATION TELEMETRY</span>
+          <span class="font-bold text-white uppercase tracking-wider text-xs">TOKEN LIFECYCLE TELEMETRY</span>
         </div>
-        <span id="expiryBadge" class="text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold">
+        <span id="expiryStatusBadge" class="px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400">
           [STANDBY]
         </span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="p-2.5 bg-black/60 rounded border border-slate-800 space-y-1">
           <span class="text-slate-500 text-[10px] uppercase font-bold">[EXP] EXPIRATION DATE:</span>
           <div id="expDateDisplay" class="text-cyan-300 font-bold text-xs truncate">--</div>
           <div id="expRelativeDisplay" class="text-[11px] text-slate-400">--</div>
         </div>
-        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+        <div class="p-2.5 bg-black/60 rounded border border-slate-800 space-y-1">
           <span class="text-slate-500 text-[10px] uppercase font-bold">[IAT] ISSUED AT:</span>
           <div id="iatDateDisplay" class="text-slate-300 font-bold text-xs truncate">--</div>
           <div id="iatRelativeDisplay" class="text-[11px] text-slate-400">--</div>
         </div>
-        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+        <div class="p-2.5 bg-black/60 rounded border border-slate-800 space-y-1">
           <span class="text-slate-500 text-[10px] uppercase font-bold">[NBF] NOT BEFORE:</span>
           <div id="nbfDateDisplay" class="text-slate-300 font-bold text-xs truncate">--</div>
           <div id="nbfRelativeDisplay" class="text-[11px] text-slate-400">--</div>
@@ -286,112 +250,191 @@
       </div>
     </div>
 
-    <!-- Decoded Token Split Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Main Split Workstation: Left (Encoded Input + Secret) vs Right (Decoded Color-Coded JSON) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <!-- Panel 1: Header -->
-      <div class="hud-card p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+      <!-- Left Pane: Raw Encoded JWT & Verification Deck (5 cols) -->
+      <div class="lg:col-span-5 hud-card p-5 rounded space-y-4 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
           <div class="flex items-center space-x-2">
-            <span class="px-2 py-0.5 bg-pink-950/80 border border-pink-500/50 text-pink-300 font-bold text-[10px]">HEADER</span>
-            <span class="text-slate-500 text-[11px] font-mono">[ALGORITHM & TOKEN TYPE]</span>
+            <i class="fa-solid fa-key text-cyan-400"></i>
+            <h2 class="font-orbitron font-bold text-white text-sm tracking-wide">ENCODED JWT TOKEN</h2>
           </div>
-          <button onclick="copyContent('headerJson')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
-            <i class="fa-solid fa-copy text-pink-400"></i>
-            <span>COPY</span>
-          </button>
+          <span id="tokenLengthBadge" class="text-[10px] text-slate-500">0 CHARS</span>
         </div>
-        <pre id="headerJson" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-pink-300 overflow-x-auto min-h-[140px] select-all">{}</pre>
+
+        <!-- Token Textarea -->
+        <div class="space-y-1.5">
+          <label class="text-slate-400 text-[11px] uppercase">TOKEN [HEADER.PAYLOAD.SIGNATURE]:</label>
+          <textarea 
+            id="jwtInput" 
+            rows="6" 
+            placeholder="Paste your encoded JWT here (e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)" 
+            oninput="handleJwtInput()" 
+            class="w-full p-3 bg-slate-950 border border-slate-800 rounded font-mono text-xs text-cyan-300 focus:border-cyan-400 outline-none resize-y break-all leading-relaxed"></textarea>
+        </div>
+
+        <!-- Web Crypto HMAC Verification Deck -->
+        <div class="p-3.5 bg-slate-950 rounded border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] uppercase font-bold text-white flex items-center space-x-1.5">
+              <i class="fa-solid fa-lock text-cyan-400"></i>
+              <span>HMAC SIGNATURE VERIFIER</span>
+            </span>
+            <span id="sigVerifyBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400">
+              [ENTER SECRET]
+            </span>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-slate-400 text-[10px] uppercase">HMAC SECRET KEY (HS256 / HS384 / HS512):</label>
+            <div class="flex items-center space-x-2">
+              <input 
+                type="password" 
+                id="secretKeyInput" 
+                placeholder="Enter secret key to verify signature..." 
+                oninput="verifySignatureLive()" 
+                class="flex-grow p-2 bg-slate-900 border border-slate-800 rounded text-slate-200 text-xs focus:border-cyan-400 outline-none font-mono">
+              <button 
+                type="button" 
+                onclick="toggleSecretVisibility()" 
+                id="btnToggleSecret" 
+                class="hud-btn-secondary px-2.5 py-2 rounded text-[10px] shrink-0">
+                SHOW
+              </button>
+            </div>
+            <p class="text-[10px] text-slate-500">
+              Zero-leakage: Secrets are processed purely in-memory via <code class="text-cyan-400">crypto.subtle</code> without transmission.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <!-- Panel 2: Signature Status -->
-      <div class="hud-card p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <div class="flex items-center space-x-2">
-            <span class="px-2 py-0.5 bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 font-bold text-[10px]">SIGNATURE</span>
-            <span class="text-slate-500 text-[11px] font-mono">[DIGITAL CIPHER]</span>
+      <!-- Right Pane: Color-Coded Decoded Structure (7 cols) -->
+      <div class="lg:col-span-7 space-y-4 font-mono text-xs">
+        
+        <!-- Part 1: Header (Neon Orange/Red) -->
+        <div class="hud-card p-4 rounded space-y-2 border-orange-500/30">
+          <div class="flex items-center justify-between border-b border-orange-500/20 pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-950/80 border border-orange-500/40 text-orange-300">HEADER</span>
+              <span class="text-slate-500 text-[11px]">[ALGORITHM &amp; TOKEN TYPE]</span>
+            </div>
+            <button onclick="copyPreContent('headerJson')" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">
+              <i class="fa-regular fa-copy mr-1 text-orange-400"></i>COPY
+            </button>
           </div>
-          <button onclick="copyContent('signatureRaw')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
-            <i class="fa-solid fa-copy text-cyan-400"></i>
-            <span>COPY</span>
-          </button>
+          <pre id="headerJson" class="p-3 bg-slate-950 border border-slate-900 rounded text-xs text-orange-300 overflow-x-auto min-h-[90px] select-all leading-relaxed whitespace-pre-wrap">{}</pre>
         </div>
-        <div id="signatureRaw" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-cyan-400 break-all min-h-[140px] select-all">
-          --
-        </div>
-      </div>
 
-      <!-- Panel 3: Payload Claims (Spans Full Width) -->
-      <div class="hud-card p-5 space-y-3 lg:col-span-2">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <div class="flex items-center space-x-2">
-            <span class="px-2 py-0.5 bg-purple-950/80 border border-purple-500/50 text-purple-300 font-bold text-[10px]">PAYLOAD</span>
-            <span class="text-slate-500 text-[11px] font-mono">[DECODED CLAIMS & ENTITY DATA]</span>
+        <!-- Part 2: Payload Claims (Neon Cyan) -->
+        <div class="hud-card p-4 rounded space-y-2 border-cyan-500/40">
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950/80 border border-cyan-500/40 text-cyan-300">PAYLOAD CLAIMS</span>
+              <span class="text-slate-500 text-[11px]">[ENTITY &amp; DATA CLAIMS]</span>
+            </div>
+            <button onclick="copyPreContent('payloadJson')" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">
+              <i class="fa-regular fa-copy mr-1 text-cyan-400"></i>COPY
+            </button>
           </div>
-          <button onclick="copyContent('payloadJson')" class="hud-btn-secondary px-2.5 py-1 text-[10px] flex items-center space-x-1">
-            <i class="fa-solid fa-copy text-purple-400"></i>
-            <span>COPY PAYLOAD JSON</span>
-          </button>
+          <pre id="payloadJson" class="p-3 bg-slate-950 border border-slate-900 rounded text-xs text-cyan-300 overflow-x-auto min-h-[160px] select-all leading-relaxed whitespace-pre-wrap">{}</pre>
         </div>
-        <pre id="payloadJson" class="p-3 bg-black/90 border border-slate-800 text-xs font-mono text-purple-300 overflow-x-auto min-h-[220px] select-all">{}</pre>
-      </div>
 
+        <!-- Part 3: Signature Box (Neon Purple) -->
+        <div class="hud-card p-4 rounded space-y-2 border-purple-500/30">
+          <div class="flex items-center justify-between border-b border-purple-500/20 pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950/80 border border-purple-500/40 text-purple-300">SIGNATURE</span>
+              <span class="text-slate-500 text-[11px]">[DIGITAL CIPHER VERIFICATION]</span>
+            </div>
+            <button onclick="copyPreContent('signatureRaw')" class="hud-btn-secondary px-2 py-1 rounded text-[10px]">
+              <i class="fa-regular fa-copy mr-1 text-purple-400"></i>COPY
+            </button>
+          </div>
+          <div id="signatureRaw" class="p-3 bg-slate-950 border border-slate-900 rounded text-xs text-purple-300 break-all select-all min-h-[60px] leading-relaxed">
+            --
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <!-- SEO Knowledge Base & Explainer -->
-    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
       <div class="border-b border-cyan-500/20 pb-4">
-        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
-          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
-          JSON Web Token (JWT) Zero-Upload Security Specification
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // CLIENT-SIDE JWT PARSING &amp; CRYPTOGRAPHIC HMAC VERIFICATION
         </h2>
-        <p class="text-slate-400 text-xs mt-1">
-          RFC 7519 compliant client-side JWT parser designed for authentication telemetry, session debugging, and claim auditing.
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Technical specifications for RFC 7519 JSON Web Tokens, Unicode Base64URL decoding, and Web Crypto SubtleCrypto HMAC validation.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">01 / LOCAL BASE64URL DECODING</span>
-          <p class="text-slate-400 text-[11px]">
-            Your auth tokens, user identifiers, and private API claims are decoded in-memory using standard Base64URL decoding. Tokens are never transmitted to any third-party server.
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">Token Anatomy &amp; Safe Unicode Decoding</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            A JSON Web Token consists of three base64url-encoded parts delimited by periods: <code class="text-cyan-300">header.payload.signature</code>.
           </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li><strong class="text-orange-300">Header:</strong> Identifies the cryptographic algorithm (e.g. HS256, RS256) and token format type (JWT).</li>
+            <li><strong class="text-cyan-300">Payload:</strong> Contains public and private claims such as subject (<code class="text-cyan-300">sub</code>), issuer (<code class="text-cyan-300">iss</code>), and expiration timestamp (<code class="text-cyan-300">exp</code>).</li>
+            <li><strong class="text-purple-300">Signature:</strong> Digital digest ensuring the token payload has not been modified in transit.</li>
+          </ul>
         </div>
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">02 / AUTOMATIC TIME RESOLUTION</span>
-          <p class="text-slate-400 text-[11px]">
-            Converts standard UNIX timestamps (`exp`, `iat`, `nbf`) into local timezone strings with real-time countdown alerts for instant session validity checks.
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">SubtleCrypto In-Memory HMAC Verification</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Conventional web JWT debuggers transmit private auth tokens and symmetric secret keys to cloud backends for validation. CyberTools performs signature verification entirely within your browser using the native <code class="text-cyan-300">window.crypto.subtle</code> Web Crypto API.
           </p>
-        </div>
-        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
-          <span class="text-cyan-400 font-bold text-sm">03 / STRUCTURAL VALIDATION</span>
-          <p class="text-slate-400 text-[11px]">
-            Validates tripartite token architecture (`header.payload.signature`) with real-time syntax checking and actionable error reporting on corrupted tokens.
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            The input secret key is imported into non-extractable CryptoKey buffers, and the signature bytes are tested against <code class="text-cyan-300">header.payload</code> bytes with zero network latency and zero credential leakage.
           </p>
         </div>
       </div>
 
-      <div class="space-y-3 pt-4 border-t border-slate-800">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
-        <div class="space-y-2 text-[11px] text-slate-400">
-          <p><strong class="text-cyan-300">Q: Does this tool verify the cryptographic signature?</strong><br>
-          This client-side tool inspects the token structure and checks expiration times. Verifying HMAC or RSA signatures requires your private server key or public certificate, which should never be exposed in a client browser.</p>
-          <p><strong class="text-cyan-300">Q: Is it safe to paste production bearer tokens?</strong><br>
-          Yes. This utility runs 100% in your local browser sandbox on Cloudflare Pages static edge hosting. No tokens are logged, stored, or sent across the network.</p>
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Is it safe to paste production API tokens?</h4>
+            <p class="text-slate-400">
+              Yes. CyberTools has zero backend servers. All token parsing, claim extraction, and signature checking takes place strictly within local browser memory.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Which signature algorithms can be verified?</h4>
+            <p class="text-slate-400">
+              Symmetric HMAC algorithms (HS256, HS384, HS512) are fully supported via the Web Crypto API. Asymmetric tokens (RS256, ES256) decode payload claims with full fidelity.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How does the expiration timer calculate relative deltas?</h4>
+            <p class="text-slate-400">
+              The engine compares the standard numeric Unix timestamp <code class="text-cyan-300">exp</code> claim against the local system clock every second, providing precise live countdowns.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How are multi-byte Unicode strings handled?</h4>
+            <p class="text-slate-400">
+              Base64URL decoding utilizes URI component escape sequences, ensuring names, emojis, and non-ASCII character sets render without encoding corruptions.
+            </p>
+          </div>
         </div>
       </div>
     </article>
-
   </main>
 
-  <!-- Global Suite Quick Switcher Modal -->
+  <!-- Suite Selector Modal -->
   <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
-      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
-          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (88)</span>
-        </div>
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 94 NODES</span>
+        </h3>
         <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
@@ -400,366 +443,451 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center space-x-2">
-        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
-          sarwarfx // webtools
-        </a>
-        <span class="text-slate-600">|</span>
-        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
-        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
-          <i class="fa-brands fa-github mr-1"></i>GitHub
-        </a>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Application Engine Script -->
   <script>
     const CURRENT_TOOL_ID = 'jwt';
-    const TOOLS = [
-{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', tags: ['BANDWIDTH', 'LATENCY', 'JITTER'], code: '0x01' },
-      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator for Wi-Fi credentials, URLs, vCards & text, plus live webcam scanner.', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', tags: ['WI-FI JOIN', 'VCARD', 'WEBCAM SCAN'], code: '0x02' },
-      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', tags: ['VALIDATOR', 'TREE VIEW', 'MINIFY'], code: '0x03' },
-      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region coordinates with interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', tags: ['GEOIP', 'ASN MAP', 'DNS PING'], code: '0x04' },
-      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', tags: ['SPLIT VIEW', 'UNIFIED', 'PATCH'], code: '0x05' },
-      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', tags: ['WEBP', 'CANVAS', 'LOSSLESS'], code: '0x06' },
-      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', tags: ['DATA URI', 'UTF-8', 'EMBED'], code: '0x07' },
-      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', tags: ['CASE SWITCH', 'DEDUPE', 'SLUGIFY'], code: '0x08' },
-      { id: 'clock', name: 'CHRONOMETER', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', tags: ['TIMEZONES', '24H SCRUBBER', 'TIMER'], code: '0x09' },
-      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', tags: ['TRANSFER EST', 'EMI CALC', 'MARGINS'], code: '0x0A' },
-      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', tags: ['LLM CONTEXT', 'PROMPT REPO', 'FLATTENER'], code: '0x0B' },
-      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', tags: ['ZERO EXIF', 'PIXELATE', 'BLACKOUT'], code: '0x0C' },
-      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', tags: ['PDF INVOICE', 'AUTO-SAVE', 'TAX CALC'], code: '0x0D' },
-      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', tags: ['SHA-256', 'MD5', 'HMAC', 'CHECKSUM'], code: '0x0E' },
-      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', tags: ['JWT DECODE', 'CLAIMS', 'EXPIRATION'], code: '0x0F' },
-      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', tags: ['REGEXP', 'REGEX TEST', 'CAPTURE GROUPS'], code: '0x10' },
-      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', tags: ['CRON PARSER', 'SCHEDULE', 'TIMESTAMPS'], code: '0x11' },
-      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', tags: ['COLOR CONVERT', 'WCAG CONTRAST', 'OKLCH'], code: '0x12' },
-      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', tags: ['MARKDOWN', 'EXPORT PDF', 'DOSSIER'], code: '0x13' },
-      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy telemetry metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', tags: ['UUID V4/V7', 'ULID', 'NANOID'], code: '0x14' },
-      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', tags: ['ENCODE', 'DECODE', 'QUERY PARSER'], code: '0x15' },
-      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
-      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
-      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
-      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
-      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
-      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
-      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
-      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
-      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
-      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' },
-      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', tags: ['SSL', 'X.509', 'PEM', 'EXPIRATION'], code: '0x20' },
-      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', tags: ['BCRYPT', 'HASH', 'SALT', 'VERIFY'], code: '0x21' },
-      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', tags: ['XML', 'JSON', 'PRETTIFY', 'CONVERT'], code: '0x22' },
-      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', tags: ['FAVICON', 'PWA', 'ICONS', 'ZIP'], code: '0x23' },
-      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', tags: ['CSS', 'BLUR', 'FROSTED', 'TAILWIND'], code: '0x24' },
-      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', tags: ['MARKDOWN', 'TABLE', 'CSV2MD', 'GFM'], code: '0x25' },
-      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', tags: ['DNS', 'ZONE FILE', 'BIND', 'SPF', 'DMARC'], code: '0x26' },
-      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', tags: ['ROBOTS.TXT', 'CRAWLER', 'GPTBOT', 'SEO'], code: '0x27' },
-      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', tags: ['OPENGRAPH', 'META TAGS', 'TWITTER CARD', 'SEO'], code: '0x28' },
-      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', tags: ['USER-AGENT', 'BROWSER', 'OS RECON', 'PARSER'], code: '0x29' },
-      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', tags: ['CHMOD', 'OCTAL', 'PERMISSIONS', 'UNIX'], code: '0x2A' },
-      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', tags: ['LOREM IPSUM', 'TECH DUMMY', 'JARGON', 'GENERATOR'], code: '0x2B' },
-      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', tags: ['PORTS', 'TCP/UDP', 'NETWORKING', 'SECURITY'], code: '0x2C' },
-      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', tags: ['MINIFY', 'HTML', 'CSS', 'JS', 'COMPRESS'], code: '0x2D' },
-      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', tags: ['UNESCAPE', 'ESCAPE', 'JSON', 'HTML', 'SQL'], code: '0x2E' },
-      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', tags: ['LIST', 'DEDUPE', 'SORT', 'ARRAY', 'CLEAN'], code: '0x2F' },
-      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', tags: ['BYTES', 'STORAGE', 'KB/MB/GB', 'TRANSFER', 'IEC'], code: '0x30' },
-      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', tags: ['ASCII', 'HEX', 'BINARY', 'OCTAL', 'TABLE'], code: '0x31' },
-      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', tags: ['MARKDOWN', 'GFM', 'PREVIEW', 'CHEATSHEET', 'HTML'], code: '0x32' },
-      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', tags: ['TEXT', 'METRICS', 'WORDS', 'READING TIME', 'LEXICAL'], code: '0x33' },
-      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', tags: ['CAESAR', 'CIPHER', 'ROT13', 'ROT47', 'ENCRYPT'], code: '0x34' },
-      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', tags: ['MORSE', 'AUDIO', 'BEACON', 'TRANSLATOR', 'WPM'], code: '0x35' },
-      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', tags: ['HEX', 'BYTES', 'DUMP', 'BINARY', 'INSPECTOR'], code: '0x36' },
-      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', tags: ['JSON', 'DIFF', 'COMPARE', 'DELTA', 'SEMANTIC'], code: '0x37' },
-      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', tags: ['TOKEN', 'KEY', 'CSPRNG', 'RANDOM', 'SECRET'], code: '0x38' },
-      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', tags: ['CRLF', 'LF', 'NEWLINES', 'WHITESPACE', 'TABS'], code: '0x39' },
-      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'Visual polygon & geometric CSS clip-path generator with draggable anchor vertices & preset shapes.', icon: 'fa-shapes', subdomain: 'apps.sarwarfx.cfd/clippath/', tags: ['CLIP-PATH', 'CSS', 'POLYGON', 'VECTOR', 'SHAPES'], code: '0x3A' },
-      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Real-time display resolution, viewport dimension, aspect ratio, DPR & CSS media query breakpoint monitor.', icon: 'fa-desktop', subdomain: 'apps.sarwarfx.cfd/screen/', tags: ['SCREEN', 'VIEWPORT', 'RESOLUTION', 'DPR', 'BREAKPOINTS'], code: '0x3B' },
-      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status gauge, charging state indicator & discharge/charge time estimator via Battery API.', icon: 'fa-battery-three-quarters', subdomain: 'apps.sarwarfx.cfd/battery/', tags: ['BATTERY', 'POWER', 'HARDWARE', 'CHARGING', 'DRAIN'], code: '0x3C' },
-      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer CSS box-shadow and text-glow generator with opacity, spread & blur controls.', icon: 'fa-sun', subdomain: 'apps.sarwarfx.cfd/shadow/', tags: ['SHADOW', 'GLOW', 'CSS', 'BOX-SHADOW', 'NEON'], code: '0x3D' },
-      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Client-side image color palette extractor via Canvas getImageData with HEX/RGB sampling & luminance.', icon: 'fa-eye-dropper', subdomain: 'apps.sarwarfx.cfd/imgpalette/', tags: ['PALETTE', 'IMAGE', 'EXTRACTOR', 'CHROMA', 'COLORS'], code: '0x3E' },
-      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Precision Web Audio frequency tone generator (20 Hz - 20 kHz) with Sine, Square, Sawtooth & Triangle waveforms.', icon: 'fa-wave-square', subdomain: 'apps.sarwarfx.cfd/tone/', tags: ['AUDIO', 'TONE', 'FREQUENCY', 'SYNTH', 'OSCILLATOR'], code: '0x3F' },
-      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'Interactive CSS Flexbox and CSS Grid layout designer with real-time visual sandbox & code compiler.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/flexgrid/', tags: ['FLEXBOX', 'GRID', 'CSS', 'LAYOUT', 'ALIGNMENT'], code: '0x40' },
-      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Bidirectional Base32 (RFC 4648) and Base58 (Bitcoin standard) encoder and decoder with telemetry.', icon: 'fa-arrow-down-up-across-line', subdomain: 'apps.sarwarfx.cfd/basecodec/', tags: ['BASE32', 'BASE58', 'ENCODER', 'DECODER', 'RADIX'], code: '0x41' },
-      { id: 'matrix', name: 'MATRIX OPERATOR', desc: 'Real-time 2x2 and 3x3 matrix arithmetic engine: addition, multiplication, determinant, transpose & inversion.', icon: 'fa-table-cells', subdomain: 'apps.sarwarfx.cfd/matrix/', tags: ['MATRIX', 'LINEAR ALGEBRA', 'DETERMINANT', 'INVERSE', 'MATH'], code: '0x42' },
-      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured data generator for Article, Product, Person, SoftwareApplication & FAQPage JSON-LD schemas.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/schema/', tags: ['SCHEMA.ORG', 'JSON-LD', 'SEO', 'STRUCTURED DATA'], code: '0x43' },
-      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Precision percentage calculator: percent of value, increase/decrease, relative delta & margin vs markup.', icon: 'fa-percent', subdomain: 'apps.sarwarfx.cfd/percent/', tags: ['PERCENT', 'CALCULATOR', 'VARIANCE', 'MARGIN', 'MARKUP'], code: '0x44' },
-      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Client-side string sanitizer that escapes reserved regular expression symbols across JS, Python & PCRE.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/regexclean/', tags: ['REGEX', 'ESCAPE', 'SANITIZER', 'SHIELD', 'PCRE'], code: '0x45' },
-      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random number generator using crypto.getRandomValues with bounds & sorting.', icon: 'fa-dice', subdomain: 'apps.sarwarfx.cfd/rand/', tags: ['RNG', 'RANDOM', 'CSPRNG', 'ENTROPY', 'NUMBERS'], code: '0x46' },
-      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Bidirectional Arabic to Roman numeral converter (1 to 3,999,999 with vinculum) with syntax validation.', icon: 'fa-monument', subdomain: 'apps.sarwarfx.cfd/roman/', tags: ['ROMAN', 'NUMERALS', 'ARABIC', 'CONVERTER', 'CIPHER'], code: '0x47' },
-      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Decode Base64 Data URI strings to interactive image canvas with dimensions, byte size & file download.', icon: 'fa-image', subdomain: 'apps.sarwarfx.cfd/b64img/', tags: ['BASE64', 'IMAGE', 'DATA URI', 'DECODER', 'CANVAS'], code: '0x48' },
-      { id: 'camera', name: 'OPTIC STREAM', desc: 'Hardware webcam diagnostic with resolution probe, framerate monitor & client-side snapshot capture.', icon: 'fa-video', subdomain: 'apps.sarwarfx.cfd/camera/', tags: ['CAMERA', 'WEBCAM', 'WEBRTC', 'HARDWARE', 'CAPTURE'], code: '0x49' },
-      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Live microphone frequency spectrum visualizer, peak clip alert & real-time volume decibel meter.', icon: 'fa-microphone', subdomain: 'apps.sarwarfx.cfd/mic/', tags: ['MIC', 'AUDIO', 'DECIBEL', 'SPECTRUM', 'HARDWARE'], code: '0x4A' },
-      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger tracking event.key, code, which, modifiers & chronological event log.', icon: 'fa-keyboard', subdomain: 'apps.sarwarfx.cfd/keys/', tags: ['KEYBOARD', 'KEYCODE', 'EVENT', 'INPUT', 'DEBUG'], code: '0x4B' },
-      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed meter, RTT latency probe, Network Information API & offline detector.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/network/', tags: ['NETWORK', 'LATENCY', 'BANDWIDTH', 'DOWNLINK', 'RTT'], code: '0x4C' },
-      { id: 'bintext', name: 'BINARY CODEC', desc: 'Bidirectional UTF-8 text to 8-bit spaced binary bitstream encoder & decoder with bit-length metrics.', icon: 'fa-microchip', subdomain: 'apps.sarwarfx.cfd/bintext/', tags: ['BINARY', 'BITSTREAM', 'ENCODER', 'DECODER', 'UTF-8'], code: '0x4D' },
-      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'Interactive visual CSS cubic-bezier easing curve designer with draggable handles & comparison animation.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/easing/', tags: ['EASING', 'BEZIER', 'CSS', 'ANIMATION', 'CURVE'], code: '0x4E' },
-      { id: 'headers', name: 'SECURITY HEADERS', desc: 'Interactive HTTP security header builder for CSP, HSTS, X-Frame-Options & Nginx/Apache/Workers export.', icon: 'fa-shield', subdomain: 'apps.sarwarfx.cfd/headers/', tags: ['SECURITY', 'HEADERS', 'CSP', 'HSTS', 'NGINX'], code: '0x4F' },
-      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Lightweight cyberpunk sketching canvas with neon colors, stroke widths, grid toggle & local PNG export.', icon: 'fa-paintbrush', subdomain: 'apps.sarwarfx.cfd/draw/', tags: ['CANVAS', 'DRAW', 'SKETCH', 'PAINT', 'VECTOR'], code: '0x50' },
-      { id: 'short', name: 'URL CONDENSER', desc: 'Client-side link compactor using open APIs with instant QR code generator & local history radar.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/short/', tags: ['SHORTENER', 'URL', 'QR', 'COMPACT', 'TINYURL'], code: '0x51' },
-      { id: 'tempmail', name: 'BURNER INBOX', desc: 'Disposable burner mailbox with live radar sweep polling, audio chime notification & message previewer.', icon: 'fa-envelope-open-text', subdomain: 'apps.sarwarfx.cfd/tempmail/', tags: ['TEMPMAIL', 'DISPOSABLE', 'BURNER', 'EMAIL', 'RADAR'], code: '0x52' },
-      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP address intelligence probe mapping country, city, ASN, ISP telemetry, timezone & coordinates.', icon: 'fa-location-crosshairs', subdomain: 'apps.sarwarfx.cfd/whoisip/', tags: ['IP', 'GEOIP', 'ASN', 'WHOIS', 'ISP'], code: '0x53' },
-      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'Comprehensive HTTP response status code encyclopedia (1xx-5xx, Cloudflare, Nginx) with causes & fixes.', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/httpcode/', tags: ['HTTP', 'STATUS', 'RFC', 'CLOUDFLARE', 'CODES'], code: '0x54' },
-      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint probe supporting custom methods, headers, JSON payload & RTT latency gauge.', icon: 'fa-paper-plane', subdomain: 'apps.sarwarfx.cfd/webhook/', tags: ['WEBHOOK', 'HTTP', 'REST', 'DISPATCH', 'API'], code: '0x55' },
-      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Real-time global currency exchange matrix converting 30+ fiat & crypto assets with offline fallback rates.', icon: 'fa-coins', subdomain: 'apps.sarwarfx.cfd/fx/', tags: ['FX', 'CURRENCY', 'EXCHANGE', 'RATES', 'FOREX'], code: '0x56' },
-      { id: 'storage', name: 'STORAGE HUD', desc: 'Client storage analyzer inspecting localStorage, sessionStorage & IndexedDB with byte gauge & inline JSON editor.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/storage/', tags: ['STORAGE', 'LOCALSTORAGE', 'INDEXEDDB', 'CACHE', 'PURGE'], code: '0x57' },
-      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarking engine supporting 100+ images with relative scaling, custom logos, tactical badges & ZIP export.', icon: 'fa-stamp', subdomain: 'apps.sarwarfx.cfd/watermark-img/', tags: ['WATERMARK', 'BATCH', 'IMAGES', 'ZIP', 'PHOTO', 'CANVAS'], code: '0x58' }
-];
+    let countdownTimer = null;
+    let activeTokenParts = null;
 
-    function getToolHref(tool) {
-      return `/${tool.id}/`;
-    }
-
-    function renderSuiteGrid() {
-      const grid = document.getElementById('suiteGrid');
-      if (!grid) return;
-      grid.innerHTML = TOOLS.map(tool => {
-        const isActive = tool.id === CURRENT_TOOL_ID;
-        const href = getToolHref(tool);
-        return `
-          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
-            isActive 
-              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
-              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
-          }">
-            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
-              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
-            } transition-colors">
-              <i class="fa-solid ${tool.icon} text-xs"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
-                <span class="text-[9px] text-slate-500">${tool.code}</span>
-              </div>
-              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
-            </div>
-          </a>
-        `;
-      }).join('');
-    }
-
-    function toggleSuiteModal(show) {
-      const modal = document.getElementById('suiteModal');
-      if (show) {
-        modal.classList.remove('hidden');
-      } else {
-        modal.classList.add('hidden');
-      }
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') toggleSuiteModal(false);
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleToken();
     });
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      toast.classList.add('opacity-100');
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
       setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 2000);
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
     }
 
-    // Base64URL decode helper
-    function base64UrlDecode(str) {
-      let output = str.replace(/-/g, '+').replace(/_/g, '/');
-      switch (output.length % 4) {
-        case 0: break;
-        case 2: output += '=='; break;
-        case 3: output += '='; break;
-        default: throw new Error('Illegal base64url string!');
+    function toggleSecretVisibility() {
+      const input = document.getElementById('secretKeyInput');
+      const btn = document.getElementById('btnToggleSecret');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'HIDE';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'SHOW';
       }
-      return decodeURIComponent(escape(window.atob(output)));
     }
 
-    let parsedPayload = null;
-    let tickerInterval = null;
+    function base64UrlDecode(str) {
+      let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) {
+        b64 += '=';
+      }
+      return decodeURIComponent(escape(atob(b64)));
+    }
 
-    function parseJwt() {
-      const token = document.getElementById('jwtInput').value.trim();
-      const statusEl = document.getElementById('tokenStatus');
-      const headerEl = document.getElementById('headerJson');
-      const payloadEl = document.getElementById('payloadJson');
-      const sigEl = document.getElementById('signatureRaw');
+    function handleJwtInput() {
+      const raw = document.getElementById('jwtInput').value.trim();
+      document.getElementById('tokenLengthBadge').textContent = `${raw.length} CHARS`;
 
-      if (!token) {
-        statusEl.textContent = '● STANDBY: AWAITING TOKEN';
-        statusEl.className = 'text-[11px] font-mono text-slate-500 font-bold';
-        headerEl.textContent = '{}';
-        payloadEl.textContent = '{}';
-        sigEl.textContent = '--';
-        resetLifecycleDisplays();
-        parsedPayload = null;
+      if (!raw) {
+        resetOutputs();
         return;
       }
 
-      const parts = token.split('.');
+      const parts = raw.split('.');
       if (parts.length !== 3) {
-        statusEl.textContent = '● ERROR: MALFORMED JWT (MUST HAVE 3 PARTS)';
-        statusEl.className = 'text-[11px] font-mono text-rose-400 font-bold';
+        setParseError('INVALID TOKEN ARCHITECTURE: MUST CONTAIN 3 PARTS [HEADER.PAYLOAD.SIGNATURE]');
         return;
       }
 
       try {
-        const decodedHeader = JSON.parse(base64UrlDecode(parts[0]));
-        const decodedPayload = JSON.parse(base64UrlDecode(parts[1]));
-        const signature = parts[2];
+        const headerJson = JSON.parse(base64UrlDecode(parts[0]));
+        const payloadJson = JSON.parse(base64UrlDecode(parts[1]));
+        const signatureRaw = parts[2];
 
-        headerEl.textContent = JSON.stringify(decodedHeader, null, 2);
-        payloadEl.textContent = JSON.stringify(decodedPayload, null, 2);
-        sigEl.textContent = signature || '[EMPTY SIGNATURE]';
+        activeTokenParts = {
+          headerB64: parts[0],
+          payloadB64: parts[1],
+          signatureB64: parts[2],
+          header: headerJson,
+          payload: payloadJson
+        };
 
-        statusEl.textContent = `● DECODED VALID JWT [ALG: ${decodedHeader.alg || 'UNKNOWN'}]`;
-        statusEl.className = 'text-[11px] font-mono text-emerald-400 font-bold';
+        // Render formatted JSON
+        document.getElementById('headerJson').textContent = JSON.stringify(headerJson, null, 2);
+        document.getElementById('payloadJson').textContent = JSON.stringify(payloadJson, null, 2);
+        document.getElementById('signatureRaw').textContent = signatureRaw;
 
-        parsedPayload = decodedPayload;
-        updateLifecycle();
+        // Process time lifecycle telemetry
+        processTimeTelemetry(payloadJson);
+
+        // Run live signature check if secret is provided
+        verifySignatureLive();
       } catch (err) {
-        statusEl.textContent = `● DECODE ERROR: ${err.message}`;
-        statusEl.className = 'text-[11px] font-mono text-rose-400 font-bold';
+        setParseError(`DECODE ERROR: ${err.message}`);
       }
     }
 
-    function formatTimestamp(epochSec) {
-      if (!epochSec || isNaN(epochSec)) return { formatted: '--', relative: '--', epoch: null };
-      const date = new Date(epochSec * 1000);
-      const formatted = date.toLocaleString();
-      const now = Date.now();
-      const diffSec = Math.floor((date.getTime() - now) / 1000);
-
-      let relative;
-      if (diffSec > 0) {
-        const hours = Math.floor(diffSec / 3600);
-        const mins = Math.floor((diffSec % 3600) / 60);
-        const secs = diffSec % 60;
-        relative = `Expires in ${hours}h ${mins}m ${secs}s`;
-      } else {
-        const past = Math.abs(diffSec);
-        const hours = Math.floor(past / 3600);
-        const mins = Math.floor((past % 3600) / 60);
-        const secs = past % 60;
-        relative = `Expired ${hours}h ${mins}m ${secs}s ago`;
-      }
-
-      return { formatted, relative, diffSec, epoch: epochSec };
-    }
-
-    function updateLifecycle() {
-      if (!parsedPayload) return;
-
-      const expInfo = formatTimestamp(parsedPayload.exp);
-      const iatInfo = formatTimestamp(parsedPayload.iat);
-      const nbfInfo = formatTimestamp(parsedPayload.nbf);
-
-      document.getElementById('expDateDisplay').textContent = expInfo.formatted;
-      document.getElementById('expRelativeDisplay').textContent = expInfo.relative;
-
-      document.getElementById('iatDateDisplay').textContent = iatInfo.formatted;
-      document.getElementById('iatRelativeDisplay').textContent = iatInfo.epoch ? new Date(iatInfo.epoch * 1000).toISOString() : '--';
-
-      document.getElementById('nbfDateDisplay').textContent = nbfInfo.formatted;
-      document.getElementById('nbfRelativeDisplay').textContent = nbfInfo.epoch ? new Date(nbfInfo.epoch * 1000).toISOString() : '--';
-
-      const badge = document.getElementById('expiryBadge');
-      if (expInfo.epoch) {
-        if (expInfo.diffSec > 0) {
-          badge.textContent = `● TOKEN ACTIVE (${expInfo.relative})`;
-          badge.className = "text-xs font-mono px-2.5 py-0.5 bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]";
-        } else {
-          badge.textContent = `● TOKEN EXPIRED (${expInfo.relative})`;
-          badge.className = "text-xs font-mono px-2.5 py-0.5 bg-rose-950/80 border border-rose-500/60 text-rose-300 font-bold shadow-[0_0_10px_rgba(244,63,94,0.3)]";
-        }
-      } else {
-        badge.textContent = "[NO EXP CLAIM PRESENT]";
-        badge.className = "text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold";
-      }
-    }
-
-    function resetLifecycleDisplays() {
+    function resetOutputs() {
+      activeTokenParts = null;
+      document.getElementById('headerJson').textContent = '{}';
+      document.getElementById('payloadJson').textContent = '{}';
+      document.getElementById('signatureRaw').textContent = '--';
       document.getElementById('expDateDisplay').textContent = '--';
       document.getElementById('expRelativeDisplay').textContent = '--';
       document.getElementById('iatDateDisplay').textContent = '--';
       document.getElementById('iatRelativeDisplay').textContent = '--';
       document.getElementById('nbfDateDisplay').textContent = '--';
       document.getElementById('nbfRelativeDisplay').textContent = '--';
-      const badge = document.getElementById('expiryBadge');
-      badge.textContent = '[STANDBY]';
-      badge.className = 'text-xs font-mono px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold';
+      document.getElementById('expiryStatusBadge').textContent = '[STANDBY]';
+      document.getElementById('expiryStatusBadge').className = 'px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400';
+      document.getElementById('sigVerifyBadge').textContent = '[ENTER SECRET]';
+      document.getElementById('sigVerifyBadge').className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400';
+      clearInterval(countdownTimer);
     }
 
-    function copyContent(elId) {
-      const text = document.getElementById(elId).textContent;
-      navigator.clipboard.writeText(text);
-      showToast('COPIED TO CLIPBOARD');
+    function setParseError(msg) {
+      document.getElementById('headerJson').textContent = `// ${msg}`;
+      document.getElementById('payloadJson').textContent = `// ${msg}`;
+      document.getElementById('signatureRaw').textContent = msg;
     }
 
-    function clearJwt() {
+    function processTimeTelemetry(payload) {
+      clearInterval(countdownTimer);
+
+      const exp = payload.exp;
+      const iat = payload.iat;
+      const nbf = payload.nbf;
+
+      if (iat) {
+        const iatDate = new Date(iat * 1000);
+        document.getElementById('iatDateDisplay').textContent = iatDate.toLocaleString();
+        document.getElementById('iatRelativeDisplay').textContent = getRelativeTime(iatDate.getTime());
+      } else {
+        document.getElementById('iatDateDisplay').textContent = 'NOT SPECIFIED';
+        document.getElementById('iatRelativeDisplay').textContent = '--';
+      }
+
+      if (nbf) {
+        const nbfDate = new Date(nbf * 1000);
+        document.getElementById('nbfDateDisplay').textContent = nbfDate.toLocaleString();
+        document.getElementById('nbfRelativeDisplay').textContent = getRelativeTime(nbfDate.getTime());
+      } else {
+        document.getElementById('nbfDateDisplay').textContent = 'NOT SPECIFIED';
+        document.getElementById('nbfRelativeDisplay').textContent = '--';
+      }
+
+      if (exp) {
+        const expDate = new Date(exp * 1000);
+        document.getElementById('expDateDisplay').textContent = expDate.toLocaleString();
+
+        const updateTick = () => {
+          const now = Date.now();
+          const expMs = expDate.getTime();
+          const diff = expMs - now;
+
+          if (diff <= 0) {
+            const agoStr = formatTimeDelta(Math.abs(diff));
+            document.getElementById('expRelativeDisplay').textContent = `EXPIRED: ${agoStr} AGO`;
+            document.getElementById('expiryStatusBadge').textContent = `[EXPIRED: ${agoStr} AGO]`;
+            document.getElementById('expiryStatusBadge').className = 'px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-rose-950/80 border border-rose-500/50 text-rose-300';
+          } else {
+            const inStr = formatTimeDelta(diff);
+            document.getElementById('expRelativeDisplay').textContent = `ACTIVE: EXPIRES IN ${inStr}`;
+            document.getElementById('expiryStatusBadge').textContent = `[ACTIVE: EXPIRES IN ${inStr}]`;
+            document.getElementById('expiryStatusBadge').className = 'px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300';
+          }
+        };
+
+        updateTick();
+        countdownTimer = setInterval(updateTick, 1000);
+      } else {
+        document.getElementById('expDateDisplay').textContent = 'NEVER EXPIRES';
+        document.getElementById('expRelativeDisplay').textContent = 'PERPETUAL TOKEN';
+        document.getElementById('expiryStatusBadge').textContent = '[NO EXPIRATION CLAIM]';
+        document.getElementById('expiryStatusBadge').className = 'px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-cyan-950/80 border border-cyan-500/50 text-cyan-300';
+      }
+    }
+
+    function formatTimeDelta(ms) {
+      const sec = Math.floor(ms / 1000);
+      if (sec < 60) return `${sec}s`;
+      const min = Math.floor(sec / 60);
+      if (min < 60) return `${min}m ${sec % 60}s`;
+      const hrs = Math.floor(min / 60);
+      if (hrs < 24) return `${hrs}h ${min % 60}m`;
+      const days = Math.floor(hrs / 24);
+      return `${days}d ${hrs % 24}h`;
+    }
+
+    function getRelativeTime(timestamp) {
+      const diff = timestamp - Date.now();
+      if (Math.abs(diff) < 2000) return 'JUST NOW';
+      return diff < 0 ? `${formatTimeDelta(Math.abs(diff))} AGO` : `IN ${formatTimeDelta(diff)}`;
+    }
+
+    // Web Crypto HMAC Signature Verification
+    async function verifySignatureLive() {
+      const badge = document.getElementById('sigVerifyBadge');
+      const secret = document.getElementById('secretKeyInput').value;
+
+      if (!activeTokenParts) {
+        badge.textContent = '[NO TOKEN]';
+        badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400';
+        return;
+      }
+
+      if (!secret) {
+        badge.textContent = '[ENTER SECRET]';
+        badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-400';
+        return;
+      }
+
+      const alg = (activeTokenParts.header && activeTokenParts.header.alg) || 'HS256';
+      const hashAlgMap = {
+        'HS256': 'SHA-256',
+        'HS384': 'SHA-384',
+        'HS512': 'SHA-512'
+      };
+
+      const hashName = hashAlgMap[alg];
+      if (!hashName) {
+        badge.textContent = `[UNSUPPORTED: ${alg}]`;
+        badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950/80 border border-amber-500/40 text-amber-300';
+        return;
+      }
+
+      try {
+        const enc = new TextEncoder();
+        const key = await window.crypto.subtle.importKey(
+          'raw',
+          enc.encode(secret),
+          { name: 'HMAC', hash: { name: hashName } },
+          false,
+          ['verify']
+        );
+
+        const data = enc.encode(`${activeTokenParts.headerB64}.${activeTokenParts.payloadB64}`);
+
+        // Decode signature from base64url
+        let b64 = activeTokenParts.signatureB64.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        const binSig = atob(b64);
+        const sigArr = new Uint8Array(binSig.length);
+        for (let i = 0; i < binSig.length; i++) sigArr[i] = binSig.charCodeAt(i);
+
+        const isValid = await window.crypto.subtle.verify('HMAC', key, sigArr, data);
+
+        if (isValid) {
+          badge.textContent = 'SIGNATURE VALID: VERIFIED';
+          badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/90 border border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.3)]';
+        } else {
+          badge.textContent = 'SIGNATURE INVALID';
+          badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950/90 border border-rose-500 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.3)]';
+        }
+      } catch (err) {
+        console.warn('HMAC verification error', err);
+        badge.textContent = 'VERIFY ERROR';
+        badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950 text-rose-300';
+      }
+    }
+
+    function copyPreContent(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied content to clipboard!');
+      });
+    }
+
+    function clearJwtInput() {
       document.getElementById('jwtInput').value = '';
-      parseJwt();
-      showToast('CLEARED TOKEN');
+      document.getElementById('secretKeyInput').value = '';
+      resetOutputs();
+      showToast('JWT input cleared');
     }
 
-    function loadSampleJwt() {
-      const nowSec = Math.floor(Date.now() / 1000);
-      const expSec = nowSec + 7200; // 2 hours from now
+    // Sample Token Generator
+    function loadSampleToken() {
+      // Standard HS256 sample token signed with secret "cybertools-secret"
+      // exp set to 2 hours from current time
+      const expTime = Math.floor(Date.now() / 1000) + 7200;
+      const iatTime = Math.floor(Date.now() / 1000);
 
-      const sampleHeader = {
-        alg: "HS256",
-        typ: "JWT"
+      const headerObj = { alg: "HS256", typ: "JWT" };
+      const payloadObj = {
+        sub: "usr_9921_tactical",
+        name: "SarwarFX Operator",
+        role: "Lead Security Architect",
+        iss: "https://apps.sarwarfx.cfd/jwt/",
+        iat: iatTime,
+        exp: expTime,
+        clearance: "LEVEL_5_AIRGAP"
       };
 
-      const samplePayload = {
-        sub: "user_cyber_0x7F",
-        name: "Sarwar Tactical Ops",
-        role: "security_auditor",
-        iss: "https://apps.sarwarfx.cfd",
-        aud: "cybertools_cluster",
-        iat: nowSec,
-        exp: expSec,
-        permissions: ["read:telemetry", "write:sandbox", "exec:airgap"]
-      };
+      const b64UrlEncode = obj => btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      const hB64 = b64UrlEncode(headerObj);
+      const pB64 = b64UrlEncode(payloadObj);
 
-      function toBase64Url(obj) {
-        const jsonStr = JSON.stringify(obj);
-        return btoa(unescape(encodeURIComponent(jsonStr)))
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_')
-          .replace(/=+$/, '');
-      }
+      // Sign sample in browser via Web Crypto API with "cybertools-secret"
+      const secret = "cybertools-secret";
+      const enc = new TextEncoder();
 
-      const h64 = toBase64Url(sampleHeader);
-      const p64 = toBase64Url(samplePayload);
-      const mockSig = "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+      window.crypto.subtle.importKey(
+        'raw',
+        enc.encode(secret),
+        { name: 'HMAC', hash: { name: 'SHA-256' } },
+        false,
+        ['sign']
+      ).then(key => {
+        const data = enc.encode(`${hB64}.${pB64}`);
+        return window.crypto.subtle.sign('HMAC', key, data);
+      }).then(sigBuffer => {
+        const sigArr = new Uint8Array(sigBuffer);
+        let bin = '';
+        for (let i = 0; i < sigArr.length; i++) bin += String.fromCharCode(sigArr[i]);
+        const sB64 = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-      document.getElementById('jwtInput').value = `${h64}.${p64}.${mockSig}`;
-      parseJwt();
-      showToast('LOADED SAMPLE ACTIVE JWT');
+        const token = `${hB64}.${pB64}.${sB64}`;
+        document.getElementById('jwtInput').value = token;
+        document.getElementById('secretKeyInput').value = secret;
+        handleJwtInput();
+        showToast('Loaded active sample JWT with verified secret!');
+      });
     }
 
-    // Start 1-second ticker for live expiration countdown
-    setInterval(() => {
-      if (parsedPayload) {
-        updateLifecycle();
-      }
-    }, 1000);
+    // Suite Modal Data (94 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
 
-    // Init
-    window.addEventListener('DOMContentLoaded', () => {
-      renderSuiteGrid();
-      loadSampleJwt();
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
     });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & HMAC signature verification.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with natural English translator.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' },
+      { id: 'curl-convert', name: 'CURL SYNTH', desc: 'Multi-language cURL command transpiler.', code: '0x5D' },
+      { id: 'cidr', name: 'NET MASK', desc: 'IPv4 subnet mask & bitwise CIDR range calculator.', code: '0x5E' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
   </script>
 </body>
 </html>
