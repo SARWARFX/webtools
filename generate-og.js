@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '31-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '37-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -251,6 +251,48 @@ const APPS = [
     subdomain: 'base',
     title: 'CYBERTOOLS // BASE',
     subtitle: 'NUMBER BASE & BIT PATTERN CONVERTER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'cert',
+    subdomain: 'cert',
+    title: 'CYBERTOOLS // CERT',
+    subtitle: 'SSL CERTIFICATE & X.509 PEM INSPECTOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'bcrypt',
+    subdomain: 'bcrypt',
+    title: 'CYBERTOOLS // BCRYPT',
+    subtitle: 'BCRYPT CIPHER & HASH VERIFIER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'xml',
+    subdomain: 'xml',
+    title: 'CYBERTOOLS // XML',
+    subtitle: 'XML TO JSON LOSSLESS SYNTAX MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'favicon',
+    subdomain: 'favicon',
+    title: 'CYBERTOOLS // FAVICON',
+    subtitle: 'FAVICON & PWA APP ICON GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'glass',
+    subdomain: 'glass',
+    title: 'CYBERTOOLS // GLASS',
+    subtitle: 'CYBERPUNK GLASSMORPHISM CSS STUDIO',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'table',
+    subdomain: 'table',
+    title: 'CYBERTOOLS // TABLE',
+    subtitle: 'MARKDOWN & CSV TABULAR GENERATOR',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

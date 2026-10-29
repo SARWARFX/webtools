@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XML to JSON & JSON to XML Converter // Syntax Prettifier - sarwarfx</title>
+  <meta name="description" content="Lossless bidirectional XML to JSON and JSON to XML converter with XML prettifier and malformed tag detector. 100% private in-browser client execution.">
+  <meta name="keywords" content="xml to json, json to xml, xml prettifier, xml formatter, xml validator, rss to json, developer tools, client side xml">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/xml/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/xml/" />
+  <meta property="og:title" content="XML to JSON & JSON to XML Converter // Syntax Prettifier - sarwarfx" />
+  <meta property="og:description" content="Lossless bidirectional XML to JSON and JSON to XML converter with XML prettifier and malformed tag detector. 100% private in-browser client execution." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/xml/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/xml/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/xml/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="XML to JSON & JSON to XML Converter // Syntax Prettifier - sarwarfx" />
+  <meta name="twitter:description" content="Lossless bidirectional XML to JSON and JSON to XML converter with XML prettifier and malformed tag detector. 100% private in-browser client execution." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/xml/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "XML / JSON Matrix Converter",
+    "url": "https://apps.sarwarfx.cfd/xml/",
+    "description": "Lossless bidirectional XML to JSON and JSON to XML converter with XML prettifier and malformed tag detector. 100% private in-browser client execution.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-textarea {
+      background: rgba(2, 6, 23, 0.9);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      resize: vertical;
+    }
+    .hud-textarea:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-code text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">xml</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="flex items-center text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse mr-1.5"></span>
+          SYS_NODE: 0x22
+        </span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300">XML &harr; JSON SYNTAX ENGINE</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-pink-400" id="xmlStatus">PARSER: READY</span>
+      </div>
+
+      <!-- Action Items -->
+      <div class="flex items-center space-x-2.5">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">SUITE</span>
+          <span class="text-[10px] text-cyan-400/80">(37)</span>
+        </button>
+        <a href="/" class="hud-btn-primary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-terminal"></i>
+          <span class="hidden sm:inline">ROOT_HUB</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Viewport -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+    
+    <!-- Title & Description Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-[10px] text-cyan-300 uppercase tracking-widest font-mono mb-2">
+          <i class="fa-solid fa-file-code text-cyan-400"></i>
+          <span>Document Object Tree Converter</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-orbitron uppercase">
+          XML &harr; JSON // <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">SYNTAX MATRIX</span>
+        </h1>
+        <p class="text-slate-400 text-xs sm:text-sm font-rajdhani font-medium mt-1">
+          Lossless bidirectional serialization between XML tags, RSS feeds, and JSON structures with syntax beautifier and error pointer.
+        </p>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="prettifyXML()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs flex items-center space-x-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
+          <span>PRETTIFY XML</span>
+        </button>
+        <button onclick="loadSample()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs flex items-center space-x-1.5">
+          <i class="fa-solid fa-code text-cyan-400"></i>
+          <span>SAMPLE</span>
+        </button>
+        <button onclick="clearPanes()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs text-rose-400 hover:text-rose-300 border-rose-900/60">
+          <i class="fa-solid fa-trash-can mr-1"></i>CLEAR
+        </button>
+      </div>
+    </div>
+
+    <!-- Direction Action Controls -->
+    <div class="flex flex-wrap items-center justify-center gap-3 py-1">
+      <button onclick="convertXmlToJson()" class="hud-btn-primary px-5 py-2.5 rounded flex items-center space-x-2 text-xs">
+        <span>CONVERT XML &rarr; JSON</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button onclick="convertJsonToXml()" class="hud-btn-secondary px-5 py-2.5 rounded flex items-center space-x-2 text-xs border-pink-500/40 text-pink-300 hover:border-pink-400 hover:text-white">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>CONVERT JSON &rarr; XML</span>
+      </button>
+    </div>
+
+    <!-- Error Banner -->
+    <div id="errorBanner" class="hidden p-3 bg-rose-950/40 border border-rose-500/50 rounded font-mono text-xs text-rose-300 flex items-start space-x-2">
+      <i class="fa-solid fa-triangle-exclamation text-rose-400 mt-0.5"></i>
+      <span id="errorMessage" class="flex-1 break-words">Syntax Error Detected</span>
+    </div>
+
+    <!-- Split Pane Editors -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      
+      <!-- Left: XML Editor -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-code text-cyan-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">XML PAYLOAD</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="copyPane('xmlInput')" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Copy XML">
+              <i class="fa-solid fa-copy mr-1"></i>COPY
+            </button>
+            <button onclick="downloadFile('payload.xml', 'xmlInput')" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Download">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+        </div>
+        <textarea id="xmlInput" rows="18" placeholder="Paste or type XML payload here..." class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1"></textarea>
+      </div>
+
+      <!-- Right: JSON Editor -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-brands fa-js text-yellow-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">JSON OBJECT TREE</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="copyPane('jsonInput')" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Copy JSON">
+              <i class="fa-solid fa-copy mr-1"></i>COPY
+            </button>
+            <button onclick="downloadFile('payload.json', 'jsonInput')" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Download">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+        </div>
+        <textarea id="jsonInput" rows="18" placeholder="Generated JSON structure will appear here..." class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1 text-cyan-200"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Semantic Crawl Article -->
+    <article class="hud-card p-6 text-slate-400 text-xs font-mono leading-relaxed space-y-4">
+      <div class="flex items-center space-x-2 text-cyan-400 border-b border-cyan-500/20 pb-3">
+        <i class="fa-solid fa-book text-sm"></i>
+        <h3 class="font-bold text-white uppercase tracking-wider text-sm">XML AND JSON DATA INTERCHANGE ARCHITECTURE</h3>
+      </div>
+      
+      <p>
+        <strong>Extensible Markup Language (XML)</strong> has served as the backbone for enterprise SOAP architectures, RSS aggregators, SVG vector files, and configuration schemas for decades. Modern web environments, however, rely heavily on JSON for RESTful microservices:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Attribute Normalization</strong>
+          XML element attributes are prefixed with `@` in the resulting JSON tree, maintaining strict fidelity between attributes and inner text content.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Sibling Arrays</strong>
+          Duplicate XML sibling nodes under the same parent element are automatically grouped into JSON array collections.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. In-Browser Parsing</strong>
+          Leverages the browser's native C++ `DOMParser` and `XMLSerializer` engines, ensuring fast transformation with zero network transmission.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (37)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'xml';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function copyPane(id) {
+      const text = document.getElementById(id).value;
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED TO CLIPBOARD');
+    }
+
+    function downloadFile(filename, sourceId) {
+      const text = document.getElementById(sourceId).value;
+      if (!text) return;
+      const type = filename.endsWith('.xml') ? 'application/xml' : 'application/json';
+      const blob = new Blob([text], { type: `${type};charset=utf-8` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`DOWNLOADED ${filename}`);
+    }
+
+    function hideError() {
+      document.getElementById('errorBanner').classList.add('hidden');
+      document.getElementById('xmlStatus').textContent = 'PARSER: VALID';
+      document.getElementById('xmlStatus').className = 'text-cyan-400';
+    }
+
+    function showError(msg) {
+      const banner = document.getElementById('errorBanner');
+      banner.classList.remove('hidden');
+      document.getElementById('errorMessage').textContent = msg;
+      document.getElementById('xmlStatus').textContent = 'PARSER: ERROR';
+      document.getElementById('xmlStatus').className = 'text-rose-400 font-bold';
+    }
+
+    // Recursive XML DOM to JSON Object
+    function xmlNodeToJson(node) {
+      // Element node
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const obj = {};
+
+        // Attributes
+        if (node.attributes && node.attributes.length > 0) {
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attr = node.attributes[i];
+            obj[`@${attr.name}`] = attr.value;
+          }
+        }
+
+        // Child nodes
+        let textVal = '';
+        let hasElementChildren = false;
+
+        for (let i = 0; i < node.childNodes.length; i++) {
+          const child = node.childNodes[i];
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            hasElementChildren = true;
+            const childName = child.nodeName;
+            const childObj = xmlNodeToJson(child);
+
+            if (obj[childName] === undefined) {
+              obj[childName] = childObj;
+            } else if (Array.isArray(obj[childName])) {
+              obj[childName].push(childObj);
+            } else {
+              obj[childName] = [obj[childName], childObj];
+            }
+          } else if (child.nodeType === Node.TEXT_NODE || child.nodeType === Node.CDATA_SECTION_NODE) {
+            textVal += child.nodeValue.trim();
+          }
+        }
+
+        if (!hasElementChildren) {
+          if (Object.keys(obj).length === 0) {
+            return textVal;
+          } else if (textVal) {
+            obj['#text'] = textVal;
+          }
+        }
+
+        return obj;
+      }
+      return null;
+    }
+
+    function convertXmlToJson() {
+      hideError();
+      const raw = document.getElementById('xmlInput').value.trim();
+      if (!raw) {
+        document.getElementById('jsonInput').value = '';
+        return;
+      }
+
+      try {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(raw, 'application/xml');
+        
+        const parseError = xmlDoc.querySelector('parsererror');
+        if (parseError) {
+          throw new Error(parseError.textContent.split('\n')[0]);
+        }
+
+        const rootObj = {};
+        rootObj[xmlDoc.documentElement.nodeName] = xmlNodeToJson(xmlDoc.documentElement);
+
+        document.getElementById('jsonInput').value = JSON.stringify(rootObj, null, 2);
+        showToast('CONVERTED XML &rarr; JSON');
+      } catch (err) {
+        showError(`XML Syntax Error: ${err.message}`);
+      }
+    }
+
+    // JSON to XML Converter
+    function jsonToXml(obj, tag = 'root') {
+      if (obj === null || obj === undefined) return `<${tag}/>`;
+
+      if (typeof obj !== 'object') {
+        return `<${tag}>${escapeXml(String(obj))}</${tag}>`;
+      }
+
+      if (Array.isArray(obj)) {
+        return obj.map(item => jsonToXml(item, tag)).join('\n');
+      }
+
+      let attrs = '';
+      let children = '';
+
+      for (const key of Object.keys(obj)) {
+        if (key.startsWith('@')) {
+          attrs += ` ${key.slice(1)}="${escapeXml(String(obj[key]))}"`;
+        } else if (key === '#text') {
+          children += escapeXml(String(obj[key]));
+        } else {
+          children += jsonToXml(obj[key], key) + '\n';
+        }
+      }
+
+      if (!children) {
+        return `<${tag}${attrs}/>`;
+      }
+
+      return `<${tag}${attrs}>\n${children.trim()}\n</${tag}>`;
+    }
+
+    function escapeXml(unsafe) {
+      return unsafe.replace(/[<>&'"]/g, c => {
+        switch (c) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case '\'': return '&apos;';
+          case '"': return '&quot;';
+        }
+      });
+    }
+
+    function convertJsonToXml() {
+      hideError();
+      const raw = document.getElementById('jsonInput').value.trim();
+      if (!raw) {
+        document.getElementById('xmlInput').value = '';
+        return;
+      }
+
+      try {
+        const obj = JSON.parse(raw);
+        let xmlOutput = '<?xml version="1.0" encoding="UTF-8"?>\n';
+
+        const keys = Object.keys(obj);
+        if (keys.length === 1 && typeof obj[keys[0]] === 'object' && !Array.isArray(obj[keys[0]])) {
+          xmlOutput += jsonToXml(obj[keys[0]], keys[0]);
+        } else {
+          xmlOutput += jsonToXml(obj, 'root');
+        }
+
+        document.getElementById('xmlInput').value = formatXmlString(xmlOutput);
+        showToast('CONVERTED JSON &rarr; XML');
+      } catch (err) {
+        showError(`JSON Parse Error: ${err.message}`);
+      }
+    }
+
+    function formatXmlString(xml) {
+      let formatted = '';
+      let indent = '';
+      const tab = '  ';
+      xml.split(/>\s*</).forEach(node => {
+        if (node.match(/^\/\w/)) indent = indent.substring(tab.length);
+        formatted += indent + '<' + node + '>\r\n';
+        if (node.match(/^<?\w[^>]*[^\/]$/)) indent += tab;
+      });
+      return formatted.substring(1, formatted.length - 3);
+    }
+
+    function prettifyXML() {
+      hideError();
+      const raw = document.getElementById('xmlInput').value.trim();
+      if (!raw) return;
+      try {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(raw, 'application/xml');
+        const parseError = xmlDoc.querySelector('parsererror');
+        if (parseError) throw new Error(parseError.textContent.split('\n')[0]);
+
+        const serializer = new XMLSerializer();
+        const xmlStr = serializer.serializeToString(xmlDoc);
+        document.getElementById('xmlInput').value = formatXmlString(xmlStr);
+        showToast('PRETTIFIED XML');
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function loadSample() {
+      const sample = `<?xml version="1.0" encoding="UTF-8"?>
+<recon_telemetry version="2.0" environment="cyberpunk">
+  <node id="0x22" status="active">
+    <name>XML Syntax Matrix</name>
+    <latency unit="ms">1.2</latency>
+    <security airgap="true">
+      <cipher>AES-256-GCM</cipher>
+      <logs>zero</logs>
+    </security>
+    <endpoints>
+      <target>https://apps.sarwarfx.cfd/xml/</target>
+      <target>https://apps.sarwarfx.cfd/json/</target>
+    </endpoints>
+  </node>
+</recon_telemetry>`;
+      document.getElementById('xmlInput').value = sample;
+      convertXmlToJson();
+      showToast('LOADED SAMPLE XML PAYLOAD');
+    }
+
+    function clearPanes() {
+      document.getElementById('xmlInput').value = '';
+      document.getElementById('jsonInput').value = '';
+      hideError();
+      showToast('CLEARED EDITORS');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSample();
+    });
+  </script>
+</body>
+</html>

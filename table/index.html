@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Table Generator // Interactive Visual Grid & CSV Importer - sarwarfx</title>
+  <meta name="description" content="Design, edit, and format Markdown tables with an interactive visual grid, column alignments, CSV/TSV importer, and live Markdown preview.">
+  <meta name="keywords" content="markdown table generator, markdown table creator, csv to markdown table, format markdown table, markdown table visual editor">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/table/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/table/" />
+  <meta property="og:title" content="Markdown Table Generator // Interactive Visual Grid & CSV Importer - sarwarfx" />
+  <meta property="og:description" content="Design, edit, and format Markdown tables with an interactive visual grid, column alignments, CSV/TSV importer, and live Markdown preview." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/table/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/table/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/table/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Markdown Table Generator // Interactive Visual Grid & CSV Importer - sarwarfx" />
+  <meta name="twitter:description" content="Design, edit, and format Markdown tables with an interactive visual grid, column alignments, CSV/TSV importer, and live Markdown preview." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/table/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Markdown Table Generator",
+    "url": "https://apps.sarwarfx.cfd/table/",
+    "description": "Design, edit, and format Markdown tables with an interactive visual grid, column alignments, CSV/TSV importer, and live Markdown preview.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 4v3h7V7H4zm9 0v3h7V7h-7zm7 5h-7v3h7v-3zm-9 0H4v3h7v-3zm-7 5v2h7v-2H4zm9 2h7v-2h-7v2z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .cell-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #e2e8f0;
+      width: 100%;
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    .cell-input:focus {
+      background: rgba(0, 245, 255, 0.08);
+      border-color: #00f5ff;
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.3);
+    }
+    .cell-header-input {
+      font-weight: 700;
+      color: #00f5ff;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #05070d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 245, 255, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 245, 255, 0.6);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">TABLE_LAB</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x25</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(37)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero Title -->
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400">
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+        <span class="tracking-widest">[SYS_NODE: 0x25 // MARKDOWN TABLE GENERATOR]</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wide">
+        MARKDOWN TABLE <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">STUDIO & LAB</span>
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm font-rajdhani text-base leading-relaxed max-w-3xl">
+        Visual interactive grid editor for GitHub Flavored Markdown (GFM) tables. Add/remove rows and columns, configure per-column text alignment (<span class="text-cyan-400">:---</span>, <span class="text-pink-400">:---:</span>, <span class="text-emerald-400">---:</span>), import tabular CSV/TSV streams, and export clean formatted Markdown.
+      </p>
+    </div>
+
+    <!-- Quick Control Toolbar -->
+    <div class="hud-card p-4 rounded flex flex-wrap items-center justify-between gap-3">
+      <!-- Dimensions & Insertions -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="addRow()" class="hud-btn-primary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span>ADD ROW</span>
+        </button>
+        <button onclick="addColumn()" class="hud-btn-primary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span>ADD COL</span>
+        </button>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <button onclick="removeRow()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-xs text-rose-300 hover:text-rose-200 hover:border-rose-500/50">
+          <i class="fa-solid fa-minus text-xs"></i>
+          <span>DEL ROW</span>
+        </button>
+        <button onclick="removeColumn()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-xs text-rose-300 hover:text-rose-200 hover:border-rose-500/50">
+          <i class="fa-solid fa-minus text-xs"></i>
+          <span>DEL COL</span>
+        </button>
+      </div>
+
+      <!-- Import, Presets, Clear -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="toggleCsvModal(true)" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-xs text-amber-300 hover:text-amber-200 hover:border-amber-500/50">
+          <i class="fa-solid fa-file-csv text-xs"></i>
+          <span>IMPORT CSV / TSV</span>
+        </button>
+        <button onclick="loadSample()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-xs text-cyan-300">
+          <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+          <span>SAMPLE MATRIX</span>
+        </button>
+        <button onclick="clearTable()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5 text-xs text-slate-400 hover:text-rose-400">
+          <i class="fa-solid fa-trash-can text-xs"></i>
+          <span>CLEAR</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Interactive Grid Workspace -->
+    <div class="hud-card p-5 rounded space-y-3">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table text-cyan-400 text-xs"></i>
+          <span class="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">VISUAL GRID MATRIX</span>
+        </div>
+        <div class="text-[11px] font-mono text-slate-400" id="matrixMetrics">
+          COLUMNS: <span class="text-cyan-400 font-bold" id="metricCols">4</span> | ROWS: <span class="text-pink-400 font-bold" id="metricRows">4</span>
+        </div>
+      </div>
+
+      <!-- Table Container with Horizontal Scroll -->
+      <div class="overflow-x-auto border border-slate-800 rounded bg-black/40 p-1">
+        <table class="w-full text-left border-collapse" id="interactiveTable">
+          <!-- Alignment & Control Row -->
+          <thead id="tableHead">
+            <!-- Rendered by JS -->
+          </thead>
+          <!-- Editable Body -->
+          <tbody id="tableBody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="text-[10px] text-slate-500 font-mono flex items-center justify-between">
+        <span>TIP: Click alignment badges (<i class="fa-solid fa-align-left text-cyan-400"></i> / <i class="fa-solid fa-align-center text-pink-400"></i> / <i class="fa-solid fa-align-right text-emerald-400"></i>) to toggle column alignment.</span>
+        <span>PRESS TAB TO CYCLE CELLS</span>
+      </div>
+    </div>
+
+    <!-- Outputs: Markdown Code & Rendered Preview -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Generated Markdown Code -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-brands fa-markdown text-cyan-400 text-sm"></i>
+            <span class="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">FORMATTED MARKDOWN OUTPUT</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="downloadMarkdown()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px] flex items-center space-x-1">
+              <i class="fa-solid fa-download text-xs text-slate-400"></i>
+              <span>EXPORT .MD</span>
+            </button>
+            <button onclick="copyMarkdown()" class="hud-btn-primary px-3 py-1 rounded text-[11px] flex items-center space-x-1">
+              <i class="fa-solid fa-copy text-xs"></i>
+              <span>COPY MARKDOWN</span>
+            </button>
+          </div>
+        </div>
+
+        <pre id="outputMarkdown" class="flex-1 bg-black/70 border border-slate-800/80 rounded p-4 font-mono text-xs text-cyan-300 overflow-x-auto whitespace-pre leading-relaxed select-all min-h-[220px]"></pre>
+      </div>
+
+      <!-- Live Rendered Preview -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-eye text-pink-400 text-xs"></i>
+            <span class="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">RENDERED HTML PREVIEW</span>
+          </div>
+          <span class="text-[10px] text-pink-400 font-mono tracking-widest">[GFM COMPLIANT]</span>
+        </div>
+
+        <div id="renderedPreview" class="flex-1 bg-black/50 border border-slate-800 rounded p-4 overflow-x-auto min-h-[220px]">
+          <!-- Rendered table dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CSV/TSV Import Modal -->
+    <div id="csvModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+      <div class="hud-card max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+        <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-file-csv text-cyan-400"></i>
+            <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">IMPORT CSV OR TSV DATA</span>
+          </div>
+          <button onclick="toggleCsvModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+        </div>
+
+        <div class="space-y-3 text-xs font-mono">
+          <p class="text-slate-400">
+            Paste comma-separated (CSV), tab-separated (TSV), or semicolon-separated values below. The first row will automatically serve as the table header.
+          </p>
+
+          <textarea id="csvInput" rows="8" placeholder="Product,Category,Price,InStock&#10;Neural Link V2,Cyberware,$2400,Yes&#10;Quantum Deck,Hardware,$1250,No&#10;Subnet Scanner,Software,$450,Yes" class="w-full bg-black/70 border border-slate-800 rounded p-3 text-cyan-300 font-mono text-xs focus:border-cyan-400 focus:outline-none"></textarea>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div class="flex items-center space-x-3">
+              <label class="text-slate-400 text-xs">DELIMITER:</label>
+              <select id="csvDelimiter" class="bg-slate-900 border border-slate-700 text-cyan-300 rounded px-2.5 py-1 text-xs">
+                <option value="auto">Auto-Detect</option>
+                <option value=",">Comma (,)</option>
+                <option value="&#9;">Tab (\t)</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="|">Pipe (|)</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleCsvModal(false)" class="hud-btn-secondary px-3 py-1.5 rounded">CANCEL</button>
+              <button onclick="importCsv()" class="hud-btn-primary px-4 py-1.5 rounded">CONVERT TO TABLE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semantic Crawl Article & Technical Reference -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-mono text-xs sm:text-sm leading-relaxed border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide">
+          GITHUB FLAVORED MARKDOWN (GFM) TABLE ARCHITECTURE & SYNTAX
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Complete guide to Markdown table formatting, column alignments, escaped characters, and zero-server client security.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">1. Core Markdown Table Syntax</h3>
+        <p>
+          Standard Markdown syntax (originally standardized by GitHub Flavored Markdown and CommonMark extensions) defines tables using vertical pipes (<code class="text-cyan-300">|</code>) to separate cells and hyphens (<code class="text-cyan-300">-</code>) to construct the delimiter row separating column headers from table rows:
+        </p>
+        <pre class="bg-black/60 p-4 border border-slate-800 text-slate-300 rounded overflow-x-auto text-xs leading-relaxed">
+| System Node | Protocol | Port | Status |
+| :---------- | :------: | ---: | :----- |
+| Signal Radar | HTTPS    |  443 | ACTIVE |
+| Auth Shield  | WSS      | 8443 | READY  |</pre>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">2. Column Alignment Notation</h3>
+        <p>
+          Text alignment is specified entirely within the second row (the delimiter row) using colons (<code class="text-cyan-300">:</code>):
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 pl-2 text-slate-400">
+          <li><strong class="text-cyan-300">Left-Aligned (<code class="text-cyan-300">:---</code>):</strong> Colon on the far left. Aligns content flush to the left boundary. This is also the default behavior when colons are omitted.</li>
+          <li><strong class="text-pink-300">Center-Aligned (<code class="text-pink-300">:---:</code>):</strong> Colons on both the left and right extremities. Centers cell text and numbers symmetrically.</li>
+          <li><strong class="text-emerald-300">Right-Aligned (<code class="text-emerald-300">---:</code>):</strong> Colon on the far right. Ideal for financial columns, numeric telemetry, percentages, and currencies.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">3. Whitespace Padding & Code Prettification</h3>
+        <p>
+          While Markdown renderers do not require vertical pipes to be visually aligned, unaligned tables become unreadable in raw Git diffs, terminal outputs, and code editors. This generator dynamically computes the maximum byte width of each column (including alignment headers) and injects precise space padding so raw tables remain clean and human-readable.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Air-Gapped Privacy</strong>
+          100% in-browser processing. No table data, imported CSVs, or exported Markdown ever touch a remote server or telemetry logging stream.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Escape Sequence Support</strong>
+          Literal pipes (<code class="text-cyan-300">\|</code>) and line breaks (<code class="text-cyan-300">&lt;br&gt;</code>) are preserved and correctly handled across Markdown renderers.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Tabular Interoperability</strong>
+          Seamlessly ingest data from Excel, Google Sheets, or SQL query outputs via TSV/CSV clipboard paste.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (37)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'table';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+        toggleCsvModal(false);
+      }
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Table State
+    // alignments: 'left' | 'center' | 'right'
+    let tableHeaders = ['System Node', 'Protocol', 'Port', 'Status'];
+    let tableAlignments = ['left', 'center', 'right', 'left'];
+    let tableData = [
+      ['Signal Radar', 'HTTPS', '443', 'ACTIVE'],
+      ['Auth Shield', 'WSS', '8443', 'READY'],
+      ['Telemetry DB', 'TCP', '5432', 'ONLINE'],
+      ['Crypto Engine', 'RPC', '9000', 'SYNCHRONIZED']
+    ];
+
+    function renderTableEditor() {
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('tableBody');
+
+      // Update metrics
+      document.getElementById('metricCols').textContent = tableHeaders.length;
+      document.getElementById('metricRows').textContent = tableData.length;
+
+      // 1. Control & Alignment Row
+      let controlRow = `
+        <tr class="border-b border-cyan-500/30 bg-slate-950/80 text-[10px] text-slate-400">
+          <th class="p-2 w-8 text-center text-slate-600 border-r border-slate-800">#</th>
+      `;
+      tableHeaders.forEach((_, cIdx) => {
+        const align = tableAlignments[cIdx];
+        const alignIcon = align === 'center' ? 'fa-align-center text-pink-400' : (align === 'right' ? 'fa-align-right text-emerald-400' : 'fa-align-left text-cyan-400');
+        controlRow += `
+          <th class="p-2 border-r border-slate-800/80">
+            <div class="flex items-center justify-between gap-1">
+              <button onclick="cycleAlignment(${cIdx})" title="Toggle Alignment (Left / Center / Right)" class="flex items-center space-x-1 px-1.5 py-0.5 rounded bg-black/60 border border-slate-700 hover:border-cyan-400 text-[10px]">
+                <i class="fa-solid ${alignIcon}"></i>
+                <span class="uppercase tracking-wider text-[9px]">${align}</span>
+              </button>
+              <button onclick="deleteColumn(${cIdx})" title="Delete Column" class="text-slate-600 hover:text-rose-400 p-0.5 text-[10px]">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </th>
+        `;
+      });
+      controlRow += `</tr>`;
+
+      // 2. Header Row
+      let headerRow = `
+        <tr class="border-b border-cyan-500/40 bg-cyan-950/20">
+          <td class="p-2 text-center text-[10px] text-cyan-400 font-bold border-r border-slate-800">HDR</td>
+      `;
+      tableHeaders.forEach((h, cIdx) => {
+        headerRow += `
+          <td class="p-1 border-r border-slate-800/80">
+            <input type="text" value="${escapeHtml(h)}" oninput="updateHeader(${cIdx}, this.value)" class="cell-input cell-header-input" placeholder="Header ${cIdx + 1}" />
+          </td>
+        `;
+      });
+      headerRow += `</tr>`;
+
+      thead.innerHTML = controlRow + headerRow;
+
+      // 3. Body Rows
+      let bodyHtml = '';
+      tableData.forEach((row, rIdx) => {
+        bodyHtml += `
+          <tr class="border-b border-slate-800/60 hover:bg-slate-900/30 transition-colors">
+            <td class="p-1 w-8 text-center text-slate-500 text-[10px] border-r border-slate-800 flex items-center justify-center space-x-1">
+              <span>${rIdx + 1}</span>
+              <button onclick="deleteRow(${rIdx})" title="Delete Row" class="text-slate-600 hover:text-rose-400 ml-1 text-[9px]">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+        `;
+        row.forEach((cell, cIdx) => {
+          bodyHtml += `
+            <td class="p-1 border-r border-slate-800/80">
+              <input type="text" value="${escapeHtml(cell)}" oninput="updateCell(${rIdx}, ${cIdx}, this.value)" class="cell-input" placeholder="Value..." />
+            </td>
+          `;
+        });
+        bodyHtml += `</tr>`;
+      });
+      tbody.innerHTML = bodyHtml;
+
+      generateMarkdown();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function cycleAlignment(cIdx) {
+      const current = tableAlignments[cIdx];
+      if (current === 'left') tableAlignments[cIdx] = 'center';
+      else if (current === 'center') tableAlignments[cIdx] = 'right';
+      else tableAlignments[cIdx] = 'left';
+      renderTableEditor();
+    }
+
+    function updateHeader(cIdx, val) {
+      tableHeaders[cIdx] = val;
+      generateMarkdown();
+    }
+
+    function updateCell(rIdx, cIdx, val) {
+      if (tableData[rIdx]) {
+        tableData[rIdx][cIdx] = val;
+        generateMarkdown();
+      }
+    }
+
+    function addRow() {
+      const newRow = new Array(tableHeaders.length).fill('');
+      tableData.push(newRow);
+      renderTableEditor();
+    }
+
+    function removeRow() {
+      if (tableData.length > 0) {
+        tableData.pop();
+        renderTableEditor();
+      }
+    }
+
+    function deleteRow(rIdx) {
+      tableData.splice(rIdx, 1);
+      renderTableEditor();
+    }
+
+    function addColumn() {
+      const colNum = tableHeaders.length + 1;
+      tableHeaders.push(`Column ${colNum}`);
+      tableAlignments.push('left');
+      tableData.forEach(row => row.push(''));
+      renderTableEditor();
+    }
+
+    function removeColumn() {
+      if (tableHeaders.length > 1) {
+        tableHeaders.pop();
+        tableAlignments.pop();
+        tableData.forEach(row => row.pop());
+        renderTableEditor();
+      }
+    }
+
+    function deleteColumn(cIdx) {
+      if (tableHeaders.length <= 1) {
+        showToast('TABLE REQUIRES AT LEAST 1 COLUMN');
+        return;
+      }
+      tableHeaders.splice(cIdx, 1);
+      tableAlignments.splice(cIdx, 1);
+      tableData.forEach(row => row.splice(cIdx, 1));
+      renderTableEditor();
+    }
+
+    function clearTable() {
+      tableHeaders = ['Column 1', 'Column 2', 'Column 3'];
+      tableAlignments = ['left', 'left', 'left'];
+      tableData = [
+        ['', '', ''],
+        ['', '', '']
+      ];
+      renderTableEditor();
+      showToast('CLEARED TABLE DATA');
+    }
+
+    function loadSample() {
+      tableHeaders = ['System Node', 'Protocol', 'Port', 'Status'];
+      tableAlignments = ['left', 'center', 'right', 'left'];
+      tableData = [
+        ['Signal Radar', 'HTTPS', '443', 'ACTIVE'],
+        ['Auth Shield', 'WSS', '8443', 'READY'],
+        ['Telemetry DB', 'TCP', '5432', 'ONLINE'],
+        ['Crypto Engine', 'RPC', '9000', 'SYNCHRONIZED']
+      ];
+      renderTableEditor();
+      showToast('LOADED SAMPLE TELEMETRY MATRIX');
+    }
+
+    function generateMarkdown() {
+      const numCols = tableHeaders.length;
+      if (numCols === 0) {
+        document.getElementById('outputMarkdown').textContent = '';
+        document.getElementById('renderedPreview').innerHTML = '';
+        return;
+      }
+
+      // Calculate maximum width per column
+      const colWidths = new Array(numCols).fill(3); // minimum 3 for ---
+      tableHeaders.forEach((h, i) => {
+        colWidths[i] = Math.max(colWidths[i], (h || '').length);
+      });
+      tableData.forEach(row => {
+        row.forEach((cell, i) => {
+          if (i < numCols) {
+            colWidths[i] = Math.max(colWidths[i], (cell || '').length);
+          }
+        });
+      });
+
+      // Helper function to pad cell
+      function padCell(val, width, align) {
+        val = val || '';
+        const diff = width - val.length;
+        if (diff <= 0) return val;
+        if (align === 'center') {
+          const leftPad = Math.floor(diff / 2);
+          const rightPad = diff - leftPad;
+          return ' '.repeat(leftPad) + val + ' '.repeat(rightPad);
+        } else if (align === 'right') {
+          return ' '.repeat(diff) + val;
+        } else {
+          return val + ' '.repeat(diff);
+        }
+      }
+
+      // Build Headers
+      let md = '| ' + tableHeaders.map((h, i) => padCell(h, colWidths[i], tableAlignments[i])).join(' | ') + ' |\n';
+
+      // Build Delimiter
+      md += '| ' + tableAlignments.map((align, i) => {
+        const w = colWidths[i];
+        if (align === 'center') {
+          return ':' + '-'.repeat(Math.max(1, w - 2)) + ':';
+        } else if (align === 'right') {
+          return '-'.repeat(Math.max(2, w - 1)) + ':';
+        } else {
+          return ':' + '-'.repeat(Math.max(2, w - 1));
+        }
+      }).join(' | ') + ' |\n';
+
+      // Build Rows
+      tableData.forEach(row => {
+        md += '| ' + row.map((cell, i) => {
+          if (i >= numCols) return '';
+          return padCell(cell, colWidths[i], tableAlignments[i]);
+        }).join(' | ') + ' |\n';
+      });
+
+      document.getElementById('outputMarkdown').textContent = md.trim();
+
+      // Render Live HTML Preview
+      renderHtmlPreview();
+    }
+
+    function renderHtmlPreview() {
+      const container = document.getElementById('renderedPreview');
+      if (tableHeaders.length === 0) {
+        container.innerHTML = '<span class="text-slate-600 text-xs font-mono">No table data</span>';
+        return;
+      }
+
+      let html = '<table class="w-full text-xs font-mono border-collapse">';
+      
+      // Thead
+      html += '<thead class="bg-slate-900 border-b border-cyan-500/40 text-cyan-300"><tr>';
+      tableHeaders.forEach((h, i) => {
+        const align = tableAlignments[i];
+        const alignClass = align === 'center' ? 'text-center' : (align === 'right' ? 'text-right' : 'text-left');
+        html += `<th class="p-2.5 font-bold ${alignClass} border-r border-slate-800/80">${escapeHtml(h)}</th>`;
+      });
+      html += '</tr></thead>';
+
+      // Tbody
+      html += '<tbody>';
+      tableData.forEach((row, rIdx) => {
+        const rowBg = rIdx % 2 === 0 ? 'bg-black/40' : 'bg-slate-950/60';
+        html += `<tr class="${rowBg} border-b border-slate-800/40 hover:bg-cyan-950/10">`;
+        row.forEach((cell, i) => {
+          if (i >= tableHeaders.length) return;
+          const align = tableAlignments[i];
+          const alignClass = align === 'center' ? 'text-center' : (align === 'right' ? 'text-right' : 'text-left');
+          html += `<td class="p-2 ${alignClass} text-slate-300 border-r border-slate-800/40">${escapeHtml(cell)}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+
+      container.innerHTML = html;
+    }
+
+    function copyMarkdown() {
+      const text = document.getElementById('outputMarkdown').textContent;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED MARKDOWN TABLE');
+    }
+
+    function downloadMarkdown() {
+      const text = document.getElementById('outputMarkdown').textContent;
+      const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `table-${Date.now()}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('DOWNLOADED TABLE (.MD)');
+    }
+
+    // CSV / TSV Import Logic
+    function toggleCsvModal(show) {
+      const modal = document.getElementById('csvModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function importCsv() {
+      const raw = document.getElementById('csvInput').value.trim();
+      if (!raw) {
+        showToast('PLEASE ENTER CSV / TSV DATA');
+        return;
+      }
+
+      let delim = document.getElementById('csvDelimiter').value;
+      if (delim === 'auto') {
+        const firstLine = raw.split(/\r?\n/)[0];
+        const commaCount = (firstLine.match(/,/g) || []).length;
+        const tabCount = (firstLine.match(/\t/g) || []).length;
+        const semiCount = (firstLine.match(/;/g) || []).length;
+        const pipeCount = (firstLine.match(/\|/g) || []).length;
+
+        const max = Math.max(commaCount, tabCount, semiCount, pipeCount);
+        if (max === 0) delim = ',';
+        else if (max === tabCount) delim = '\t';
+        else if (max === semiCount) delim = ';';
+        else if (max === pipeCount) delim = '|';
+        else delim = ',';
+      }
+
+      // Simple CSV parser supporting quotes
+      const lines = raw.split(/\r?\n/).filter(line => line.trim().length > 0);
+      if (lines.length === 0) {
+        showToast('EMPTY DATASET');
+        return;
+      }
+
+      function parseLine(line, delimiter) {
+        const result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"' || char === "'") {
+            if (inQuotes && line[i + 1] === char) {
+              cur += char;
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === delimiter && !inQuotes) {
+            result.push(cur.trim());
+            cur = '';
+          } else {
+            cur += char;
+          }
+        }
+        result.push(cur.trim());
+        return result;
+      }
+
+      const rows = lines.map(line => parseLine(line, delim));
+      if (rows.length === 0) return;
+
+      const headerRow = rows[0];
+      const dataRows = rows.slice(1);
+
+      tableHeaders = headerRow;
+      tableAlignments = new Array(headerRow.length).fill('left');
+      
+      // Auto-detect numeric columns for right-align
+      if (dataRows.length > 0) {
+        for (let c = 0; c < headerRow.length; c++) {
+          let allNumeric = true;
+          for (let r = 0; r < dataRows.length; r++) {
+            const val = dataRows[r][c];
+            if (val && !/^-?\$?[\d,.]+%?$/.test(val.trim())) {
+              allNumeric = false;
+              break;
+            }
+          }
+          if (allNumeric) {
+            tableAlignments[c] = 'right';
+          }
+        }
+      }
+
+      tableData = dataRows;
+
+      toggleCsvModal(false);
+      renderTableEditor();
+      showToast(`IMPORTED ${dataRows.length} ROWS OF TABULAR DATA`);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      renderTableEditor();
+    });
+  </script>
+</body>
+</html>
