@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '37-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '44-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -293,6 +293,55 @@ const APPS = [
     subdomain: 'table',
     title: 'CYBERTOOLS // TABLE',
     subtitle: 'MARKDOWN & CSV TABULAR GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'dns',
+    subdomain: 'dns',
+    title: 'CYBERTOOLS // DNS',
+    subtitle: 'DNS RECORD SYNTHESIZER & BIND FORMATTER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'robots',
+    subdomain: 'robots',
+    title: 'CYBERTOOLS // ROBOTS',
+    subtitle: 'CRAWLER GATEKEEPER & ROBOTS.TXT COMPILER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'meta',
+    subdomain: 'meta',
+    title: 'CYBERTOOLS // META',
+    subtitle: 'OPENGRAPH & SOCIAL META TAG STUDIO',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'ua',
+    subdomain: 'ua',
+    title: 'CYBERTOOLS // UA',
+    subtitle: 'USER AGENT ANALYZER & ENGINE PARSER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'chmod',
+    subdomain: 'chmod',
+    title: 'CYBERTOOLS // CHMOD',
+    subtitle: 'UNIX OCTAL PERMISSIONS MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'lorem',
+    subdomain: 'lorem',
+    title: 'CYBERTOOLS // LOREM',
+    subtitle: 'CYBER TEXT & JARGON SYNTHESIZER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'ports',
+    subdomain: 'ports',
+    title: 'CYBERTOOLS // PORTS',
+    subtitle: 'TCP/UDP SERVICE PORT PROTOCOL RECON',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

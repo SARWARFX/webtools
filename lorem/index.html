@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Text Synthesizer // Lorem Ipsum & Tech Jargon Generator - sarwarfx</title>
+  <meta name="description" content="Procedural dummy text generator with toggles for Classic Latin Lorem Ipsum, Cyberpunk Tech Jargon, Hacker Cipher streams, and HTML markup wrapping.">
+  <meta name="keywords" content="lorem ipsum generator, cyberpunk text generator, tech dummy data, hacker text generator, developer placeholder text, lorem ipsum paragraphs">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/lorem/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/lorem/" />
+  <meta property="og:title" content="Cyber Text Synthesizer // Lorem Ipsum & Tech Jargon Generator - sarwarfx" />
+  <meta property="og:description" content="Procedural dummy text generator with toggles for Classic Latin Lorem Ipsum, Cyberpunk Tech Jargon, Hacker Cipher streams, and HTML markup wrapping." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/lorem/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/lorem/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/lorem/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cyber Text Synthesizer // Lorem Ipsum & Tech Jargon Generator - sarwarfx" />
+  <meta name="twitter:description" content="Procedural dummy text generator with toggles for Classic Latin Lorem Ipsum, Cyberpunk Tech Jargon, Hacker Cipher streams, and HTML markup wrapping." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/lorem/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Cyber Text Synthesizer",
+    "url": "https://apps.sarwarfx.cfd/lorem/",
+    "description": "Procedural dummy text generator with toggles for Classic Latin Lorem Ipsum, Cyberpunk Tech Jargon, Hacker Cipher streams, and HTML markup wrapping.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">LOREM_SYNTHESIZER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x2B</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(44)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero Title -->
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400">
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+        <span class="tracking-widest">[SYS_NODE: 0x2B // PROCEDURAL TEXT SYNTHESIZER]</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wide">
+        CYBER TEXT <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">SYNTHESIZER & LOREM LAB</span>
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm font-rajdhani text-base leading-relaxed max-w-3xl">
+        Generate procedural dummy placeholder data for mockups, prototypes, and stress tests. Features classic Latin Cicero Lorem Ipsum, Cyberpunk Neural Jargon, and Hacker cipher stream modes with HTML tag wrapping.
+      </p>
+    </div>
+
+    <!-- Generator Control HUD -->
+    <div class="hud-card p-5 rounded space-y-4 font-mono text-xs">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-sliders text-cyan-400 text-xs"></i>
+          <span class="font-bold tracking-wider text-slate-200 uppercase">SYNTHESIS CONTROLS</span>
+        </div>
+        <button onclick="generateText()" class="hud-btn-primary px-4 py-1.5 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-arrows-rotate text-xs"></i>
+          <span>REGENERATE TEXT</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Mode -->
+        <div>
+          <label class="block text-[10px] text-slate-400 uppercase mb-1">TEXT DICTIONARY</label>
+          <select id="textMode" onchange="generateText()" class="w-full bg-slate-900 border border-slate-700 text-cyan-300 px-3 py-2 rounded focus:border-cyan-400 outline-none">
+            <option value="cyberpunk">Cyberpunk Tech Jargon</option>
+            <option value="latin">Classic Latin (Lorem Ipsum)</option>
+            <option value="hacker">Hacker Cipher & Memory Dump</option>
+            <option value="matrix">Matrix Code Stream</option>
+          </select>
+        </div>
+
+        <!-- Paragraphs Slider -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-[10px] text-slate-400 uppercase">PARAGRAPHS</label>
+            <span id="paraVal" class="text-cyan-400 font-bold">3</span>
+          </div>
+          <input type="range" id="inputParas" min="1" max="15" value="3" oninput="document.getElementById('paraVal').textContent = this.value; generateText()" class="w-full accent-cyan-400 cursor-pointer" />
+        </div>
+
+        <!-- Words Per Paragraph -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-[10px] text-slate-400 uppercase">LENGTH DENSITY</label>
+            <span id="densityVal" class="text-pink-400 font-bold">Medium</span>
+          </div>
+          <select id="densitySelect" onchange="generateText()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-3 py-2 rounded focus:border-cyan-400 outline-none">
+            <option value="short">Short (~35 words)</option>
+            <option value="medium" selected>Medium (~70 words)</option>
+            <option value="long">Long (~120 words)</option>
+          </select>
+        </div>
+
+        <!-- Formatting Wrappers -->
+        <div>
+          <label class="block text-[10px] text-slate-400 uppercase mb-1">HTML ENCAPSULATION</label>
+          <select id="formatWrap" onchange="generateText()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 px-3 py-2 rounded focus:border-cyan-400 outline-none">
+            <option value="raw">Plain Text (No Tags)</option>
+            <option value="p">&lt;p&gt; Paragraphs</option>
+            <option value="article">&lt;article&gt; &amp; &lt;p&gt;</option>
+            <option value="list">&lt;ul&gt; &lt;li&gt; Unordered List</option>
+            <option value="json">JSON Array</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 pt-1">
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-cyan-300">
+          <input type="checkbox" id="startWithLorem" onchange="generateText()" checked class="accent-cyan-400" />
+          <span class="text-xs">Start with canonical prefix ("Lorem ipsum..." / "INITIATING_NEURAL_UPLINK...")</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Telemetry Counters Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+      <div class="hud-card p-3 rounded flex items-center justify-between">
+        <span class="text-slate-500 uppercase text-[10px]">WORDS:</span>
+        <span id="metricWords" class="text-cyan-400 font-bold text-sm">0</span>
+      </div>
+      <div class="hud-card p-3 rounded flex items-center justify-between">
+        <span class="text-slate-500 uppercase text-[10px]">CHARACTERS:</span>
+        <span id="metricChars" class="text-pink-400 font-bold text-sm">0</span>
+      </div>
+      <div class="hud-card p-3 rounded flex items-center justify-between">
+        <span class="text-slate-500 uppercase text-[10px]">EST. READING TIME:</span>
+        <span id="metricReadTime" class="text-emerald-400 font-bold text-sm">0s</span>
+      </div>
+      <div class="hud-card p-3 rounded flex items-center justify-between">
+        <span class="text-slate-500 uppercase text-[10px]">BYTE SIZE:</span>
+        <span id="metricBytes" class="text-amber-400 font-bold text-sm">0 B</span>
+      </div>
+    </div>
+
+    <!-- Output Text Block -->
+    <div class="hud-card p-5 rounded space-y-3 font-mono text-xs flex flex-col">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-align-left text-cyan-400 text-xs"></i>
+          <span class="font-bold tracking-wider text-slate-200 uppercase">SYNTHESIZED DUMMY STREAM</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="downloadText()" class="hud-btn-secondary px-2.5 py-1 rounded text-[11px] flex items-center space-x-1">
+            <i class="fa-solid fa-download text-xs"></i>
+            <span>EXPORT .TXT</span>
+          </button>
+          <button onclick="copyOutput()" class="hud-btn-primary px-3 py-1 rounded text-[11px] flex items-center space-x-1">
+            <i class="fa-solid fa-copy text-xs"></i>
+            <span>COPY TEXT</span>
+          </button>
+        </div>
+      </div>
+
+      <pre id="outputText" class="bg-black/70 border border-slate-800/80 rounded p-4 font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre-wrap leading-relaxed select-all min-h-[300px]"></pre>
+    </div>
+
+    <!-- Semantic Crawl Article & Technical Reference -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-mono text-xs sm:text-sm leading-relaxed border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide">
+          PROCEDURAL PLACEHOLDER TEXT & TYPOGRAPHIC TESTING
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Historical overview of typesetting filler text, linguistic entropy distributions, and zero-telemetry local generation.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">1. Origins of Lorem Ipsum</h3>
+        <p>
+          "Lorem Ipsum" originated in the 16th century when an unknown printer scrambled parts of Cicero's 45 BC treatise <em class="text-cyan-300">"De Finibus Bonorum et Malorum"</em> (On the Ends of Good and Evil). The standard passage has been utilized across publishing, graphic design, and web development to showcase typographic visual hierarchy without distracting readers with intelligible semantic copy.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">2. Procedural Cyberpunk Dictionary</h3>
+        <p>
+          For developer tooling, high-tech terminals, and security dashboards, classical Latin often clashes with modern neon HUD aesthetics. The Cyberpunk synthesis engine stitches together authentic technical jargon (memory buffers, neural relays, quantum entanglements, optical telemetry) to provide contextually realistic dummy copy for modern UI engineering.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Airgap Processing</strong>
+          Procedural generation executes entirely in your browser using local pseudo-random number generators. No network requests are made.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Markup Encapsulation</strong>
+          Directly wraps generated paragraphs into semantically valid HTML tags (<code class="text-cyan-300">&lt;p&gt;</code>, <code class="text-cyan-300">&lt;ul&gt;</code>, JSON) for instant IDE clipboard paste.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Live Byte Telemetry</strong>
+          Calculates precise UTF-8 byte payloads to help test API payload limits and database character buffer constraints.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (44)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'lorem';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' },
+      { id: 'dns', name: 'DNS SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', code: '0x2C' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Vocabulary Banks
+    const LATIN_WORDS = [
+      'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit', 'sed', 'do',
+      'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore', 'magna', 'aliqua', 'enim',
+      'ad', 'minim', 'veniam', 'quis', 'nostrud', 'exercitation', 'ullamco', 'laboris', 'nisi',
+      'aliquip', 'ex', 'ea', 'commodo', 'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit',
+      'voluptate', 'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint',
+      'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'culpa', 'qui', 'officia', 'deserunt',
+      'mollit', 'anim', 'id', 'est', 'laborum'
+    ];
+
+    const CYBER_WORDS = [
+      'neural', 'uplink', 'quantum', 'subnet', 'firewall', 'payload', 'cipher', 'protocol', 'daemon',
+      'matrix', 'kernel', 'buffer', 'overflow', 'cryptographic', 'entropy', 'telemetry', 'vector',
+      'cyberdeck', 'firmware', 'zero-day', 'exploit', 'handshake', 'airgap', 'sandbox', 'heuristic',
+      'algorithmic', 'nanite', 'optics', 'silicon', 'proxy', 'synapse', 'bypassing', 'compiler',
+      'routing', 'transceiver', 'mainframe', 'packet', 'cluster', 'node', 'decentralized', 'hashrate',
+      'blockchain', 'biometric', 'telemetry', 'subsystem', 'backdoor', 'lattice', 'encryption',
+      'decryption', 'runtime', 'latency', 'bandwidth', 'overdrive', 'cortex', 'chasm', 'daemon'
+    ];
+
+    const HACKER_WORDS = [
+      '0x7FFE9A10', '0xDEADBEEF', '0xBAADF00D', 'NOP', 'MOV_EAX', 'RET', 'XOR_ECX', 'STACK_POINTER',
+      'PTR_REF', 'SIGSEGV', 'HEAP_ALLOC', 'SHELLCODE', 'SHA256_HASH', 'RSA_4096', 'AES_GCM_256',
+      'HMAC_DIGEST', 'EPOCH_TICK', 'SYS_CALL_44', 'TLS_1_3', 'PTHREAD_KILL', 'MUTEX_LOCK',
+      'LEAK_DETECTED', 'MEM_PAGE_FAULT', 'CANARY_INTACT', 'ROP_CHAIN', 'BYTE_OFFSET_32', 'FD_STDOUT'
+    ];
+
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function generateSentence(bank, minWords, maxWords) {
+      const len = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
+      const words = [];
+      for (let i = 0; i < len; i++) {
+        words.push(getRandomItem(bank));
+      }
+      return capitalize(words.join(' ')) + '.';
+    }
+
+    function generateParagraph(bank, sentencesCount, minWords, maxWords) {
+      const sents = [];
+      for (let i = 0; i < sentencesCount; i++) {
+        sents.push(generateSentence(bank, minWords, maxWords));
+      }
+      return sents.join(' ');
+    }
+
+    function generateText() {
+      const mode = document.getElementById('textMode').value;
+      const numParas = parseInt(document.getElementById('inputParas').value, 10) || 3;
+      const density = document.getElementById('densitySelect').value;
+      const wrap = document.getElementById('formatWrap').value;
+      const startWithLorem = document.getElementById('startWithLorem').checked;
+
+      let bank = CYBER_WORDS;
+      if (mode === 'latin') bank = LATIN_WORDS;
+      else if (mode === 'hacker') bank = HACKER_WORDS;
+      else if (mode === 'matrix') bank = CYBER_WORDS.concat(HACKER_WORDS);
+
+      let sentsCount = 4;
+      let minWords = 8;
+      let maxWords = 16;
+
+      if (density === 'short') {
+        sentsCount = 3;
+        minWords = 6;
+        maxWords = 12;
+      } else if (density === 'long') {
+        sentsCount = 7;
+        minWords = 10;
+        maxWords = 20;
+      }
+
+      const paragraphs = [];
+      for (let p = 0; p < numParas; p++) {
+        let pText = generateParagraph(bank, sentsCount, minWords, maxWords);
+        if (p === 0 && startWithLorem) {
+          if (mode === 'latin') {
+            pText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' + pText;
+          } else if (mode === 'cyberpunk') {
+            pText = 'INITIATING_NEURAL_UPLINK // Quantum subnet handshaking established. ' + pText;
+          } else if (mode === 'hacker') {
+            pText = '0xDEADBEEF: MEM_CORRUPTION_SCAN // ' + pText;
+          }
+        }
+        paragraphs.push(pText);
+      }
+
+      // Formatting Encapsulation
+      let output = '';
+      if (wrap === 'p') {
+        output = paragraphs.map(p => `<p>${p}</p>`).join('\n\n');
+      } else if (wrap === 'article') {
+        output = '<article>\n' + paragraphs.map(p => `  <p>${p}</p>`).join('\n') + '\n</article>';
+      } else if (wrap === 'list') {
+        output = '<ul>\n' + paragraphs.map(p => `  <li>${p}</li>`).join('\n') + '\n</ul>';
+      } else if (wrap === 'json') {
+        output = JSON.stringify(paragraphs, null, 2);
+      } else {
+        output = paragraphs.join('\n\n');
+      }
+
+      document.getElementById('outputText').textContent = output;
+
+      // Telemetry Calculations
+      const wordsTotal = output.trim().split(/\s+/).filter(w => w.length > 0).length;
+      const charsTotal = output.length;
+      const readSeconds = Math.ceil((wordsTotal / 200) * 60);
+      const readTimeStr = readSeconds < 60 ? `${readSeconds}s` : `${Math.floor(readSeconds / 60)}m ${readSeconds % 60}s`;
+      const bytesTotal = new Blob([output]).size;
+
+      document.getElementById('metricWords').textContent = wordsTotal.toLocaleString();
+      document.getElementById('metricChars').textContent = charsTotal.toLocaleString();
+      document.getElementById('metricReadTime').textContent = readTimeStr;
+      document.getElementById('metricBytes').textContent = `${bytesTotal.toLocaleString()} B`;
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('outputText').textContent;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED TEXT TO CLIPBOARD');
+    }
+
+    function downloadText() {
+      const text = document.getElementById('outputText').textContent;
+      const wrap = document.getElementById('formatWrap').value;
+      const ext = (wrap === 'json') ? 'json' : ((wrap === 'p' || wrap === 'article' || wrap === 'list') ? 'html' : 'txt');
+      const mime = ext === 'html' ? 'text/html' : (ext === 'json' ? 'application/json' : 'text/plain');
+
+      const blob = new Blob([text], { type: `${mime};charset=utf-8` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cyber-text-${Date.now()}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`DOWNLOADED FILE (.${ext.toUpperCase()})`);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      generateText();
+    });
+  </script>
+</body>
+</html>

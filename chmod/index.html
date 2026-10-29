@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chmod Permissions Calculator // Unix Octal & Symbolic Converter - sarwarfx</title>
+  <meta name="description" content="Interactive visual Unix chmod permission calculator. Bidirectional converter between octal notation (755, 644, 700) and symbolic notation (-rwxr-xr-x) with terminal commands.">
+  <meta name="keywords" content="chmod calculator, chmod permissions, unix permissions calculator, octal to symbolic, chmod 755, chmod 644, linux file permissions">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/chmod/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/chmod/" />
+  <meta property="og:title" content="Chmod Permissions Calculator // Unix Octal & Symbolic Converter - sarwarfx" />
+  <meta property="og:description" content="Interactive visual Unix chmod permission calculator. Bidirectional converter between octal notation (755, 644, 700) and symbolic notation (-rwxr-xr-x) with terminal commands." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/chmod/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/chmod/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/chmod/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chmod Permissions Calculator // Unix Octal & Symbolic Converter - sarwarfx" />
+  <meta name="twitter:description" content="Interactive visual Unix chmod permission calculator. Bidirectional converter between octal notation (755, 644, 700) and symbolic notation (-rwxr-xr-x) with terminal commands." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/chmod/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Chmod Permissions Calculator",
+    "url": "https://apps.sarwarfx.cfd/chmod/",
+    "description": "Interactive visual Unix chmod permission calculator. Bidirectional converter between octal notation (755, 644, 700) and symbolic notation (-rwxr-xr-x) with terminal commands.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3v2h1a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h1v-2c0-1.66 1.34-3 3-3zm0 2c-.55 0-1 .45-1 1v2h2v-2c0-.55-.45-1-1-1z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .perm-checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #475569;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .perm-checkbox:checked {
+      background: rgba(0, 245, 255, 0.2);
+      border-color: #00f5ff;
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+    }
+    .perm-checkbox:checked::after {
+      content: '✓';
+      color: #00f5ff;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">CHMOD_CALCULATOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x2A</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(44)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero Title -->
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400">
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+        <span class="tracking-widest">[SYS_NODE: 0x2A // UNIX PERMISSION MATRIX]</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wide">
+        CHMOD <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">PERMISSIONS CALCULATOR</span>
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm font-rajdhani text-base leading-relaxed max-w-3xl">
+        Visual interactive Unix permissions grid. Bidirectionally converts between octal notation (<span class="text-cyan-400">755</span>, <span class="text-pink-400">644</span>, <span class="text-emerald-400">600</span>) and symbolic flags (<span class="text-cyan-400">-rwxr-xr-x</span>). Computes terminal commands for files, scripts, and recursive directory trees.
+      </p>
+    </div>
+
+    <!-- Quick Presets -->
+    <div class="hud-card p-4 rounded flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-2 text-xs font-mono text-slate-400">
+        <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+        <span>SECURITY PRESETS:</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="setOctal('644')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-cyan-300">
+          644 (Standard File)
+        </button>
+        <button onclick="setOctal('755')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-emerald-300">
+          755 (Directory / Binary)
+        </button>
+        <button onclick="setOctal('700')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-amber-300">
+          700 (Private Executable)
+        </button>
+        <button onclick="setOctal('600')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-purple-300">
+          600 (Private SSH Key)
+        </button>
+        <button onclick="setOctal('400')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-blue-300">
+          400 (Read-Only Cert)
+        </button>
+        <button onclick="setOctal('777')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-xs text-rose-400 hover:border-rose-500/50">
+          777 (Public Insecure)
+        </button>
+      </div>
+    </div>
+
+    <!-- Dual Metric HUD: Octal Display & Symbolic Display -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
+      <div class="hud-card p-5 rounded space-y-1">
+        <div class="text-[10px] text-slate-500 uppercase tracking-widest">OCTAL NOTATION VALUE</div>
+        <div class="flex items-baseline space-x-2">
+          <input type="text" id="inputOctal" maxlength="4" value="755" oninput="onOctalInput(this.value)" class="text-3xl sm:text-4xl font-extrabold text-cyan-400 bg-transparent outline-none w-32 border-b border-cyan-500/40 focus:border-cyan-400" />
+          <span class="text-xs text-slate-500 uppercase">[EDITABLE]</span>
+        </div>
+        <div class="text-[11px] text-slate-400 pt-1" id="octalBreakdown">Owner: 7 (rwx) | Group: 5 (r-x) | Public: 5 (r-x)</div>
+      </div>
+
+      <div class="hud-card p-5 rounded space-y-1">
+        <div class="text-[10px] text-slate-500 uppercase tracking-widest">SYMBOLIC NOTATION VALUE</div>
+        <div class="flex items-baseline space-x-2">
+          <input type="text" id="inputSymbolic" maxlength="10" value="-rwxr-xr-x" oninput="onSymbolicInput(this.value)" class="text-2xl sm:text-3xl font-extrabold text-pink-400 bg-transparent outline-none w-56 border-b border-pink-500/40 focus:border-pink-400" />
+          <span class="text-xs text-slate-500 uppercase">[EDITABLE]</span>
+        </div>
+        <div class="text-[11px] text-slate-400 pt-1" id="fileTypeLabel">File Type: Regular File (-)</div>
+      </div>
+    </div>
+
+    <!-- Interactive Visual Matrix Grid -->
+    <div class="hud-card p-6 rounded space-y-4 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells text-cyan-400 text-xs"></i>
+          <span class="font-bold tracking-wider text-slate-200 uppercase">PERMISSION MATRIX</span>
+        </div>
+        <div class="flex items-center space-x-3 text-[11px]">
+          <label class="flex items-center space-x-1.5 cursor-pointer text-slate-400 hover:text-cyan-300">
+            <input type="checkbox" id="isDir" onchange="updateAll()" class="perm-checkbox" />
+            <span>DIRECTORY (d)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Column 1: Owner (User) -->
+        <div class="p-4 bg-black/50 border border-slate-800 rounded space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="font-bold text-cyan-300 uppercase tracking-wider">OWNER (USER)</span>
+            <span class="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 text-[11px] font-bold" id="ownerVal">7</span>
+          </div>
+          <div class="space-y-2.5">
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-cyan-300">Read (r = 4)</span>
+              <input type="checkbox" id="u_r" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-cyan-300">Write (w = 2)</span>
+              <input type="checkbox" id="u_w" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-cyan-300">Execute (x = 1)</span>
+              <input type="checkbox" id="u_x" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+          </div>
+        </div>
+
+        <!-- Column 2: Group -->
+        <div class="p-4 bg-black/50 border border-slate-800 rounded space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="font-bold text-pink-300 uppercase tracking-wider">GROUP</span>
+            <span class="px-2 py-0.5 rounded bg-pink-950/60 border border-pink-500/40 text-pink-400 text-[11px] font-bold" id="groupVal">5</span>
+          </div>
+          <div class="space-y-2.5">
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-pink-300">Read (r = 4)</span>
+              <input type="checkbox" id="g_r" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-pink-300">Write (w = 2)</span>
+              <input type="checkbox" id="g_w" onchange="updateFromGrid()" class="perm-checkbox" />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-pink-300">Execute (x = 1)</span>
+              <input type="checkbox" id="g_x" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+          </div>
+        </div>
+
+        <!-- Column 3: Others (Public) -->
+        <div class="p-4 bg-black/50 border border-slate-800 rounded space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="font-bold text-emerald-300 uppercase tracking-wider">OTHERS (PUBLIC)</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[11px] font-bold" id="otherVal">5</span>
+          </div>
+          <div class="space-y-2.5">
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-emerald-300">Read (r = 4)</span>
+              <input type="checkbox" id="o_r" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-emerald-300">Write (w = 2)</span>
+              <input type="checkbox" id="o_w" onchange="updateFromGrid()" class="perm-checkbox" />
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-slate-300 group-hover:text-emerald-300">Execute (x = 1)</span>
+              <input type="checkbox" id="o_x" onchange="updateFromGrid()" class="perm-checkbox" checked />
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Warning Banner for 777 -->
+      <div id="warn777" class="p-3 bg-rose-950/40 border border-rose-500/60 rounded text-rose-300 text-xs flex items-center space-x-3 hidden">
+        <i class="fa-solid fa-triangle-exclamation text-rose-400 text-base"></i>
+        <span><strong>CRITICAL SECURITY WARNING:</strong> 777 permissions grant universal write and execute access to all unprivileged system users. Never deploy 777 on production web roots or private keys.</span>
+      </div>
+    </div>
+
+    <!-- Command Snippets Output -->
+    <div class="hud-card p-5 rounded space-y-3 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-terminal text-cyan-400 text-xs"></i>
+          <span class="font-bold tracking-wider text-slate-200 uppercase">COPYABLE TERMINAL EXECUTION SNIPPETS</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between p-2.5 bg-black/60 border border-slate-800 rounded">
+          <span class="text-slate-400">Standard Octal:</span>
+          <div class="flex items-center space-x-2">
+            <code class="text-cyan-300" id="cmdOctal">chmod 755 filename</code>
+            <button onclick="copyText('cmdOctal')" class="text-slate-400 hover:text-cyan-300 px-2 py-0.5"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-2.5 bg-black/60 border border-slate-800 rounded">
+          <span class="text-slate-400">Symbolic Syntax:</span>
+          <div class="flex items-center space-x-2">
+            <code class="text-pink-300" id="cmdSymbolic">chmod u=rwx,g=rx,o=rx filename</code>
+            <button onclick="copyText('cmdSymbolic')" class="text-slate-400 hover:text-pink-300 px-2 py-0.5"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-2.5 bg-black/60 border border-slate-800 rounded">
+          <span class="text-slate-400">Recursive Directory:</span>
+          <div class="flex items-center space-x-2">
+            <code class="text-emerald-300" id="cmdRecursive">chmod -R 755 /path/to/directory/</code>
+            <button onclick="copyText('cmdRecursive')" class="text-slate-400 hover:text-emerald-300 px-2 py-0.5"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semantic Crawl Article & Technical Reference -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-mono text-xs sm:text-sm leading-relaxed border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide">
+          UNIX DISCRETIONARY ACCESS CONTROL (DAC) & PERMISSION ARCHITECTURE
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Technical specifications for POSIX permission bits, octal calculation mathematics, symbolic operators, and hardened security best practices.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">1. Binary Weight Mathematics</h3>
+        <p>
+          Unix file permissions are implemented as a set of 9 primary bit flags organized into three distinct triplets (User, Group, Other). Each bit corresponds to an exact power of two:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 pl-2 text-slate-400">
+          <li><strong class="text-cyan-300">Read (<code class="text-cyan-300">r</code>):</strong> Bit value <code class="text-cyan-300">4</code> (binary <code class="text-cyan-300">100</code>). Grants read access to file contents or directory file listings.</li>
+          <li><strong class="text-pink-300">Write (<code class="text-pink-300">w</code>):</strong> Bit value <code class="text-pink-300">2</code> (binary <code class="text-pink-300">010</code>). Grants file modification and directory file creation/deletion rights.</li>
+          <li><strong class="text-emerald-300">Execute (<code class="text-emerald-300">x</code>):</strong> Bit value <code class="text-emerald-300">1</code> (binary <code class="text-emerald-300">001</code>). Grants binary program execution or directory directory-traversal (<code class="text-emerald-300">cd</code>).</li>
+        </ul>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">2. Standard Security Baselines</h3>
+        <p>
+          Hardened POSIX environments enforce strict principle of least privilege permissions:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+          <div class="p-3 bg-black/40 border border-slate-800">
+            <strong class="text-cyan-300 block mb-1">600 / 400 (Private Keys)</strong>
+            Required by OpenSSH for <code class="text-cyan-300">id_rsa</code> and TLS private keys. The SSH client will reject keys with group/other permissions.
+          </div>
+          <div class="p-3 bg-black/40 border border-slate-800">
+            <strong class="text-pink-300 block mb-1">644 (Static Assets)</strong>
+            Standard baseline for HTML, CSS, JS, and server assets. Owner can write; world can only read.
+          </div>
+          <div class="p-3 bg-black/40 border border-slate-800">
+            <strong class="text-emerald-300 block mb-1">755 (Executables)</strong>
+            Standard for system binaries, shell scripts, and web server directories allowing directory traversal.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Air-Gapped Privacy</strong>
+          100% in-browser calculations. No terminal logs, paths, or file telemetry are transmitted externally.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Bidirectional Parsing</strong>
+          Seamlessly calculate between octal numbers and symbolic strings in real time without page refreshes.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Automated Risk Audits</strong>
+          Integrated warning triggers whenever insecure flags (<code class="text-rose-400">777</code>) are detected.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (44)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'chmod';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' },
+      { id: 'dns', name: 'DNS SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', code: '0x2C' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function calcOctal() {
+      const u = (document.getElementById('u_r').checked ? 4 : 0) +
+                (document.getElementById('u_w').checked ? 2 : 0) +
+                (document.getElementById('u_x').checked ? 1 : 0);
+
+      const g = (document.getElementById('g_r').checked ? 4 : 0) +
+                (document.getElementById('g_w').checked ? 2 : 0) +
+                (document.getElementById('g_x').checked ? 1 : 0);
+
+      const o = (document.getElementById('o_r').checked ? 4 : 0) +
+                (document.getElementById('o_w').checked ? 2 : 0) +
+                (document.getElementById('o_x').checked ? 1 : 0);
+
+      return `${u}${g}${o}`;
+    }
+
+    function calcSymbolic() {
+      const isDir = document.getElementById('isDir').checked;
+      const typeChar = isDir ? 'd' : '-';
+      const u = (document.getElementById('u_r').checked ? 'r' : '-') +
+                (document.getElementById('u_w').checked ? 'w' : '-') +
+                (document.getElementById('u_x').checked ? 'x' : '-');
+      const g = (document.getElementById('g_r').checked ? 'r' : '-') +
+                (document.getElementById('g_w').checked ? 'w' : '-') +
+                (document.getElementById('g_x').checked ? 'x' : '-');
+      const o = (document.getElementById('o_r').checked ? 'r' : '-') +
+                (document.getElementById('o_w').checked ? 'w' : '-') +
+                (document.getElementById('o_x').checked ? 'x' : '-');
+
+      return `${typeChar}${u}${g}${o}`;
+    }
+
+    function updateFromGrid() {
+      const octal = calcOctal();
+      const symbolic = calcSymbolic();
+
+      document.getElementById('inputOctal').value = octal;
+      document.getElementById('inputSymbolic').value = symbolic;
+      updateDisplays(octal, symbolic);
+    }
+
+    function onOctalInput(val) {
+      val = val.trim();
+      if (!/^[0-7]{3,4}$/.test(val)) return;
+      setOctal(val);
+    }
+
+    function onSymbolicInput(val) {
+      val = val.trim();
+      if (val.length === 9) val = '-' + val;
+      if (val.length !== 10) return;
+
+      document.getElementById('isDir').checked = val[0] === 'd';
+      document.getElementById('u_r').checked = val[1] === 'r';
+      document.getElementById('u_w').checked = val[2] === 'w';
+      document.getElementById('u_x').checked = val[3] === 'x';
+      document.getElementById('g_r').checked = val[4] === 'r';
+      document.getElementById('g_w').checked = val[5] === 'w';
+      document.getElementById('g_x').checked = val[6] === 'x';
+      document.getElementById('o_r').checked = val[7] === 'r';
+      document.getElementById('o_w').checked = val[8] === 'w';
+      document.getElementById('o_x').checked = val[9] === 'x';
+
+      const octal = calcOctal();
+      document.getElementById('inputOctal').value = octal;
+      updateDisplays(octal, val);
+    }
+
+    function setOctal(octalStr) {
+      const str = octalStr.slice(-3);
+      const u = parseInt(str[0], 10) || 0;
+      const g = parseInt(str[1], 10) || 0;
+      const o = parseInt(str[2], 10) || 0;
+
+      document.getElementById('u_r').checked = !!(u & 4);
+      document.getElementById('u_w').checked = !!(u & 2);
+      document.getElementById('u_x').checked = !!(u & 1);
+
+      document.getElementById('g_r').checked = !!(g & 4);
+      document.getElementById('g_w').checked = !!(g & 2);
+      document.getElementById('g_x').checked = !!(g & 1);
+
+      document.getElementById('o_r').checked = !!(o & 4);
+      document.getElementById('o_w').checked = !!(o & 2);
+      document.getElementById('o_x').checked = !!(o & 1);
+
+      document.getElementById('inputOctal').value = str;
+      const symbolic = calcSymbolic();
+      document.getElementById('inputSymbolic').value = symbolic;
+      updateDisplays(str, symbolic);
+    }
+
+    function updateDisplays(octal, symbolic) {
+      const u = octal[0];
+      const g = octal[1];
+      const o = octal[2];
+
+      document.getElementById('ownerVal').textContent = u;
+      document.getElementById('groupVal').textContent = g;
+      document.getElementById('otherVal').textContent = o;
+
+      const permToDesc = (val) => {
+        const r = (val & 4) ? 'r' : '-';
+        const w = (val & 2) ? 'w' : '-';
+        const x = (val & 1) ? 'x' : '-';
+        return `${r}${w}${x}`;
+      };
+
+      document.getElementById('octalBreakdown').textContent = `Owner: ${u} (${permToDesc(u)}) | Group: ${g} (${permToDesc(g)}) | Public: ${o} (${permToDesc(o)})`;
+      document.getElementById('fileTypeLabel').textContent = symbolic[0] === 'd' ? 'File Type: Directory (d)' : 'File Type: Regular File (-)';
+
+      // Commands
+      const isDir = document.getElementById('isDir').checked;
+      const target = isDir ? 'directory_name' : 'filename';
+      document.getElementById('cmdOctal').textContent = `chmod ${octal} ${target}`;
+
+      // Build symbolic syntax
+      const uStr = (document.getElementById('u_r').checked ? 'r' : '') + (document.getElementById('u_w').checked ? 'w' : '') + (document.getElementById('u_x').checked ? 'x' : '');
+      const gStr = (document.getElementById('g_r').checked ? 'r' : '') + (document.getElementById('g_w').checked ? 'w' : '') + (document.getElementById('g_x').checked ? 'x' : '');
+      const oStr = (document.getElementById('o_r').checked ? 'r' : '') + (document.getElementById('o_w').checked ? 'w' : '') + (document.getElementById('o_x').checked ? 'x' : '');
+      document.getElementById('cmdSymbolic').textContent = `chmod u=${uStr || '-'},g=${gStr || '-'},o=${oStr || '-'} ${target}`;
+
+      document.getElementById('cmdRecursive').textContent = `chmod -R ${octal} /path/to/${target}/`;
+
+      // 777 Warning
+      document.getElementById('warn777').classList.toggle('hidden', octal !== '777');
+    }
+
+    function updateAll() {
+      updateFromGrid();
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED COMMAND');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      setOctal('755');
+    });
+  </script>
+</body>
+</html>
