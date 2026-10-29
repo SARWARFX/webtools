@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Codebase Context Packer // LLM Prompt Repo Flattener - sarwarfx</title>
-  <meta name="description" content="Bundle source code repos into LLM prompt contexts with tree outline and token counts. 100% in-browser, client-side, zero tracking, instant processing.">
+  <title>Codebase to LLM Context Packer // Fast Folder Flattener for Claude & GPT</title>
+  <meta name="description" content="Convert an entire codebase folder into a single structured prompt for ChatGPT, Claude, and Gemini. Client-side, privacy-first, zero token logs.">
   <meta name="keywords" content="codebase packer, repo to llm, llm context generator, flatten codebase, code to prompt, prompt engineering, developer tools">
   <link rel="canonical" href="https://pack.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://pack.sarwarfx.cfd/" />
-  <meta property="og:title" content="Codebase Context Packer // LLM Prompt Repo Flattener - sarwarfx" />
-  <meta property="og:description" content="Bundle source code repos into LLM prompt contexts with tree outline and token counts. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta property="og:title" content="Codebase to LLM Context Packer // Fast Folder Flattener for Claude & GPT" />
+  <meta property="og:description" content="Convert an entire codebase folder into a single structured prompt for ChatGPT, Claude, and Gemini. Client-side, privacy-first, zero token logs." />
   <meta property="og:image" content="https://pack.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://pack.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://pack.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Codebase Context Packer // LLM Prompt Repo Flattener - sarwarfx" />
-  <meta name="twitter:description" content="Bundle source code repos into LLM prompt contexts with tree outline and token counts. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta name="twitter:title" content="Codebase to LLM Context Packer // Fast Folder Flattener for Claude & GPT" />
+  <meta name="twitter:description" content="Convert an entire codebase folder into a single structured prompt for ChatGPT, Claude, and Gemini. Client-side, privacy-first, zero token logs." />
   <meta name="twitter:image" content="https://pack.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,8 +35,8 @@
     "@type": "WebApplication",
     "name": "Codebase to LLM Context Packer",
     "url": "https://pack.sarwarfx.cfd/",
-    "description": "Bundle source code repos into LLM prompt contexts with tree outline and token counts. 100% in-browser, client-side, zero tracking, instant processing.",
-    "applicationCategory": "UtilitiesApplication",
+    "description": "Convert an entire codebase folder into a single structured prompt for ChatGPT, Claude, and Gemini. Client-side, privacy-first, zero token logs.",
+    "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "offers": {
@@ -420,6 +420,111 @@
       </div>
 
     </div>
+
+
+    <!-- Lower Semantic SEO Section: Architecture, Workflow & FAQs -->
+    <section class="seo-content container max-w-7xl mx-auto mt-12 pt-10 border-t border-cyan-500/20 text-slate-300 font-mono space-y-10">
+      
+      <!-- H2: Workflow Explanation with 3-Step Numbered List -->
+      <div class="space-y-4">
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs uppercase tracking-widest">
+          <i class="fa-solid fa-code-fork text-xs text-cyan-400"></i>
+          <span>SYSTEM_OPERATIONS // REPO INGESTION WORKFLOW</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
+          How to Convert a Codebase into an LLM Prompt in 3 Steps
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+          Modern Large Language Models like Claude 3.5 Sonnet, GPT-4o, and Gemini 1.5 Pro boast massive context windows, but feeding them an entire repository manually is tedious. Codebase Context Packer flattens your files into an airgapped, model-ready format without installing CLI tools or sending your proprietary source code to a 3rd-party server.
+        </p>
+
+        <ol class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <li class="hud-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-cyan-400 font-extrabold text-sm">[STEP_01]</span>
+              <span class="text-[10px] text-slate-500 tracking-wider">DROP REPO</span>
+            </div>
+            <h3 class="text-sm font-bold text-white uppercase">Ingest Directory</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Drag-and-drop your project folder directly into the terminal dropzone or click "Select Folder". The browser analyzes nested files recursively via the File System API.
+            </p>
+          </li>
+          <li class="hud-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-cyan-400 font-extrabold text-sm">[STEP_02]</span>
+              <span class="text-[10px] text-slate-500 tracking-wider">AUTO FILTER</span>
+            </div>
+            <h3 class="text-sm font-bold text-white uppercase">Filter & Prune Junk</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Automated heuristics exclude binary assets, lockfiles, <code class="text-cyan-300">node_modules</code>, and <code class="text-cyan-300">.git</code> trees. Use the interactive checklist or search bar to toggle specific files.
+            </p>
+          </li>
+          <li class="hud-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-cyan-400 font-extrabold text-sm">[STEP_03]</span>
+              <span class="text-[10px] text-slate-500 tracking-wider">COMPOSE & COPY</span>
+            </div>
+            <h3 class="text-sm font-bold text-white uppercase">Copy Packed Prompt</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Inspect live token and character telemetry, then click "Copy Context" or export as <code class="text-cyan-300">.txt</code> / <code class="text-cyan-300">.md</code>. Paste directly into your LLM chat for instant full-repo reasoning.
+            </p>
+          </li>
+        </ol>
+      </div>
+
+      <!-- H2: In-Browser, Zero-Log Privacy Architecture -->
+      <div class="hud-card p-6 space-y-3 bg-black/60 border border-cyan-500/30">
+        <div class="inline-flex items-center space-x-2 text-emerald-400 text-xs uppercase tracking-widest font-bold">
+          <i class="fa-solid fa-lock text-xs"></i>
+          <span>AIRGAP PRIVACY ARCHITECTURE // CLIENT-SIDE ENCLAVE</span>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold text-white uppercase">
+          Zero Server Uploads, Zero Analytics, Pure Browser Execution
+        </h2>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Proprietary intellectual property, API keys, and sensitive business logic must never be uploaded to arbitrary web converters. Codebase to LLM Context Packer executes 100% inside your browser's V8 JavaScript runtime using the HTML5 <code class="text-cyan-300">FileReader</code> interface. No backend server exists; your code never traverses a network wire, and no tokens or prompts are logged, cached, or retained.
+        </p>
+      </div>
+
+      <!-- H2: Frequently Asked Questions (3 High-Intent Queries) -->
+      <div class="space-y-4">
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs uppercase tracking-widest">
+          <i class="fa-solid fa-circle-question text-xs text-cyan-400"></i>
+          <span>KNOWLEDGE_BASE // FREQUENTLY ASKED QUESTIONS</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
+          Codebase to Prompt Packaging FAQs
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+          <div class="p-4 bg-black/50 border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-cyan-300 uppercase">
+              How does this tool estimate LLM token counts?
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Token estimates are calculated using the industry standard heuristic ratio of approximately 4 characters per token (<code class="text-slate-300">chars / 4</code>). While exact tokenization varies between OpenAI's tiktoken and Anthropic's BPE, this provides a reliable safety gauge for context window management.
+            </p>
+          </div>
+          <div class="p-4 bg-black/50 border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-cyan-300 uppercase">
+              Which files are automatically excluded from the prompt?
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Standard dependency directories (<code class="text-slate-300">node_modules</code>, <code class="text-slate-300">.git</code>, <code class="text-slate-300">dist</code>, <code class="text-slate-300">vendor</code>), lockfiles (<code class="text-slate-300">package-lock.json</code>, <code class="text-slate-300">cargo.lock</code>), secrets (<code class="text-slate-300">.env*</code>), and binary media (<code class="text-slate-300">.png</code>, <code class="text-slate-300">.wasm</code>, <code class="text-slate-300">.zip</code>) are automatically filtered out to preserve your context window.
+            </p>
+          </div>
+          <div class="p-4 bg-black/50 border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-cyan-300 uppercase">
+              Is there a limit on repo size or file count?
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Because processing occurs in your local browser memory, you can comfortably ingest hundreds of files totaling tens of megabytes. Files exceeding 2MB individually are skipped by default to prevent UI freezing on giant bundled data dumps.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
 
   </main>
 
