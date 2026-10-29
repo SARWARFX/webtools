@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://json.sarwarfx.cfd/sitemap.xml

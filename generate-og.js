@@ -292,7 +292,8 @@ function generateBanner(app) {
 
   ctx.font = `600 16px ${monoFont}`;
   ctx.fillStyle = '#00f5ff';
-  ctx.fillText(`HTTPS://${app.subdomain.toUpperCase()}.SARWARFX.CFD`, margin + 25, height - margin - 22);
+  const appUrl = app.dir ? `HTTPS://APPS.SARWARFX.CFD/${app.dir.toUpperCase()}/` : 'HTTPS://APPS.SARWARFX.CFD/';
+  ctx.fillText(appUrl, margin + 25, height - margin - 22);
 
   ctx.font = `500 14px ${monoFont}`;
   ctx.fillStyle = '#64748b';
