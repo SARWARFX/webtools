@@ -1,6 +1,6 @@
 # sarwarfx // webtools ⚡
 
-A high-performance, modular multi-tool monorepo containing **10 independent, 100% client-side web utilities**. Each utility resides in its own dedicated subfolder with an independent, zero-build `index.html` configured for instant static hosting on **Cloudflare Pages**.
+A high-performance, modular multi-tool monorepo containing **13 independent, 100% client-side web utilities**. Each utility resides in its own dedicated subfolder with an independent, zero-build `index.html` configured for instant static hosting on **Cloudflare Pages**.
 
 Every tool is built upon the **Cyber-HUD / High-Tech Cyberpunk Terminal Design System**:
 - **Typography**: Google Font `JetBrains Mono` (weights 300, 400, 500, 600, 700, 800) with micro-typography and wide tracking for tactical terminal aesthetics.
@@ -25,7 +25,10 @@ Every tool is built upon the **Cyber-HUD / High-Tech Cyberpunk Terminal Design S
 | `0x08` | [`clean/`](clean/) | `clean.sarwarfx.cfd` | **Text Sanitization & Stream Purifier** | Case switcher (10 presets), line deduplication, whitespace stripper, slugifier, and live word/char analytics with multi-level undo/redo history. |
 | `0x09` | [`clock/`](clock/) | `clock.sarwarfx.cfd` | **Global UTC Orbital Chronograph** | Real-time global clocks across 10 hubs with day/night status and business hours indicator, interactive 24-hour timeline scrubber, precision stopwatch, and countdown timer with audio chime. |
 | `0x0A` | [`calc/`](calc/) | `calc.sarwarfx.cfd` | **Bandwidth Telemetry & Computation ALU** | Bandwidth download time estimator across 10M to 10G broadband tiers, loan/mortgage EMI calculator with amortization table and CSV export, plus gross profit margin, markup & VAT calculator. |
-| `ROOT` | [`index.html`](index.html) | `apps.sarwarfx.cfd` | **Central Suite Command Portal** | Central cyber-HUD terminal directory featuring searchable interactive module cards linking to all 10 micro-utilities. |
+| `0x0B` | [`pack/`](pack/) | `pack.sarwarfx.cfd` | **Codebase to LLM Context Packer** | Drag-and-drop codebase directory flattener for Claude 3.5, GPT-4o, and Gemini. Recursive file ingestion, junk exclusions, ASCII tree outline, and token telemetry. |
+| `0x0C` | [`redact/`](redact/) | `redact.sarwarfx.cfd` | **Privacy Redactor & EXIF Sanitizer** | In-browser document & image sanitization. Solid blackout and raster pixelation brush with multi-level undo stack. Canvas export inherently purges 100% of EXIF and GPS metadata. |
+| `0x0D` | [`invoice/`](invoice/) | `invoice.sarwarfx.cfd` | **Zero-Login Invoice Studio** | Client-side billing generator with dynamic line items, multi-currency support, tax/discount calculation, localStorage auto-save, and vector print-to-PDF output. |
+| `ROOT` | [`index.html`](index.html) | `apps.sarwarfx.cfd` | **Central Suite Command Portal** | Central cyber-HUD terminal directory featuring searchable interactive module cards linking to all 13 micro-utilities. |
 
 ---
 
@@ -54,6 +57,12 @@ webtools/
 │   └── index.html       # clock.sarwarfx.cfd (Node 0x09: Orbital Chronograph)
 ├── calc/
 │   └── index.html       # calc.sarwarfx.cfd (Node 0x0A: Bandwidth & Finance ALU)
+├── pack/
+│   └── index.html       # pack.sarwarfx.cfd (Node 0x0B: LLM Context Packer)
+├── redact/
+│   └── index.html       # redact.sarwarfx.cfd (Node 0x0C: Privacy Redactor & EXIF Sanitizer)
+├── invoice/
+│   └── index.html       # invoice.sarwarfx.cfd (Node 0x0D: Zero-Login Invoice Studio)
 └── README.md            # Monorepo architecture & setup guide
 ```
 

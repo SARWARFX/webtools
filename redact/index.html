@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Image Redactor // EXIF Sanitizer & Pixelation Tool - sarwarfx</title>
+  <meta name="description" content="Blackout or pixelate sensitive document data and strip all hidden camera EXIF metadata. 100% in-browser, client-side, zero tracking, instant processing.">
+  <meta name="keywords" content="image redactor, exif sanitizer, strip metadata, blur sensitive data, blackout text, privacy tool, client side redaction">
+  <link rel="canonical" href="https://redact.sarwarfx.cfd/">
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://redact.sarwarfx.cfd/" />
+  <meta property="og:title" content="Privacy Image Redactor // EXIF Sanitizer & Pixelation Tool - sarwarfx" />
+  <meta property="og:description" content="Blackout or pixelate sensitive document data and strip all hidden camera EXIF metadata. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta property="og:image" content="https://redact.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:url" content="https://redact.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://redact.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Privacy Image Redactor // EXIF Sanitizer & Pixelation Tool - sarwarfx" />
+  <meta name="twitter:description" content="Blackout or pixelate sensitive document data and strip all hidden camera EXIF metadata. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta name="twitter:image" content="https://redact.sarwarfx.cfd/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Privacy Redactor & EXIF Sanitizer",
+    "url": "https://redact.sarwarfx.cfd/",
+    "description": "Blackout or pixelate sensitive document data and strip all hidden camera EXIF metadata. 100% in-browser, client-side, zero tracking, instant processing.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff2bd6'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.2v3.5c0 .7-.6 1.3-1.2 1.3H9.2c-.6 0-1.2-.6-1.2-1.2v-3.5c0-.7.6-1.3 1.2-1.3V9.5C9.2 8.1 10.6 7 12 7zm0 1.2c-.7 0-1.3.6-1.3 1.3V11h2.6V9.5c0-.7-.6-1.3-1.3-1.3z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 43, 214, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(255, 43, 214, 0.25);
+      box-shadow: 0 0 20px rgba(255, 43, 214, 0.06), inset 0 0 15px rgba(255, 43, 214, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      border-color: #ff2bd6;
+      border-style: solid;
+      transition: all 0.2s ease;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+    .hud-card:hover {
+      border-color: rgba(255, 43, 214, 0.5);
+      box-shadow: 0 0 25px rgba(255, 43, 214, 0.15);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(2, 132, 199, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-magenta {
+      background: linear-gradient(135deg, rgba(255, 43, 214, 0.85), rgba(192, 38, 211, 0.85));
+      border: 1px solid rgba(255, 43, 214, 0.8);
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(255, 43, 214, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-magenta:hover {
+      background: linear-gradient(135deg, #ff2bd6, #e879f9);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(255, 43, 214, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(255, 43, 214, 0.12);
+      border-color: rgba(255, 43, 214, 0.6);
+      color: #ff2bd6;
+      box-shadow: 0 0 12px rgba(255, 43, 214, 0.25);
+    }
+
+    .tool-mode-btn.active {
+      background: rgba(255, 43, 214, 0.2) !important;
+      border-color: #ff2bd6 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 15px rgba(255, 43, 214, 0.4) !important;
+    }
+
+    #redactCanvas {
+      cursor: crosshair;
+      image-rendering: auto;
+    }
+
+    .dropzone-active {
+      border-color: #ff2bd6 !important;
+      background: rgba(255, 43, 214, 0.08) !important;
+      box-shadow: 0 0 30px rgba(255, 43, 214, 0.3) !important;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #ff2bd6; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-pink-500/30 selection:text-pink-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-pink-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="https://apps.sarwarfx.cfd" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-pink-500/10 border border-pink-500/60 flex items-center justify-center text-pink-400 group-hover:border-pink-300 group-hover:shadow-[0_0_15px_rgba(255,43,214,0.5)] transition-all relative">
+          <i class="fa-solid fa-user-secret text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-pink-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-pink-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-pink-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-pink-300 text-xs tracking-wider uppercase">redact</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-pink-400 font-bold">[SYS_NODE: 0x0C]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-cyan-400 font-bold">[CIPHER: EXIF_PURGE_ENGINE]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // ZERO_EXIF_SANDBOX</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-grid-2 text-pink-400"></i>
+          <span>Modules (13)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-pink-500/50 text-slate-400 hover:text-pink-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Quick Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-pink-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-pink-950/40 border border-pink-500/30 text-pink-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-eye-slash text-xs text-pink-400"></i>
+          <span>STREAM_REDACTOR // PRIVACY & EXIF SANITIZER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          PRIVACY REDACTOR & EXIF SANITIZER HUD
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl font-mono">
+          Blackout or pixelate confidential text, faces, and ID credentials. Exporting re-encodes pixel matrices directly in your browser, completely erasing all GPS, camera, and EXIF metadata.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="loadSampleDoc()" class="hud-btn-secondary px-3 py-2 flex items-center space-x-1.5 text-xs cursor-pointer">
+          <i class="fa-solid fa-file-invoice text-cyan-400"></i>
+          <span>Load Demo ID</span>
+        </button>
+        <button onclick="clearCanvas()" class="hud-btn-secondary px-3 py-2 flex items-center space-x-1.5 text-xs text-rose-400 hover:text-rose-300 cursor-pointer">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Redaction Tool Controls Bar -->
+    <div class="hud-card p-4 flex flex-wrap items-center justify-between gap-4 font-mono">
+      
+      <!-- Mode Selection -->
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-slate-400 uppercase font-bold mr-1">Tool Mode:</span>
+        <button 
+          id="modeBlackoutBtn" 
+          onclick="setRedactMode('blackout')" 
+          class="tool-mode-btn active px-3 py-1.5 bg-black/60 border border-slate-800 text-xs font-bold uppercase transition-all flex items-center space-x-1.5 cursor-pointer"
+        >
+          <span class="w-3 h-3 bg-black border border-white/40 inline-block"></span>
+          <span>Solid Blackout</span>
+        </button>
+        <button 
+          id="modePixelateBtn" 
+          onclick="setRedactMode('pixelate')" 
+          class="tool-mode-btn px-3 py-1.5 bg-black/60 border border-slate-800 text-xs font-bold uppercase transition-all flex items-center space-x-1.5 cursor-pointer text-slate-400 hover:text-white"
+        >
+          <i class="fa-solid fa-table-cells text-xs text-pink-400"></i>
+          <span>Pixelate / Blur</span>
+        </button>
+      </div>
+
+      <!-- Pixelation Slider -->
+      <div id="pixelateSliderGroup" class="hidden flex items-center space-x-3 text-xs text-slate-400">
+        <span class="text-[11px] uppercase">Block Size:</span>
+        <input 
+          type="range" 
+          id="blockSizeSlider" 
+          min="6" 
+          max="32" 
+          value="14" 
+          oninput="document.getElementById('blockSizeVal').textContent = this.value + 'px'"
+          class="w-24 accent-pink-500 cursor-pointer"
+        >
+        <span id="blockSizeVal" class="text-pink-400 font-bold text-xs min-w-[36px]">14px</span>
+      </div>
+
+      <!-- History & Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="undoRedaction()" id="undoBtn" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer disabled:opacity-40" title="Undo (Ctrl+Z)">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Undo (<span id="undoCount">0</span>)</span>
+        </button>
+        <button onclick="resetToOriginal()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer text-amber-400 hover:text-amber-300">
+          <i class="fa-solid fa-arrow-rotate-right"></i>
+          <span>Reset Original</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace: Canvas Area + Dropzone -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Canvas Viewport (8 Cols) -->
+      <div class="lg:col-span-8 space-y-4">
+        <div 
+          id="canvasContainer" 
+          class="hud-card p-4 min-h-[480px] flex flex-col items-center justify-center relative overflow-hidden bg-black/90 select-none"
+          ondragover="handleCanvasDragOver(event)"
+          ondragleave="handleCanvasDragLeave(event)"
+          ondrop="handleCanvasDrop(event)"
+        >
+          <!-- Drag-and-drop placeholder -->
+          <div id="dropPrompt" class="text-center py-16 space-y-3 cursor-pointer" onclick="document.getElementById('imageFileInput').click()">
+            <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleImageFileSelect(event)">
+            
+            <div class="w-16 h-16 mx-auto bg-pink-950/40 border border-pink-500/50 flex items-center justify-center text-pink-400 text-3xl group-hover:scale-110 transition-all">
+              <i class="fa-solid fa-image"></i>
+            </div>
+            <h3 class="text-sm sm:text-base font-bold text-white tracking-wider uppercase font-mono">
+              DROP TARGET IMAGE HERE OR CLICK TO UPLOAD
+            </h3>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto font-mono">
+              Supports PNG, JPG, JPEG, WEBP, BMP, SVG. Paste directly from clipboard with <kbd class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-pink-400">Ctrl+V</kbd>.
+            </p>
+            <div class="pt-2">
+              <button class="hud-btn-magenta px-4 py-2 text-xs">
+                <i class="fa-solid fa-upload mr-1.5"></i>Select Image File
+              </button>
+            </div>
+          </div>
+
+          <!-- Canvas & Overlay Selection Elements -->
+          <div id="canvasWrapper" class="hidden relative max-w-full overflow-auto">
+            <canvas id="redactCanvas" class="max-w-full h-auto block border border-slate-800 shadow-[0_0_30px_rgba(0,0,0,0.8)]"></canvas>
+            <!-- Interactive Selection Rectangle Overlay -->
+            <div id="selectionBox" class="hidden absolute pointer-events-none border-2 border-pink-400 bg-pink-500/20 shadow-[0_0_15px_rgba(255,43,214,0.5)]">
+              <span id="selectionBadge" class="absolute -top-6 left-0 bg-pink-500 text-black font-mono text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">0 x 0</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Sanitization Telemetry & Export (4 Cols) -->
+      <div class="lg:col-span-4 space-y-4">
+        
+        <!-- Metadata Sanitization Card -->
+        <div class="hud-card p-4 space-y-4 font-mono">
+          <div class="border-b border-pink-500/20 pb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-pink-400"></i>
+              <span>Sanitization Diagnostics</span>
+            </span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80">
+              <span class="text-slate-400">IMAGE DIMENSIONS</span>
+              <span id="metaDims" class="text-white font-bold">--</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80">
+              <span class="text-slate-400">ORIGINAL SIZE</span>
+              <span id="metaOrigSize" class="text-slate-300">--</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80">
+              <span class="text-slate-400">REDACTIONS APPLIED</span>
+              <span id="metaRedactCount" class="text-pink-400 font-bold">0</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80">
+              <span class="text-slate-400">GPS / EXIF TELEMETRY</span>
+              <span class="text-emerald-400 font-bold text-[10px] bg-emerald-950/60 px-2 py-0.5 border border-emerald-500/40">PURGED (ZERO EXIF)</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-slate-400">SERVER TRANSMISSION</span>
+              <span class="text-cyan-400 font-bold text-[10px] bg-cyan-950/60 px-2 py-0.5 border border-cyan-500/40">AIRGAPPED (0 B)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Actions Card -->
+        <div class="hud-card p-4 space-y-3 font-mono">
+          <div class="border-b border-pink-500/20 pb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <i class="fa-solid fa-download text-cyan-400"></i>
+              <span>Export Sanitized Media</span>
+            </span>
+          </div>
+
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Exports re-render image pixels through an unassociated HTML5 canvas surface, stripping all camera signatures, serial numbers, and geographic location stamps.
+          </p>
+
+          <div class="space-y-2 pt-2">
+            <button onclick="downloadSanitized('png')" class="hud-btn-magenta w-full py-2.5 text-xs flex items-center justify-center space-x-2 cursor-pointer">
+              <i class="fa-solid fa-file-image"></i>
+              <span>Download Sanitized PNG</span>
+            </button>
+            <button onclick="downloadSanitized('jpeg')" class="hud-btn-secondary w-full py-2.5 text-xs flex items-center justify-center space-x-2 cursor-pointer">
+              <i class="fa-solid fa-file-image"></i>
+              <span>Download Sanitized JPEG</span>
+            </button>
+            <button onclick="copyImageToClipboard()" class="hud-btn-secondary w-full py-2 text-xs flex items-center justify-center space-x-2 cursor-pointer text-cyan-300">
+              <i class="fa-solid fa-clipboard"></i>
+              <span>Copy Image to Clipboard</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Instructions Quickcard -->
+        <div class="p-3 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400 space-y-1.5">
+          <div class="text-pink-400 font-bold uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-xs"></i>
+            <span>Quick Guidance</span>
+          </div>
+          <p>• Click & drag a rectangle over any sensitive field on the image.</p>
+          <p>• Use <strong>Solid Blackout</strong> for absolute redaction.</p>
+          <p>• Use <strong>Pixelate</strong> for photos, avatars, or logos.</p>
+          <p>• Press <strong>Ctrl+Z</strong> to undo the most recent redaction box.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Navigation Suite Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-pink-500/30 pb-3">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+          <i class="fa-solid fa-grid-2 text-pink-400"></i>
+          <span>TACTICAL RECON SUITE // ALL MODULES (13)</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white text-sm cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="suiteGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-pink-500/60 text-pink-300 font-mono text-xs px-4 py-2.5 shadow-[0_0_20px_rgba(255,43,214,0.2)] opacity-0 pointer-events-none transition-all duration-300 z-50 uppercase flex items-center gap-2">
+    <i class="fa-solid fa-terminal text-pink-400"></i>
+    <span id="toastMsg">ACTION COMPLETED</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-pink-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-pink-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400 uppercase tracking-widest text-[11px]">[AIRGAP CLIENT EXECUTION]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 font-mono text-[11px]">[HOSTED: CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-pink-400 transition-colors uppercase tracking-wider text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'redact';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into LLM prompts', icon: 'fa-box-archive', subdomain: 'pack.sarwarfx.cfd', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate images with zero EXIF', icon: 'fa-user-secret', subdomain: 'redact.sarwarfx.cfd', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side vector billing & PDF generator', icon: 'fa-file-invoice-dollar', subdomain: 'invoice.sarwarfx.cfd', code: '0x0D' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      modal.classList.toggle('hidden', !show);
+      if (show) renderSuiteGrid();
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-pink-950/40 border-pink-500 shadow-[0_0_15px_rgba(255,43,214,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800 hover:border-pink-500/50 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 flex items-center justify-center text-xs shrink-0 ${
+              isActive ? 'bg-pink-500/20 text-pink-400 border border-pink-400/50' : 'bg-slate-900 text-slate-400 group-hover:text-pink-400 group-hover:border-pink-500/40 border border-slate-800'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white group-hover:text-pink-300 transition-colors uppercase tracking-wider">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-pink-400 uppercase bg-pink-950/80 px-1 border border-pink-500/40">Active</span>' : ''}
+              </div>
+              <p class="text-[10px] text-slate-400 mt-0.5 leading-snug truncate font-mono">${tool.desc}</p>
+              <span class="text-[9px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2500);
+    }
+
+    // --- REDACTION ENGINE ---
+    let canvas = document.getElementById('redactCanvas');
+    let ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let originalImage = null;
+    let originalSize = 0;
+    let redactMode = 'blackout'; // 'blackout' | 'pixelate'
+    let isDrawing = false;
+    let startX = 0, startY = 0;
+    let undoStack = []; // ImageData[]
+
+    function setRedactMode(mode) {
+      redactMode = mode;
+      document.getElementById('modeBlackoutBtn').classList.toggle('active', mode === 'blackout');
+      document.getElementById('modePixelateBtn').classList.toggle('active', mode === 'pixelate');
+      document.getElementById('pixelateSliderGroup').classList.toggle('hidden', mode !== 'pixelate');
+      showToast(`MODE: ${mode.toUpperCase()}`);
+    }
+
+    function handleImageFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) loadImageFile(file);
+      e.target.value = '';
+    }
+
+    function handleCanvasDragOver(e) {
+      e.preventDefault();
+      document.getElementById('canvasContainer').classList.add('dropzone-active');
+    }
+
+    function handleCanvasDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('canvasContainer').classList.remove('dropzone-active');
+    }
+
+    function handleCanvasDrop(e) {
+      e.preventDefault();
+      document.getElementById('canvasContainer').classList.remove('dropzone-active');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        loadImageFile(file);
+      } else {
+        showToast('ERR: INVALID IMAGE FILE');
+      }
+    }
+
+    // Clipboard paste listener
+    window.addEventListener('paste', e => {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          const file = items[i].getAsFile();
+          loadImageFile(file);
+          break;
+        }
+      }
+    });
+
+    // Keyboard shortcut for Undo
+    window.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undoRedaction();
+      }
+    });
+
+    function loadImageFile(file) {
+      originalSize = file.size;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          setupCanvasWithImage(img);
+          showToast('LOADED IMAGE MATRIX');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setupCanvasWithImage(img) {
+      originalImage = img;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      undoStack = [ctx.getImageData(0, 0, canvas.width, canvas.height)];
+
+      document.getElementById('dropPrompt').classList.add('hidden');
+      document.getElementById('canvasWrapper').classList.remove('hidden');
+
+      document.getElementById('metaDims').textContent = `${img.width} × ${img.height} PX`;
+      document.getElementById('metaOrigSize').textContent = originalSize > 1024 ? `${(originalSize / 1024).toFixed(1)} KB` : `${originalSize} B`;
+      updateRedactionMetrics();
+    }
+
+    // Canvas Selection & Drawing Events
+    const selectionBox = document.getElementById('selectionBox');
+    const selectionBadge = document.getElementById('selectionBadge');
+
+    function getCanvasCoordinates(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const x = Math.max(0, Math.min(canvas.width, (clientX - rect.left) * scaleX));
+      const y = Math.max(0, Math.min(canvas.height, (clientY - rect.top) * scaleY));
+
+      const screenX = clientX - rect.left;
+      const screenY = clientY - rect.top;
+
+      return { x, y, screenX, screenY, scaleX, scaleY };
+    }
+
+    function startSelection(e) {
+      if (!originalImage) return;
+      isDrawing = true;
+      const coords = getCanvasCoordinates(e);
+      startX = coords.x;
+      startY = coords.y;
+
+      selectionBox.style.left = `${coords.screenX}px`;
+      selectionBox.style.top = `${coords.screenY}px`;
+      selectionBox.style.width = '0px';
+      selectionBox.style.height = '0px';
+      selectionBox.classList.remove('hidden');
+    }
+
+    function updateSelection(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const coords = getCanvasCoordinates(e);
+
+      const rect = canvas.getBoundingClientRect();
+      const leftCanvas = Math.min(startX, coords.x);
+      const topCanvas = Math.min(startY, coords.y);
+      const widthCanvas = Math.abs(coords.x - startX);
+      const heightCanvas = Math.abs(coords.y - startY);
+
+      // Scale to screen for visual overlay
+      const screenLeft = leftCanvas / coords.scaleX;
+      const screenTop = topCanvas / coords.scaleY;
+      const screenWidth = widthCanvas / coords.scaleX;
+      const screenHeight = heightCanvas / coords.scaleY;
+
+      selectionBox.style.left = `${screenLeft}px`;
+      selectionBox.style.top = `${screenTop}px`;
+      selectionBox.style.width = `${screenWidth}px`;
+      selectionBox.style.height = `${screenHeight}px`;
+
+      selectionBadge.textContent = `${Math.round(widthCanvas)} × ${Math.round(heightCanvas)}`;
+    }
+
+    function endSelection(e) {
+      if (!isDrawing) return;
+      isDrawing = false;
+      selectionBox.classList.add('hidden');
+
+      const coords = getCanvasCoordinates(e.changedTouches ? e.changedTouches[0] : e);
+      const x = Math.round(Math.min(startX, coords.x));
+      const y = Math.round(Math.min(startY, coords.y));
+      const w = Math.round(Math.abs(coords.x - startX));
+      const h = Math.round(Math.abs(coords.y - startY));
+
+      if (w < 4 || h < 4) return; // Ignore accidental micro-clicks
+
+      applyRedaction(x, y, w, h);
+    }
+
+    canvas.addEventListener('mousedown', startSelection);
+    window.addEventListener('mousemove', updateSelection);
+    window.addEventListener('mouseup', endSelection);
+
+    canvas.addEventListener('touchstart', startSelection, { passive: false });
+    window.addEventListener('touchmove', updateSelection, { passive: false });
+    window.addEventListener('touchend', endSelection);
+
+    function applyRedaction(x, y, w, h) {
+      if (redactMode === 'blackout') {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(x, y, w, h);
+      } else if (redactMode === 'pixelate') {
+        pixelateRect(x, y, w, h);
+      }
+
+      // Push current canvas state to undo stack (limit stack size to 25)
+      undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      if (undoStack.length > 25) undoStack.shift();
+
+      updateRedactionMetrics();
+      showToast(`APPLIED ${redactMode.toUpperCase()} [${w}×${h}px]`);
+    }
+
+    function pixelateRect(x, y, w, h) {
+      const blockSize = parseInt(document.getElementById('blockSizeSlider').value) || 14;
+      const imgData = ctx.getImageData(x, y, w, h);
+      const data = imgData.data;
+
+      for (let py = 0; py < h; py += blockSize) {
+        for (let px = 0; px < w; px += blockSize) {
+          let r = 0, g = 0, b = 0, a = 0, count = 0;
+
+          // Average block colors
+          for (let dy = 0; dy < blockSize && py + dy < h; dy++) {
+            for (let dx = 0; dx < blockSize && px + dx < w; dx++) {
+              const idx = ((py + dy) * w + (px + dx)) * 4;
+              r += data[idx];
+              g += data[idx + 1];
+              b += data[idx + 2];
+              a += data[idx + 3];
+              count++;
+            }
+          }
+
+          r = Math.round(r / count);
+          g = Math.round(g / count);
+          b = Math.round(b / count);
+          a = Math.round(a / count);
+
+          // Fill block
+          for (let dy = 0; dy < blockSize && py + dy < h; dy++) {
+            for (let dx = 0; dx < blockSize && px + dx < w; dx++) {
+              const idx = ((py + dy) * w + (px + dx)) * 4;
+              data[idx] = r;
+              data[idx + 1] = g;
+              data[idx + 2] = b;
+              data[idx + 3] = a;
+            }
+          }
+        }
+      }
+
+      ctx.putImageData(imgData, x, y);
+    }
+
+    function undoRedaction() {
+      if (undoStack.length <= 1) {
+        showToast('ERR: NO ACTIONS TO UNDO');
+        return;
+      }
+      undoStack.pop();
+      const previousState = undoStack[undoStack.length - 1];
+      ctx.putImageData(previousState, 0, 0);
+      updateRedactionMetrics();
+      showToast('UNDONE LAST REDACTION');
+    }
+
+    function resetToOriginal() {
+      if (!originalImage) return;
+      ctx.drawImage(originalImage, 0, 0);
+      undoStack = [ctx.getImageData(0, 0, canvas.width, canvas.height)];
+      updateRedactionMetrics();
+      showToast('RESET TO ORIGINAL STATE');
+    }
+
+    function clearCanvas() {
+      originalImage = null;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      undoStack = [];
+      document.getElementById('canvasWrapper').classList.add('hidden');
+      document.getElementById('dropPrompt').classList.remove('hidden');
+      document.getElementById('metaDims').textContent = '--';
+      document.getElementById('metaOrigSize').textContent = '--';
+      document.getElementById('metaRedactCount').textContent = '0';
+      document.getElementById('undoCount').textContent = '0';
+      showToast('PURGED CANVAS BUFFER');
+    }
+
+    function updateRedactionMetrics() {
+      const redacts = Math.max(0, undoStack.length - 1);
+      document.getElementById('metaRedactCount').textContent = redacts;
+      document.getElementById('undoCount').textContent = redacts;
+      document.getElementById('undoBtn').disabled = redacts === 0;
+    }
+
+    function downloadSanitized(format) {
+      if (!originalImage) {
+        showToast('ERR: NO IMAGE LOADED');
+        return;
+      }
+
+      const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+      const quality = format === 'jpeg' ? 0.95 : undefined;
+
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `sarwarfx-sanitized-${Date.now()}.${format}`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast(`EXPORTED SANITIZED ${format.toUpperCase()}`);
+      }, mimeType, quality);
+    }
+
+    async function copyImageToClipboard() {
+      if (!originalImage) {
+        showToast('ERR: NO IMAGE LOADED');
+        return;
+      }
+
+      try {
+        canvas.toBlob(async blob => {
+          if (!blob) return;
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          showToast('SANITIZED PNG COPIED TO CLIPBOARD');
+        }, 'image/png');
+      } catch (err) {
+        showToast('ERR: CLIPBOARD WRITE NOT SUPPORTED');
+      }
+    }
+
+    function loadSampleDoc() {
+      // Programmatically create a synthetic confidential tactical document on canvas
+      const width = 800;
+      const height = 520;
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw document paper
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, width, height);
+
+      // Document Header
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 22px monospace';
+      ctx.fillText('TACTICAL RECON PERSONNEL DOSSIER', 40, 50);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText('CONFIDENTIAL // TOP SECRET // CLASSIFIED', 40, 75);
+
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(40, 95, width - 80, 1);
+
+      // Fake User Photo Placeholder
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(40, 120, 120, 140);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px monospace';
+      ctx.fillText('[OPERATIVE]', 60, 195);
+
+      // Sensitive Details
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '13px monospace';
+      const details = [
+        ['FULL NAME:', 'SARWAR CHOWDHURY'],
+        ['CITIZEN IDENTIFIER:', 'SSN: 987-00-4321'],
+        ['CLEARANCE LEVEL:', 'ALPHA-9 CRYPTOGRAPHIC'],
+        ['ASSIGNED NODE:', '0x7F - SECURE ENCLAVE'],
+        ['GEO-COORDINATES:', '23.8103° N, 90.4125° E'],
+        ['PASSPORT NUMBER:', 'BN-847291039-X'],
+        ['PAYMENT ROUTING:', 'IBAN: GB29 NWBK 6016 1331 9268 19'],
+      ];
+
+      details.forEach((item, idx) => {
+        const y = 135 + idx * 30;
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(item[0], 190, y);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillText(item[1], 370, y);
+      });
+
+      // Watermark Stamp
+      ctx.save();
+      ctx.translate(560, 400);
+      ctx.rotate(-0.2);
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(-10, -30, 200, 50);
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText('RESTRICTED ACCESS', 5, 2);
+      ctx.restore();
+
+      originalImage = new Image();
+      originalImage.src = canvas.toDataURL();
+      originalSize = 65000;
+
+      undoStack = [ctx.getImageData(0, 0, canvas.width, canvas.height)];
+
+      document.getElementById('dropPrompt').classList.add('hidden');
+      document.getElementById('canvasWrapper').classList.remove('hidden');
+
+      document.getElementById('metaDims').textContent = `${width} × ${height} PX`;
+      document.getElementById('metaOrigSize').textContent = '65.0 KB';
+      updateRedactionMetrics();
+      showToast('LOADED SAMPLE CLASSIFIED DOSSIER');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+  </script>
+</body>
+</html>

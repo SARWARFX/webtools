@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '10-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '13-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -104,6 +104,27 @@ const APPS = [
     subdomain: 'speed',
     title: 'CYBERTOOLS // SPEED',
     subtitle: 'TELEMETRY NETWORK BENCHMARK & LATENCY',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'pack',
+    subdomain: 'pack',
+    title: 'CYBERTOOLS // PACK',
+    subtitle: 'LLM CONTEXT PACKER // CODEBASE REPO FLATTENER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'redact',
+    subdomain: 'redact',
+    title: 'CYBERTOOLS // REDACT',
+    subtitle: 'STREAM REDACTOR // IN-BROWSER EXIF & DATA WIPER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'invoice',
+    subdomain: 'invoice',
+    title: 'CYBERTOOLS // INVOICE',
+    subtitle: 'INVOICE STUDIO // ZERO-LOGIN BILLING GENERATOR',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
@@ -294,4 +315,4 @@ APPS.forEach(app => {
   console.log(`Generated: ${outPath} (${buffer.length} bytes)`);
 });
 
-console.log('All 11 OpenGraph banners generated successfully!');
+console.log(`All ${APPS.length} OpenGraph banners generated successfully!`);

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Login Invoice Studio // PDF Billing Generator HUD - sarwarfx</title>
+  <meta name="description" content="Create, compute line totals, and print vector PDF invoices with auto-saving local storage. 100% in-browser, client-side, zero tracking, instant processing.">
+  <meta name="keywords" content="invoice generator, zero login invoice, pdf invoice, client side billing, invoice studio, tax calculator, print invoice">
+  <link rel="canonical" href="https://invoice.sarwarfx.cfd/">
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://invoice.sarwarfx.cfd/" />
+  <meta property="og:title" content="Zero-Login Invoice Studio // PDF Billing Generator HUD - sarwarfx" />
+  <meta property="og:description" content="Create, compute line totals, and print vector PDF invoices with auto-saving local storage. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta property="og:image" content="https://invoice.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:url" content="https://invoice.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://invoice.sarwarfx.cfd/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zero-Login Invoice Studio // PDF Billing Generator HUD - sarwarfx" />
+  <meta name="twitter:description" content="Create, compute line totals, and print vector PDF invoices with auto-saving local storage. 100% in-browser, client-side, zero tracking, instant processing." />
+  <meta name="twitter:image" content="https://invoice.sarwarfx.cfd/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Zero-Login Invoice Studio",
+    "url": "https://invoice.sarwarfx.cfd/",
+    "description": "Create, compute line totals, and print vector PDF invoices with auto-saving local storage. 100% in-browser, client-side, zero tracking, instant processing.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+            emeraldGlow: '#10b981',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.02), rgba(0, 245, 255, 0.015), rgba(16, 185, 129, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16, 185, 129, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.06), inset 0 0 15px rgba(16, 185, 129, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      border-color: #10b981;
+      border-style: solid;
+      transition: all 0.2s ease;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.85), rgba(5, 150, 105, 0.85));
+      border: 1px solid rgba(16, 185, 129, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .invoice-input {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 0.45rem 0.65rem;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .invoice-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Print Stylesheet for Vector PDF Output */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+      }
+      header, footer, .no-print, #suiteModal, #toast {
+        display: none !important;
+      }
+      .hud-card {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .hud-card::before, .hud-card::after {
+        display: none !important;
+      }
+      .invoice-input {
+        background: transparent !important;
+        border: none !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+      input[type="number"]::-webkit-inner-spin-button, 
+      input[type="number"]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+      }
+      .print-border {
+        border-color: #cbd5e1 !important;
+      }
+      .print-bg-subtle {
+        background-color: #f8fafc !important;
+      }
+      .print-text-dark {
+        color: #0f172a !important;
+      }
+      .print-text-muted {
+        color: #64748b !important;
+      }
+      .print-hide {
+        display: none !important;
+      }
+      #invoicePaper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        border: none !important;
+      }
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="https://apps.sarwarfx.cfd" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-emerald-500/10 border border-emerald-500/60 flex items-center justify-center text-emerald-400 group-hover:border-emerald-300 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all relative">
+          <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-emerald-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-emerald-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-emerald-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-emerald-300 text-xs tracking-wider uppercase">invoice</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-emerald-400 font-bold">[SYS_NODE: 0x0D]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-cyan-400 font-bold">[FINANCIAL: LEDGER_ENGINE]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // LOCAL_ENCLAVE</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-grid-2 text-emerald-400"></i>
+          <span>Modules (13)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-slate-400 hover:text-emerald-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Action Controls Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5 no-print">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-mono uppercase tracking-widest mb-1.5">
+          <i class="fa-solid fa-receipt text-xs text-emerald-400"></i>
+          <span>BILLING_STUDIO // ZERO-LOGIN INVOICING</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight uppercase font-mono">
+          ZERO-LOGIN INVOICE STUDIO HUD
+        </h1>
+        <p class="text-[11px] text-slate-400 font-mono">
+          Auto-saves in real-time to your browser's private local storage. Click "Download PDF" to print or save vector PDF.
+        </p>
+      </div>
+
+      <!-- Top Toolbar Actions -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Currency Select -->
+        <select id="currencySelect" onchange="updateCurrency(); autoSave();" class="invoice-input py-1.5 text-xs text-emerald-400 font-bold uppercase cursor-pointer">
+          <option value="$" selected>USD ($)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="¥">JPY (¥)</option>
+          <option value="CA$">CAD (CA$)</option>
+          <option value="AU$">AUD (AU$)</option>
+          <option value="₹">INR (₹)</option>
+          <option value="CHF">CHF (CHF)</option>
+        </select>
+
+        <button onclick="loadSampleInvoice()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
+          <span>Sample</span>
+        </button>
+        <button onclick="clearInvoice()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 text-rose-400 hover:text-rose-300 cursor-pointer">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Reset</span>
+        </button>
+        <button onclick="printInvoice()" class="hud-btn-primary px-4 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>Download PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Storage Status Badge -->
+    <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 no-print">
+      <span class="flex items-center gap-1.5 text-emerald-400">
+        <i class="fa-solid fa-cloud-arrow-down text-xs"></i>
+        <span id="saveStatus">AUTO-SAVED IN LOCAL STORAGE</span>
+      </span>
+      <span class="text-slate-500">[100% IN-BROWSER PERSISTENCE]</span>
+    </div>
+
+    <!-- The Invoice Canvas / Document Paper -->
+    <div id="invoicePaper" class="hud-card p-6 sm:p-10 space-y-8 font-mono print-bg-subtle print-border">
+
+      <!-- Invoice Header: Branding / Number / Date -->
+      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-slate-800 print-border pb-6">
+        
+        <!-- Left: Logo / Company Tag -->
+        <div class="space-y-3">
+          <div id="logoContainer" class="flex items-center gap-3">
+            <div id="logoPreviewWrapper" class="relative group hidden">
+              <img id="logoImg" src="" alt="Company Logo" class="h-14 max-w-[200px] object-contain">
+              <button onclick="removeLogo()" class="no-print absolute -top-2 -right-2 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] hover:bg-rose-600">×</button>
+            </div>
+            <label id="logoUploadBtn" class="no-print cursor-pointer border border-dashed border-slate-700 hover:border-emerald-500 p-2 text-[10px] text-slate-400 hover:text-emerald-400 flex items-center gap-1.5 bg-black/40">
+              <i class="fa-solid fa-image"></i>
+              <span>Upload Logo</span>
+              <input type="file" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+            </label>
+          </div>
+
+          <div class="space-y-1">
+            <input type="text" id="invTitle" value="INVOICE" class="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-white print-text-dark bg-transparent outline-none w-full" oninput="autoSave()">
+            <input type="text" id="invSubtitle" value="TACTICAL CYBER CONSULTING & ENGINEERING" class="text-xs text-emerald-400 print-text-muted bg-transparent outline-none w-full uppercase tracking-wider" oninput="autoSave()">
+          </div>
+        </div>
+
+        <!-- Right: Invoice Metadata (Number, Dates) -->
+        <div class="space-y-2 sm:text-right min-w-[220px]">
+          <div class="flex items-center sm:justify-end gap-2 text-xs">
+            <span class="text-slate-400 print-text-muted uppercase text-[11px]">Invoice #:</span>
+            <input type="text" id="invNumber" value="INV-2026-084" class="invoice-input text-right font-bold w-36 uppercase" oninput="autoSave()">
+          </div>
+          <div class="flex items-center sm:justify-end gap-2 text-xs">
+            <span class="text-slate-400 print-text-muted uppercase text-[11px]">Date Issued:</span>
+            <input type="date" id="invDate" class="invoice-input text-right w-36" oninput="autoSave()">
+          </div>
+          <div class="flex items-center sm:justify-end gap-2 text-xs">
+            <span class="text-slate-400 print-text-muted uppercase text-[11px]">Payment Due:</span>
+            <input type="date" id="invDueDate" class="invoice-input text-right w-36" oninput="autoSave()">
+          </div>
+          <div class="flex items-center sm:justify-end gap-2 text-xs">
+            <span class="text-slate-400 print-text-muted uppercase text-[11px]">P.O. Number:</span>
+            <input type="text" id="invPoNumber" placeholder="OPTIONAL" class="invoice-input text-right w-36 uppercase" oninput="autoSave()">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sender & Client Address Columns -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 text-xs">
+        
+        <!-- From (Vendor) -->
+        <div class="space-y-2">
+          <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider border-b border-emerald-500/20 pb-1">
+            From (Issuer)
+          </div>
+          <input type="text" id="fromName" placeholder="Your Business / Full Name" value="SARWARFX CYBER ARCHITECTURE" class="invoice-input w-full font-bold uppercase text-white print-text-dark" oninput="autoSave()">
+          <input type="text" id="fromEmail" placeholder="your@email.com" value="ops@sarwarfx.cfd" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="fromAddress1" placeholder="Street Address" value="742 Evergreen Cyber Way, Suite 400" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="fromAddress2" placeholder="City, State, Zip, Country" value="London, EC1A 1BB, United Kingdom" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="fromTaxId" placeholder="Tax / VAT ID (Optional)" value="VAT: GB928374102" class="invoice-input w-full text-slate-400" oninput="autoSave()">
+        </div>
+
+        <!-- To (Client) -->
+        <div class="space-y-2">
+          <div class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider border-b border-cyan-500/20 pb-1">
+            Billed To (Client)
+          </div>
+          <input type="text" id="toName" placeholder="Client / Company Name" value="NEURAL QUANTUM DYNAMICS LTD" class="invoice-input w-full font-bold uppercase text-white print-text-dark" oninput="autoSave()">
+          <input type="text" id="toEmail" placeholder="client@company.com" value="accounts@neuralquantum.io" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="toAddress1" placeholder="Street Address" value="100 Silicon Boulevard, Floor 18" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="toAddress2" placeholder="City, State, Zip, Country" value="San Francisco, CA 94107, USA" class="invoice-input w-full" oninput="autoSave()">
+          <input type="text" id="toTaxId" placeholder="Client Tax ID / PO Box (Optional)" value="EIN: 94-8273910" class="invoice-input w-full text-slate-400" oninput="autoSave()">
+        </div>
+
+      </div>
+
+      <!-- Line Items Table -->
+      <div class="space-y-3">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 print-border text-slate-400 print-text-muted text-[11px] uppercase">
+                <th class="py-2.5 px-2 w-[45%]">Item Description</th>
+                <th class="py-2.5 px-2 text-right w-[15%]">Quantity</th>
+                <th class="py-2.5 px-2 text-right w-[20%]">Rate (<span class="currency-label">$</span>)</th>
+                <th class="py-2.5 px-2 text-right w-[20%]">Amount (<span class="currency-label">$</span>)</th>
+                <th class="py-2.5 px-2 text-center w-8 no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="lineItemsBody" class="divide-y divide-slate-800/80 print-border">
+              <!-- Dynamically rendered rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <button onclick="addLineItem()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer no-print">
+          <i class="fa-solid fa-plus text-emerald-400"></i>
+          <span>Add Line Item</span>
+        </button>
+      </div>
+
+      <!-- Calculation Breakdown & Notes -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4 border-t border-slate-800 print-border">
+        
+        <!-- Left: Notes & Payment Terms -->
+        <div class="space-y-3">
+          <div class="text-[10px] text-slate-400 print-text-muted font-bold uppercase tracking-wider">
+            Notes & Wire Instructions:
+          </div>
+          <textarea id="invNotes" rows="4" class="invoice-input w-full text-xs leading-relaxed" oninput="autoSave()">Payment is appreciated within 14 days of invoice date.
+Wire Transfer: SWIFT/BIC: BARCGB22, IBAN: GB29BARC20201530948291
+Thank you for your business.</textarea>
+        </div>
+
+        <!-- Right: Totals Calculation Summary -->
+        <div class="space-y-2 text-xs">
+          
+          <div class="flex items-center justify-between py-1 border-b border-slate-800/80 print-border">
+            <span class="text-slate-400 print-text-muted uppercase">Subtotal</span>
+            <span id="subtotalVal" class="font-bold text-white print-text-dark">$0.00</span>
+          </div>
+
+          <!-- Tax Row -->
+          <div class="flex items-center justify-between py-1 border-b border-slate-800/80 print-border">
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-400 print-text-muted uppercase">Tax</span>
+              <input type="number" id="taxRateInput" value="10" min="0" max="100" step="0.5" class="invoice-input w-14 py-0.5 text-right no-print" oninput="calculateTotals(); autoSave();">
+              <span class="text-[11px] text-slate-500">(<span id="taxRateLabel">10</span>%)</span>
+            </div>
+            <span id="taxAmountVal" class="text-slate-300 print-text-dark">$0.00</span>
+          </div>
+
+          <!-- Discount Row -->
+          <div class="flex items-center justify-between py-1 border-b border-slate-800/80 print-border">
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-400 print-text-muted uppercase">Discount</span>
+              <input type="number" id="discountInput" value="0" min="0" max="100" step="0.5" class="invoice-input w-14 py-0.5 text-right no-print" oninput="calculateTotals(); autoSave();">
+              <span class="text-[11px] text-slate-500">(<span id="discountLabel">0</span>%)</span>
+            </div>
+            <span id="discountAmountVal" class="text-rose-400 print-text-dark">-$0.00</span>
+          </div>
+
+          <!-- Grand Total Row -->
+          <div class="flex items-center justify-between py-2 border-t-2 border-emerald-500/40 print-border text-base">
+            <span class="font-extrabold uppercase text-white print-text-dark tracking-wider">Total Due:</span>
+            <span id="grandTotalVal" class="font-extrabold text-emerald-400 print-text-dark text-lg sm:text-xl">$0.00</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Navigation Suite Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="hud-card max-w-4xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-emerald-500/30 pb-3">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+          <i class="fa-solid fa-grid-2 text-emerald-400"></i>
+          <span>TACTICAL RECON SUITE // ALL MODULES (13)</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white text-sm cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="suiteGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-emerald-500/60 text-emerald-300 font-mono text-xs px-4 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.2)] opacity-0 pointer-events-none transition-all duration-300 z-50 uppercase flex items-center gap-2 no-print">
+    <i class="fa-solid fa-terminal text-emerald-400"></i>
+    <span id="toastMsg">ACTION COMPLETED</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-emerald-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="https://apps.sarwarfx.cfd" class="text-slate-400 hover:text-emerald-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400 uppercase tracking-widest text-[11px]">[AIRGAP CLIENT EXECUTION]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 font-mono text-[11px]">[HOSTED: CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-emerald-400 transition-colors uppercase tracking-wider text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'invoice';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into LLM prompts', icon: 'fa-box-archive', subdomain: 'pack.sarwarfx.cfd', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate images with zero EXIF', icon: 'fa-user-secret', subdomain: 'redact.sarwarfx.cfd', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side vector billing & PDF generator', icon: 'fa-file-invoice-dollar', subdomain: 'invoice.sarwarfx.cfd', code: '0x0D' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      modal.classList.toggle('hidden', !show);
+      if (show) renderSuiteGrid();
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-emerald-950/40 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 flex items-center justify-center text-xs shrink-0 ${
+              isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-400/50' : 'bg-slate-900 text-slate-400 group-hover:text-emerald-400 group-hover:border-emerald-500/40 border border-slate-800'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors uppercase tracking-wider">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-emerald-400 uppercase bg-emerald-950/80 px-1 border border-emerald-500/40">Active</span>' : ''}
+              </div>
+              <p class="text-[10px] text-slate-400 mt-0.5 leading-snug truncate font-mono">${tool.desc}</p>
+              <span class="text-[9px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2200);
+    }
+
+    // --- INVOICE ENGINE & PERSISTENCE ---
+    const STORAGE_KEY = 'sarwarfx_cyber_invoice';
+    let lineItems = [];
+    let companyLogoData = '';
+    let currentCurrency = '$';
+
+    function updateCurrency() {
+      currentCurrency = document.getElementById('currencySelect').value;
+      document.querySelectorAll('.currency-label').forEach(el => el.textContent = currentCurrency);
+      calculateTotals();
+    }
+
+    function addLineItem(desc = '', qty = 1, rate = 0) {
+      const id = Date.now() + Math.random().toString(36).substr(2, 5);
+      lineItems.push({ id, desc, qty, rate });
+      renderLineItems();
+      calculateTotals();
+      autoSave();
+    }
+
+    function removeLineItem(id) {
+      lineItems = lineItems.filter(item => item.id !== id);
+      renderLineItems();
+      calculateTotals();
+      autoSave();
+    }
+
+    function updateLineItem(id, field, value) {
+      const item = lineItems.find(it => it.id === id);
+      if (item) {
+        if (field === 'qty' || field === 'rate') {
+          item[field] = parseFloat(value) || 0;
+        } else {
+          item[field] = value;
+        }
+        calculateTotals();
+        autoSave();
+      }
+    }
+
+    function renderLineItems() {
+      const tbody = document.getElementById('lineItemsBody');
+      if (lineItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-6 text-center text-slate-600 font-mono">
+              No line items added yet. Click "+ Add Line Item" above.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = lineItems.map((item, idx) => {
+        const rowTotal = (item.qty * item.rate).toFixed(2);
+        return `
+          <tr class="group hover:bg-slate-900/30">
+            <td class="py-2 px-2">
+              <input 
+                type="text" 
+                value="${escapeHtml(item.desc)}" 
+                placeholder="Item / Service description..." 
+                class="invoice-input w-full"
+                oninput="updateLineItem('${item.id}', 'desc', this.value)"
+              >
+            </td>
+            <td class="py-2 px-2 text-right">
+              <input 
+                type="number" 
+                value="${item.qty}" 
+                min="0" 
+                step="any"
+                class="invoice-input w-20 text-right"
+                oninput="updateLineItem('${item.id}', 'qty', this.value)"
+              >
+            </td>
+            <td class="py-2 px-2 text-right">
+              <input 
+                type="number" 
+                value="${item.rate}" 
+                min="0" 
+                step="any"
+                class="invoice-input w-24 text-right"
+                oninput="updateLineItem('${item.id}', 'rate', this.value)"
+              >
+            </td>
+            <td class="py-2 px-2 text-right font-bold text-white print-text-dark font-mono">
+              ${currentCurrency}${rowTotal}
+            </td>
+            <td class="py-2 px-2 text-center no-print">
+              <button 
+                onclick="removeLineItem('${item.id}')" 
+                class="text-slate-500 hover:text-rose-400 p-1 transition-colors"
+                title="Remove Item"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function calculateTotals() {
+      const subtotal = lineItems.reduce((acc, it) => acc + (it.qty * it.rate), 0);
+      const taxRate = parseFloat(document.getElementById('taxRateInput').value) || 0;
+      const discountRate = parseFloat(document.getElementById('discountInput').value) || 0;
+
+      document.getElementById('taxRateLabel').textContent = taxRate;
+      document.getElementById('discountLabel').textContent = discountRate;
+
+      const discountAmount = subtotal * (discountRate / 100);
+      const taxableAmount = Math.max(0, subtotal - discountAmount);
+      const taxAmount = taxableAmount * (taxRate / 100);
+      const grandTotal = taxableAmount + taxAmount;
+
+      document.getElementById('subtotalVal').textContent = `${currentCurrency}${subtotal.toFixed(2)}`;
+      document.getElementById('taxAmountVal').textContent = `${currentCurrency}${taxAmount.toFixed(2)}`;
+      document.getElementById('discountAmountVal').textContent = `-${currentCurrency}${discountAmount.toFixed(2)}`;
+      document.getElementById('grandTotalVal').textContent = `${currentCurrency}${grandTotal.toFixed(2)}`;
+    }
+
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        companyLogoData = ev.target.result;
+        displayLogo(companyLogoData);
+        autoSave();
+        showToast('COMPANY LOGO ATTACHED');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function displayLogo(dataUri) {
+      if (!dataUri) {
+        document.getElementById('logoPreviewWrapper').classList.add('hidden');
+        document.getElementById('logoUploadBtn').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('logoImg').src = dataUri;
+      document.getElementById('logoPreviewWrapper').classList.remove('hidden');
+      document.getElementById('logoUploadBtn').classList.add('hidden');
+    }
+
+    function removeLogo() {
+      companyLogoData = '';
+      displayLogo('');
+      autoSave();
+      showToast('REMOVED LOGO');
+    }
+
+    function autoSave() {
+      const data = {
+        title: document.getElementById('invTitle').value,
+        subtitle: document.getElementById('invSubtitle').value,
+        invNumber: document.getElementById('invNumber').value,
+        date: document.getElementById('invDate').value,
+        dueDate: document.getElementById('invDueDate').value,
+        poNumber: document.getElementById('invPoNumber').value,
+        currency: document.getElementById('currencySelect').value,
+        fromName: document.getElementById('fromName').value,
+        fromEmail: document.getElementById('fromEmail').value,
+        fromAddress1: document.getElementById('fromAddress1').value,
+        fromAddress2: document.getElementById('fromAddress2').value,
+        fromTaxId: document.getElementById('fromTaxId').value,
+        toName: document.getElementById('toName').value,
+        toEmail: document.getElementById('toEmail').value,
+        toAddress1: document.getElementById('toAddress1').value,
+        toAddress2: document.getElementById('toAddress2').value,
+        toTaxId: document.getElementById('toTaxId').value,
+        notes: document.getElementById('invNotes').value,
+        taxRate: document.getElementById('taxRateInput').value,
+        discount: document.getElementById('discountInput').value,
+        logo: companyLogoData,
+        lineItems
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const status = document.getElementById('saveStatus');
+        status.textContent = 'AUTO-SAVED IN LOCAL STORAGE';
+      } catch (e) {
+        console.warn('LocalStorage save failed:', e);
+      }
+    }
+
+    function loadSavedData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          loadDefaultDates();
+          loadSampleInvoice();
+          return;
+        }
+
+        const d = JSON.parse(raw);
+        document.getElementById('invTitle').value = d.title || 'INVOICE';
+        document.getElementById('invSubtitle').value = d.subtitle || '';
+        document.getElementById('invNumber').value = d.invNumber || 'INV-2026-001';
+        document.getElementById('invDate').value = d.date || '';
+        document.getElementById('invDueDate').value = d.dueDate || '';
+        document.getElementById('invPoNumber').value = d.poNumber || '';
+        document.getElementById('currencySelect').value = d.currency || '$';
+        document.getElementById('fromName').value = d.fromName || '';
+        document.getElementById('fromEmail').value = d.fromEmail || '';
+        document.getElementById('fromAddress1').value = d.fromAddress1 || '';
+        document.getElementById('fromAddress2').value = d.fromAddress2 || '';
+        document.getElementById('fromTaxId').value = d.fromTaxId || '';
+        document.getElementById('toName').value = d.toName || '';
+        document.getElementById('toEmail').value = d.toEmail || '';
+        document.getElementById('toAddress1').value = d.toAddress1 || '';
+        document.getElementById('toAddress2').value = d.toAddress2 || '';
+        document.getElementById('toTaxId').value = d.toTaxId || '';
+        document.getElementById('invNotes').value = d.notes || '';
+        document.getElementById('taxRateInput').value = d.taxRate !== undefined ? d.taxRate : 10;
+        document.getElementById('discountInput').value = d.discount !== undefined ? d.discount : 0;
+
+        companyLogoData = d.logo || '';
+        displayLogo(companyLogoData);
+
+        lineItems = d.lineItems || [];
+        updateCurrency();
+        renderLineItems();
+        calculateTotals();
+      } catch (err) {
+        console.warn('Could not load saved data:', err);
+        loadDefaultDates();
+        loadSampleInvoice();
+      }
+    }
+
+    function loadDefaultDates() {
+      const now = new Date();
+      const due = new Date();
+      due.setDate(now.getDate() + 14);
+
+      document.getElementById('invDate').value = now.toISOString().split('T')[0];
+      document.getElementById('invDueDate').value = due.toISOString().split('T')[0];
+    }
+
+    function loadSampleInvoice() {
+      loadDefaultDates();
+      document.getElementById('invNumber').value = 'INV-2026-0842';
+      document.getElementById('currencySelect').value = '$';
+      document.getElementById('fromName').value = 'SARWARFX TACTICAL SYSTEMS';
+      document.getElementById('fromEmail').value = 'ops@sarwarfx.cfd';
+      document.getElementById('fromAddress1').value = '10 Cybernetic Way, Suite 400';
+      document.getElementById('fromAddress2').value = 'San Francisco, CA 94107, USA';
+      document.getElementById('fromTaxId').value = 'EIN: 84-2910394';
+
+      document.getElementById('toName').value = 'NEURAL QUANTUM ENTERPRISES';
+      document.getElementById('toEmail').value = 'accounts@neuralquantum.io';
+      document.getElementById('toAddress1').value = '450 Innovation Parkway';
+      document.getElementById('toAddress2').value = 'New York, NY 10001, USA';
+      document.getElementById('toTaxId').value = 'VAT: US94829104';
+
+      document.getElementById('taxRateInput').value = '8.5';
+      document.getElementById('discountInput').value = '5';
+
+      lineItems = [
+        { id: '1', desc: 'Airgap Zero-Trust Infrastructure Audit & Threat Model', qty: 1, rate: 4500 },
+        { id: '2', desc: 'Cryptographic HSM Key Rotation & Enclave Architecture', qty: 24, rate: 185 },
+        { id: '3', desc: 'Edge LLM Sandbox Deployment & Telemetry Integration', qty: 1, rate: 3200 },
+        { id: '4', desc: 'High-Availability Cloudflare Pages Worker Routing', qty: 8, rate: 150 }
+      ];
+
+      updateCurrency();
+      renderLineItems();
+      calculateTotals();
+      autoSave();
+      showToast('LOADED SAMPLE INVOICE TEMPLATE');
+    }
+
+    function clearInvoice() {
+      lineItems = [];
+      companyLogoData = '';
+      displayLogo('');
+      document.getElementById('invNumber').value = 'INV-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('fromName').value = '';
+      document.getElementById('fromEmail').value = '';
+      document.getElementById('fromAddress1').value = '';
+      document.getElementById('fromAddress2').value = '';
+      document.getElementById('fromTaxId').value = '';
+      document.getElementById('toName').value = '';
+      document.getElementById('toEmail').value = '';
+      document.getElementById('toAddress1').value = '';
+      document.getElementById('toAddress2').value = '';
+      document.getElementById('toTaxId').value = '';
+      document.getElementById('taxRateInput').value = '0';
+      document.getElementById('discountInput').value = '0';
+      
+      addLineItem();
+      autoSave();
+      showToast('CLEARED INVOICE');
+    }
+
+    function printInvoice() {
+      window.print();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSavedData();
+    });
+  </script>
+</body>
+</html>
