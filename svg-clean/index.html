@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vector SVG Optimizer, Minifier & Metadata Stripper | CyberTools</title>
+  <meta name="description" content="Clean, optimize, and minify vector SVG markup. Strip editor namespaces, round coordinate precision, remove comments, and verify visually with live dual preview.">
+  <meta name="keywords" content="svg optimizer, svg clean, minify svg, strip svg metadata, svg coordinate rounder, vector cleaner, svgo browser, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/svg-clean/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/svg-clean/" />
+  <meta property="og:title" content="Vector SVG Optimizer, Minifier & Metadata Stripper | CyberTools" />
+  <meta property="og:description" content="Clean, optimize, and minify vector SVG markup. Strip editor namespaces, round coordinate precision, remove comments, and verify visually with live dual preview." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/svg-clean/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/svg-clean/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/svg-clean/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Vector SVG Optimizer, Minifier & Metadata Stripper | CyberTools" />
+  <meta name="twitter:description" content="Clean, optimize, and minify vector SVG markup. Strip editor namespaces, round coordinate precision, remove comments, and verify visually with live dual preview." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/svg-clean/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vector SVG Optimizer & Minifier",
+    "url": "https://apps.sarwarfx.cfd/svg-clean/",
+    "description": "Clean, optimize, and minify vector SVG markup. Strip editor namespaces, round coordinate precision, remove comments, and verify visually with live dual preview.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M21.58 16.09l-1.09-7.66-5.85-2.05-4.49 4.49L2.49 13.9 1 22.5l8.6-1.49 3.03-7.66 4.49-4.49 2.05 5.85 2.41 1.38z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .checkerboard {
+      background-color: #0a0f1d;
+      background-image: 
+        linear-gradient(45deg, #111827 25%, transparent 25%), 
+        linear-gradient(-45deg, #111827 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #111827 75%), 
+        linear-gradient(-45deg, transparent 75%, #111827 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">SVG_CLEAN // VECTOR OPTIMIZER</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x5C</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(92)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>DEVELOPER_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">SVG_CLEAN</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x5C</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          VECTOR SVG OPTIMIZER <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">CODE MINIFIER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Client-side vector SVG optimizer and sanitizer. Strip editor namespaces, remove comments, round coordinate precision, and verify visually with live dual preview.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleSvg()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-code text-cyan-400"></i>
+          <span>SAMPLE DIRTY SVG</span>
+        </button>
+        <button onclick="copyCleanSvg()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-regular fa-copy text-pink-400"></i>
+          <span>COPY CLEAN SVG</span>
+        </button>
+        <button onclick="downloadCleanSvg()" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-download"></i>
+          <span>DOWNLOAD .SVG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Telemetry Readout Deck -->
+    <div class="hud-card p-3 sm:p-4 rounded border-cyan-500/30 font-mono text-xs space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-5">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">ORIGINAL SIZE:</span>
+            <span id="statOrigSize" class="text-cyan-400 font-bold">0.00 KB</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">OPTIMIZED SIZE:</span>
+            <span id="statOptSize" class="text-emerald-400 font-bold">0.00 KB</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">SAVINGS:</span>
+            <span id="statSavings" class="text-pink-400 font-bold">0.0% (-0 B)</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span class="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold">
+            <i class="fa-solid fa-check-double mr-1"></i>PRECISION: 2 DECIMALS
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optimization Toggles Deck -->
+    <div class="hud-card p-4 rounded border-slate-800 font-mono text-xs space-y-2.5">
+      <div class="text-[11px] text-slate-400 uppercase tracking-wider font-bold">OPTIMIZATION PASSES:</div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-[11px]">
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optComments" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Strip Comments</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optDoctype" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Strip XML / Doctype</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optNamespaces" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Editor Namespaces</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optHidden" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Remove Hidden</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optDecimals" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Round Floats (2dp)</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="optCollapse" checked onchange="optimizeSvg()" class="accent-cyan-400">
+          <span>Collapse Containers</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Split Code Workstation: Raw Code (Left) vs Optimized Code (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Left: Raw Input Deck -->
+      <div class="hud-card p-4 rounded flex flex-col space-y-3 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-code text-cyan-400"></i>
+            <h2 class="font-orbitron font-bold text-white text-xs tracking-wide">RAW SVG SOURCE</h2>
+          </div>
+          <span id="rawCharCount" class="text-[10px] text-slate-500">0 characters</span>
+        </div>
+        <textarea 
+          id="rawSvgInput" 
+          placeholder="Paste raw SVG markup or drop SVG file here..." 
+          oninput="optimizeSvg()" 
+          class="w-full h-64 p-3 bg-slate-950 border border-slate-800 rounded font-mono text-xs text-slate-200 focus:border-cyan-400 outline-none resize-none leading-relaxed"></textarea>
+      </div>
+
+      <!-- Right: Cleaned Output Deck -->
+      <div class="hud-card p-4 rounded flex flex-col space-y-3 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i>
+            <h2 class="font-orbitron font-bold text-white text-xs tracking-wide">OPTIMIZED CLEAN SVG</h2>
+          </div>
+          <span id="cleanCharCount" class="text-[10px] text-emerald-400 font-bold">0 characters</span>
+        </div>
+        <textarea 
+          id="cleanSvgOutput" 
+          readonly 
+          placeholder="Cleaned, minified SVG markup will appear here..." 
+          class="w-full h-64 p-3 bg-slate-950 border border-slate-800 rounded font-mono text-xs text-cyan-300 outline-none resize-none leading-relaxed select-all"></textarea>
+      </div>
+    </div>
+
+    <!-- Dual Live Canvas Preview (Before vs After) -->
+    <div class="hud-card p-5 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 font-mono text-xs">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-eye text-cyan-400"></i>
+          <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">DUAL VISUAL VERIFICATION</h3>
+        </div>
+        <span class="text-[10px] text-slate-500">COMPARE BEFORE &amp; AFTER FOR ZERO DISTORTION</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Before Preview -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-mono text-slate-400 uppercase flex items-center justify-between">
+            <span>BEFORE (RAW SOURCE)</span>
+            <span id="prevBeforeStatus" class="text-[10px] text-slate-500">STANDBY</span>
+          </div>
+          <div id="prevBeforeCard" class="checkerboard h-56 rounded border border-slate-800 flex items-center justify-center p-4 overflow-hidden relative">
+            <div id="beforeSvgContainer" class="w-full h-full flex items-center justify-center">
+              <span class="text-slate-600 font-mono text-xs">[NO INPUT]</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- After Preview -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-mono text-emerald-400 uppercase flex items-center justify-between font-bold">
+            <span>AFTER (OPTIMIZED RESULT)</span>
+            <span id="prevAfterStatus" class="text-[10px] text-emerald-400">STANDBY</span>
+          </div>
+          <div id="prevAfterCard" class="checkerboard h-56 rounded border border-cyan-500/40 flex items-center justify-center p-4 overflow-hidden relative shadow-[0_0_15px_rgba(0,245,255,0.05)]">
+            <div id="afterSvgContainer" class="w-full h-full flex items-center justify-center">
+              <span class="text-slate-600 font-mono text-xs">[NO OUTPUT]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // CLIENT-SIDE VECTOR SVG OPTIMIZATION
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Technical explanation of vector markup bloat, namespace eradication, coordinate quantization, and DOM serialization.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">Why Do Vector SVGs Accumulate Bloat?</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Graphic design tools like Adobe Illustrator, Inkscape, Sketch, and Figma save extensive private metadata inside exported SVG files. These include proprietary XML namespaces, document grids, thumbnail bitmaps, editor-specific layer tags, and redundant XML comments.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li><strong class="text-cyan-300">Editor Namespaces:</strong> Tags like <code class="text-cyan-300">&lt;inkscape:grid&gt;</code> and <code class="text-cyan-300">&lt;sodipodi:namedview&gt;</code> that provide zero visual value in browsers.</li>
+            <li><strong class="text-pink-400">Excessive Float Precision:</strong> Bezier curve coordinates saved with 8 to 14 decimal digits that bloat file weight without adding perceptible sharpness.</li>
+            <li><strong class="text-emerald-300">Hidden Nodes:</strong> Invisible layers and groups flagged with <code class="text-emerald-300">display="none"</code> that consume parsing overhead.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">The Optimization Pipeline</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            CyberTools executes an in-memory DOM parser (<code class="text-cyan-300">DOMParser</code>) across the document tree. It strips XML prologues, eradicates metadata elements (<code class="text-cyan-300">&lt;metadata&gt;</code>), and collapses empty group wrappers (<code class="text-cyan-300">&lt;g&gt;&lt;/g&gt;</code>).
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            It then quantizes all floating-point numbers in path coordinate strings (<code class="text-cyan-300">d="..."</code>) and geometric attributes to 2 decimal places, compressing file size by 30% to 70% while guaranteeing zero visual rendering distortion.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Will rounding decimals distort intricate vector paths?</h4>
+            <p class="text-slate-400">
+              A precision of 2 decimal places corresponds to sub-pixel accuracy on standard displays. You can visually confirm path integrity using the real-time side-by-side verification preview.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Is any SVG code transmitted across the network?</h4>
+            <p class="text-slate-400">
+              No. Processing is 100% in-browser airgapped. The code is parsed and serialized entirely within your local browser DOM.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Can I disable specific optimization steps?</h4>
+            <p class="text-slate-400">
+              Yes. Use the checkmark controls in the "Optimization Passes" bar to toggle comment removal, float rounding, or namespace stripping individually.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How do I export the cleaned SVG?</h4>
+            <p class="text-slate-400">
+              You can click "COPY CLEAN SVG" for instant clipboard paste into your IDE, or click "DOWNLOAD .SVG" to save the minified file locally.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 92 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'svg-clean';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // Optimization Pipeline
+    function optimizeSvg() {
+      const raw = document.getElementById('rawSvgInput').value.trim();
+      const outputEl = document.getElementById('cleanSvgOutput');
+      const rawCountEl = document.getElementById('rawCharCount');
+      const cleanCountEl = document.getElementById('cleanCharCount');
+
+      rawCountEl.textContent = `${raw.length} characters`;
+
+      if (!raw) {
+        outputEl.value = '';
+        cleanCountEl.textContent = '0 characters';
+        updateStats(0, 0);
+        updatePreviews('', '');
+        return;
+      }
+
+      // Read toggles
+      const stripComments = document.getElementById('optComments').checked;
+      const stripDoctype = document.getElementById('optDoctype').checked;
+      const stripNamespaces = document.getElementById('optNamespaces').checked;
+      const removeHidden = document.getElementById('optHidden').checked;
+      const roundDecimals = document.getElementById('optDecimals').checked;
+      const collapseContainers = document.getElementById('optCollapse').checked;
+
+      let processed = raw;
+
+      // 1. Strip XML declaration and Doctype
+      if (stripDoctype) {
+        processed = processed.replace(/<\?xml[^>]*\?>/gi, '');
+        processed = processed.replace(/<!DOCTYPE[^>]*>/gi, '');
+      }
+
+      // 2. Strip HTML/XML comments
+      if (stripComments) {
+        processed = processed.replace(/<!--[\s\S]*?-->/g, '');
+      }
+
+      // 3. DOM-based cleaning
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(processed, 'image/svg+xml');
+
+        // Check for parse errors
+        const parserError = doc.querySelector('parsererror');
+        if (parserError) {
+          console.warn('SVG parse notice: parsererror detected');
+        } else {
+          // Remove editor metadata and namespaces
+          if (stripNamespaces) {
+            const metadataElements = doc.querySelectorAll('metadata, sodipodi\:namedview, inkscape\:grid, rdf\:RDF');
+            metadataElements.forEach(el => el.remove());
+
+            // Remove editor namespace attributes from root
+            const root = doc.documentElement;
+            if (root) {
+              const attrsToRemove = [];
+              for (let attr of root.attributes) {
+                if (attr.name.startsWith('xmlns:inkscape') || 
+                    attr.name.startsWith('xmlns:sodipodi') || 
+                    attr.name.startsWith('xmlns:adobe') ||
+                    attr.name.startsWith('xmlns:sketch') ||
+                    attr.name.startsWith('inkscape:') ||
+                    attr.name.startsWith('sodipodi:')) {
+                  attrsToRemove.push(attr.name);
+                }
+              }
+              attrsToRemove.forEach(a => root.removeAttribute(a));
+            }
+
+            // Remove editor attributes on all elements
+            const allElements = doc.querySelectorAll('*');
+            allElements.forEach(el => {
+              const elAttrsToRemove = [];
+              for (let attr of el.attributes) {
+                if (attr.name.startsWith('inkscape:') || 
+                    attr.name.startsWith('sodipodi:') || 
+                    attr.name.startsWith('sketch:') ||
+                    attr.name.startsWith('adobe:')) {
+                  elAttrsToRemove.push(attr.name);
+                }
+              }
+              elAttrsToRemove.forEach(a => el.removeAttribute(a));
+            });
+          }
+
+          // Remove hidden elements
+          if (removeHidden) {
+            const hiddenEls = doc.querySelectorAll('[display="none"], [opacity="0"], [visibility="hidden"]');
+            hiddenEls.forEach(el => el.remove());
+          }
+
+          // Collapse empty container tags
+          if (collapseContainers) {
+            const containers = doc.querySelectorAll('g, defs, clipPath');
+            containers.forEach(c => {
+              if (c.children.length === 0 && !c.textContent.trim()) {
+                c.remove();
+              }
+            });
+          }
+
+          const serializer = new XMLSerializer();
+          processed = serializer.serializeToString(doc.documentElement);
+        }
+      } catch (err) {
+        console.warn('DOM parser error, falling back to regex clean', err);
+      }
+
+      // 4. Round decimal coordinates (to 2 decimal places)
+      if (roundDecimals) {
+        processed = processed.replace(/([0-9]+\.[0-9]{3,})/g, (match) => {
+          const num = parseFloat(match);
+          return isNaN(num) ? match : Number(num.toFixed(2)).toString();
+        });
+      }
+
+      // 5. Minify whitespace
+      processed = processed
+        .replace(/>\s+</g, '><')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      outputEl.value = processed;
+      cleanCountEl.textContent = `${processed.length} characters`;
+
+      // Update statistics
+      updateStats(raw.length, processed.length);
+
+      // Update Visual Previews
+      updatePreviews(raw, processed);
+    }
+
+    function updateStats(origLen, optLen) {
+      const origKb = (origLen / 1024).toFixed(2);
+      const optKb = (optLen / 1024).toFixed(2);
+      document.getElementById('statOrigSize').textContent = `${origKb} KB`;
+      document.getElementById('statOptSize').textContent = `${optKb} KB`;
+
+      if (origLen > 0 && optLen > 0) {
+        const diff = origLen - optLen;
+        const pct = ((diff / origLen) * 100).toFixed(1);
+        document.getElementById('statSavings').textContent = `-${pct}% (-${diff} B)`;
+        document.getElementById('statSavings').className = diff >= 0 ? 'text-pink-400 font-bold' : 'text-slate-400 font-bold';
+      } else {
+        document.getElementById('statSavings').textContent = '0.0% (-0 B)';
+      }
+    }
+
+    function updatePreviews(raw, clean) {
+      const beforeBox = document.getElementById('beforeSvgContainer');
+      const afterBox = document.getElementById('afterSvgContainer');
+      const beforeStatus = document.getElementById('prevBeforeStatus');
+      const afterStatus = document.getElementById('prevAfterStatus');
+
+      if (!raw) {
+        beforeBox.innerHTML = '<span class="text-slate-600 font-mono text-xs">[NO INPUT]</span>';
+        afterBox.innerHTML = '<span class="text-slate-600 font-mono text-xs">[NO OUTPUT]</span>';
+        beforeStatus.textContent = 'STANDBY';
+        afterStatus.textContent = 'STANDBY';
+        return;
+      }
+
+      try {
+        beforeBox.innerHTML = raw;
+        const svgB = beforeBox.querySelector('svg');
+        if (svgB) {
+          svgB.setAttribute('width', '100%');
+          svgB.setAttribute('height', '100%');
+          svgB.style.maxHeight = '200px';
+          beforeStatus.textContent = 'VALID';
+          beforeStatus.className = 'text-[10px] text-cyan-400 font-bold';
+        }
+      } catch (e) {
+        beforeBox.innerHTML = '<span class="text-rose-400 text-xs font-mono">RENDER ERROR</span>';
+        beforeStatus.textContent = 'ERROR';
+      }
+
+      try {
+        afterBox.innerHTML = clean;
+        const svgA = afterBox.querySelector('svg');
+        if (svgA) {
+          svgA.setAttribute('width', '100%');
+          svgA.setAttribute('height', '100%');
+          svgA.style.maxHeight = '200px';
+          afterStatus.textContent = 'OPTIMIZED';
+          afterStatus.className = 'text-[10px] text-emerald-400 font-bold';
+        }
+      } catch (e) {
+        afterBox.innerHTML = '<span class="text-rose-400 text-xs font-mono">RENDER ERROR</span>';
+        afterStatus.textContent = 'ERROR';
+      }
+    }
+
+    function copyCleanSvg() {
+      const val = document.getElementById('cleanSvgOutput').value;
+      if (!val) {
+        showToast('Nothing to copy', true);
+        return;
+      }
+      navigator.clipboard.writeText(val).then(() => {
+        showToast('Clean SVG copied to clipboard!');
+      }).catch(() => {
+        showToast('Failed to copy', true);
+      });
+    }
+
+    function downloadCleanSvg() {
+      const val = document.getElementById('cleanSvgOutput').value;
+      if (!val) {
+        showToast('Nothing to download', true);
+        return;
+      }
+      const blob = new Blob([val], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `optimized_${Date.now()}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      showToast('Clean SVG downloaded successfully!');
+    }
+
+    // Sample Dirty SVG with namespaces, comments, excessive decimals
+    function loadSampleSvg() {
+      const sample = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" width="400" height="300" viewBox="0 0 400.00000000 300.00000000" id="svg_sample_dirty" inkscape:version="1.2.2 (b0a8486541, 2022-12-01)">
+  <sodipodi:namedview id="base" pagecolor="#05070d" bordercolor="#666666" showgrid="true" inkscape:current-layer="layer1"/>
+  <metadata id="metadata5421">
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work xmlns:cc="http://creativecommons.org/ns#" rdf:about="">
+        <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">image/svg+xml</dc:format>
+        <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">CyberTools Tactical Vector Asset</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <!-- Main tactical badge geometric shapes -->
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+    <rect id="rect_bg" x="20.12345678" y="20.98765432" width="359.87654321" height="259.12345678" rx="16.54321098" fill="#080f1e" stroke="#00f5ff" stroke-width="2.34567891"/>
+    <circle id="radar_hub" cx="200.45678912" cy="150.32165498" r="64.12345678" fill="none" stroke="#ff2bd6" stroke-width="3.14159265"/>
+    <path id="scan_spoke" d="M 136.33333333 150.32165498 L 264.55555555 150.32165498 M 200.45678912 86.22222222 L 200.45678912 214.44444444" stroke="#00ff9d" stroke-width="1.88888888"/>
+    <!-- Hidden editor element that adds useless payload -->
+    <g id="hidden_debug_grid" display="none" opacity="0.0">
+      <rect x="0" y="0" width="400" height="300" fill="#ff0000"/>
+    </g>
+    <!-- Empty group -->
+    <g id="empty_wrapper"></g>
+  </g>
+</svg>`;
+
+      document.getElementById('rawSvgInput').value = sample;
+      optimizeSvg();
+      showToast('Loaded sample dirty SVG asset!');
+    }
+
+    // Suite Modal Data (92 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & expiration monitor.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with execution countdown.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

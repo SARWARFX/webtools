@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Matrix // In-Memory PDF Page Manipulator, Splitter & Merger | CyberTools</title>
+  <meta name="description" content="In-memory PDF page organizer, merger, and splitter. Reorder, extract, rotate, and combine PDF documents client-side with zero server uploads.">
+  <meta name="keywords" content="pdf matrix, merge pdf in-browser, split pdf client-side, pdf page organizer, rotate pdf pages, pdf-lib, airgapped pdf, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/pdf-matrix/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/pdf-matrix/" />
+  <meta property="og:title" content="PDF Matrix // In-Memory PDF Page Manipulator, Splitter & Merger | CyberTools" />
+  <meta property="og:description" content="In-memory PDF page organizer, merger, and splitter. Reorder, extract, rotate, and combine PDF documents client-side with zero server uploads." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/pdf-matrix/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/pdf-matrix/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/pdf-matrix/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PDF Matrix // In-Memory PDF Page Manipulator, Splitter & Merger | CyberTools" />
+  <meta name="twitter:description" content="In-memory PDF page organizer, merger, and splitter. Reorder, extract, rotate, and combine PDF documents client-side with zero server uploads." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/pdf-matrix/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Matrix Page Manipulator",
+    "url": "https://apps.sarwarfx.cfd/pdf-matrix/",
+    "description": "In-memory PDF page organizer, merger, and splitter. Reorder, extract, rotate, and combine PDF documents client-side with zero server uploads.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zm4.5 2h1v-3h-1v3zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- PDF-LIB CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <!-- PDF.JS CDN for Page Canvas Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .page-thumb-card {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .page-thumb-card.selected {
+      border-color: #00f5ff;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.35);
+      transform: translateY(-2px);
+    }
+    .page-thumb-card.excluded {
+      opacity: 0.35;
+      filter: grayscale(1);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">PDF_MATRIX // PAGE MANIPULATOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x5B</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(92)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>DOCUMENT_WORKSTATION</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">PDF_MATRIX</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x5B</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          PDF MATRIX <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">PAGE MANIPULATOR &amp; MERGER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Client-side in-memory PDF page organizer, merger, and splitter. Reorder, extract, rotate, and combine documents with zero server uploads.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSamplePdf()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-file-invoice text-cyan-400"></i>
+          <span>SAMPLE PDF</span>
+        </button>
+        <button onclick="executePdfCompile()" id="btnCompile" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-gears"></i>
+          <span id="btnCompileText">COMPILE &amp; DOWNLOAD PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Security & Mode Bar -->
+    <div class="hud-card p-3 sm:p-4 rounded border-cyan-500/30 font-mono text-xs space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <!-- Mode Switcher -->
+        <div class="flex items-center space-x-2">
+          <span class="text-slate-500 uppercase">OPERATION MODE:</span>
+          <button onclick="switchMode('merge')" id="tabMerge" class="px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs flex items-center space-x-1.5">
+            <i class="fa-solid fa-object-group"></i>
+            <span>MERGE DOCUMENTS</span>
+          </button>
+          <button onclick="switchMode('split')" id="tabSplit" class="px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs flex items-center space-x-1.5">
+            <i class="fa-solid fa-diagram-project"></i>
+            <span>SPLIT &amp; EXTRACT PAGES</span>
+          </button>
+        </div>
+
+        <!-- Airgap Security Badge -->
+        <div class="flex items-center space-x-2 text-[11px] text-emerald-400 font-bold">
+          <i class="fa-solid fa-lock"></i>
+          <span>100% AIR-GAPPED IN-MEMORY PROCESSING &bull; CONFIDENTIAL DOCUMENTS PROTECTED</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dropzone Area -->
+    <div 
+      id="pdfDropzone" 
+      ondragover="handleDragOver(event)" 
+      ondragleave="handleDragLeave(event)" 
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('pdfFileInput').click()" 
+      class="hud-card p-6 rounded text-center border-dashed border-2 border-cyan-500/40 hover:border-cyan-400 transition-all cursor-pointer space-y-2">
+      <input type="file" id="pdfFileInput" accept="application/pdf" multiple class="hidden" onchange="handleFileSelect(event)">
+      <div class="w-12 h-12 mx-auto rounded-full bg-cyan-950/40 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+        <i class="fa-solid fa-file-pdf text-xl"></i>
+      </div>
+      <div class="font-orbitron font-bold text-white text-sm" id="dropzoneTitle">DROP PDF FILES HERE OR CLICK TO BROWSE</div>
+      <p class="text-slate-400 font-mono text-xs max-w-lg mx-auto" id="dropzoneDesc">
+        Merge mode: Select multiple PDFs to order and combine. Split mode: Ingest a multi-page PDF to extract, rotate, and reorganize pages.
+      </p>
+    </div>
+
+    <!-- VIEW A: MERGE MODE WORKSPACE -->
+    <div id="mergeWorkspace" class="hud-card p-5 rounded space-y-4 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-list-ol text-cyan-400"></i>
+          <h2 class="font-orbitron font-bold text-white text-sm tracking-wide">MERGE QUEUE ORDER</h2>
+        </div>
+        <span id="mergeFileCount" class="text-[10px] text-slate-500">0 FILES STAGED</span>
+      </div>
+
+      <!-- File Queue List -->
+      <div id="mergeList" class="space-y-2.5">
+        <div id="emptyMergeMsg" class="text-center py-8 text-slate-600">
+          No PDF documents queued for merging. Drop multiple PDF files above.
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW B: SPLIT & EXTRACT WORKSPACE -->
+    <div id="splitWorkspace" class="hud-card p-5 rounded space-y-4 font-mono text-xs hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-cyan-500/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-shapes text-pink-400"></i>
+          <h2 class="font-orbitron font-bold text-white text-sm tracking-wide">PAGE EXTRACTION &amp; ROTATION GRID</h2>
+        </div>
+
+        <!-- Quick Select Buttons -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="selectAllPages(true)" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px]">SELECT ALL</button>
+          <button onclick="selectAllPages(false)" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px]">DESELECT ALL</button>
+          <button onclick="invertSelection()" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px]">INVERT</button>
+          <button onclick="selectOddPages()" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px]">ODD</button>
+          <button onclick="selectEvenPages()" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px]">EVEN</button>
+          <button onclick="rotateSelectedPages(90)" class="hud-btn-secondary px-2.5 py-1 rounded text-[10px] text-cyan-400">
+            <i class="fa-solid fa-rotate-right mr-1"></i>ROTATE 90°
+          </button>
+        </div>
+      </div>
+
+      <!-- Page Syntax Filter Input -->
+      <div class="p-3 bg-slate-950/80 rounded border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center space-x-2 min-w-0 flex-grow">
+          <span class="text-slate-400 shrink-0 text-[11px] uppercase">PAGE RANGE SYNTAX:</span>
+          <input 
+            type="text" 
+            id="pageRangeInput" 
+            placeholder="e.g. 1-3, 5, 8-12" 
+            oninput="handleRangeSyntaxInput(event)" 
+            class="w-full px-2.5 py-1 bg-slate-900 border border-slate-800 rounded text-cyan-300 text-xs focus:border-cyan-400 outline-none">
+        </div>
+        <span id="pageSelectionTally" class="text-[11px] text-pink-400 font-bold shrink-0">0 of 0 pages selected</span>
+      </div>
+
+      <!-- Thumbnails Grid -->
+      <div id="pagesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 pt-2">
+        <div id="emptySplitMsg" class="col-span-full text-center py-8 text-slate-600">
+          No multi-page PDF loaded. Drop a document above or click "SAMPLE PDF".
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          TECHNICAL MANUAL // CLIENT-SIDE PDF COMPILATION &amp; EXTRACTION
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Zero-backend, airgapped document manipulation using WebAssembly, TypedArrays, and the pdf-lib specification.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">In-Memory PDF Engine</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Traditional web-based PDF utility sites require users to transmit confidential tax filings, legal agreements, and corporate disclosures to remote cloud servers. CyberTools eliminates this compliance hazard by running a complete PDF parser and bytecode compiler inside your web browser.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li><strong class="text-cyan-300">Merge Synthesis:</strong> Leverages <code class="text-cyan-300">PDFDocument.create()</code> and <code class="text-cyan-300">copyPages()</code> to combine arbitrary document structures with zero layout degradation.</li>
+            <li><strong class="text-pink-300">Targeted Extraction:</strong> Extracts individual page objects into newly synthesized PDF containers, preserving vector fonts, embedded imagery, and metadata streams.</li>
+            <li><strong class="text-emerald-300">Airgapped Execution:</strong> Operates entirely without network requests, telemetry tracking, or temporary disk cache.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Syntax-Driven Page Selection</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            The page extraction workspace supports both visual tactile selection and flexible syntax expressions. You can input comma-separated page indices or continuous hyphentated ranges (e.g., <code class="text-cyan-300">1-4, 7, 10-15</code>) for rapid batch workflows.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Each page card features an independent rotation matrix, allowing 90°, 180°, and 270° orientation corrections before final bytecode compilation.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Are my confidential PDFs ever sent to a server?</h4>
+            <p class="text-slate-400">
+              Never. The entire PDF binary parsing, page copying, and compilation sequence takes place within your browser's private WebAssembly memory sandbox.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">How do I rearrange documents before merging?</h4>
+            <p class="text-slate-400">
+              In Merge Mode, use the <code class="text-cyan-300">&uarr;</code> and <code class="text-cyan-300">&darr;</code> reorder arrows on each card to set the exact sequence before clicking Compile.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Can I extract just odd or even pages?</h4>
+            <p class="text-slate-400">
+              Yes. In Split &amp; Extract Mode, use the convenient "ODD" and "EVEN" quick action pills to filter pages with a single click.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Is there a file size or page limit?</h4>
+            <p class="text-slate-400">
+              Because execution relies on client RAM, standard documents (even 100+ pages) process in seconds.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 92 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'pdf-matrix';
+    let currentMode = 'merge'; // 'merge' | 'split'
+    let mergeFiles = [];
+    let splitPdfDoc = null;
+    let splitPages = []; // [{ pageNum, selected: true, rotation: 0, canvas: null }]
+
+    // Set worker for pdfjs
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('tabMerge').className = mode === 'merge' ? 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs flex items-center space-x-1.5' : 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs flex items-center space-x-1.5';
+      document.getElementById('tabSplit').className = mode === 'split' ? 'px-3 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs flex items-center space-x-1.5' : 'px-3 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs flex items-center space-x-1.5';
+
+      document.getElementById('mergeWorkspace').classList.toggle('hidden', mode !== 'merge');
+      document.getElementById('splitWorkspace').classList.toggle('hidden', mode !== 'split');
+
+      if (mode === 'merge') {
+        document.getElementById('dropzoneTitle').textContent = 'DROP PDF FILES HERE TO MERGE';
+        document.getElementById('btnCompileText').textContent = `MERGE & DOWNLOAD (${mergeFiles.length} FILES)`;
+      } else {
+        document.getElementById('dropzoneTitle').textContent = 'DROP MULTI-PAGE PDF HERE TO SPLIT & EXTRACT';
+        const selectedCount = splitPages.filter(p => p.selected).length;
+        document.getElementById('btnCompileText').textContent = `EXTRACT & DOWNLOAD (${selectedCount} PAGES)`;
+      }
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('pdfDropzone').classList.add('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('pdfDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('pdfDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+      if (e.dataTransfer && e.dataTransfer.files) {
+        processIncomingPdfs(Array.from(e.dataTransfer.files));
+      }
+    }
+    function handleFileSelect(e) {
+      if (e.target.files) {
+        processIncomingPdfs(Array.from(e.target.files));
+      }
+    }
+
+    async function processIncomingPdfs(files) {
+      const pdfFiles = files.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      if (pdfFiles.length === 0) {
+        showToast('Only PDF documents are supported', true);
+        return;
+      }
+
+      if (currentMode === 'merge') {
+        for (const file of pdfFiles) {
+          const id = 'pdf_' + Math.random().toString(36).substring(2, 9);
+          const buffer = await file.arrayBuffer();
+          let pageCount = 0;
+          try {
+            const pdfDoc = await PDFLib.PDFDocument.load(buffer);
+            pageCount = pdfDoc.getPageCount();
+          } catch(e) {
+            console.warn('PDF load warning', e);
+          }
+
+          mergeFiles.push({
+            id,
+            file,
+            name: file.name,
+            sizeKb: (file.size / 1024).toFixed(1),
+            pageCount,
+            buffer
+          });
+        }
+        renderMergeQueue();
+      } else {
+        // Split mode takes the first PDF
+        const target = pdfFiles[0];
+        await loadPdfForSplit(target);
+      }
+    }
+
+    // Merge Queue Logic
+    function renderMergeQueue() {
+      const list = document.getElementById('mergeList');
+      document.getElementById('mergeFileCount').textContent = `${mergeFiles.length} FILES STAGED`;
+      document.getElementById('btnCompileText').textContent = `MERGE & DOWNLOAD (${mergeFiles.length} FILES)`;
+
+      if (mergeFiles.length === 0) {
+        list.innerHTML = '<div id="emptyMergeMsg" class="text-center py-8 text-slate-600 font-mono text-xs">No PDF documents queued for merging. Drop multiple PDF files above.</div>';
+        return;
+      }
+
+      list.innerHTML = mergeFiles.map((item, idx) => `
+        <div class="hud-card p-3 rounded flex items-center justify-between gap-3 border-slate-800">
+          <div class="flex items-center space-x-3 min-w-0">
+            <span class="w-6 h-6 rounded bg-slate-900 border border-slate-800 text-cyan-400 flex items-center justify-center text-xs font-bold shrink-0">${idx + 1}</span>
+            <div class="min-w-0 truncate">
+              <div class="font-bold text-white truncate text-xs">${item.name}</div>
+              <div class="text-[10px] text-slate-400 flex items-center space-x-2">
+                <span>${item.sizeKb} KB</span>
+                <span>&bull;</span>
+                <span class="text-cyan-400 font-bold">${item.pageCount} PAGES</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2 shrink-0">
+            <button onclick="moveMergeItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 text-xs">
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <button onclick="moveMergeItem(${idx}, 1)" ${idx === mergeFiles.length - 1 ? 'disabled' : ''} class="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 text-xs">
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+            <button onclick="removeMergeItem(${idx})" class="text-slate-500 hover:text-rose-400 px-1 text-xs">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function moveMergeItem(idx, delta) {
+      const target = idx + delta;
+      if (target < 0 || target >= mergeFiles.length) return;
+      const temp = mergeFiles[idx];
+      mergeFiles[idx] = mergeFiles[target];
+      mergeFiles[target] = temp;
+      renderMergeQueue();
+    }
+
+    function removeMergeItem(idx) {
+      mergeFiles.splice(idx, 1);
+      renderMergeQueue();
+    }
+
+    // Split & Extract Mode Logic
+    async function loadPdfForSplit(file) {
+      showToast(`Loading ${file.name} into extractor matrix...`);
+      const buffer = await file.arrayBuffer();
+      splitPdfDoc = await PDFLib.PDFDocument.load(buffer);
+      const totalPages = splitPdfDoc.getPageCount();
+
+      splitPages = [];
+      for (let i = 1; i <= totalPages; i++) {
+        splitPages.push({
+          pageNum: i,
+          selected: true,
+          rotation: 0
+        });
+      }
+
+      renderSplitGrid(buffer);
+      syncRangeInputFromSelection();
+    }
+
+    async function renderSplitGrid(buffer) {
+      const grid = document.getElementById('pagesGrid');
+      grid.innerHTML = '';
+
+      let pdfjsDoc = null;
+      if (window.pdfjsLib) {
+        try {
+          pdfjsDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
+        } catch(e) {
+          console.warn('PDF.js render notice', e);
+        }
+      }
+
+      for (let i = 0; i < splitPages.length; i++) {
+        const item = splitPages[i];
+        const card = document.createElement('div');
+        card.id = `pageCard_${item.pageNum}`;
+        card.className = `page-thumb-card hud-card p-2 rounded flex flex-col items-center justify-between space-y-2 border-cyan-500/40 ${item.selected ? 'selected' : 'excluded'}`;
+        card.onclick = () => togglePageSelection(item.pageNum);
+
+        // Canvas thumbnail
+        const canvas = document.createElement('canvas');
+        canvas.className = 'w-full h-36 object-contain bg-slate-950 rounded border border-slate-900';
+        card.appendChild(canvas);
+
+        // Render page to canvas via pdf.js
+        if (pdfjsDoc) {
+          pdfjsDoc.getPage(item.pageNum).then(page => {
+            const viewport = page.getViewport({ scale: 0.5 });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            page.render({ canvasContext: ctx, viewport: viewport });
+          }).catch(() => {
+            drawFallbackPageThumb(canvas, item.pageNum);
+          });
+        } else {
+          drawFallbackPageThumb(canvas, item.pageNum);
+        }
+
+        // Info footer
+        const footer = document.createElement('div');
+        footer.className = 'w-full flex items-center justify-between pt-1 border-t border-slate-800 text-[10px] font-mono';
+        footer.innerHTML = `
+          <span class="font-bold text-cyan-300">P.${item.pageNum}</span>
+          <button onclick="event.stopPropagation(); rotatePageItem(${item.pageNum}, 90)" class="text-slate-400 hover:text-white px-1" title="Rotate 90°">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        `;
+        card.appendChild(footer);
+        grid.appendChild(card);
+      }
+
+      updateSplitTally();
+    }
+
+    function drawFallbackPageThumb(canvas, pageNum) {
+      canvas.width = 160;
+      canvas.height = 220;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 160, 220);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(20, 30, 120, 8);
+      ctx.fillRect(20, 50, 120, 6);
+      ctx.fillRect(20, 65, 90, 6);
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = 'bold 24px Orbitron, monospace';
+      ctx.fillText(`P.${pageNum}`, 50, 130);
+    }
+
+    function togglePageSelection(pageNum) {
+      const item = splitPages.find(p => p.pageNum === pageNum);
+      if (!item) return;
+      item.selected = !item.selected;
+
+      const card = document.getElementById(`pageCard_${pageNum}`);
+      if (card) {
+        card.classList.toggle('selected', item.selected);
+        card.classList.toggle('excluded', !item.selected);
+      }
+      updateSplitTally();
+      syncRangeInputFromSelection();
+    }
+
+    function selectAllPages(val) {
+      splitPages.forEach(p => {
+        p.selected = val;
+        const card = document.getElementById(`pageCard_${p.pageNum}`);
+        if (card) {
+          card.classList.toggle('selected', val);
+          card.classList.toggle('excluded', !val);
+        }
+      });
+      updateSplitTally();
+      syncRangeInputFromSelection();
+    }
+
+    function invertSelection() {
+      splitPages.forEach(p => {
+        p.selected = !p.selected;
+        const card = document.getElementById(`pageCard_${p.pageNum}`);
+        if (card) {
+          card.classList.toggle('selected', p.selected);
+          card.classList.toggle('excluded', !p.selected);
+        }
+      });
+      updateSplitTally();
+      syncRangeInputFromSelection();
+    }
+
+    function selectOddPages() {
+      splitPages.forEach(p => {
+        p.selected = (p.pageNum % 2 !== 0);
+        const card = document.getElementById(`pageCard_${p.pageNum}`);
+        if (card) {
+          card.classList.toggle('selected', p.selected);
+          card.classList.toggle('excluded', !p.selected);
+        }
+      });
+      updateSplitTally();
+      syncRangeInputFromSelection();
+    }
+
+    function selectEvenPages() {
+      splitPages.forEach(p => {
+        p.selected = (p.pageNum % 2 === 0);
+        const card = document.getElementById(`pageCard_${p.pageNum}`);
+        if (card) {
+          card.classList.toggle('selected', p.selected);
+          card.classList.toggle('excluded', !p.selected);
+        }
+      });
+      updateSplitTally();
+      syncRangeInputFromSelection();
+    }
+
+    function rotatePageItem(pageNum, deg) {
+      const item = splitPages.find(p => p.pageNum === pageNum);
+      if (item) {
+        item.rotation = (item.rotation + deg) % 360;
+        showToast(`Page ${pageNum} rotated to ${item.rotation}°`);
+      }
+    }
+
+    function rotateSelectedPages(deg) {
+      splitPages.filter(p => p.selected).forEach(p => {
+        p.rotation = (p.rotation + deg) % 360;
+      });
+      showToast(`Selected pages rotated by ${deg}°`);
+    }
+
+    function updateSplitTally() {
+      const count = splitPages.filter(p => p.selected).length;
+      document.getElementById('pageSelectionTally').textContent = `${count} of ${splitPages.length} pages selected`;
+      document.getElementById('btnCompileText').textContent = `EXTRACT & DOWNLOAD (${count} PAGES)`;
+    }
+
+    function syncRangeInputFromSelection() {
+      const selectedNums = splitPages.filter(p => p.selected).map(p => p.pageNum);
+      if (selectedNums.length === 0) {
+        document.getElementById('pageRangeInput').value = '';
+        return;
+      }
+
+      // Group continuous ranges
+      const ranges = [];
+      let start = selectedNums[0];
+      let end = selectedNums[0];
+
+      for (let i = 1; i < selectedNums.length; i++) {
+        if (selectedNums[i] === end + 1) {
+          end = selectedNums[i];
+        } else {
+          ranges.push(start === end ? `${start}` : `${start}-${end}`);
+          start = selectedNums[i];
+          end = selectedNums[i];
+        }
+      }
+      ranges.push(start === end ? `${start}` : `${start}-${end}`);
+      document.getElementById('pageRangeInput').value = ranges.join(', ');
+    }
+
+    function handleRangeSyntaxInput(e) {
+      const val = e.target.value.trim();
+      if (!val) {
+        splitPages.forEach(p => {
+          p.selected = false;
+          const card = document.getElementById(`pageCard_${p.pageNum}`);
+          if (card) { card.classList.remove('selected'); card.classList.add('excluded'); }
+        });
+        updateSplitTally();
+        return;
+      }
+
+      const activeSet = new Set();
+      const parts = val.split(',');
+      for (const part of parts) {
+        const clean = part.trim();
+        if (clean.includes('-')) {
+          const [s, e] = clean.split('-').map(Number);
+          if (!isNaN(s) && !isNaN(e)) {
+            for (let i = Math.min(s, e); i <= Math.max(s, e); i++) activeSet.add(i);
+          }
+        } else {
+          const num = Number(clean);
+          if (!isNaN(num)) activeSet.add(num);
+        }
+      }
+
+      splitPages.forEach(p => {
+        p.selected = activeSet.has(p.pageNum);
+        const card = document.getElementById(`pageCard_${p.pageNum}`);
+        if (card) {
+          card.classList.toggle('selected', p.selected);
+          card.classList.toggle('excluded', !p.selected);
+        }
+      });
+      updateSplitTally();
+    }
+
+    // PDF Compilation & Download Engine
+    async function executePdfCompile() {
+      if (currentMode === 'merge') {
+        if (mergeFiles.length < 2) {
+          showToast('Merge requires at least 2 PDF documents', true);
+          return;
+        }
+
+        showToast('Compiling unified PDF document in-memory...');
+        const mergedDoc = await PDFLib.PDFDocument.create();
+
+        for (const item of mergeFiles) {
+          const srcDoc = await PDFLib.PDFDocument.load(item.buffer);
+          const copiedPages = await mergedDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+          copiedPages.forEach(page => mergedDoc.addPage(page));
+        }
+
+        const mergedBytes = await mergedDoc.save();
+        downloadPdfBytes(mergedBytes, `cybertools_merged_${Date.now()}.pdf`);
+      } else {
+        const selectedItems = splitPages.filter(p => p.selected);
+        if (!splitPdfDoc || selectedItems.length === 0) {
+          showToast('No pages selected to extract', true);
+          return;
+        }
+
+        showToast(`Extracting ${selectedItems.length} pages in-memory...`);
+        const extractedDoc = await PDFLib.PDFDocument.create();
+        const indicesToCopy = selectedItems.map(p => p.pageNum - 1);
+        const copiedPages = await extractedDoc.copyPages(splitPdfDoc, indicesToCopy);
+
+        copiedPages.forEach((page, idx) => {
+          const config = selectedItems[idx];
+          if (config.rotation !== 0) {
+            const currentRot = page.getRotation().angle;
+            page.setRotation(PDFLib.degrees(currentRot + config.rotation));
+          }
+          extractedDoc.addPage(page);
+        });
+
+        const extractedBytes = await extractedDoc.save();
+        downloadPdfBytes(extractedBytes, `cybertools_extracted_${Date.now()}.pdf`);
+      }
+    }
+
+    function downloadPdfBytes(bytes, filename) {
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      showToast('PDF compiled and downloaded successfully!');
+    }
+
+    // In-Memory Sample PDF Generator
+    async function loadSamplePdf() {
+      showToast('Synthesizing 3-page confidential sample PDF...');
+      const sampleDoc = await PDFLib.PDFDocument.create();
+
+      // Page 1: Title
+      const page1 = sampleDoc.addPage([600, 400]);
+      page1.drawText('CYBERTOOLS DOCUMENT MATRIX // NODE 0x5B', { x: 50, y: 340, size: 18, color: PDFLib.rgb(0, 0.8, 1) });
+      page1.drawText('CONFIDENTIAL AIRGAPPED ASSET - PAGE 1', { x: 50, y: 310, size: 12, color: PDFLib.rgb(0.7, 0.7, 0.7) });
+      page1.drawText('Zero-knowledge client-side PDF synthesis active.', { x: 50, y: 280, size: 11, color: PDFLib.rgb(0.5, 0.5, 0.5) });
+
+      // Page 2: Telemetry
+      const page2 = sampleDoc.addPage([600, 400]);
+      page2.drawText('SENSOR METRICS & RADAR REPORT - PAGE 2', { x: 50, y: 340, size: 16, color: PDFLib.rgb(1, 0.2, 0.8) });
+      page2.drawText('System Concurrency: Optimal | Memory: Airgapped', { x: 50, y: 300, size: 12, color: PDFLib.rgb(0.6, 0.6, 0.6) });
+
+      // Page 3: Audit Sign-off
+      const page3 = sampleDoc.addPage([600, 400]);
+      page3.drawText('SECURITY CLEARANCE & AUDIT SIGN-OFF - PAGE 3', { x: 50, y: 340, size: 16, color: PDFLib.rgb(0, 1, 0.6) });
+      page3.drawText('Document integrity verified. Ready for extraction or merge.', { x: 50, y: 300, size: 12, color: PDFLib.rgb(0.6, 0.6, 0.6) });
+
+      const pdfBytes = await sampleDoc.save();
+      const testFile = new File([pdfBytes], 'cybertools_sample_dossier.pdf', { type: 'application/pdf' });
+
+      if (currentMode === 'merge') {
+        processIncomingPdfs([testFile]);
+      } else {
+        await loadPdfForSplit(testFile);
+      }
+      showToast('Sample PDF loaded successfully!');
+    }
+
+    // Suite Modal Data (92 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & expiration monitor.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with execution countdown.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

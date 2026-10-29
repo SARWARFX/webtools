@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Guarded Video Watermarking Engine // Client-Side Video Stamp HUD | CyberTools</title>
+  <meta name="description" content="Client-side video watermarking engine with hardware concurrency detection, memory guardrails, 9-point anchor snap, and real-time canvas stream encoding.">
+  <meta name="keywords" content="video watermark, client-side video watermarking, video stamp, mediarecorder canvas watermark, secure video processing, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/watermark-video/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/watermark-video/" />
+  <meta property="og:title" content="Dynamic Guarded Video Watermarking Engine // Client-Side Video Stamp HUD | CyberTools" />
+  <meta property="og:description" content="Client-side video watermarking engine with hardware concurrency detection, memory guardrails, 9-point anchor snap, and real-time canvas stream encoding." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/watermark-video/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/watermark-video/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/watermark-video/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dynamic Guarded Video Watermarking Engine // Client-Side Video Stamp HUD | CyberTools" />
+  <meta name="twitter:description" content="Client-side video watermarking engine with hardware concurrency detection, memory guardrails, 9-point anchor snap, and real-time canvas stream encoding." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/watermark-video/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Dynamic Guarded Video Watermarking Engine",
+    "url": "https://apps.sarwarfx.cfd/watermark-video/",
+    "description": "Client-side video watermarking engine with hardware concurrency detection, memory guardrails, 9-point anchor snap, and real-time canvas stream encoding.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .hud-btn-danger {
+      background: rgba(225, 29, 72, 0.2);
+      border: 1px solid #e11d48;
+      color: #fda4af;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-danger:hover {
+      background: rgba(225, 29, 72, 0.4);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+    }
+
+    .anchor-btn.active {
+      background-color: #00f5ff;
+      color: #05070d;
+      border-color: #00f5ff;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">VIDEO_WATERMARK // GUARDED ENGINE</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x59</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(92)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>MEDIA_PIPELINE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">VIDEO_WATERMARK</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x59</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          VIDEO WATERMARK <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">GUARDED STREAM ENGINE</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Client-side guarded video watermarking engine. Features hardware concurrency detection, memory guardrails, 9-point anchor snap, pre-flight duration limits &amp; real-time canvas stream encoding.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleVideo()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-film text-cyan-400"></i>
+          <span>LOAD TEST CLIP</span>
+        </button>
+        <button onclick="abortPipeline()" id="btnAbort" class="hud-btn-danger px-3 py-2 rounded flex items-center space-x-1.5 hidden">
+          <i class="fa-solid fa-ban"></i>
+          <span>ABORT PIPELINE</span>
+        </button>
+        <button onclick="startBatchRender()" id="btnBatchRender" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-play"></i>
+          <span id="btnBatchRenderText">RENDER BATCH (0 CLIPS)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hardware & Queue Telemetry Deck -->
+    <div class="hud-card p-3 sm:p-4 rounded border-cyan-500/30 font-mono text-xs space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">SYS_CORES:</span>
+            <span id="hwCores" class="text-cyan-400 font-bold">DETECTING...</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">SYS_RAM:</span>
+            <span id="hwMemory" class="text-cyan-400 font-bold">DETECTING...</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">CODEC:</span>
+            <span id="hwCodec" class="text-emerald-400 font-bold">DETECTING...</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">QUEUE SLOTS:</span>
+            <span id="queueSlotsText" class="text-pink-400 font-bold">[0/5]</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">PIPELINE:</span>
+            <span id="pipelineStatusText" class="text-cyan-400 font-bold">[IDLE]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dropzone Ingestion Area -->
+    <div 
+      id="videoDropzone" 
+      ondragover="handleDragOver(event)" 
+      ondragleave="handleDragLeave(event)" 
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('fileInput').click()" 
+      class="hud-card p-6 rounded text-center border-dashed border-2 border-cyan-500/40 hover:border-cyan-400 transition-all cursor-pointer space-y-2">
+      <input type="file" id="fileInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" multiple class="hidden" onchange="handleFileSelect(event)">
+      <div class="w-12 h-12 mx-auto rounded-full bg-cyan-950/40 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+        <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+      </div>
+      <div class="font-orbitron font-bold text-white text-sm">DROP VIDEO CLIPS HERE OR CLICK TO BROWSE</div>
+      <p class="text-slate-400 font-mono text-xs max-w-lg mx-auto">
+        Supports MP4, WebM, MOV. Guardrail limits: Max 5 clips per batch &bull; Max 120s duration &bull; Max 150MB per clip &bull; 100% In-Memory Airgapped.
+      </p>
+    </div>
+
+    <!-- Split View: Left (Config Deck) vs Right (Preview Deck) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[500px]">
+      
+      <!-- Left Config Deck (5 cols) -->
+      <div class="lg:col-span-5 hud-card p-5 rounded space-y-5">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 font-mono text-xs">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-sliders text-cyan-400"></i>
+            <h2 class="font-orbitron font-bold text-white text-sm tracking-wide">WATERMARK CONTROLS</h2>
+          </div>
+          <span class="text-[10px] text-slate-500">LIVE SYNC</span>
+        </div>
+
+        <!-- Watermark Mode Selector Tabs -->
+        <div class="space-y-1.5 font-mono text-xs">
+          <label class="text-slate-400 text-[11px] uppercase tracking-wider">WATERMARK TYPE:</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setWatermarkMode('text')" id="modeBtnText" class="px-2.5 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs">TEXT</button>
+            <button type="button" onclick="setWatermarkMode('badge')" id="modeBtnBadge" class="px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs">TACTICAL BADGE</button>
+            <button type="button" onclick="setWatermarkMode('logo')" id="modeBtnLogo" class="px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs">LOGO</button>
+          </div>
+        </div>
+
+        <!-- Mode A: Text Config -->
+        <div id="deckTextConfig" class="space-y-3 font-mono text-xs">
+          <div class="space-y-1">
+            <label class="text-slate-400 text-[11px] uppercase">WATERMARK TEXT:</label>
+            <input type="text" id="cfgText" value="CONFIDENTIAL // CYBERTOOLS" oninput="updateLivePreview()" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-cyan-300 text-xs focus:border-cyan-400 outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <label class="text-slate-400 text-[11px] uppercase">FONT FAMILY:</label>
+              <select id="cfgFontFamily" onchange="updateLivePreview()" class="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-200 text-xs outline-none">
+                <option value="Orbitron">Orbitron (Cyber)</option>
+                <option value="JetBrains Mono">JetBrains Mono</option>
+                <option value="Rajdhani">Rajdhani (HUD)</option>
+                <option value="Inter">Inter (Clean)</option>
+                <option value="Impact">Impact (Heavy)</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label class="text-slate-400 text-[11px] uppercase">TEXT COLOR:</label>
+              <div class="flex items-center space-x-2">
+                <input type="color" id="cfgColor" value="#00f5ff" onchange="updateLivePreview()" class="w-8 h-8 rounded bg-transparent border border-slate-800 cursor-pointer">
+                <span id="cfgColorHex" class="text-[11px] text-cyan-400">#00F5FF</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode B: Tactical Badge Config -->
+        <div id="deckBadgeConfig" class="space-y-3 font-mono text-xs hidden">
+          <div class="space-y-1">
+            <label class="text-slate-400 text-[11px] uppercase">BADGE PRESET:</label>
+            <select id="cfgBadgePreset" onchange="updateLivePreview()" class="w-full px-2.5 py-2 bg-slate-950 border border-slate-800 rounded text-cyan-300 text-xs outline-none">
+              <option value="TOP SECRET // NO EXPORT">TOP SECRET // NO EXPORT</option>
+              <option value="CONFIDENTIAL // AIRGAP">CONFIDENTIAL // AIRGAP</option>
+              <option value="RESTRICTED // INTERNAL USE">RESTRICTED // INTERNAL USE</option>
+              <option value="VERIFIED INTEL ASSET">VERIFIED INTEL ASSET</option>
+              <option value="CYBERTOOLS // ENCRYPTED">CYBERTOOLS // ENCRYPTED</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mode C: Logo Config -->
+        <div id="deckLogoConfig" class="space-y-3 font-mono text-xs hidden">
+          <div class="space-y-1">
+            <label class="text-slate-400 text-[11px] uppercase">UPLOAD LOGO (PNG/WEBP/SVG):</label>
+            <input type="file" id="cfgLogoFile" accept="image/*" onchange="handleLogoUpload(event)" class="w-full px-2 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-300 text-xs outline-none file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-cyan-950 file:text-cyan-400 file:text-xs">
+          </div>
+        </div>
+
+        <!-- Common Controls: Anchor Grid, Size, Opacity -->
+        <div class="space-y-3 pt-3 border-t border-slate-800/80 font-mono text-xs">
+          <!-- 9-Point Anchor Grid -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-slate-400 text-[11px] uppercase">9-POINT ANCHOR SNAP:</label>
+              <span id="anchorLabel" class="text-cyan-400 text-[10px]">BOTTOM-RIGHT</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 max-w-[150px]">
+              <button type="button" onclick="setAnchor('tl')" id="anc-tl" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">TL</button>
+              <button type="button" onclick="setAnchor('tc')" id="anc-tc" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">TC</button>
+              <button type="button" onclick="setAnchor('tr')" id="anc-tr" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">TR</button>
+              <button type="button" onclick="setAnchor('ml')" id="anc-ml" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">ML</button>
+              <button type="button" onclick="setAnchor('c')"  id="anc-c"  class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">C</button>
+              <button type="button" onclick="setAnchor('mr')" id="anc-mr" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">MR</button>
+              <button type="button" onclick="setAnchor('bl')" id="anc-bl" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">BL</button>
+              <button type="button" onclick="setAnchor('bc')" id="anc-bc" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px]">BC</button>
+              <button type="button" onclick="setAnchor('br')" id="anc-br" class="anchor-btn h-8 rounded border border-slate-800 bg-slate-950 text-slate-400 text-[10px] active">BR</button>
+            </div>
+          </div>
+
+          <!-- Size & Opacity Sliders -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px]">
+                <span class="text-slate-400">SCALE / SIZE:</span>
+                <span id="cfgSizeVal" class="text-cyan-400">28px</span>
+              </div>
+              <input type="range" id="cfgSize" min="14" max="72" value="28" oninput="updateLivePreview()" class="w-full accent-cyan-400">
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px]">
+                <span class="text-slate-400">OPACITY:</span>
+                <span id="cfgOpacityVal" class="text-cyan-400">80%</span>
+              </div>
+              <input type="range" id="cfgOpacity" min="10" max="100" value="80" oninput="updateLivePreview()" class="w-full accent-cyan-400">
+            </div>
+          </div>
+
+          <!-- Padding Margins -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px]">
+                <span class="text-slate-400">OFFSET X:</span>
+                <span id="cfgOffsetXVal" class="text-cyan-400">24px</span>
+              </div>
+              <input type="range" id="cfgOffsetX" min="0" max="100" value="24" oninput="updateLivePreview()" class="w-full accent-cyan-400">
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px]">
+                <span class="text-slate-400">OFFSET Y:</span>
+                <span id="cfgOffsetYVal" class="text-cyan-400">24px</span>
+              </div>
+              <input type="range" id="cfgOffsetY" min="0" max="100" value="24" oninput="updateLivePreview()" class="w-full accent-cyan-400">
+            </div>
+          </div>
+
+          <!-- Contrast Shield Box Toggle -->
+          <div class="flex items-center justify-between pt-1 text-[11px]">
+            <span class="text-slate-300">CONTRAST SHIELD (DARK BACKING):</span>
+            <input type="checkbox" id="cfgBacking" checked onchange="updateLivePreview()" class="accent-cyan-400 w-4 h-4">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Deck: Live Canvas Preview & Player (7 cols) -->
+      <div class="lg:col-span-7 hud-card p-5 rounded flex flex-col space-y-4">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 font-mono text-xs">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-eye text-pink-400"></i>
+            <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">REAL-TIME VIDEO PREVIEW</h3>
+          </div>
+          <span id="previewResolutionText" class="text-[10px] text-slate-500">NO ACTIVE CLIP</span>
+        </div>
+
+        <!-- Video Canvas Canvas Container -->
+        <div class="flex-grow flex items-center justify-center bg-black/90 rounded border border-slate-800 relative overflow-hidden min-h-[320px]">
+          <canvas id="previewCanvas" class="max-w-full max-h-[380px] object-contain rounded shadow-lg"></canvas>
+          <div id="noVideoPlaceholder" class="flex flex-col items-center justify-center text-center p-6 space-y-2">
+            <i class="fa-solid fa-clapperboard text-4xl text-slate-700"></i>
+            <div class="font-orbitron text-xs font-bold text-slate-400">NO VIDEO STREAM LOADED</div>
+            <p class="text-[11px] text-slate-600 max-w-sm">Drop a clip above or click "LOAD TEST CLIP" to test watermark positioning in real-time.</p>
+          </div>
+          <!-- Hidden Offscreen Video Elements -->
+          <video id="previewVideo" playsinline muted class="hidden"></video>
+        </div>
+
+        <!-- Scrubber & Playback Controls -->
+        <div id="playerControls" class="space-y-2 font-mono text-xs hidden">
+          <div class="flex items-center space-x-3">
+            <button type="button" onclick="togglePlayPreview()" id="btnPlayPause" class="hud-btn-secondary px-3 py-1 rounded text-cyan-400">
+              <i class="fa-solid fa-play" id="playIcon"></i>
+            </button>
+            <input type="range" id="videoScrubber" min="0" max="100" value="0" step="0.1" oninput="handleScrub(event)" class="w-full accent-pink-500">
+            <span id="playbackTimeText" class="text-[11px] text-slate-400 shrink-0">00:00 / 00:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Video Batch Queue Deck -->
+    <div class="hud-card p-5 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 font-mono text-xs">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-list-check text-cyan-400"></i>
+          <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">BATCH QUEUE SLOTS</h3>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="clearQueue()" class="text-[11px] text-slate-500 hover:text-slate-300 font-mono">[CLEAR QUEUE]</button>
+        </div>
+      </div>
+
+      <!-- Queue Cards Container -->
+      <div id="queueContainer" class="space-y-3 font-mono text-xs">
+        <div id="emptyQueueMsg" class="text-center py-6 text-slate-600">
+          Queue is empty. Max 5 short clips (up to 120s each).
+        </div>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          TECHNICAL SPECIFICATION // GUARDED IN-MEMORY VIDEO WATERMARKING
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Zero-backend, hardware-aware browser video watermarking pipeline utilizing HTML5 Canvas, MediaStream capture, and WebM MediaRecorder.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">Client Hardware Guardrails</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Video transcode rendering in browser memory places significant demand on client hardware threads. CyberTools detects available CPU cores (<code class="text-cyan-300">navigator.hardwareConcurrency</code>) and memory limits to enforce safe execution constraints.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li><strong class="text-cyan-300">Batch Cap:</strong> Maximum of 5 short video clips per session to prevent tab memory overflow.</li>
+            <li><strong class="text-emerald-300">Pre-flight Duration Check:</strong> Clips exceeding 120 seconds or 150MB trigger telemetry rejection warnings.</li>
+            <li><strong class="text-pink-300">Memory Cleanup:</strong> Temporary Object URLs are aggressively revoked via <code class="text-pink-300">URL.revokeObjectURL()</code> immediately following completion.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Pipeline Architecture</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            The sequential worker decodes each video frame into an offscreen canvas, applies the selected tactical stamp (text, logo, or military-style security badge), and captures the resulting canvas output stream at 30 FPS via <code class="text-cyan-300">canvas.captureStream(30)</code>.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            The stream is ingested by a hardware-accelerated <code class="text-cyan-300">MediaRecorder</code> instance encoding to WebM (VP9/VP8) or MP4 containers, producing clean, self-contained video files without transmitting a single byte to external servers.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Are my video files uploaded to any server?</h4>
+            <p class="text-slate-400">
+              No. Processing is completely airgapped within your local browser memory using HTML5 canvas and MediaRecorder APIs. No telemetry or binary chunks ever leave your machine.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Why is there a 120-second duration limit?</h4>
+            <p class="text-slate-400">
+              Encoding high-definition video frames in JavaScript generates large memory buffers. The 120-second cap prevents browser tab crashes, Out-of-Memory (OOM) faults, and mobile device lockups.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">What happens if I click Abort Pipeline?</h4>
+            <p class="text-slate-400">
+              The abort trigger immediately calls <code class="text-cyan-300">MediaRecorder.stop()</code>, pauses all playback streams, releases allocated blob buffers, and resets the interface state safely.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Can I position the watermark anywhere on the screen?</h4>
+            <p class="text-slate-400">
+              Yes. Use the 9-point anchor snap grid combined with horizontal and vertical offset sliders to align the stamp with precision.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 92 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'watermark-video';
+    let videoQueue = [];
+    let isPipelineActive = false;
+    let shouldAbort = false;
+    let activePreviewIndex = -1;
+    let logoImage = null;
+    let activeAnchor = 'br';
+    let currentMode = 'text';
+
+    // Hardware Detection
+    window.addEventListener('DOMContentLoaded', () => {
+      const cores = navigator.hardwareConcurrency || 4;
+      const mem = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '4+ GB (Safe)';
+      document.getElementById('hwCores').textContent = `${cores} THREADS`;
+      document.getElementById('hwMemory').textContent = mem;
+
+      let preferredCodec = 'video/webm;codecs=vp9';
+      if (window.MediaRecorder) {
+        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) preferredCodec = 'VP9 / OPUS';
+        else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) preferredCodec = 'VP8 / OPUS';
+        else if (MediaRecorder.isTypeSupported('video/webm')) preferredCodec = 'WEBM';
+        else if (MediaRecorder.isTypeSupported('video/mp4')) preferredCodec = 'MP4 / AVC';
+      }
+      document.getElementById('hwCodec').textContent = preferredCodec;
+
+      renderSuiteGrid();
+      initPreviewCanvas();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function setWatermarkMode(m) {
+      currentMode = m;
+      document.getElementById('modeBtnText').className = m === 'text' ? 'px-2.5 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs' : 'px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+      document.getElementById('modeBtnBadge').className = m === 'badge' ? 'px-2.5 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs' : 'px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+      document.getElementById('modeBtnLogo').className = m === 'logo' ? 'px-2.5 py-1.5 rounded border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold text-xs' : 'px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white text-xs';
+
+      document.getElementById('deckTextConfig').classList.toggle('hidden', m !== 'text');
+      document.getElementById('deckBadgeConfig').classList.toggle('hidden', m !== 'badge');
+      document.getElementById('deckLogoConfig').classList.toggle('hidden', m !== 'logo');
+      updateLivePreview();
+    }
+
+    function setAnchor(anc) {
+      activeAnchor = anc;
+      document.querySelectorAll('.anchor-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`anc-${anc}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      const labels = {
+        'tl': 'TOP-LEFT', 'tc': 'TOP-CENTER', 'tr': 'TOP-RIGHT',
+        'ml': 'MID-LEFT', 'c': 'CENTER', 'mr': 'MID-RIGHT',
+        'bl': 'BOTTOM-LEFT', 'bc': 'BOTTOM-CENTER', 'br': 'BOTTOM-RIGHT'
+      };
+      document.getElementById('anchorLabel').textContent = labels[anc] || anc.toUpperCase();
+      updateLivePreview();
+    }
+
+    function handleLogoUpload(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          logoImage = img;
+          showToast('Custom logo loaded successfully');
+          updateLivePreview();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('videoDropzone').classList.add('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('videoDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('videoDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+      if (e.dataTransfer && e.dataTransfer.files) {
+        processIncomingFiles(Array.from(e.dataTransfer.files));
+      }
+    }
+    function handleFileSelect(e) {
+      if (e.target.files) {
+        processIncomingFiles(Array.from(e.target.files));
+      }
+    }
+
+    async function processIncomingFiles(files) {
+      for (const file of files) {
+        if (!file.type.startsWith('video/')) {
+          showToast(`Skipped non-video: ${file.name}`, true);
+          continue;
+        }
+        if (videoQueue.length >= 5) {
+          showToast('Queue limit reached (Max 5 clips)', true);
+          break;
+        }
+
+        const id = 'vid_' + Math.random().toString(36).substring(2, 9);
+        const item = {
+          id,
+          file,
+          name: file.name,
+          sizeMb: (file.size / (1024 * 1024)).toFixed(1),
+          duration: 0,
+          width: 0,
+          height: 0,
+          status: 'INSPECTING...',
+          warning: null,
+          progress: 0,
+          resultBlob: null,
+          resultUrl: null
+        };
+        videoQueue.push(item);
+        renderQueue();
+
+        // Preflight inspect metadata
+        await inspectVideoPreflight(item);
+      }
+      updateQueueTelemetry();
+    }
+
+    function inspectVideoPreflight(item) {
+      return new Promise((resolve) => {
+        if (item.file.size > 150 * 1024 * 1024) {
+          item.status = 'REJECTED';
+          item.warning = '[FILE SIZE EXCEEDS SAFE LIMIT (150MB)]';
+          renderQueue();
+          resolve();
+          return;
+        }
+
+        const tempUrl = URL.createObjectURL(item.file);
+        const tempVid = document.createElement('video');
+        tempVid.preload = 'metadata';
+        tempVid.src = tempUrl;
+
+        tempVid.onloadedmetadata = () => {
+          item.duration = tempVid.duration;
+          item.width = tempVid.videoWidth;
+          item.height = tempVid.videoHeight;
+          URL.revokeObjectURL(tempUrl);
+
+          if (item.duration > 120) {
+            item.status = 'REJECTED';
+            item.warning = '[DURATION EXCEEDS SAFE BROWSER LIMIT (120s)]';
+          } else {
+            item.status = 'QUEUED';
+            if (activePreviewIndex === -1) {
+              loadIntoPreview(item);
+            }
+          }
+          renderQueue();
+          resolve();
+        };
+
+        tempVid.onerror = () => {
+          URL.revokeObjectURL(tempUrl);
+          item.status = 'ERROR';
+          item.warning = '[METADATA INSPECTION FAILED]';
+          renderQueue();
+          resolve();
+        };
+      });
+    }
+
+    function renderQueue() {
+      const container = document.getElementById('queueContainer');
+      const emptyMsg = document.getElementById('emptyQueueMsg');
+
+      if (videoQueue.length === 0) {
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        container.innerHTML = '<div id="emptyQueueMsg" class="text-center py-6 text-slate-600 font-mono text-xs">Queue is empty. Max 5 short clips (up to 120s each).</div>';
+        updateQueueTelemetry();
+        return;
+      }
+
+      container.innerHTML = videoQueue.map((item, idx) => {
+        const isQueued = item.status === 'QUEUED';
+        const isProcessing = item.status === 'PROCESSING';
+        const isDone = item.status === 'DONE';
+        const isRejected = item.status === 'REJECTED';
+
+        let badgeColor = 'bg-slate-800 text-slate-300';
+        if (isQueued) badgeColor = 'bg-cyan-950 border border-cyan-500/40 text-cyan-300';
+        if (isProcessing) badgeColor = 'bg-amber-950 border border-amber-500/40 text-amber-300 animate-pulse';
+        if (isDone) badgeColor = 'bg-emerald-950 border border-emerald-500/40 text-emerald-300';
+        if (isRejected) badgeColor = 'bg-rose-950 border border-rose-500/40 text-rose-300';
+
+        return `
+          <div class="hud-card p-3 rounded flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-slate-800">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-8 h-8 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 shrink-0">
+                <i class="fa-solid ${isDone ? 'fa-check' : 'fa-film'}"></i>
+              </div>
+              <div class="min-w-0 truncate">
+                <div class="font-bold text-white truncate text-xs">${item.name}</div>
+                <div class="text-[10px] text-slate-400 flex items-center space-x-2">
+                  <span>${item.sizeMb} MB</span>
+                  <span>&bull;</span>
+                  <span>${item.duration ? Math.round(item.duration) + 's' : '--'}</span>
+                  <span>&bull;</span>
+                  <span>${item.width ? `${item.width}x${item.height}` : '--'}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+              ${item.warning ? `<span class="text-[10px] text-rose-400 font-bold truncate max-w-xs">${item.warning}</span>` : ''}
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono ${badgeColor}">${item.status}</span>
+              ${isProcessing ? `<span class="text-[10px] text-cyan-400 font-bold">${item.progress}%</span>` : ''}
+              ${isDone && item.resultUrl ? `
+                <a href="${item.resultUrl}" download="watermarked_${item.name.replace(/\.[^.]+$/, '')}.webm" class="hud-btn-primary px-2.5 py-1 rounded text-[10px] flex items-center space-x-1">
+                  <i class="fa-solid fa-download"></i>
+                  <span>DOWNLOAD</span>
+                </a>
+              ` : ''}
+              ${!isProcessing ? `
+                <button onclick="removeQueueItem('${item.id}')" class="text-slate-500 hover:text-rose-400 text-xs px-1">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateQueueTelemetry();
+    }
+
+    function updateQueueTelemetry() {
+      const slots = document.getElementById('queueSlotsText');
+      if (slots) slots.textContent = `[${videoQueue.length}/5]`;
+
+      const validCount = videoQueue.filter(v => v.status === 'QUEUED').length;
+      const btn = document.getElementById('btnBatchRenderText');
+      if (btn) btn.textContent = `RENDER BATCH (${validCount} CLIPS)`;
+    }
+
+    function removeQueueItem(id) {
+      const idx = videoQueue.findIndex(v => v.id === id);
+      if (idx !== -1) {
+        if (videoQueue[idx].resultUrl) {
+          URL.revokeObjectURL(videoQueue[idx].resultUrl);
+        }
+        videoQueue.splice(idx, 1);
+        renderQueue();
+      }
+    }
+
+    function clearQueue() {
+      if (isPipelineActive) {
+        showToast('Pipeline active; abort first', true);
+        return;
+      }
+      videoQueue.forEach(v => {
+        if (v.resultUrl) URL.revokeObjectURL(v.resultUrl);
+      });
+      videoQueue = [];
+      renderQueue();
+      activePreviewIndex = -1;
+      initPreviewCanvas();
+    }
+
+    // Live Preview Logic
+    function initPreviewCanvas() {
+      const c = document.getElementById('previewCanvas');
+      if (!c) return;
+      c.width = 640;
+      c.height = 360;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#080f1e';
+      ctx.fillRect(0, 0, 640, 360);
+      drawTacticalGrid(ctx, 640, 360);
+      drawWatermarkOverlay(ctx, 640, 360);
+    }
+
+    function drawTacticalGrid(ctx, w, h) {
+      ctx.strokeStyle = 'rgba(0, 245, 255, 0.08)';
+      ctx.lineWidth = 1;
+      const step = 40;
+      for (let x = 0; x < w; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+    }
+
+    function loadIntoPreview(item) {
+      const vid = document.getElementById('previewVideo');
+      const placeholder = document.getElementById('noVideoPlaceholder');
+      const controls = document.getElementById('playerControls');
+
+      activePreviewIndex = videoQueue.findIndex(v => v.id === item.id);
+      const url = URL.createObjectURL(item.file);
+      vid.src = url;
+      vid.load();
+
+      vid.onloadeddata = () => {
+        if (placeholder) placeholder.classList.add('hidden');
+        if (controls) controls.classList.remove('hidden');
+        document.getElementById('previewResolutionText').textContent = `${vid.videoWidth}x${vid.videoHeight} // ${Math.round(vid.duration)}s`;
+        updateLivePreview();
+      };
+    }
+
+    function updateLivePreview() {
+      const c = document.getElementById('previewCanvas');
+      const vid = document.getElementById('previewVideo');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+
+      // Update color display
+      const col = document.getElementById('cfgColor').value;
+      document.getElementById('cfgColorHex').textContent = col.toUpperCase();
+      document.getElementById('cfgSizeVal').textContent = document.getElementById('cfgSize').value + 'px';
+      document.getElementById('cfgOpacityVal').textContent = document.getElementById('cfgOpacity').value + '%';
+      document.getElementById('cfgOffsetXVal').textContent = document.getElementById('cfgOffsetX').value + 'px';
+      document.getElementById('cfgOffsetYVal').textContent = document.getElementById('cfgOffsetY').value + 'px';
+
+      if (vid && vid.videoWidth && vid.readyState >= 2) {
+        c.width = vid.videoWidth;
+        c.height = vid.videoHeight;
+        ctx.drawImage(vid, 0, 0, c.width, c.height);
+      } else {
+        c.width = 640;
+        c.height = 360;
+        ctx.fillStyle = '#080f1e';
+        ctx.fillRect(0, 0, c.width, c.height);
+        drawTacticalGrid(ctx, c.width, c.height);
+      }
+
+      drawWatermarkOverlay(ctx, c.width, c.height);
+    }
+
+    function drawWatermarkOverlay(ctx, w, h) {
+      const opacity = parseInt(document.getElementById('cfgOpacity').value, 10) / 100;
+      const fontSize = parseInt(document.getElementById('cfgSize').value, 10);
+      const color = document.getElementById('cfgColor').value;
+      const fontFamily = document.getElementById('cfgFontFamily').value;
+      const offsetX = parseInt(document.getElementById('cfgOffsetX').value, 10);
+      const offsetY = parseInt(document.getElementById('cfgOffsetY').value, 10);
+      const hasBacking = document.getElementById('cfgBacking').checked;
+
+      ctx.save();
+      ctx.globalAlpha = opacity;
+
+      let drawW = 0;
+      let drawH = 0;
+
+      if (currentMode === 'text') {
+        const text = document.getElementById('cfgText').value || 'CYBERTOOLS';
+        ctx.font = `bold ${fontSize}px "${fontFamily}", monospace`;
+        const metrics = ctx.measureText(text);
+        drawW = metrics.width;
+        drawH = fontSize;
+
+        const pos = calculateAnchorPosition(activeAnchor, w, h, drawW, drawH, offsetX, offsetY);
+
+        if (hasBacking) {
+          ctx.fillStyle = 'rgba(5, 7, 13, 0.75)';
+          ctx.fillRect(pos.x - 10, pos.y - drawH - 6, drawW + 20, drawH + 16);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(pos.x - 10, pos.y - drawH - 6, drawW + 20, drawH + 16);
+        }
+
+        ctx.fillStyle = color;
+        ctx.shadowColor = 'rgba(0, 245, 255, 0.5)';
+        ctx.shadowBlur = 6;
+        ctx.fillText(text, pos.x, pos.y);
+      } 
+      else if (currentMode === 'badge') {
+        const badgeText = document.getElementById('cfgBadgePreset').value;
+        const bFont = `bold ${Math.max(12, fontSize * 0.75)}px 'Orbitron', monospace`;
+        ctx.font = bFont;
+        const metrics = ctx.measureText(badgeText);
+        drawW = metrics.width + 36;
+        drawH = fontSize * 1.5;
+
+        const pos = calculateAnchorPosition(activeAnchor, w, h, drawW, drawH, offsetX, offsetY);
+
+        // Draw HUD badge card
+        ctx.fillStyle = 'rgba(5, 7, 13, 0.88)';
+        ctx.fillRect(pos.x, pos.y, drawW, drawH);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(pos.x, pos.y, drawW, drawH);
+
+        // Accent corner hashes
+        ctx.fillStyle = color;
+        ctx.fillRect(pos.x, pos.y, 6, 2);
+        ctx.fillRect(pos.x, pos.y, 2, 6);
+        ctx.fillRect(pos.x + drawW - 6, pos.y + drawH - 2, 6, 2);
+        ctx.fillRect(pos.x + drawW - 2, pos.y + drawH - 6, 2, 6);
+
+        // Badge Text
+        ctx.fillStyle = color;
+        ctx.fillText(badgeText, pos.x + 18, pos.y + drawH * 0.68);
+      }
+      else if (currentMode === 'logo' && logoImage) {
+        const scale = fontSize / 28;
+        drawW = logoImage.width * scale * 0.4;
+        drawH = logoImage.height * scale * 0.4;
+        const pos = calculateAnchorPosition(activeAnchor, w, h, drawW, drawH, offsetX, offsetY);
+
+        if (hasBacking) {
+          ctx.fillStyle = 'rgba(5, 7, 13, 0.75)';
+          ctx.fillRect(pos.x - 8, pos.y - 8, drawW + 16, drawH + 16);
+        }
+        ctx.drawImage(logoImage, pos.x, pos.y, drawW, drawH);
+      }
+
+      ctx.restore();
+    }
+
+    function calculateAnchorPosition(anc, w, h, drawW, drawH, ox, oy) {
+      let x = 0, y = 0;
+      switch (anc) {
+        case 'tl': x = ox; y = oy + (currentMode === 'text' ? drawH : 0); break;
+        case 'tc': x = (w - drawW) / 2; y = oy + (currentMode === 'text' ? drawH : 0); break;
+        case 'tr': x = w - drawW - ox; y = oy + (currentMode === 'text' ? drawH : 0); break;
+        case 'ml': x = ox; y = (h - drawH) / 2 + (currentMode === 'text' ? drawH : 0); break;
+        case 'c':  x = (w - drawW) / 2; y = (h - drawH) / 2 + (currentMode === 'text' ? drawH : 0); break;
+        case 'mr': x = w - drawW - ox; y = (h - drawH) / 2 + (currentMode === 'text' ? drawH : 0); break;
+        case 'bl': x = ox; y = h - oy - (currentMode === 'text' ? 0 : drawH); break;
+        case 'bc': x = (w - drawW) / 2; y = h - oy - (currentMode === 'text' ? 0 : drawH); break;
+        case 'br': x = w - drawW - ox; y = h - oy - (currentMode === 'text' ? 0 : drawH); break;
+      }
+      return { x, y };
+    }
+
+    // Playback Controls
+    function togglePlayPreview() {
+      const vid = document.getElementById('previewVideo');
+      const icon = document.getElementById('playIcon');
+      if (!vid || !vid.src) return;
+
+      if (vid.paused) {
+        vid.play();
+        icon.className = 'fa-solid fa-pause';
+        runPreviewPlaybackLoop();
+      } else {
+        vid.pause();
+        icon.className = 'fa-solid fa-play';
+      }
+    }
+
+    function runPreviewPlaybackLoop() {
+      const vid = document.getElementById('previewVideo');
+      if (!vid || vid.paused || vid.ended) return;
+
+      updateLivePreview();
+      const scrubber = document.getElementById('videoScrubber');
+      const timeTxt = document.getElementById('playbackTimeText');
+      if (vid.duration) {
+        scrubber.value = (vid.currentTime / vid.duration) * 100;
+        timeTxt.textContent = `${formatTime(vid.currentTime)} / ${formatTime(vid.duration)}`;
+      }
+      requestAnimationFrame(runPreviewPlaybackLoop);
+    }
+
+    function handleScrub(e) {
+      const vid = document.getElementById('previewVideo');
+      if (!vid || !vid.duration) return;
+      vid.currentTime = (e.target.value / 100) * vid.duration;
+      updateLivePreview();
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Procedural Synth Test Clip Generator
+    function loadSampleVideo() {
+      showToast('Synthesizing 4s procedural cyber test clip...');
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = 640;
+      offCanvas.height = 360;
+      const ctx = offCanvas.getContext('2d');
+
+      const stream = offCanvas.captureStream(30);
+      const rec = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      const chunks = [];
+      rec.ondataavailable = e => chunks.push(e.data);
+
+      let frame = 0;
+      const maxFrames = 120; // 4 seconds at 30 fps
+      const renderFrame = () => {
+        if (frame >= maxFrames) {
+          rec.stop();
+          return;
+        }
+        // Draw cyber test card
+        ctx.fillStyle = '#05070d';
+        ctx.fillRect(0, 0, 640, 360);
+        drawTacticalGrid(ctx, 640, 360);
+
+        // Bouncing neon radar ball
+        const x = 320 + Math.sin(frame * 0.08) * 180;
+        const y = 180 + Math.cos(frame * 0.06) * 90;
+        ctx.fillStyle = '#00f5ff';
+        ctx.beginPath();
+        ctx.arc(x, y, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ff2bd6';
+        ctx.font = 'bold 16px Orbitron, monospace';
+        ctx.fillText(`TEST SIGNAL: FRAME ${frame}/${maxFrames}`, 40, 60);
+
+        frame++;
+        requestAnimationFrame(renderFrame);
+      };
+
+      rec.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const testFile = new File([blob], 'sample_cyber_clip.webm', { type: 'video/webm' });
+        processIncomingFiles([testFile]);
+        showToast('Sample test clip ready!');
+      };
+
+      rec.start();
+      renderFrame();
+    }
+
+    // Sequential Worker Engine with Guardrails
+    async function startBatchRender() {
+      if (isPipelineActive) return;
+      const validQueue = videoQueue.filter(v => v.status === 'QUEUED');
+      if (validQueue.length === 0) {
+        showToast('No eligible clips in queue', true);
+        return;
+      }
+
+      isPipelineActive = true;
+      shouldAbort = false;
+      document.getElementById('btnAbort').classList.remove('hidden');
+      document.getElementById('pipelineStatusText').textContent = `[PROCESSING 1/${validQueue.length}]`;
+      document.getElementById('pipelineStatusText').className = 'text-amber-400 font-bold animate-pulse';
+
+      for (let i = 0; i < validQueue.length; i++) {
+        if (shouldAbort) break;
+        const item = validQueue[i];
+        document.getElementById('pipelineStatusText').textContent = `[PROCESSING ${i + 1}/${validQueue.length}]`;
+        await renderSingleVideo(item);
+      }
+
+      isPipelineActive = false;
+      document.getElementById('btnAbort').classList.add('hidden');
+      document.getElementById('pipelineStatusText').textContent = shouldAbort ? '[ABORTED]' : '[IDLE]';
+      document.getElementById('pipelineStatusText').className = 'text-cyan-400 font-bold';
+      updateQueueTelemetry();
+      showToast(shouldAbort ? 'Batch rendering aborted' : 'Batch rendering complete!');
+    }
+
+    function abortPipeline() {
+      shouldAbort = true;
+      showToast('Emergency abort signal sent...', true);
+    }
+
+    function renderSingleVideo(item) {
+      return new Promise((resolve) => {
+        item.status = 'PROCESSING';
+        renderQueue();
+
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.muted = true;
+        video.playsInline = true;
+        const objectUrl = URL.createObjectURL(item.file);
+        video.src = objectUrl;
+
+        video.onloadeddata = async () => {
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = video.videoWidth;
+          offCanvas.height = video.videoHeight;
+          const ctx = offCanvas.getContext('2d');
+
+          const stream = offCanvas.captureStream(30);
+
+          let mime = 'video/webm;codecs=vp9,opus';
+          if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm;codecs=vp8,opus';
+          if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+
+          let recorder;
+          try {
+            recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 3500000 });
+          } catch (e) {
+            recorder = new MediaRecorder(stream);
+          }
+
+          const chunks = [];
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) chunks.push(e.data);
+          };
+
+          recorder.onstop = () => {
+            URL.revokeObjectURL(objectUrl);
+            if (!shouldAbort) {
+              const resBlob = new Blob(chunks, { type: mime });
+              item.resultBlob = resBlob;
+              item.resultUrl = URL.createObjectURL(resBlob);
+              item.status = 'DONE';
+              item.progress = 100;
+            } else {
+              item.status = 'ABORTED';
+            }
+            renderQueue();
+            resolve();
+          };
+
+          recorder.start(100);
+          video.currentTime = 0;
+          await video.play();
+
+          const drawLoop = () => {
+            if (shouldAbort) {
+              recorder.stop();
+              video.pause();
+              return;
+            }
+
+            if (video.ended || video.currentTime >= video.duration) {
+              recorder.stop();
+              return;
+            }
+
+            ctx.drawImage(video, 0, 0, offCanvas.width, offCanvas.height);
+            drawWatermarkOverlay(ctx, offCanvas.width, offCanvas.height);
+
+            if (video.duration) {
+              item.progress = Math.round((video.currentTime / video.duration) * 100);
+              renderQueue();
+            }
+
+            requestAnimationFrame(drawLoop);
+          };
+
+          requestAnimationFrame(drawLoop);
+        };
+
+        video.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          item.status = 'ERROR';
+          renderQueue();
+          resolve();
+        };
+      });
+    }
+
+    // Suite Modal Data (92 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & expiration monitor.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with execution countdown.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

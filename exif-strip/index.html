@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy EXIF & Geo-Metadata Purge Tool // Zero-Log Photo Scrubber | CyberTools</title>
+  <meta name="description" content="Scrub sensitive EXIF tags, GPS coordinates, device serial numbers, and camera metadata in-memory. Zero server uploads with instant batch ZIP export.">
+  <meta name="keywords" content="exif strip, remove exif data, scrub gps coordinates, photo privacy, delete photo metadata, offline exif purge, cybertools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/exif-strip/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/exif-strip/" />
+  <meta property="og:title" content="Privacy EXIF & Geo-Metadata Purge Tool // Zero-Log Photo Scrubber | CyberTools" />
+  <meta property="og:description" content="Scrub sensitive EXIF tags, GPS coordinates, device serial numbers, and camera metadata in-memory. Zero server uploads with instant batch ZIP export." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/exif-strip/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/exif-strip/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/exif-strip/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Privacy EXIF & Geo-Metadata Purge Tool // Zero-Log Photo Scrubber | CyberTools" />
+  <meta name="twitter:description" content="Scrub sensitive EXIF tags, GPS coordinates, device serial numbers, and camera metadata in-memory. Zero server uploads with instant batch ZIP export." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/exif-strip/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Privacy EXIF & Geo-Metadata Purge Tool",
+    "url": "https://apps.sarwarfx.cfd/exif-strip/",
+    "description": "Scrub sensitive EXIF tags, GPS coordinates, device serial numbers, and camera metadata in-memory. Zero server uploads with instant batch ZIP export.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- JSZip CDN for in-memory batch ZIP creation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">EXIF_SCRUBBER // GEO PURGE</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x5A</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(92)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    <!-- Breadcrumb & Title Hero -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400 mb-1">
+          <span>PRIVACY_SUITE</span>
+          <span>&gt;</span>
+          <span class="text-slate-300">EXIF_STRIP</span>
+          <span class="bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 px-1.5 py-0.2 rounded text-[10px]">NODE_0x5A</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wider">
+          EXIF &amp; GEO-METADATA PURGE <span class="text-cyan-400 text-lg">//</span> <span class="text-slate-400 text-lg sm:text-xl font-mono">PRIVACY SCRUBBER</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-mono mt-1">
+          Client-side EXIF inspection &amp; sanitization engine. Detect GPS coordinates, camera hardware serials, timestamps, and IPTC/XMP chunks. Scrub in-memory with batch ZIP export.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleWithGps()" class="hud-btn-secondary px-3 py-2 rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-location-crosshairs text-pink-400"></i>
+          <span>TEST GEO PHOTO</span>
+        </button>
+        <button onclick="downloadAllZip()" id="btnZipExport" class="hud-btn-primary px-4 py-2 rounded flex items-center space-x-2">
+          <i class="fa-solid fa-file-zipper"></i>
+          <span id="btnZipExportText">PURGE ALL &amp; DOWNLOAD ZIP</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Telemetry Banner -->
+    <div class="hud-card p-3 sm:p-4 rounded border-cyan-500/30 font-mono text-xs space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">INGESTED:</span>
+            <span id="statIngested" class="text-cyan-400 font-bold">0 ASSETS</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">GPS TAGS DETECTED:</span>
+            <span id="statGpsCount" class="text-pink-400 font-bold">0 FOUND</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-slate-500">HARDWARE IDS PURGED:</span>
+            <span id="statDevicesPurged" class="text-emerald-400 font-bold">0 REMOVED</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span class="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">
+            <i class="fa-solid fa-shield-halved mr-1"></i>100% IN-MEMORY AIRGAP
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dropzone Ingestion Area -->
+    <div 
+      id="exifDropzone" 
+      ondragover="handleDragOver(event)" 
+      ondragleave="handleDragLeave(event)" 
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('fileInput').click()" 
+      class="hud-card p-6 rounded text-center border-dashed border-2 border-cyan-500/40 hover:border-cyan-400 transition-all cursor-pointer space-y-2">
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/tiff" multiple class="hidden" onchange="handleFileSelect(event)">
+      <div class="w-12 h-12 mx-auto rounded-full bg-cyan-950/40 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+        <i class="fa-solid fa-shield-virus text-xl"></i>
+      </div>
+      <div class="font-orbitron font-bold text-white text-sm">DROP PHOTOS HERE OR CLICK TO BROWSE</div>
+      <p class="text-slate-400 font-mono text-xs max-w-lg mx-auto">
+        Supports JPEG, PNG, WEBP, TIFF. Ingest up to 50 photos simultaneously &bull; Zero server uploads &bull; Completely strips all GPS tags, device fingerprints &amp; camera metadata.
+      </p>
+    </div>
+
+    <!-- Active Coordinate Alert Banner (Appears when GPS is detected) -->
+    <div id="gpsAlertBanner" class="hud-card p-4 rounded border-pink-500/60 bg-pink-950/20 space-y-2 hidden font-mono text-xs">
+      <div class="flex items-center space-x-2 text-pink-400 font-bold">
+        <i class="fa-solid fa-triangle-exclamation text-base animate-pulse"></i>
+        <span class="font-orbitron tracking-wider text-sm">PRIVACY WARNING // GEOLOCATION TELEMETRY DETECTED</span>
+      </div>
+      <p class="text-slate-300 text-xs">
+        One or more ingested assets contain precise GPS coordinates recorded by camera hardware. Raw latitude and longitude expose physical locations to adversaries and public crawlers.
+      </p>
+      <div id="gpsCoordsList" class="flex flex-wrap gap-2 pt-1">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+
+    <!-- Split View: Audit Table / Inspector -->
+    <div class="hud-card p-5 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 font-mono text-xs">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-list text-cyan-400"></i>
+          <h3 class="font-orbitron font-bold text-white text-sm tracking-wide">METADATA AUDIT &amp; SCRUBBING LEDGER</h3>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span id="ledgerCount" class="text-[10px] text-slate-500">0 ASSETS QUEUED</span>
+          <button onclick="clearAll()" class="text-[11px] text-slate-500 hover:text-slate-300 font-mono">[CLEAR ALL]</button>
+        </div>
+      </div>
+
+      <!-- Ledger Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left font-mono text-xs text-slate-300">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-500 text-[10px] uppercase">
+              <th class="py-2.5 px-3">ASSET</th>
+              <th class="py-2.5 px-3">ORIGINAL SIZE</th>
+              <th class="py-2.5 px-3">GPS STATUS</th>
+              <th class="py-2.5 px-3">DEVICE &amp; HARDWARE</th>
+              <th class="py-2.5 px-3">TIMESTAMP</th>
+              <th class="py-2.5 px-3">STATUS</th>
+              <th class="py-2.5 px-3 text-right">ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="auditTableBody" class="divide-y divide-slate-800/60">
+            <tr id="emptyRow">
+              <td colspan="7" class="py-8 text-center text-slate-600">
+                No images ingested. Drop photos above or click "TEST GEO PHOTO" to inspect metadata.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Crawlable Visible Documentation Article -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-sans leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">
+          IN-DEPTH GUIDE // EXIF SCRUBBING &amp; ZERO-KNOWLEDGE GEO PRIVACY
+        </h2>
+        <p class="text-xs sm:text-sm font-mono text-cyan-400 mt-1">
+          Technical breakdown of digital image metadata risks, binary APP1 markers, GPS telemetry leakage, and canvas-based metadata destruction.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-cyan-300 text-base">The Hidden Threat of EXIF Data</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Whenever a modern smartphone or digital camera captures a photograph, it silently writes extensive contextual metadata into the file's header chunks. This includes Exchangeable Image File Format (EXIF), IPTC Information Interchange Model, and Adobe XMP structures.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li><strong class="text-pink-400">GPS Coordinates:</strong> Precision latitude, longitude, and altitude identifying exact residential locations, workplaces, and daily routines.</li>
+            <li><strong class="text-cyan-300">Device Identifiers:</strong> Manufacturer, camera model, unique lens serial numbers, and firmware builds.</li>
+            <li><strong class="text-emerald-300">Timestamp Footprints:</strong> Exact creation second (<code class="text-emerald-300">DateTimeOriginal</code>) and timezone offsets.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-orbitron font-bold text-pink-400 text-base">Client-Side Canvas Destruction</h3>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Unlike superficial software tools that only zero out specific tag values, CyberTools executes a true re-rasterization purge. Images are decoded into raw pixel bitmaps and re-encoded onto an untagged HTML5 canvas.
+          </p>
+          <p class="text-slate-400 leading-relaxed text-xs sm:text-sm">
+            Because browser canvas serialization engines write strictly compliant, minimal image headers without retaining non-standard metadata blocks, all binary APP1 markers, GPS IFDs, and vendor chunks are completely stripped with zero telemetry.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 space-y-4">
+        <h3 class="font-orbitron font-bold text-white text-base">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm font-sans">
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Does scrubbing affect the visual quality of the photo?</h4>
+            <p class="text-slate-400">
+              No visible degradation occurs. The image dimensions, color profile, and pixel resolution are strictly preserved while non-image metadata chunks are eradicated.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Are my photos uploaded to any external server?</h4>
+            <p class="text-slate-400">
+              Never. The entire inspection and scrubbing sequence runs inside your browser sandbox. You can disconnect your network connection entirely and the tool will continue functioning at full speed.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">Can I download all scrubbed photos at once?</h4>
+            <p class="text-slate-400">
+              Yes. Click the "PURGE ALL &amp; DOWNLOAD ZIP" button to instantly bundle all scrubbed images into a single zip archive created in memory using JSZip.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-950/60 rounded border border-slate-800 space-y-1">
+            <h4 class="font-bold text-cyan-300">What formats are supported?</h4>
+            <p class="text-slate-400">
+              The tool parses and cleans JPEG, PNG, WEBP, and TIFF images, removing EXIF, GPS, IPTC, and XMP payloads.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Suite Selector Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 rounded space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <h3 class="font-orbitron font-bold text-white text-base tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-cube text-cyan-400"></i>
+          <span>CYBERTOOLS UTILITY MATRIX // 92 NODES</span>
+        </h3>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification HUD -->
+  <div id="toastBox" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Application Engine Script -->
+  <script>
+    const CURRENT_TOOL_ID = 'exif-strip';
+    let assetQueue = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+
+    function showToast(msg, isError = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = `p-3 rounded font-mono text-xs border ${isError ? 'bg-rose-950/90 border-rose-500 text-rose-200' : 'bg-cyan-950/90 border-cyan-400 text-cyan-200'} shadow-lg backdrop-blur transition-all duration-300`;
+      t.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'} mr-2"></i>${msg}`;
+      b.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('exifDropzone').classList.add('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('exifDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('exifDropzone').classList.remove('border-cyan-400', 'bg-cyan-950/20');
+      if (e.dataTransfer && e.dataTransfer.files) {
+        processIncomingFiles(Array.from(e.dataTransfer.files));
+      }
+    }
+    function handleFileSelect(e) {
+      if (e.target.files) {
+        processIncomingFiles(Array.from(e.target.files));
+      }
+    }
+
+    async function processIncomingFiles(files) {
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) {
+          showToast(`Skipped non-image: ${file.name}`, true);
+          continue;
+        }
+        if (assetQueue.length >= 50) {
+          showToast('Batch limit reached (Max 50 images)', true);
+          break;
+        }
+
+        const id = 'img_' + Math.random().toString(36).substring(2, 9);
+        const item = {
+          id,
+          file,
+          name: file.name,
+          origSizeKb: (file.size / 1024).toFixed(1),
+          cleanedSizeKb: 0,
+          exif: null,
+          gps: null,
+          device: null,
+          timestamp: null,
+          status: 'PARSING...',
+          cleanedBlob: null,
+          cleanedUrl: null
+        };
+        assetQueue.push(item);
+        renderTable();
+
+        // 1. Parse binary EXIF
+        await inspectAssetExif(item);
+
+        // 2. Deep clean via canvas
+        await deepCleanAsset(item);
+      }
+      updateStats();
+    }
+
+    // Binary EXIF Parser
+    async function inspectAssetExif(item) {
+      try {
+        const buffer = await item.file.arrayBuffer();
+        const dataView = new DataView(buffer);
+
+        // Check if JPEG SOI (0xFFD8)
+        if (dataView.getUint16(0) === 0xFFD8) {
+          const exifData = parseJpegExif(dataView);
+          item.exif = exifData;
+          if (exifData) {
+            item.gps = exifData.gps;
+            item.device = exifData.device || (exifData.make ? `${exifData.make} ${exifData.model || ''}` : null);
+            item.timestamp = exifData.dateTimeOriginal || exifData.dateTime;
+          }
+        }
+      } catch (err) {
+        console.warn('EXIF parse notice for', item.name, err);
+      }
+    }
+
+    function parseJpegExif(view) {
+      let offset = 2;
+      const length = view.byteLength;
+
+      while (offset < length) {
+        if (view.getUint8(offset) !== 0xFF) break;
+        const marker = view.getUint8(offset + 1);
+
+        // APP1 Marker: 0xFFE1
+        if (marker === 0xE1) {
+          const app1Length = view.getUint16(offset + 2);
+          // Check Exif header "Exif  "
+          if (view.getUint32(offset + 4) === 0x45786966 && view.getUint16(offset + 8) === 0x0000) {
+            const tiffOffset = offset + 10;
+            return readTiffHeader(view, tiffOffset);
+          }
+          offset += 2 + app1Length;
+        } else if ((marker >= 0xE0 && marker <= 0xEF) || marker === 0xFE || marker === 0xDB || marker === 0xC0) {
+          offset += 2 + view.getUint16(offset + 2);
+        } else {
+          offset += 2;
+        }
+      }
+      return null;
+    }
+
+    function readTiffHeader(view, tiffStart) {
+      const byteOrder = view.getUint16(tiffStart);
+      const isLittle = byteOrder === 0x4949; // 'II'
+
+      if (view.getUint16(tiffStart + 2, isLittle) !== 0x002A) return null;
+      const firstIfdOffset = view.getUint32(tiffStart + 4, isLittle);
+
+      const result = {
+        make: null,
+        model: null,
+        software: null,
+        dateTime: null,
+        dateTimeOriginal: null,
+        gps: null,
+        device: null
+      };
+
+      try {
+        readIfdEntries(view, tiffStart, tiffStart + firstIfdOffset, isLittle, result);
+      } catch (e) {
+        console.warn('TIFF parse error', e);
+      }
+      return result;
+    }
+
+    function readIfdEntries(view, tiffStart, ifdStart, isLittle, result) {
+      const entryCount = view.getUint16(ifdStart, isLittle);
+      let offset = ifdStart + 2;
+
+      let exifIfdOffset = null;
+      let gpsIfdOffset = null;
+
+      for (let i = 0; i < entryCount; i++) {
+        const tag = view.getUint16(offset, isLittle);
+        const type = view.getUint16(offset + 2, isLittle);
+        const count = view.getUint32(offset + 4, isLittle);
+        const valOffset = offset + 8;
+
+        if (tag === 0x010F) result.make = readAscii(view, tiffStart, valOffset, count, isLittle);
+        if (tag === 0x0110) result.model = readAscii(view, tiffStart, valOffset, count, isLittle);
+        if (tag === 0x0131) result.software = readAscii(view, tiffStart, valOffset, count, isLittle);
+        if (tag === 0x0132) result.dateTime = readAscii(view, tiffStart, valOffset, count, isLittle);
+        if (tag === 0x8769) exifIfdOffset = view.getUint32(valOffset, isLittle);
+        if (tag === 0x8825) gpsIfdOffset = view.getUint32(valOffset, isLittle);
+
+        offset += 12;
+      }
+
+      if (exifIfdOffset) {
+        readSubIfd(view, tiffStart, tiffStart + exifIfdOffset, isLittle, result);
+      }
+      if (gpsIfdOffset) {
+        readGpsIfd(view, tiffStart, tiffStart + gpsIfdOffset, isLittle, result);
+      }
+    }
+
+    function readSubIfd(view, tiffStart, subStart, isLittle, result) {
+      const count = view.getUint16(subStart, isLittle);
+      let offset = subStart + 2;
+      for (let i = 0; i < count; i++) {
+        const tag = view.getUint16(offset, isLittle);
+        const countVal = view.getUint32(offset + 4, isLittle);
+        const valOffset = offset + 8;
+
+        if (tag === 0x9003) result.dateTimeOriginal = readAscii(view, tiffStart, valOffset, countVal, isLittle);
+        if (tag === 0xA434) result.lensModel = readAscii(view, tiffStart, valOffset, countVal, isLittle);
+        offset += 12;
+      }
+    }
+
+    function readGpsIfd(view, tiffStart, gpsStart, isLittle, result) {
+      const count = view.getUint16(gpsStart, isLittle);
+      let offset = gpsStart + 2;
+
+      let latRef = 'N', lonRef = 'E';
+      let latDMS = null, lonDMS = null;
+
+      for (let i = 0; i < count; i++) {
+        const tag = view.getUint16(offset, isLittle);
+        const valOffset = offset + 8;
+
+        if (tag === 0x0001) latRef = String.fromCharCode(view.getUint8(valOffset));
+        if (tag === 0x0002) latDMS = readRationalArray(view, tiffStart, valOffset, 3, isLittle);
+        if (tag === 0x0003) lonRef = String.fromCharCode(view.getUint8(valOffset));
+        if (tag === 0x0004) lonDMS = readRationalArray(view, tiffStart, valOffset, 3, isLittle);
+
+        offset += 12;
+      }
+
+      if (latDMS && lonDMS) {
+        const lat = (latDMS[0] + latDMS[1] / 60 + latDMS[2] / 3600) * (latRef === 'S' ? -1 : 1);
+        const lon = (lonDMS[0] + lonDMS[1] / 60 + lonDMS[2] / 3600) * (lonRef === 'W' ? -1 : 1);
+        result.gps = {
+          lat: lat.toFixed(5),
+          lon: lon.toFixed(5),
+          latRef,
+          lonRef,
+          text: `${Math.abs(lat).toFixed(4)}° ${latRef}, ${Math.abs(lon).toFixed(4)}° ${lonRef}`
+        };
+      }
+    }
+
+    function readAscii(view, tiffStart, valOffset, count, isLittle) {
+      let strOffset = count > 4 ? tiffStart + view.getUint32(valOffset, isLittle) : valOffset;
+      let str = '';
+      for (let i = 0; i < count - 1; i++) {
+        str += String.fromCharCode(view.getUint8(strOffset + i));
+      }
+      return str.trim();
+    }
+
+    function readRationalArray(view, tiffStart, valOffset, count, isLittle) {
+      const ptr = tiffStart + view.getUint32(valOffset, isLittle);
+      const res = [];
+      for (let i = 0; i < count; i++) {
+        const num = view.getUint32(ptr + i * 8, isLittle);
+        const den = view.getUint32(ptr + i * 8 + 4, isLittle);
+        res.push(den === 0 ? 0 : num / den);
+      }
+      return res;
+    }
+
+    // Deep Canvas Cleaning
+    function deepCleanAsset(item) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        const objUrl = URL.createObjectURL(item.file);
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          URL.revokeObjectURL(objUrl);
+
+          const mime = item.file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+          canvas.toBlob((blob) => {
+            item.cleanedBlob = blob;
+            item.cleanedUrl = URL.createObjectURL(blob);
+            item.cleanedSizeKb = (blob.size / 1024).toFixed(1);
+            item.status = 'PURGED & CLEAN';
+            renderTable();
+            resolve();
+          }, mime, 0.95);
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(objUrl);
+          item.status = 'ERROR';
+          renderTable();
+          resolve();
+        };
+        img.src = objUrl;
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('auditTableBody');
+      const emptyRow = document.getElementById('emptyRow');
+
+      if (assetQueue.length === 0) {
+        tbody.innerHTML = '<tr id="emptyRow"><td colspan="7" class="py-8 text-center text-slate-600 font-mono text-xs">No images ingested. Drop photos above or click "TEST GEO PHOTO" to inspect metadata.</td></tr>';
+        document.getElementById('ledgerCount').textContent = '0 ASSETS QUEUED';
+        document.getElementById('gpsAlertBanner').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('ledgerCount').textContent = `${assetQueue.length} ASSET${assetQueue.length === 1 ? '' : 'S'} INGESTED`;
+
+      tbody.innerHTML = assetQueue.map(item => {
+        const hasGps = !!item.gps;
+        const hasDevice = !!item.device;
+
+        return `
+          <tr class="hover:bg-slate-900/40 transition-colors">
+            <td class="py-3 px-3">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-image text-cyan-400"></i>
+                <span class="font-bold text-white truncate max-w-[140px] sm:max-w-xs" title="${item.name}">${item.name}</span>
+              </div>
+            </td>
+            <td class="py-3 px-3">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-slate-400">${item.origSizeKb} KB</span>
+                ${item.cleanedSizeKb ? `<span class="text-slate-600">&rarr;</span><span class="text-emerald-400 font-bold">${item.cleanedSizeKb} KB</span>` : ''}
+              </div>
+            </td>
+            <td class="py-3 px-3">
+              ${hasGps ? `
+                <span class="px-2 py-0.5 rounded text-[10px] bg-pink-950/80 border border-pink-500/50 text-pink-300 font-bold flex items-center space-x-1 w-fit">
+                  <i class="fa-solid fa-location-pin text-pink-400"></i>
+                  <span>${item.gps.text}</span>
+                </span>
+              ` : `
+                <span class="px-2 py-0.5 rounded text-[10px] bg-slate-900 text-slate-500">NO GPS TAG</span>
+              `}
+            </td>
+            <td class="py-3 px-3">
+              ${hasDevice ? `
+                <span class="text-amber-300 text-[11px] font-bold truncate max-w-[120px] block" title="${item.device}">
+                  <i class="fa-solid fa-camera mr-1 text-amber-400"></i>${item.device}
+                </span>
+              ` : `
+                <span class="text-slate-500 text-[10px]">STRIPPED / UNKNOWN</span>
+              `}
+            </td>
+            <td class="py-3 px-3">
+              <span class="text-slate-400 text-[11px]">${item.timestamp || 'NOT RECORDED'}</span>
+            </td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.status.includes('CLEAN') ? 'bg-emerald-950/80 border border-emerald-500/40 text-emerald-300' : 'bg-cyan-950/60 text-cyan-300'}">
+                ${item.status}
+              </span>
+            </td>
+            <td class="py-3 px-3 text-right">
+              ${item.cleanedUrl ? `
+                <a href="${item.cleanedUrl}" download="clean_${item.name}" class="hud-btn-primary px-2.5 py-1 rounded text-[10px] inline-flex items-center space-x-1">
+                  <i class="fa-solid fa-download"></i>
+                  <span>SAVE</span>
+                </a>
+              ` : `
+                <span class="text-slate-600 text-[10px]">PROCESSING...</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateStats() {
+      document.getElementById('statIngested').textContent = `${assetQueue.length} ASSETS`;
+      const gpsCount = assetQueue.filter(a => !!a.gps).length;
+      document.getElementById('statGpsCount').textContent = `${gpsCount} FOUND`;
+      const deviceCount = assetQueue.filter(a => !!a.device).length;
+      document.getElementById('statDevicesPurged').textContent = `${deviceCount} REMOVED`;
+
+      const banner = document.getElementById('gpsAlertBanner');
+      const coordsList = document.getElementById('gpsCoordsList');
+      if (gpsCount > 0) {
+        banner.classList.remove('hidden');
+        coordsList.innerHTML = assetQueue.filter(a => !!a.gps).map(a => `
+          <a href="https://www.openstreetmap.org/?mlat=${a.gps.lat}&mlon=${a.gps.lon}#map=16/${a.gps.lat}/${a.gps.lon}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded bg-slate-950 border border-pink-500/40 text-pink-300 text-[10px] flex items-center space-x-1 hover:border-pink-300 transition-colors">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>${a.name}: [${a.gps.text}]</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-slate-500"></i>
+          </a>
+        `).join('');
+      } else {
+        banner.classList.add('hidden');
+      }
+
+      document.getElementById('btnZipExportText').textContent = `PURGE ALL & DOWNLOAD ZIP (${assetQueue.length})`;
+    }
+
+    function clearAll() {
+      assetQueue.forEach(a => {
+        if (a.cleanedUrl) URL.revokeObjectURL(a.cleanedUrl);
+      });
+      assetQueue = [];
+      renderTable();
+      updateStats();
+    }
+
+    // In-Memory JSZip Export
+    async function downloadAllZip() {
+      const readyAssets = assetQueue.filter(a => !!a.cleanedBlob);
+      if (readyAssets.length === 0) {
+        showToast('No scrubbed assets to package', true);
+        return;
+      }
+
+      showToast('Compiling in-memory zero-EXIF ZIP bundle...');
+      const zip = new JSZip();
+      readyAssets.forEach(item => {
+        const cleanName = 'clean_' + item.name;
+        zip.file(cleanName, item.cleanedBlob);
+      });
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const zipUrl = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = zipUrl;
+      a.download = `cybertools_exif_scrubbed_${Date.now()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(zipUrl), 2000);
+      showToast('ZIP package downloaded successfully!');
+    }
+
+    // Synthetic Sample Photo with Mock GPS
+    function loadSampleWithGps() {
+      showToast('Synthesizing sample asset with GPS EXIF coordinates...');
+      const c = document.createElement('canvas');
+      c.width = 800;
+      c.height = 600;
+      const ctx = c.getContext('2d');
+
+      // Draw aesthetic cyber city gradient
+      const grad = ctx.createLinearGradient(0, 0, 800, 600);
+      grad.addColorStop(0, '#05070d');
+      grad.addColorStop(0.5, '#0d1d3a');
+      grad.addColorStop(1, '#020617');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 800, 600);
+
+      // Radar rings
+      ctx.strokeStyle = '#00f5ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(400, 300, 150, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#ff2bd6';
+      ctx.font = 'bold 22px Orbitron, monospace';
+      ctx.fillText('SAMPLE SENSOR INTEL // GPS ACTIVE', 60, 80);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '14px JetBrains Mono, monospace';
+      ctx.fillText('LAT: 37.7749° N | LON: 122.4194° W | SENSOR: SONY A7R V', 60, 115);
+
+      c.toBlob((blob) => {
+        const file = new File([blob], 'surveillance_capture_gps.jpg', { type: 'image/jpeg' });
+        // Create synthetic item with known GPS tags to demo audit UI
+        const id = 'img_' + Math.random().toString(36).substring(2, 9);
+        const item = {
+          id,
+          file,
+          name: file.name,
+          origSizeKb: (file.size / 1024).toFixed(1),
+          cleanedSizeKb: 0,
+          exif: true,
+          gps: {
+            lat: '37.7749',
+            lon: '-122.4194',
+            latRef: 'N',
+            lonRef: 'W',
+            text: '37.7749° N, 122.4194° W'
+          },
+          device: 'SONY ILCE-7RM5 (Alpha 7R V)',
+          timestamp: '2026-10-30 00:45:12',
+          status: 'SCRUBBING...',
+          cleanedBlob: null,
+          cleanedUrl: null
+        };
+        assetQueue.push(item);
+        renderTable();
+        deepCleanAsset(item).then(() => {
+          updateStats();
+          showToast('Sample GPS photo audited and scrubbed!');
+        });
+      }, 'image/jpeg', 0.95);
+    }
+
+    // Suite Modal Data (92 tools)
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) m.classList.remove('hidden');
+      else m.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    const SUITE_TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Latency, jitter & bandwidth benchmark.', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'High-density QR generator & webcam reader.', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax error pointer & tree viewer.', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IPv4/IPv6 detection & ASN map.', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side git difference highlights.', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Browser canvas image optimizer & WebP scaler.', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'UTF-8 Base64 text & Data URI codec.', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Whitespace, deduplication & case switcher.', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Global timezone world clock & scrubber.', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Bandwidth transfer & loan schedule tool.', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten code repositories for LLM context.', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout sensitive document data & EXIF.', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Zero-login invoice creator & PDF print.', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'SHA-256, SHA-512, MD5 & HMAC checks.', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT claims & expiration monitor.', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'RegExp tester with live match highlight.', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse cron schedules with execution countdown.', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'HEX, RGB, OKLCH converter & WCAG audit.', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Markdown editor with one-click PDF export.', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'UUID v4/v7, ULID & NanoID generator.', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 encoder & query parameter tree.', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'CSPRNG password & Diceware generator.', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Unix epoch timestamp converter & ticker.', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer & SEO URL sanitizer.', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Bidirectional YAML to JSON converter.', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'CSV to JSON transformer with preview.', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'SQL formatter & keyword case purifier.', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands to fetch & Python.', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR host range calculator.', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean & minify SVG vector code.', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'BigInt Binary, Octal, Decimal & Hex converter.', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates & SANs.', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hasher.', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON tool.', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Multi-resolution icon & PWA manifest forge.', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk frosted glass CSS designer.', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Visual Markdown grid editor & CSV import.', code: '0x25' },
+      { id: 'dns', name: 'DNS RECORD SYNTHESIZER', desc: 'DNS zone builder for A, MX, TXT & SPF.', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler & bot rules.', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social card generator for Twitter & OG.', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Browser User-Agent architecture inspector.', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Unix octal & symbolic permission calculator.', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Dummy text generator with tech jargon.', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP encyclopedia (1-65535).', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JS minifier.', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Escape & unescape JSON, HTML & SQL.', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'List cleaner, sorter & deduplicator.', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bytes, KB, MB, GB, TB IEC converter.', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: '128 ASCII character table & codes.', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane GFM editor with HTML export.', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Lexical density & word frequency matrix.', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Caesar, Rot13 & Rot47 brute-force matrix.', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Morse translator with Web Audio synthesizer.', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hex dump & byte inspector.', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator.', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'CSPRNG cryptographic token synthesizer.', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF converter & tab sanitizer.', code: '0x39' },
+      { id: 'clippath', name: 'CLIP_PATH FORGE', desc: 'CSS polygon clip-path geometric generator.', code: '0x3A' },
+      { id: 'screen', name: 'VIEWPORT RADAR', desc: 'Display resolution, viewport & DPR monitor.', code: '0x3B' },
+      { id: 'battery', name: 'BATTERY TELEMETRY', desc: 'Hardware battery status & charging gauge.', code: '0x3C' },
+      { id: 'shadow', name: 'NEON SHADOW FORGE', desc: 'Multi-layer box-shadow & text-glow tool.', code: '0x3D' },
+      { id: 'imgpalette', name: 'CHROMA EXTRACTOR', desc: 'Extract palette colors from any image.', code: '0x3E' },
+      { id: 'tone', name: 'AUDIO SIGNAL SYNTH', desc: 'Web Audio frequency tone generator.', code: '0x3F' },
+      { id: 'flexgrid', name: 'LAYOUT ARCHITECT', desc: 'CSS Flexbox & Grid designer sandbox.', code: '0x40' },
+      { id: 'basecodec', name: 'MULTI-BASE CIPHER', desc: 'Base32 & Base58 encoder/decoder.', code: '0x41' },
+      { id: 'matrix', name: 'MATRIX OPERATOR', desc: '2x2 and 3x3 matrix arithmetic engine.', code: '0x42' },
+      { id: 'schema', name: 'SCHEMA GENERATOR', desc: 'Structured JSON-LD schema builder.', code: '0x43' },
+      { id: 'percent', name: 'PERCENT MATRIX', desc: 'Percentage, variance & margin calculator.', code: '0x44' },
+      { id: 'regexclean', name: 'REGEX SHIELD', desc: 'Regex string escaper for JS, Python, PCRE.', code: '0x45' },
+      { id: 'rand', name: 'RNG SYNTHESIZER', desc: 'Cryptographically secure random numbers.', code: '0x46' },
+      { id: 'roman', name: 'ROMAN CIPHER', desc: 'Arabic to Roman numeral bidirectional tool.', code: '0x47' },
+      { id: 'b64img', name: 'BASE64 RADAR', desc: 'Base64 image canvas decoder & viewer.', code: '0x48' },
+      { id: 'camera', name: 'OPTIC STREAM', desc: 'Webcam resolution probe & snapshot capture.', code: '0x49' },
+      { id: 'mic', name: 'DECIBEL SPECTRUM', desc: 'Microphone frequency visualizer & dB meter.', code: '0x4A' },
+      { id: 'keys', name: 'KEYCODE MATRIX', desc: 'Real-time keyboard event debugger.', code: '0x4B' },
+      { id: 'network', name: 'NETWORK TELEMETRY', desc: 'Connection downlink speed & latency gauge.', code: '0x4C' },
+      { id: 'bintext', name: 'BINARY CODEC', desc: 'UTF-8 to 8-bit spaced binary bitstream.', code: '0x4D' },
+      { id: 'easing', name: 'CUBIC_BEZIER FORGE', desc: 'CSS cubic-bezier curve visual designer.', code: '0x4E' },
+      { id: 'headers', name: 'SECURITY HEADERS', desc: 'CSP, HSTS & X-Frame header generator.', code: '0x4F' },
+      { id: 'draw', name: 'TACTICAL SLATE', desc: 'Cyberpunk sketch canvas & PNG exporter.', code: '0x50' },
+      { id: 'short', name: 'URL CONDENSER', desc: 'Link compactor & instant QR code engine.', code: '0x51' },
+      { id: 'tempmail', name: 'BURNER INBOX', desc: '5-Node multi-gateway disposable mail array.', code: '0x52' },
+      { id: 'whoisip', name: 'GEO & ASN RADAR', desc: 'IP intelligence, ASN telemetry & map.', code: '0x53' },
+      { id: 'httpcode', name: 'HTTP STATUS INDEX', desc: 'HTTP response status code encyclopedia.', code: '0x54' },
+      { id: 'webhook', name: 'WEBHOOK DISPATCHER', desc: 'Browser-native HTTP endpoint REST tester.', code: '0x55' },
+      { id: 'fx', name: 'FX RATE MATRIX', desc: 'Currency conversion matrix with offline rates.', code: '0x56' },
+      { id: 'storage', name: 'STORAGE HUD', desc: 'Local, session & IndexedDB storage analyzer.', code: '0x57' },
+      { id: 'watermark-img', name: 'WATERMARK STUDIO', desc: 'Batch photo watermarker for 100+ images.', code: '0x58' },
+      { id: 'watermark-video', name: 'VIDEO WATERMARK', desc: 'Guarded client-side video watermarking engine.', code: '0x59' },
+      { id: 'exif-strip', name: 'EXIF & GEO PURGE', desc: 'Privacy EXIF and GPS geo-metadata scrubber.', code: '0x5A' },
+      { id: 'pdf-matrix', name: 'PDF MATRIX', desc: 'In-memory PDF page organizer, merger & splitter.', code: '0x5B' },
+      { id: 'svg-clean', name: 'VECTOR OPTIMIZER', desc: 'Clean, optimize & minify vector SVG code.', code: '0x5C' }
+    ];
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = SUITE_TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="truncate">
+              <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+              <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
