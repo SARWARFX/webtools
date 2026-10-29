@@ -444,7 +444,7 @@
     </article>
   </main>
 
-  <!-- Script Logic: Dual-Gateway Adapter Engine -->
+    <!-- Script Logic: Dual-Gateway Adapter Engine -->
   <script>
     let currentGateway = 'mailtm'; // 'mailtm' | '1secmail'
     let currentLogin = '';
@@ -513,16 +513,31 @@
     }
 
     async function switchGateway(gateway) {
-      if (currentGateway === gateway && activeEmail) {
-        showToast(`Already connected to ${gateway === 'mailtm' ? 'Mail.tm' : '1secmail'}`);
-        return;
-      }
+      // Always stop active polling immediately
+      clearInterval(countdownInterval);
+      clearInterval(pollInterval);
+
       currentGateway = gateway;
+      activeEmail = '';
+      mailtmToken = '';
+      currentLogin = '';
+      currentDomain = '';
+      currentPassword = '';
+      knownMessageIds.clear();
+      currentMessages = [];
+      activeMessageData = null;
+      renderMessageList();
+      resetMessageView();
 
       const btnMailTm = document.getElementById('btnGatewayMailTm');
       const btn1sec = document.getElementById('btnGateway1sec');
       const badge = document.getElementById('gatewayBadge');
       const tag = document.getElementById('gatewayTag');
+      const emailDisplay = document.getElementById('emailAddressDisplay');
+      const pollStatus = document.getElementById('pollStatus');
+      const progressBar = document.getElementById('pollProgressBar');
+
+      if (progressBar) progressBar.style.width = '0%';
 
       if (gateway === 'mailtm') {
         btnMailTm.className = 'px-3.5 py-2 rounded flex items-center space-x-2 transition-all border border-cyan-400 bg-cyan-950/60 text-cyan-300 font-bold shadow-[0_0_12px_rgba(0,245,255,0.25)] text-xs font-mono';
@@ -530,12 +545,18 @@
         badge.innerHTML = '<span class="text-cyan-400">[NODE 01: MAIL.TM]</span> <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>HIGH REPUTATION // NO GMAIL SUPPRESSION</span>';
         tag.textContent = 'MAIL.TM';
         tag.className = 'text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 uppercase';
+        emailDisplay.textContent = 'CONNECTING TO MAIL.TM...';
+        pollStatus.textContent = 'CONNECTING TO MAIL.TM GATEWAY...';
+        pollStatus.className = 'text-cyan-400 font-bold';
       } else {
         btn1sec.className = 'px-3.5 py-2 rounded flex items-center space-x-2 transition-all border border-pink-500 bg-pink-950/40 text-pink-300 font-bold shadow-[0_0_12px_rgba(255,43,214,0.25)] text-xs font-mono';
         btnMailTm.className = 'px-3.5 py-2 rounded flex items-center space-x-2 transition-all border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200 hover:border-slate-700 text-xs font-mono';
         badge.innerHTML = '<span class="text-pink-400">[NODE 02: 1SECMAIL]</span> <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>STATELESS FALLBACK // GMAIL MAY SUPPRESS</span>';
         tag.textContent = '1SECMAIL';
         tag.className = 'text-[9px] font-mono px-1.5 py-0.5 rounded bg-pink-950/80 border border-pink-500/40 text-pink-300 uppercase';
+        emailDisplay.textContent = 'CONNECTING TO 1SECMAIL...';
+        pollStatus.textContent = 'CONNECTING TO 1SECMAIL GATEWAY...';
+        pollStatus.className = 'text-pink-400 font-bold';
       }
 
       showToast(`Switching gateway to ${gateway === 'mailtm' ? 'Mail.tm' : '1secmail'}...`);
@@ -544,13 +565,29 @@
 
     async function generateNewMailbox() {
       clearInterval(countdownInterval);
+      clearInterval(pollInterval);
 
-      document.getElementById('emailAddressDisplay').textContent = 'INITIALIZING_RELAY...';
       knownMessageIds.clear();
       currentMessages = [];
       activeMessageData = null;
       renderMessageList();
       resetMessageView();
+
+      const emailDisplay = document.getElementById('emailAddressDisplay');
+      const pollStatus = document.getElementById('pollStatus');
+      const progressBar = document.getElementById('pollProgressBar');
+
+      if (progressBar) progressBar.style.width = '0%';
+
+      if (currentGateway === 'mailtm') {
+        emailDisplay.textContent = 'CONNECTING TO MAIL.TM...';
+        pollStatus.textContent = 'PROVISIONING MAIL.TM RELAY...';
+        pollStatus.className = 'text-cyan-400 font-bold';
+      } else {
+        emailDisplay.textContent = 'CONNECTING TO 1SECMAIL...';
+        pollStatus.textContent = 'REQUESTING 1SECMAIL RELAY...';
+        pollStatus.className = 'text-pink-400 font-bold';
+      }
 
       try {
         if (currentGateway === 'mailtm') {
@@ -559,63 +596,61 @@
           await init1secmailGateway();
         }
 
-        document.getElementById('emailAddressDisplay').textContent = activeEmail;
+        emailDisplay.textContent = activeEmail;
         showToast(`Connected: ${activeEmail}`);
         startPolling();
       } catch (err) {
-        console.error('Mailbox generation failed', err);
-        // If Mail.tm fails, offer graceful fallback
-        if (currentGateway === 'mailtm') {
-          showToast('Mail.tm initial connection error, switching to fallback node...');
-          switchGateway('1secmail');
-        } else {
-          // Pure procedural fallback for 1secmail
-          const randId = Math.random().toString(36).substring(2, 10);
-          currentLogin = `burner_${randId}`;
-          currentDomain = '1secmail.com';
-          activeEmail = `${currentLogin}@${currentDomain}`;
-          document.getElementById('emailAddressDisplay').textContent = activeEmail;
-          showToast('Generated mailbox (offline fallback)');
-          startPolling();
-        }
+        console.error('Mailbox generation failed:', err);
+        const errMsg = err.message || 'Connection Error';
+        emailDisplay.textContent = 'RELAY_CONNECTION_ERROR';
+        pollStatus.textContent = `RADAR ERROR: [${errMsg}] — CHECK CONSOLE / EXTENSIONS`;
+        pollStatus.className = 'text-rose-400 font-bold truncate max-w-md';
+        showToast(`Radar Error: ${errMsg}`);
       }
     }
 
     async function initMailTmGateway() {
-      // 1. Get available domains
-      const domainsRes = await fetch('https://api.mail.tm/domains');
-      if (!domainsRes.ok) throw new Error('Mail.tm domains endpoint unavailable');
-      const domainsData = await domainsRes.json();
-      const members = domainsData['hydra:member'] || [];
-      const activeObj = members.find(d => d.isActive) || members[0];
-      if (!activeObj) throw new Error('No active domains found');
-      currentDomain = activeObj.domain;
+      mailtmToken = '';
 
-      // 2. Generate random credentials
-      const randUser = 'cyber_' + Math.random().toString(36).substring(2, 9);
-      activeEmail = `${randUser}@${currentDomain}`;
-      currentPassword = 'Pass_' + Math.random().toString(36).substring(2, 10) + '!99';
-
-      // 3. Register account
-      const accRes = await fetch('https://api.mail.tm/accounts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: activeEmail, password: currentPassword })
+      // 1. Fetch available domain
+      const domRes = await fetch('https://api.mail.tm/domains?page=1', {
+        headers: { 'Accept': 'application/json' }
       });
-      if (!accRes.ok) {
-        const errJson = await accRes.json().catch(() => ({}));
-        throw new Error(errJson['hydra:description'] || 'Account registration failed');
+      if (!domRes.ok) throw new Error('Mail.tm domains unreachable (Status: ' + domRes.status + ')');
+      const domData = await domRes.json();
+      const members = domData['hydra:member'] || domData;
+      if (!members || members.length === 0) throw new Error('No active Mail.tm domains returned');
+      const selectedDomain = members[0].domain;
+
+      // 2. Register burner account
+      const cleanUser = 'usr_' + Math.random().toString(36).substring(2, 10);
+      const fullAddress = `${cleanUser}@${selectedDomain}`;
+      const tempPassword = 'P_' + Math.random().toString(36).substring(2, 12) + '99!';
+
+      const regRes = await fetch('https://api.mail.tm/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ address: fullAddress, password: tempPassword })
+      });
+      if (!regRes.ok) {
+        const errJson = await regRes.json().catch(() => ({}));
+        throw new Error('Account reg failed: ' + (errJson.message || regRes.statusText));
       }
 
-      // 4. Obtain bearer token
-      const tokenRes = await fetch('https://api.mail.tm/token', {
+      // 3. Acquire Bearer Token
+      const tokRes = await fetch('https://api.mail.tm/token', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: activeEmail, password: currentPassword })
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ address: fullAddress, password: tempPassword })
       });
-      if (!tokenRes.ok) throw new Error('Token acquisition failed');
-      const tokenData = await tokenRes.json();
-      mailtmToken = tokenData.token;
+      if (!tokRes.ok) throw new Error('Token auth failed (Status: ' + tokRes.status + ')');
+      const tokData = await tokRes.json();
+      const token = tokData.token;
+
+      mailtmToken = token;
+      activeEmail = fullAddress;
+      currentDomain = selectedDomain;
+      currentLogin = cleanUser;
     }
 
     async function init1secmailGateway() {
@@ -644,17 +679,21 @@
     }
 
     function startPolling() {
+      clearInterval(countdownInterval);
+      clearInterval(pollInterval);
+
       pollTimerSeconds = 5;
       updateProgressBar();
 
-      clearInterval(countdownInterval);
       countdownInterval = setInterval(() => {
         pollTimerSeconds--;
         if (pollTimerSeconds <= 0) {
           pollTimerSeconds = 5;
           pollMessages();
         }
-        document.getElementById('pollStatus').textContent = `POLLING IN ${pollTimerSeconds}s`;
+        const statusEl = document.getElementById('pollStatus');
+        statusEl.textContent = `POLLING IN ${pollTimerSeconds}s`;
+        statusEl.className = 'text-cyan-400 font-bold';
         updateProgressBar();
       }, 1000);
 
@@ -678,11 +717,17 @@
         if (currentGateway === 'mailtm') {
           if (!mailtmToken) return;
           const res = await fetch('https://api.mail.tm/messages', {
-            headers: { 'Authorization': `Bearer ${mailtmToken}` }
+            headers: { 
+              'Authorization': `Bearer ${mailtmToken}`,
+              'Accept': 'application/json'
+            }
           });
-          if (!res.ok) return;
+          if (!res.ok) {
+            if (res.status === 401) throw new Error('Bearer token expired');
+            return;
+          }
           const data = await res.json();
-          const members = data['hydra:member'] || [];
+          const members = data['hydra:member'] || (Array.isArray(data) ? data : []);
           rawMessages = members.map(m => {
             let fromStr = 'Unknown Sender';
             if (m.from) {
@@ -732,7 +777,11 @@
         renderMessageList();
         document.getElementById('inboxCountBadge').textContent = currentMessages.length;
       } catch (e) {
-        console.warn('Inbox poll warning', e);
+        console.warn('Inbox poll warning:', e);
+        const pollStatus = document.getElementById('pollStatus');
+        if (pollStatus && e.message) {
+          pollStatus.textContent = `RADAR WARNING: [${e.message}]`;
+        }
       }
     }
 
@@ -782,9 +831,12 @@
 
         if (currentGateway === 'mailtm') {
           const res = await fetch(`https://api.mail.tm/messages/${id}`, {
-            headers: { 'Authorization': `Bearer ${mailtmToken}` }
+            headers: { 
+              'Authorization': `Bearer ${mailtmToken}`,
+              'Accept': 'application/json'
+            }
           });
-          if (!res.ok) throw new Error('Failed to load message');
+          if (!res.ok) throw new Error('Failed to load message (Status: ' + res.status + ')');
           const data = await res.json();
           subject = data.subject || '(No Subject)';
           from = typeof data.from === 'object' ? (data.from.name ? `${data.from.name} <${data.from.address}>` : data.from.address) : String(data.from);
@@ -880,7 +932,10 @@
     }
 
     function copyEmailAddress() {
-      if (!activeEmail) return;
+      if (!activeEmail || activeEmail.includes('...') || activeEmail.includes('_')) {
+        // If still initializing or error, don't copy
+        if (!activeEmail.includes('@')) return;
+      }
       navigator.clipboard.writeText(activeEmail).then(() => {
         const btnText = document.getElementById('btnCopyEmailText');
         const orig = btnText.textContent;
@@ -903,6 +958,16 @@
     function escapeHtml(str) {
       if (!str) return '';
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
