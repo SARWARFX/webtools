@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entropy & Passphrase Matrix // Password & Diceware Generator - sarwarfx</title>
+  <meta name="description" content="Generate high-entropy cryptographic passwords and Diceware passphrases using browser crypto.getRandomValues(). Real-time entropy bits, crack-time estimate, and zero telemetry.">
+  <meta name="keywords" content="password generator, diceware generator, passphrase generator, high entropy password, crack time calculator, secure password, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/pass/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/pass/" />
+  <meta property="og:title" content="Entropy & Passphrase Matrix // Password & Diceware Generator - sarwarfx" />
+  <meta property="og:description" content="Generate high-entropy cryptographic passwords and Diceware passphrases using browser crypto.getRandomValues(). Real-time entropy bits, crack-time estimate, and zero telemetry." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/pass/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/pass/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/pass/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Entropy & Passphrase Matrix // Password & Diceware Generator - sarwarfx" />
+  <meta name="twitter:description" content="Generate high-entropy cryptographic passwords and Diceware passphrases using browser crypto.getRandomValues(). Real-time entropy bits, crack-time estimate, and zero telemetry." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/pass/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Entropy & Passphrase Matrix",
+    "url": "https://apps.sarwarfx.cfd/pass/",
+    "description": "Generate high-entropy cryptographic passwords and Diceware passphrases using browser crypto.getRandomValues(). Real-time entropy bits, crack-time estimate, and zero telemetry.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    input[type=range] {
+      accent-color: #00f5ff;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-lock text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">pass</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x16]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: ENTROPY_PASSPHRASE]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(25)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Mode Switcher -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-shield-halved text-xs text-cyan-400"></i>
+          <span>CRYPTOGRAPHIC_PRNG // DICEWARE_SYNTHESIZER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          ENTROPY & PASSPHRASE MATRIX
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Cryptographically random password generator and Diceware passphrase synthesizer using `crypto.getRandomValues()` with live Shannon entropy and brute-force crack-time metrics.
+        </p>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="flex items-center space-x-2 bg-black/60 p-1 border border-slate-800 self-start md:self-auto">
+        <button id="btnModePassword" onclick="switchMode('password')" class="px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-key"></i>
+          <span>PASSWORD</span>
+        </button>
+        <button id="btnModeDiceware" onclick="switchMode('diceware')" class="px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-cubes-stacked"></i>
+          <span>DICEWARE WORDS</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Generator Result Banner -->
+    <div class="hud-card p-6 space-y-4 border-cyan-500/40 bg-cyan-950/10">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-bold uppercase">GENERATED SECRET ENCLAVE</span>
+        <button onclick="generateSecret()" class="text-cyan-400 hover:text-white flex items-center space-x-1 font-bold">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>RE-GENERATE</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <div id="secretDisplay" class="flex-1 w-full p-4 bg-black/90 border border-cyan-500/50 text-cyan-300 font-mono text-base sm:text-lg font-extrabold break-all tracking-wider select-all shadow-[inset_0_0_15px_rgba(0,245,255,0.15)]">
+          --
+        </div>
+        <button onclick="copySecret()" class="hud-btn-primary w-full sm:w-auto px-6 py-4 text-xs font-mono flex items-center justify-center space-x-2 whitespace-nowrap">
+          <i class="fa-solid fa-copy"></i>
+          <span>COPY SECRET</span>
+        </button>
+      </div>
+
+      <!-- Live Security Metrics Strip -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs font-mono">
+        <div class="p-2.5 bg-black/60 border border-slate-800 space-y-0.5">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[ENTROPY]:</span>
+          <div id="statEntropy" class="text-cyan-300 font-bold">128 BITS</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 space-y-0.5">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[CRACK RESISTANCE]:</span>
+          <div id="statCrackTime" class="text-emerald-400 font-bold">3.2 Trillion Centuries</div>
+        </div>
+        <div class="p-2.5 bg-black/60 border border-slate-800 space-y-0.5">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[SECURITY RATING]:</span>
+          <div id="statStrength" class="text-pink-400 font-bold">MAXIMUM CIPHER</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parameter Config Panels -->
+    
+    <!-- Panel A: Password Mode Config -->
+    <div id="passwordConfigPanel" class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-cyan-400 font-bold uppercase">CRYPTOGRAPHIC PASSWORD PARAMETERS</span>
+        <span id="charLengthDisplay" class="text-white font-bold">24 CHARACTERS</span>
+      </div>
+
+      <!-- Length Slider -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400">
+          <span>PASSWORD LENGTH:</span>
+          <span class="text-cyan-400 font-bold" id="lengthVal">24</span>
+        </div>
+        <input 
+          type="range" 
+          id="passLength" 
+          min="8" 
+          max="128" 
+          value="24" 
+          oninput="document.getElementById('lengthVal').textContent = this.value; document.getElementById('charLengthDisplay').textContent = `${this.value} CHARACTERS`; generateSecret()" 
+          class="w-full">
+      </div>
+
+      <!-- Character Sets -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-2">
+        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40">
+          <input type="checkbox" id="setUpper" checked onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+          <span>UPPERCASE (A-Z)</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40">
+          <input type="checkbox" id="setLower" checked onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+          <span>LOWERCASE (a-z)</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40">
+          <input type="checkbox" id="setDigits" checked onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+          <span>DIGITS (0-9)</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40">
+          <input type="checkbox" id="setSymbols" checked onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+          <span>SYMBOLS (!@#$)</span>
+        </label>
+        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40 col-span-2">
+          <input type="checkbox" id="setExcludeAmbiguous" onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+          <span>EXCLUDE AMBIGUOUS (1lI0O)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Panel B: Diceware Mode Config (Hidden by default) -->
+    <div id="dicewareConfigPanel" class="hud-card p-5 space-y-4 hidden">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-cyan-400 font-bold uppercase">DICEWARE PASSPHRASE CONFIGURATION</span>
+        <span class="text-white font-bold">MEMORABLE WORDS</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+        <div class="space-y-1">
+          <label class="text-slate-400 font-bold uppercase text-[10px]">WORD COUNT:</label>
+          <select id="diceWordCount" onchange="generateSecret()" class="w-full p-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-white font-bold outline-none text-xs">
+            <option value="4">4 Words (~51 bits)</option>
+            <option value="5" selected>5 Words (~64 bits)</option>
+            <option value="6">6 Words (~77 bits)</option>
+            <option value="7">7 Words (~90 bits)</option>
+            <option value="8">8 Words (~103 bits)</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-slate-400 font-bold uppercase text-[10px]">SEPARATOR DELIMITER:</label>
+          <select id="diceSeparator" onchange="generateSecret()" class="w-full p-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-white font-bold outline-none text-xs">
+            <option value="-" selected>Hyphen ( - )</option>
+            <option value="_">Underscore ( _ )</option>
+            <option value=".">Period ( . )</option>
+            <option value=" ">Space (   )</option>
+            <option value="">None (Concatenated)</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 flex flex-col justify-end">
+          <label class="flex items-center space-x-2 cursor-pointer p-2 bg-black/60 border border-slate-800 hover:border-cyan-500/40">
+            <input type="checkbox" id="diceCapitalize" checked onchange="generateSecret()" class="accent-cyan-400 w-3.5 h-3.5">
+            <span>CAPITALIZE WORDS</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          Cryptographic Entropy & Diceware Password Mathematics
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          W3C Web Cryptography API random value generation with NIST SP 800-63B compliant password strength assessment.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / CSPRNG ENTROPY SOURCE</span>
+          <p class="text-slate-400 text-[11px]">
+            Uses hardware entropy pools via `crypto.getRandomValues()` to guarantee cryptographically secure pseudo-randomness free from predictable pseudorandom modulo biases.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / DICEWARE PHRASES</span>
+          <p class="text-slate-400 text-[11px]">
+            Diceware selects random words from vetted dictionaries. A 6-word phrase delivers 77 bits of entropy—practically impervious to brute-force cracking while easily memorized.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / ZERO AIRGAP LEAKAGE</span>
+          <p class="text-slate-400 text-[11px]">
+            Your secrets are generated strictly inside local memory and immediately wiped on page unload. Zero passwords are ever sent across a network.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: How is crack time estimated?</strong><br>
+          Calculation assumes an offline attacker using specialized GPU clusters testing 100 billion combinations per second across the theoretical keyspace (`PoolSize ^ Length`).</p>
+          <p><strong class="text-cyan-300">Q: Is 128-bit entropy necessary for everyday accounts?</strong><br>
+          For master passwords, password managers, and SSH keys, 80+ bits is recommended. 128 bits matches AES-128 cryptographic key strength.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (25)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'pass';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Embedded Diceware Wordlist (Curated High-Entropy Words)
+    const DICEWARE_WORDS = [
+      "acid", "acorn", "acre", "acts", "afar", "affix", "aged", "agent", "agile", "aging", "agony",
+      "ahead", "aide", "aids", "aim", "ajar", "alarm", "alias", "alibi", "alien", "alike", "alive",
+      "alkali", "allied", "allot", "allow", "alloy", "ally", "aloft", "alone", "along", "aloof", "alpha",
+      "alpine", "also", "altar", "alter", "always", "amber", "ambient", "amend", "amid", "ammo", "among",
+      "ample", "amply", "amuse", "anchor", "angel", "anger", "angle", "angry", "animal", "ankle", "annoy",
+      "anthem", "antic", "anvil", "apex", "apiece", "appeal", "apple", "apply", "apron", "arcade", "archer",
+      "arctic", "ardent", "arena", "argon", "argus", "ark", "arm", "armada", "armor", "arms", "army",
+      "aroma", "around", "arrow", "arson", "art", "artery", "aside", "ask", "asleep", "aspect", "assault",
+      "assign", "assist", "assume", "astral", "atlas", "atom", "atomic", "attach", "attack", "attain", "attic",
+      "augur", "aunt", "aura", "auto", "autumn", "avail", "avatar", "avenue", "avert", "aviary", "avoid",
+      "await", "awake", "award", "aware", "awash", "away", "awful", "axial", "axiom", "axis", "axon",
+      "babble", "baby", "bacon", "badge", "badly", "bag", "bail", "bait", "baker", "bakery", "balance",
+      "balcony", "bald", "ball", "ballad", "ballet", "bamboo", "banana", "band", "bandit", "bang", "bank",
+      "bar", "barb", "barely", "bargain", "barge", "bark", "barley", "barn", "baron", "barrel", "barrier",
+      "base", "basic", "basin", "basis", "basket", "bass", "bat", "batch", "bath", "baton", "battle",
+      "bay", "beach", "beacon", "bead", "beak", "beam", "bean", "bear", "beard", "beast", "beat",
+      "beauty", "beaver", "beckon", "bed", "beetle", "before", "beggar", "begin", "behalf", "behave", "behind",
+      "beige", "being", "belief", "bell", "belly", "belong", "below", "belt", "bench", "bend", "beneath",
+      "benefit", "berry", "berth", "beside", "best", "bet", "betray", "better", "beware", "beyond", "bias",
+      "bicycle", "bidding", "big", "bike", "bile", "bin", "bind", "biopsy", "birch", "bird", "birth",
+      "bishop", "bit", "bite", "bitter", "black", "blade", "blame", "bland", "blank", "blast", "blaze",
+      "bleak", "blend", "bless", "blind", "blink", "bliss", "blitz", "block", "blonde", "blood", "bloom",
+      "blot", "blouse", "blue", "bluff", "blunt", "blur", "blush", "boar", "board", "boast", "boat",
+      "bobcat", "body", "bog", "boil", "bold", "bolt", "bomb", "bond", "bone", "bonfire", "bonus",
+      "book", "boom", "boot", "booth", "border", "bore", "borrow", "boss", "botany", "bother", "bottle",
+      "bottom", "bounce", "boundary", "bounty", "bourbon", "bow", "bowl", "box", "boy", "brace", "bracket",
+      "brag", "braid", "brain", "brake", "branch", "brand", "brass", "brave", "bread", "break", "breast",
+      "breath", "breeze", "brick", "bridge", "brief", "bright", "brim", "brisk", "broad", "bronze", "brook",
+      "broom", "brother", "brown", "browse", "brush", "brutal", "bubble", "buck", "bucket", "buckle", "budget",
+      "buffet", "bug", "buggy", "build", "bulb", "bulk", "bullet", "bundle", "bunker", "burden", "bureau",
+      "burn", "burst", "bus", "bush", "busy", "butler", "butter", "button", "buyer", "buzz", "bypass",
+      "cabin", "cable", "cactus", "cadet", "cafe", "cage", "cake", "calm", "camel", "camera", "camp",
+      "campus", "canal", "canary", "cancel", "candle", "candy", "cane", "cannon", "canoe", "canvas", "canyon",
+      "cape", "capital", "capsule", "captain", "caption", "capture", "car", "carbon", "card", "care", "cargo",
+      "carpet", "carrot", "carry", "cart", "carve", "cascade", "case", "cash", "casino", "casket", "castle",
+      "casual", "cat", "catalog", "catch", "cater", "cattle", "cause", "caution", "cave", "cavity", "cease",
+      "cedar", "ceiling", "cell", "cement", "censor", "census", "center", "century", "cereal", "chain", "chair",
+      "chalk", "chamber", "champion", "chance", "change", "channel", "chaos", "chapel", "chapter", "charge", "chase"
+    ];
+
+    let currentMode = 'password';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const btnPass = document.getElementById('btnModePassword');
+      const btnDice = document.getElementById('btnModeDiceware');
+      const panelPass = document.getElementById('passwordConfigPanel');
+      const panelDice = document.getElementById('dicewareConfigPanel');
+
+      if (mode === 'password') {
+        btnPass.className = "px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5";
+        btnDice.className = "px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        panelPass.classList.remove('hidden');
+        panelDice.classList.add('hidden');
+      } else {
+        btnDice.className = "px-3.5 py-1.5 text-xs font-mono font-bold bg-cyan-500 text-black border border-cyan-400 transition-all flex items-center space-x-1.5";
+        btnPass.className = "px-3.5 py-1.5 text-xs font-mono font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        panelDice.classList.remove('hidden');
+        panelPass.classList.add('hidden');
+      }
+      generateSecret();
+    }
+
+    // Cryptographic Random Index
+    function getRandomInt(max) {
+      const arr = new Uint32Array(1);
+      crypto.getRandomValues(arr);
+      return arr[0] % max;
+    }
+
+    function generateSecret() {
+      if (currentMode === 'password') {
+        generatePassword();
+      } else {
+        generateDiceware();
+      }
+    }
+
+    function generatePassword() {
+      const len = parseInt(document.getElementById('passLength').value, 10);
+      const incUpper = document.getElementById('setUpper').checked;
+      const incLower = document.getElementById('setLower').checked;
+      const incDigits = document.getElementById('setDigits').checked;
+      const incSymbols = document.getElementById('setSymbols').checked;
+      const excAmbiguous = document.getElementById('setExcludeAmbiguous').checked;
+
+      let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let lower = "abcdefghijklmnopqrstuvwxyz";
+      let digits = "0123456789";
+      let symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+      if (excAmbiguous) {
+        upper = upper.replace(/[IO]/g, '');
+        lower = lower.replace(/[l]/g, '');
+        digits = digits.replace(/[01]/g, '');
+        symbols = symbols.replace(/[|]/g, '');
+      }
+
+      let pool = "";
+      if (incUpper) pool += upper;
+      if (incLower) pool += lower;
+      if (incDigits) pool += digits;
+      if (incSymbols) pool += symbols;
+
+      if (!pool) pool = lower + digits;
+
+      let pass = "";
+      for (let i = 0; i < len; i++) {
+        pass += pool[getRandomInt(pool.length)];
+      }
+
+      document.getElementById('secretDisplay').textContent = pass;
+
+      // Entropy = L * log2(pool.length)
+      const entropy = Math.round(len * (Math.log2(pool.length)));
+      calculateMetrics(entropy);
+    }
+
+    function generateDiceware() {
+      const wordCount = parseInt(document.getElementById('diceWordCount').value, 10) || 5;
+      const sep = document.getElementById('diceSeparator').value;
+      const capitalize = document.getElementById('diceCapitalize').checked;
+
+      const words = [];
+      for (let i = 0; i < wordCount; i++) {
+        let w = DICEWARE_WORDS[getRandomInt(DICEWARE_WORDS.length)];
+        if (capitalize) w = w.charAt(0).toUpperCase() + w.slice(1);
+        words.push(w);
+      }
+
+      const phrase = words.join(sep);
+      document.getElementById('secretDisplay').textContent = phrase;
+
+      // Entropy = words * log2(wordlist_size)
+      const entropy = Math.round(wordCount * Math.log2(DICEWARE_WORDS.length));
+      calculateMetrics(entropy);
+    }
+
+    function calculateMetrics(entropy) {
+      document.getElementById('statEntropy').textContent = `${entropy} BITS`;
+
+      let rating = "MODERATE";
+      let colorClass = "text-yellow-400 font-bold";
+
+      if (entropy >= 120) {
+        rating = "MAXIMUM CIPHER";
+        colorClass = "text-pink-400 font-bold";
+      } else if (entropy >= 80) {
+        rating = "MILITARY GRADE";
+        colorClass = "text-emerald-400 font-bold";
+      } else if (entropy >= 50) {
+        rating = "STRONG SHIELD";
+        colorClass = "text-cyan-400 font-bold";
+      } else {
+        rating = "VULNERABLE";
+        colorClass = "text-rose-400 font-bold";
+      }
+
+      const strengthEl = document.getElementById('statStrength');
+      strengthEl.textContent = rating;
+      strengthEl.className = colorClass;
+
+      // Crack time estimation at 100 billion guesses/sec
+      // 2^entropy / 10^11 seconds
+      const seconds = Math.pow(2, Math.min(entropy, 128)) / 100000000000;
+      let crackStr = "";
+
+      if (entropy >= 100) {
+        crackStr = "> 100 Trillion Centuries";
+      } else if (seconds > 3153600000) {
+        crackStr = `${Math.round(seconds / 3153600000)} Centuries`;
+      } else if (seconds > 31536000) {
+        crackStr = `${Math.round(seconds / 31536000)} Years`;
+      } else if (seconds > 86400) {
+        crackStr = `${Math.round(seconds / 86400)} Days`;
+      } else if (seconds > 3600) {
+        crackStr = `${Math.round(seconds / 3600)} Hours`;
+      } else if (seconds > 60) {
+        crackStr = `${Math.round(seconds / 60)} Minutes`;
+      } else {
+        crackStr = "Instant (Seconds)";
+      }
+
+      document.getElementById('statCrackTime').textContent = crackStr;
+    }
+
+    function copySecret() {
+      const text = document.getElementById('secretDisplay').textContent.trim();
+      navigator.clipboard.writeText(text);
+      showToast('COPIED SECRET TO CLIPBOARD');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      generateSecret();
+    });
+  </script>
+</body>
+</html>

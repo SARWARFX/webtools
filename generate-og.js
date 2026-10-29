@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '19-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '25-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -167,6 +167,48 @@ const APPS = [
     subdomain: 'doc',
     title: 'CYBERTOOLS // DOC',
     subtitle: 'TACTICAL DOSSIER & MARKDOWN TO VECTOR PDF',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'uuid',
+    subdomain: 'uuid',
+    title: 'CYBERTOOLS // UUID',
+    subtitle: 'UUID V4/V7, ULID & NANOID ENTROPY GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'url',
+    subdomain: 'url',
+    title: 'CYBERTOOLS // URL',
+    subtitle: 'URI COMPONENT CODEC & QUERY STRING PARSER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'pass',
+    subdomain: 'pass',
+    title: 'CYBERTOOLS // PASS',
+    subtitle: 'CRYPTO PASSPHRASE & DICEWARE MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'epoch',
+    subdomain: 'epoch',
+    title: 'CYBERTOOLS // EPOCH',
+    subtitle: 'UNIX TIMESTAMP & CHRONO TELEMETRY ENGINE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'slug',
+    subdomain: 'slug',
+    title: 'CYBERTOOLS // SLUG',
+    subtitle: 'STRING CASE TRANSFORMER & URL SLUGIFIER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'yaml',
+    subdomain: 'yaml',
+    title: 'CYBERTOOLS // YAML',
+    subtitle: 'JSON TO YAML LOSSLESS SYNTAX MATRIX',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];

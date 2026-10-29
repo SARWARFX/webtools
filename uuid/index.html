@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UUID & Entropy Identifier Generator // UUID v4, v7, ULID, NanoID - sarwarfx</title>
+  <meta name="description" content="Generate cryptographically secure UUID v4, timestamp-ordered UUID v7, ULID, and NanoIDs in bulk directly in your browser. Configurable formats and entropy telemetry with zero tracking.">
+  <meta name="keywords" content="uuid generator, uuid v4, uuid v7, ulid generator, nanoid generator, bulk uuid, entropy generator, developer tools, client side uuid">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/uuid/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/uuid/" />
+  <meta property="og:title" content="UUID & Entropy Identifier Generator // UUID v4, v7, ULID, NanoID - sarwarfx" />
+  <meta property="og:description" content="Generate cryptographically secure UUID v4, timestamp-ordered UUID v7, ULID, and NanoIDs in bulk directly in your browser. Configurable formats and entropy telemetry with zero tracking." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/uuid/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/uuid/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/uuid/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="UUID & Entropy Identifier Generator // UUID v4, v7, ULID, NanoID - sarwarfx" />
+  <meta name="twitter:description" content="Generate cryptographically secure UUID v4, timestamp-ordered UUID v7, ULID, and NanoIDs in bulk directly in your browser. Configurable formats and entropy telemetry with zero tracking." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/uuid/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "UUID & Entropy Identifier Matrix",
+    "url": "https://apps.sarwarfx.cfd/uuid/",
+    "description": "Generate cryptographically secure UUID v4, timestamp-ordered UUID v7, ULID, and NanoIDs in bulk directly in your browser. Configurable formats and entropy telemetry with zero tracking.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.47 6.03 1.52.25.13.34.43.21.67-.09.18-.26.28-.44.28zM3.5 9.72c-.1 0-.2-.03-.29-.09-.23-.16-.28-.47-.12-.7.99-1.4 2.25-2.5 3.75-3.27.24-.12.54-.03.67.21.12.24.03.54-.21.67-1.39.72-2.56 1.73-3.49 3.03-.08.1-.2.15-.31.15z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-fingerprint text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">uuid</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x14]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: ENTROPY_IDENTIFIER]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(25)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Generator Config -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-dice-d20 text-xs text-cyan-400"></i>
+          <span>CRYPTO_ENTROPY // HIGH_PRECISION_IDENTIFIER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          UUID, ULID & NANOID ENTROPY GENERATOR
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Bulk identifier generator powered by `crypto.getRandomValues()`. Generates cryptographically secure UUID v4, time-ordered UUID v7, 128-bit ULID, and custom-alphabet NanoIDs.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="generateBatch()" class="hud-btn-primary px-4 py-2 text-xs font-mono flex items-center space-x-2">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>RE-GENERATE</span>
+        </button>
+        <button onclick="copyAll()" class="hud-btn-secondary px-3.5 py-2 text-xs font-mono flex items-center space-x-1.5">
+          <i class="fa-solid fa-copy text-cyan-400"></i>
+          <span>COPY ALL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Control Center Card -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-cyan-400 font-bold uppercase">GENERATION PARAMETERS & FORMATTING</span>
+        <span id="entropyScore" class="text-[11px] font-mono text-pink-400 font-bold">[ENTROPY: 122 BITS]</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+        <!-- Algorithm Type -->
+        <div class="space-y-1">
+          <label class="text-slate-400 font-bold uppercase text-[10px]">STANDARD / ALGORITHM:</label>
+          <select id="idType" onchange="onTypeChange()" class="w-full p-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-cyan-300 font-bold outline-none text-xs">
+            <option value="uuidv4">UUID v4 (Random Crypto)</option>
+            <option value="uuidv7">UUID v7 (Time-Ordered)</option>
+            <option value="ulid">ULID (Sortable Base32)</option>
+            <option value="nanoid">NanoID (Compact UrlSafe)</option>
+          </select>
+        </div>
+
+        <!-- Quantity -->
+        <div class="space-y-1">
+          <label class="text-slate-400 font-bold uppercase text-[10px]">QUANTITY (COUNT):</label>
+          <select id="idCount" onchange="generateBatch()" class="w-full p-2 bg-black/80 border border-slate-800 focus:border-cyan-400 text-white font-bold outline-none text-xs">
+            <option value="1">1 Identifier</option>
+            <option value="5" selected>5 Identifiers</option>
+            <option value="10">10 Identifiers</option>
+            <option value="25">25 Identifiers</option>
+            <option value="50">50 Identifiers</option>
+            <option value="100">100 Identifiers</option>
+          </select>
+        </div>
+
+        <!-- Formatting Options -->
+        <div class="space-y-1 sm:col-span-2 flex flex-wrap items-center gap-4 pt-4 sm:pt-6">
+          <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-cyan-300">
+            <input type="checkbox" id="optUppercase" onchange="generateBatch()" class="accent-cyan-400 w-3.5 h-3.5">
+            <span class="text-[11px]">UPPERCASE</span>
+          </label>
+          <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-cyan-300">
+            <input type="checkbox" id="optNoHyphens" onchange="generateBatch()" class="accent-cyan-400 w-3.5 h-3.5">
+            <span class="text-[11px]">HYPHENLESS</span>
+          </label>
+          <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-cyan-300">
+            <input type="checkbox" id="optQuotedArray" onchange="generateBatch()" class="accent-cyan-400 w-3.5 h-3.5">
+            <span class="text-[11px]">QUOTED ARRAY ["..."]</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output List Area -->
+    <div class="hud-card p-5 space-y-3">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-white font-bold uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-list-check text-cyan-400"></i>
+          <span>GENERATED IDENTIFIERS (<span id="outputCountDisplay">5</span>)</span>
+        </span>
+        <span class="text-slate-500 text-[10px]">[CLICK ANY ROW TO COPY]</span>
+      </div>
+
+      <div id="outputContainer" class="space-y-1.5 font-mono text-xs">
+        <!-- Rendered by generateBatch() -->
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          Cryptographic Entropy & Identifier Architecture
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          High-entropy pseudo-random number generation (CSPRNG) utilizing the browser W3C Web Cryptography API.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / UUID V4 VS V7</span>
+          <p class="text-slate-400 text-[11px]">
+            UUID v4 provides 122 bits of pure cryptographic entropy. UUID v7 encodes a 48-bit millisecond Unix timestamp followed by 74 bits of entropy for B-Tree index optimization.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / ULID SPECIFICATION</span>
+          <p class="text-slate-400 text-[11px]">
+            ULIDs pack 48-bit timestamp and 80-bit randomness into Crockford Base32 strings (26 characters), delivering monotonic sorting and case-insensitive portability.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / ZERO SERVER TRACKING</span>
+          <p class="text-slate-400 text-[11px]">
+            Generated keys never traverse the network. Generated identifiers reside strictly in your client device's V8 execution context.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: What is the probability of a UUID collision?</strong><br>
+          With 122 bits of entropy in UUID v4, generating 1 billion UUIDs every second for 85 years yields less than a 50% probability of a single collision.</p>
+          <p><strong class="text-cyan-300">Q: Why use UUID v7 over UUID v4 in databases?</strong><br>
+          UUID v7 starts with a time prefix, preventing index page fragmentation in PostgreSQL and MySQL databases while preserving universal uniqueness.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (25)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'uuid';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Generator Algorithms
+    function genUuidV4() {
+      const buf = new Uint8Array(16);
+      crypto.getRandomValues(buf);
+      buf[6] = (buf[6] & 0x0f) | 0x40; // version 4
+      buf[8] = (buf[8] & 0x3f) | 0x80; // variant 1
+      const hex = Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
+
+    function genUuidV7() {
+      const buf = new Uint8Array(16);
+      crypto.getRandomValues(buf);
+      const now = Date.now();
+      // 48-bit timestamp
+      buf[0] = (now / 0x10000000000) & 0xff;
+      buf[1] = (now / 0x100000000) & 0xff;
+      buf[2] = (now / 0x1000000) & 0xff;
+      buf[3] = (now / 0x10000) & 0xff;
+      buf[4] = (now / 0x100) & 0xff;
+      buf[5] = now & 0xff;
+      // version 7
+      buf[6] = (buf[6] & 0x0f) | 0x70;
+      // variant 1
+      buf[8] = (buf[8] & 0x3f) | 0x80;
+      const hex = Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
+
+    function genUlid() {
+      const ENCODING = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+      let now = Date.now();
+      let timeStr = '';
+      for (let i = 9; i >= 0; i--) {
+        const mod = now % 32;
+        timeStr = ENCODING[mod] + timeStr;
+        now = (now - mod) / 32;
+      }
+      const randBytes = new Uint8Array(10);
+      crypto.getRandomValues(randBytes);
+      let randStr = '';
+      for (let i = 0; i < 16; i++) {
+        const randIndex = randBytes[i % 10] % 32;
+        randStr += ENCODING[randIndex];
+      }
+      return timeStr + randStr;
+    }
+
+    function genNanoId(len = 21) {
+      const alphabet = 'useandom-26T1983_40STVkjnaZpqrxz';
+      const bytes = new Uint8Array(len);
+      crypto.getRandomValues(bytes);
+      let id = '';
+      for (let i = 0; i < len; i++) {
+        id += alphabet[bytes[i] & 31];
+      }
+      return id;
+    }
+
+    let generatedList = [];
+
+    function onTypeChange() {
+      const type = document.getElementById('idType').value;
+      const scoreEl = document.getElementById('entropyScore');
+      if (type === 'uuidv4') scoreEl.textContent = '[ENTROPY: 122 BITS]';
+      else if (type === 'uuidv7') scoreEl.textContent = '[ENTROPY: 74 BITS + 48-BIT TIME]';
+      else if (type === 'ulid') scoreEl.textContent = '[ENTROPY: 80 BITS + 48-BIT TIME]';
+      else if (type === 'nanoid') scoreEl.textContent = '[ENTROPY: 105 BITS]';
+      generateBatch();
+    }
+
+    function generateBatch() {
+      const type = document.getElementById('idType').value;
+      const count = parseInt(document.getElementById('idCount').value, 10) || 5;
+      const uppercase = document.getElementById('optUppercase').checked;
+      const noHyphens = document.getElementById('optNoHyphens').checked;
+      const quotedArray = document.getElementById('optQuotedArray').checked;
+
+      generatedList = [];
+      for (let i = 0; i < count; i++) {
+        let val = '';
+        if (type === 'uuidv4') val = genUuidV4();
+        else if (type === 'uuidv7') val = genUuidV7();
+        else if (type === 'ulid') val = genUlid();
+        else if (type === 'nanoid') val = genNanoId();
+
+        if (noHyphens && (type === 'uuidv4' || type === 'uuidv7')) {
+          val = val.replace(/-/g, '');
+        }
+        if (uppercase) {
+          val = val.toUpperCase();
+        } else if (type !== 'ulid') {
+          val = val.toLowerCase();
+        }
+        generatedList.push(val);
+      }
+
+      document.getElementById('outputCountDisplay').textContent = count;
+      renderOutput();
+    }
+
+    function renderOutput() {
+      const container = document.getElementById('outputContainer');
+      const quotedArray = document.getElementById('optQuotedArray').checked;
+
+      if (quotedArray) {
+        const jsonFormatted = JSON.stringify(generatedList, null, 2);
+        container.innerHTML = `
+          <div class="relative group">
+            <pre class="p-3 bg-black/90 border border-slate-800 text-cyan-300 font-mono text-xs overflow-x-auto select-all">${jsonFormatted}</pre>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = generatedList.map((idStr, idx) => `
+        <div onclick="copySingle('${idStr}')" class="flex items-center justify-between p-2.5 bg-black/70 border border-slate-800/80 hover:border-cyan-500/60 hover:bg-slate-900/60 transition-all cursor-pointer group">
+          <div class="flex items-center space-x-3 truncate">
+            <span class="text-slate-500 text-[10px] w-6">#${(idx + 1).toString().padStart(2, '0')}</span>
+            <span class="font-bold text-cyan-200 group-hover:text-cyan-300 tracking-wider">${idStr}</span>
+          </div>
+          <button class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-white transition-opacity text-xs">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function copySingle(val) {
+      navigator.clipboard.writeText(val);
+      showToast('COPIED IDENTIFIER');
+    }
+
+    function copyAll() {
+      const quotedArray = document.getElementById('optQuotedArray').checked;
+      const text = quotedArray ? JSON.stringify(generatedList, null, 2) : generatedList.join('\n');
+      navigator.clipboard.writeText(text);
+      showToast(`COPIED ALL ${generatedList.length} IDENTIFIERS`);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      generateBatch();
+    });
+  </script>
+</body>
+</html>

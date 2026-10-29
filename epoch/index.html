@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unix Epoch Timestamp Converter & Chrono Telemetry - sarwarfx</title>
+  <meta name="description" content="Convert Unix timestamps in seconds, milliseconds, and microseconds to UTC and local date formats in real time. Live ticking epoch clock with zero server logs.">
+  <meta name="keywords" content="epoch converter, unix timestamp, timestamp to date, date to timestamp, epoch clock, unix time, utc converter, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/epoch/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/epoch/" />
+  <meta property="og:title" content="Unix Epoch Timestamp Converter & Chrono Telemetry - sarwarfx" />
+  <meta property="og:description" content="Convert Unix timestamps in seconds, milliseconds, and microseconds to UTC and local date formats in real time. Live ticking epoch clock with zero server logs." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/epoch/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/epoch/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/epoch/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Unix Epoch Timestamp Converter & Chrono Telemetry - sarwarfx" />
+  <meta name="twitter:description" content="Convert Unix timestamps in seconds, milliseconds, and microseconds to UTC and local date formats in real time. Live ticking epoch clock with zero server logs." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/epoch/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Unix Epoch Timestamp Converter & Chrono Telemetry",
+    "url": "https://apps.sarwarfx.cfd/epoch/",
+    "description": "Convert Unix timestamps in seconds, milliseconds, and microseconds to UTC and local date formats in real time. Live ticking epoch clock with zero server logs.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-input {
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .hud-input:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-stopwatch text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">epoch</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="flex items-center text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse mr-1.5"></span>
+          SYS_NODE: 0x17
+        </span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300">CHRONO TELEMETRY MATRIX</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-pink-400" id="liveUtcClock">--:--:-- UTC</span>
+      </div>
+
+      <!-- Action Items -->
+      <div class="flex items-center space-x-2.5">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">SUITE</span>
+          <span class="text-[10px] text-cyan-400/80">(25)</span>
+        </button>
+        <a href="/" class="hud-btn-primary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-terminal"></i>
+          <span class="hidden sm:inline">ROOT_HUB</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Viewport -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
+    
+    <!-- Title & Description Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-[10px] text-cyan-300 uppercase tracking-widest font-mono mb-2">
+          <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i>
+          <span>Temporal Epoch Synchronization Engine</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-orbitron uppercase">
+          CHRONO TELEMETRY // <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">EPOCH MATRIX</span>
+        </h1>
+        <p class="text-slate-400 text-xs sm:text-sm font-rajdhani font-medium mt-1">
+          Bidirectional conversion between Unix timestamps and standard date representations with millisecond precision and live clock telemetry.
+        </p>
+      </div>
+
+      <!-- Telemetry Status Tag -->
+      <div class="flex items-center space-x-2 text-xs font-mono">
+        <span class="px-2 py-1 bg-slate-900 border border-slate-800 text-slate-400">
+          TIMEZONE: <span class="text-cyan-400 font-bold" id="localTzDisplay">UTC</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Live Ticking Epoch Banner -->
+    <div class="hud-card p-6">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div class="space-y-1 text-center lg:text-left">
+          <div class="text-[10px] uppercase font-mono tracking-widest text-slate-400 flex items-center justify-center lg:justify-start space-x-2">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span>CURRENT UNIX EPOCH TELEMETRY</span>
+          </div>
+          <div class="text-3xl sm:text-5xl font-extrabold font-mono text-cyan-300 tracking-wider flex items-center justify-center lg:justify-start gap-3">
+            <span id="currentEpochSec">1793260800</span>
+            <span class="text-xs sm:text-sm font-normal text-slate-500 tracking-normal">(SEC)</span>
+          </div>
+          <div class="text-xs font-mono text-slate-400">
+            MS: <span class="text-pink-400" id="currentEpochMs">1793260800000</span> | MICRO: <span class="text-slate-300" id="currentEpochMicro">1793260800000000</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-2.5">
+          <button onclick="copyCurrentSec()" class="hud-btn-primary px-4 py-2.5 rounded flex items-center space-x-2 text-xs">
+            <i class="fa-solid fa-copy"></i>
+            <span>COPY SECONDS</span>
+          </button>
+          <button onclick="copyCurrentMs()" class="hud-btn-secondary px-4 py-2.5 rounded flex items-center space-x-2 text-xs">
+            <i class="fa-solid fa-copy text-pink-400"></i>
+            <span>COPY MILLISECONDS</span>
+          </button>
+          <button onclick="useCurrentAsInput()" class="hud-btn-secondary px-4 py-2.5 rounded flex items-center space-x-2 text-xs text-cyan-300">
+            <i class="fa-solid fa-arrow-down"></i>
+            <span>USE IN CONVERTER</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual Converter Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Panel 1: Timestamp to Date -->
+      <div class="hud-card p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-arrow-right-to-bracket text-cyan-400"></i>
+            <h2 class="text-sm font-bold text-white font-orbitron uppercase tracking-wide">TIMESTAMP &rarr; DATE/TIME</h2>
+          </div>
+          <span class="text-[10px] font-mono text-cyan-400/80 bg-cyan-950/40 border border-cyan-500/30 px-2 py-0.5 rounded">AUTO_DETECT_UNIT</span>
+        </div>
+
+        <!-- Input Box -->
+        <div class="space-y-2">
+          <label class="block text-xs font-mono text-slate-400">INPUT UNIX TIMESTAMP (SEC, MS, OR MICRO)</label>
+          <div class="flex gap-2">
+            <input type="text" id="inputTimestamp" placeholder="e.g. 1793260800 or 1793260800000" class="hud-input w-full p-2.5 text-sm rounded font-mono" oninput="convertTimestampToDate()">
+            <button onclick="setSampleTimestamp()" class="hud-btn-secondary px-3 py-2 text-xs whitespace-nowrap" title="Load Now">
+              NOW
+            </button>
+          </div>
+          <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span id="detectedUnitLabel">DETECTED: AUTO (SECONDS)</span>
+            <div class="flex space-x-2">
+              <button onclick="forceTimestampUnit('s')" class="hover:text-cyan-400 text-[10px] underline">SEC</button>
+              <button onclick="forceTimestampUnit('ms')" class="hover:text-cyan-400 text-[10px] underline">MS</button>
+              <button onclick="forceTimestampUnit('us')" class="hover:text-cyan-400 text-[10px] underline">MICRO</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="space-y-2.5 pt-2">
+          <!-- ISO 8601 -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>ISO 8601 (UTC STANDARD)</span>
+              <button onclick="copyField('resIso')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="resIso" class="text-xs font-mono text-cyan-300 font-bold truncate select-all">--</div>
+          </div>
+
+          <!-- UTC String -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>UTC / GMT STRING</span>
+              <button onclick="copyField('resUtc')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="resUtc" class="text-xs font-mono text-slate-200 select-all truncate">--</div>
+          </div>
+
+          <!-- Local Time -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>LOCAL BROWSER TIMEZONE</span>
+              <button onclick="copyField('resLocal')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="resLocal" class="text-xs font-mono text-slate-200 select-all truncate">--</div>
+          </div>
+
+          <!-- Relative Time & Telemetry -->
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div class="p-2.5 bg-black/60 border border-slate-800 rounded">
+              <span class="text-[10px] text-slate-500 block">RELATIVE TIME</span>
+              <span id="resRelative" class="text-pink-400 font-bold">--</span>
+            </div>
+            <div class="p-2.5 bg-black/60 border border-slate-800 rounded">
+              <span class="text-[10px] text-slate-500 block">DAY OF YEAR</span>
+              <span id="resDayOfYear" class="text-cyan-300 font-bold">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Date to Timestamp -->
+      <div class="hud-card p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-calendar-days text-pink-400"></i>
+            <h2 class="text-sm font-bold text-white font-orbitron uppercase tracking-wide">DATE/TIME &rarr; TIMESTAMP</h2>
+          </div>
+          <span class="text-[10px] font-mono text-pink-400/80 bg-pink-950/40 border border-pink-500/30 px-2 py-0.5 rounded">SYNCHRONIZER</span>
+        </div>
+
+        <!-- Date & Time Input Controls -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-mono text-slate-400 mb-1">LOCAL DATE & TIME SELECTOR</label>
+            <input type="datetime-local" id="inputDateTime" step="1" class="hud-input w-full p-2.5 text-sm rounded font-mono" onchange="convertDateToTimestamp()">
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button onclick="setPreset('now')" class="hud-btn-secondary px-2.5 py-1 text-[10px] rounded">NOW</button>
+            <button onclick="setPreset('today-start')" class="hud-btn-secondary px-2.5 py-1 text-[10px] rounded">START TODAY (00:00)</button>
+            <button onclick="setPreset('today-end')" class="hud-btn-secondary px-2.5 py-1 text-[10px] rounded">END TODAY (23:59)</button>
+            <button onclick="setPreset('month-start')" class="hud-btn-secondary px-2.5 py-1 text-[10px] rounded">MONTH 1ST</button>
+            <button onclick="setPreset('y2038')" class="hud-btn-secondary px-2.5 py-1 text-[10px] rounded text-pink-300">Y2038 LIMIT</button>
+          </div>
+        </div>
+
+        <!-- Generated Timestamp Outputs -->
+        <div class="space-y-2.5 pt-2">
+          <!-- Seconds -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>UNIX TIMESTAMP (SECONDS - 10 DIGITS)</span>
+              <button onclick="copyField('outEpochSec')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="outEpochSec" class="text-sm font-mono text-cyan-300 font-bold select-all truncate">--</div>
+          </div>
+
+          <!-- Milliseconds -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>UNIX TIMESTAMP (MILLISECONDS - 13 DIGITS)</span>
+              <button onclick="copyField('outEpochMs')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="outEpochMs" class="text-xs font-mono text-pink-300 select-all truncate">--</div>
+          </div>
+
+          <!-- Microseconds -->
+          <div class="p-2.5 bg-black/60 border border-slate-800 rounded group hover:border-cyan-500/40 transition-colors">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+              <span>MICROSECONDS (16 DIGITS - TELEMETRY)</span>
+              <button onclick="copyField('outEpochMicro')" class="text-slate-500 group-hover:text-cyan-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div id="outEpochMicro" class="text-xs font-mono text-slate-300 select-all truncate">--</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Semantic Crawl Article -->
+    <article class="hud-card p-6 text-slate-400 text-xs font-mono leading-relaxed space-y-4">
+      <div class="flex items-center space-x-2 text-cyan-400 border-b border-cyan-500/20 pb-3">
+        <i class="fa-solid fa-book text-sm"></i>
+        <h3 class="font-bold text-white uppercase tracking-wider text-sm">CHRONO TELEMETRY & UNIX EPOCH ARCHITECTURE</h3>
+      </div>
+      
+      <p>
+        The <strong>Unix Epoch</strong> timestamp defines the total count of elapsed seconds since <strong>00:00:00 UTC on January 1, 1970</strong> (excluding leap seconds). It serves as the primary temporal baseline across operating systems, relational databases, distributed message brokers, and cryptographic tokens.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Seconds (10 Digits)</strong>
+          Standard POSIX timestamp used in Linux kernels, JWT expiry (`exp`), and Redis keys (e.g. `1793260800`).
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Milliseconds (13 Digits)</strong>
+          JavaScript `Date.now()` and high-resolution web API events measuring elapsed time to the millisecond.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Microseconds (16 Digits)</strong>
+          Database transaction commit logs and network packet captures with microsecond precision.
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 space-y-2">
+        <h4 class="text-white font-bold uppercase text-[11px]">Frequently Asked Questions</h4>
+        <div>
+          <strong class="text-slate-300">What is the Year 2038 problem?</strong><br>
+          32-bit signed integers overflow at `2147483647` seconds on <strong>January 19, 2038 03:14:07 UTC</strong>, wrapping to 1901. Modern 64-bit architectures avoid this overflow for billions of years.
+        </div>
+        <div>
+          <strong class="text-slate-300">Does this tool transmit timestamps to any server?</strong><br>
+          No. All temporal calculations, string formatting, and timezone adjustments execute 100% in-browser via JavaScript client-side APIs.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (25)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'epoch';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function copyField(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el || !el.textContent || el.textContent === '--') return;
+      navigator.clipboard.writeText(el.textContent.trim());
+      showToast('COPIED VALUE');
+    }
+
+    // Live Ticking Clock
+    function updateLiveClock() {
+      const now = new Date();
+      const ms = now.getTime();
+      const sec = Math.floor(ms / 1000);
+      const micro = ms * 1000;
+
+      document.getElementById('currentEpochSec').textContent = sec;
+      document.getElementById('currentEpochMs').textContent = ms;
+      document.getElementById('currentEpochMicro').textContent = micro;
+      document.getElementById('liveUtcClock').textContent = now.toUTCString().slice(17, 25) + ' UTC';
+    }
+
+    function copyCurrentSec() {
+      const val = document.getElementById('currentEpochSec').textContent;
+      navigator.clipboard.writeText(val);
+      showToast('COPIED CURRENT SECONDS');
+    }
+
+    function copyCurrentMs() {
+      const val = document.getElementById('currentEpochMs').textContent;
+      navigator.clipboard.writeText(val);
+      showToast('COPIED CURRENT MILLISECONDS');
+    }
+
+    function useCurrentAsInput() {
+      const sec = document.getElementById('currentEpochSec').textContent;
+      document.getElementById('inputTimestamp').value = sec;
+      convertTimestampToDate();
+      showToast('LOADED CURRENT EPOCH INTO CONVERTER');
+    }
+
+    function setSampleTimestamp() {
+      useCurrentAsInput();
+    }
+
+    let manualUnitOverride = null;
+
+    function forceTimestampUnit(unit) {
+      manualUnitOverride = unit;
+      convertTimestampToDate();
+    }
+
+    function getRelativeTimeString(date) {
+      const now = new Date();
+      const diffSec = Math.round((date.getTime() - now.getTime()) / 1000);
+      const isPast = diffSec < 0;
+      const absSec = Math.abs(diffSec);
+
+      if (absSec < 5) return 'just now';
+      if (absSec < 60) return `${absSec} sec ${isPast ? 'ago' : 'from now'}`;
+      const min = Math.floor(absSec / 60);
+      if (min < 60) return `${min} min ${isPast ? 'ago' : 'from now'}`;
+      const hours = Math.floor(min / 60);
+      if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ${isPast ? 'ago' : 'from now'}`;
+      const days = Math.floor(hours / 24);
+      if (days < 30) return `${days} day${days > 1 ? 's' : ''} ${isPast ? 'ago' : 'from now'}`;
+      const months = Math.floor(days / 30);
+      if (months < 12) return `${months} mo${months > 1 ? 's' : ''} ${isPast ? 'ago' : 'from now'}`;
+      const years = Math.floor(days / 365);
+      return `${years} yr${years > 1 ? 's' : ''} ${isPast ? 'ago' : 'from now'}`;
+    }
+
+    function getDayOfYear(date) {
+      const start = new Date(date.getFullYear(), 0, 0);
+      const diff = date - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      return Math.floor(diff / oneDay);
+    }
+
+    function convertTimestampToDate() {
+      const raw = document.getElementById('inputTimestamp').value.trim();
+      const unitLabel = document.getElementById('detectedUnitLabel');
+      
+      if (!raw) {
+        document.getElementById('resIso').textContent = '--';
+        document.getElementById('resUtc').textContent = '--';
+        document.getElementById('resLocal').textContent = '--';
+        document.getElementById('resRelative').textContent = '--';
+        document.getElementById('resDayOfYear').textContent = '--';
+        unitLabel.textContent = 'DETECTED: AUTO (SECONDS)';
+        return;
+      }
+
+      const num = Number(raw);
+      if (isNaN(num)) {
+        unitLabel.textContent = 'ERROR: INVALID NUMERIC TIMESTAMP';
+        return;
+      }
+
+      let ms = num;
+      let unit = manualUnitOverride;
+
+      if (!unit) {
+        if (raw.length <= 11) {
+          unit = 's';
+          ms = num * 1000;
+          unitLabel.textContent = 'DETECTED: SECONDS (10 DIGITS)';
+        } else if (raw.length <= 14) {
+          unit = 'ms';
+          ms = num;
+          unitLabel.textContent = 'DETECTED: MILLISECONDS (13 DIGITS)';
+        } else {
+          unit = 'us';
+          ms = Math.floor(num / 1000);
+          unitLabel.textContent = 'DETECTED: MICROSECONDS (16 DIGITS)';
+        }
+      } else {
+        if (unit === 's') { ms = num * 1000; unitLabel.textContent = 'FORCED: SECONDS'; }
+        else if (unit === 'ms') { ms = num; unitLabel.textContent = 'FORCED: MILLISECONDS'; }
+        else if (unit === 'us') { ms = Math.floor(num / 1000); unitLabel.textContent = 'FORCED: MICROSECONDS'; }
+      }
+
+      try {
+        const d = new Date(ms);
+        if (isNaN(d.getTime())) throw new Error('Out of bounds');
+
+        document.getElementById('resIso').textContent = d.toISOString();
+        document.getElementById('resUtc').textContent = d.toUTCString();
+        document.getElementById('resLocal').textContent = d.toString();
+        document.getElementById('resRelative').textContent = getRelativeTimeString(d);
+        document.getElementById('resDayOfYear').textContent = `DAY ${getDayOfYear(d)} OF ${d.getFullYear()}`;
+      } catch (err) {
+        unitLabel.textContent = 'ERROR: TIMESTAMP OUT OF RANGE';
+      }
+    }
+
+    function convertDateToTimestamp() {
+      const dtPicker = document.getElementById('inputDateTime');
+      const val = dtPicker.value;
+      if (!val) return;
+
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return;
+
+      const ms = d.getTime();
+      const sec = Math.floor(ms / 1000);
+      const micro = ms * 1000;
+
+      document.getElementById('outEpochSec').textContent = sec;
+      document.getElementById('outEpochMs').textContent = ms;
+      document.getElementById('outEpochMicro').textContent = micro;
+    }
+
+    function setPreset(preset) {
+      const now = new Date();
+      let target = new Date();
+
+      if (preset === 'now') {
+        target = now;
+      } else if (preset === 'today-start') {
+        target.setHours(0, 0, 0, 0);
+      } else if (preset === 'today-end') {
+        target.setHours(23, 59, 59, 999);
+      } else if (preset === 'month-start') {
+        target.setDate(1);
+        target.setHours(0, 0, 0, 0);
+      } else if (preset === 'y2038') {
+        target = new Date('2038-01-19T03:14:07Z');
+      }
+
+      // Format for datetime-local (YYYY-MM-DDTHH:mm:ss)
+      const pad = (n) => n.toString().padStart(2, '0');
+      const formatted = `${target.getFullYear()}-${pad(target.getMonth()+1)}-${pad(target.getDate())}T${pad(target.getHours())}:${pad(target.getMinutes())}:${pad(target.getSeconds())}`;
+      
+      document.getElementById('inputDateTime').value = formatted;
+      convertDateToTimestamp();
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      
+      // Setup Local Timezone label
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.getElementById('localTzDisplay').textContent = tz || 'LOCAL';
+      } catch(e) {}
+
+      // Start live clock
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
+
+      // Pre-populate input with current epoch
+      const curSec = Math.floor(Date.now() / 1000);
+      document.getElementById('inputTimestamp').value = curSec;
+      convertTimestampToDate();
+
+      // Pre-populate date picker with current local time
+      setPreset('now');
+    });
+  </script>
+</body>
+</html>

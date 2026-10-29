@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL & URI Component Codec // Query String Inspector & Parser - sarwarfx</title>
+  <meta name="description" content="Bidirectional URL and RFC 3986 URI component encoder and decoder. Interactive visual URL breakdown tree with protocol, path, and live query parameter table editor.">
+  <meta name="keywords" content="url encoder, url decoder, uricomponent, query string parser, url parser, rfc 3986, developer tools, client side url decode">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/url/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/url/" />
+  <meta property="og:title" content="URL & URI Component Codec // Query String Inspector & Parser - sarwarfx" />
+  <meta property="og:description" content="Bidirectional URL and RFC 3986 URI component encoder and decoder. Interactive visual URL breakdown tree with protocol, path, and live query parameter table editor." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/url/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/url/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/url/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="URL & URI Component Codec // Query String Inspector & Parser - sarwarfx" />
+  <meta name="twitter:description" content="Bidirectional URL and RFC 3986 URI component encoder and decoder. Interactive visual URL breakdown tree with protocol, path, and live query parameter table editor." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/url/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "URL Codec & Query Parser Matrix",
+    "url": "https://apps.sarwarfx.cfd/url/",
+    "description": "Bidirectional URL and RFC 3986 URI component encoder and decoder. Interactive visual URL breakdown tree with protocol, path, and live query parameter table editor.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f5ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.85), rgba(6, 182, 212, 0.85));
+      border: 1px solid rgba(0, 245, 255, 0.8);
+      color: #000000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-link text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">url</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="text-cyan-400 font-bold">[SYS_NODE: 0x15]</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-fuchsia-400 font-bold">[ENGINE: URI_CODEC_PARSER]</span>
+        <span class="text-slate-600">|</span>
+        <span class="flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>● OPERATIONAL // AIRGAP_ZERO_LOGS</span>
+        </span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="/" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-cyan-300 hover:text-white" title="All Apps Hub">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">CYBERTOOLS HUB</span>
+          <span class="sm:hidden">HUB</span>
+        </a>
+        <a href="https://sarwarfx.cfd" target="_blank" rel="noopener noreferrer" class="hud-btn-secondary px-3 py-1.5 flex items-center space-x-1.5 text-xs text-slate-300 hover:text-white" title="Sarwar Portfolio">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span class="hidden sm:inline">PORTFOLIO</span>
+        </a>
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-2.5 py-1.5 flex items-center space-x-1 text-xs cursor-pointer" title="Quick Switcher">
+          <i class="fa-solid fa-bars text-cyan-400"></i>
+          <span class="hidden md:inline">(25)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 transition-all text-xs" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Header & Presets -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/20 pb-6">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-globe text-xs text-cyan-400"></i>
+          <span>PROTOCOL_MATRIX // RFC_3986_PARSER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase font-mono">
+          URL & URI CODEC // QUERY STRING INSPECTOR
+        </h1>
+        <p class="text-slate-400 text-xs mt-1 max-w-2xl font-mono">
+          Bidirectional encoder/decoder for URLs and URI components with an interactive tree breakdown of protocol, host, path, hash, and live query parameter table editor.
+        </p>
+      </div>
+
+      <!-- Action Presets -->
+      <div class="flex items-center space-x-2">
+        <button onclick="loadSampleUrl()" class="hud-btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5">
+          <i class="fa-solid fa-flask text-cyan-400"></i>
+          <span>SAMPLE URL</span>
+        </button>
+        <button onclick="clearAll()" class="hud-btn-secondary px-3 py-1.5 text-xs text-pink-400 hover:text-white flex items-center space-x-1.5">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>CLEAR</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main URL Textarea & Codec Controls -->
+    <div class="hud-card p-5 space-y-3">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-cyan-400 font-bold uppercase tracking-wider">TARGET URL / URI INPUT STRING</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="runEncode('component')" class="hud-btn-primary px-3 py-1 text-[10px]">ENCODE COMPONENT</button>
+          <button onclick="runDecode('component')" class="hud-btn-secondary px-3 py-1 text-[10px]">DECODE COMPONENT</button>
+          <button onclick="runEncode('full')" class="hud-btn-secondary px-2.5 py-1 text-[10px]">ENCODE FULL</button>
+          <button onclick="runDecode('full')" class="hud-btn-secondary px-2.5 py-1 text-[10px]">DECODE FULL</button>
+        </div>
+      </div>
+
+      <textarea 
+        id="urlInput" 
+        rows="3" 
+        oninput="parseUrlTree()"
+        placeholder="Enter or paste any URL (e.g. https://apps.sarwarfx.cfd/search?query=crypto&mode=hud&page=1#anchor)..."
+        class="w-full p-3 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none leading-relaxed resize-y break-all"></textarea>
+    </div>
+
+    <!-- Visual URL Breakdown Tree -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+        <span class="text-white font-bold uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-sitemap text-cyan-400"></i>
+          <span>PARSED URI ANATOMY TREE</span>
+        </span>
+        <span id="urlValidBadge" class="text-[11px] font-mono text-emerald-400 font-bold">● VALID URL</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[PROTOCOL]:</span>
+          <div id="treeProtocol" class="text-pink-400 font-bold truncate">https:</div>
+        </div>
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[HOSTNAME / HOST]:</span>
+          <div id="treeHost" class="text-cyan-300 font-bold truncate">apps.sarwarfx.cfd</div>
+        </div>
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[PATHNAME]:</span>
+          <div id="treePath" class="text-emerald-400 font-bold truncate">/search</div>
+        </div>
+        <div class="p-3 bg-black/60 border border-slate-800 space-y-1">
+          <span class="text-slate-500 text-[10px] uppercase font-bold">[HASH / ANCHOR]:</span>
+          <div id="treeHash" class="text-purple-400 font-bold truncate">#anchor</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Query Parameter Table Editor -->
+    <div class="hud-card p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-xs font-mono">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-list-check text-cyan-400"></i>
+          <span class="font-bold text-white uppercase tracking-wider">QUERY PARAMETERS (<span id="paramCount">0</span>)</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="addQueryRow()" class="hud-btn-primary px-3 py-1 text-[11px] flex items-center space-x-1">
+            <i class="fa-solid fa-plus"></i>
+            <span>ADD PARAMETER</span>
+          </button>
+          <button onclick="copyQueryParams()" class="hud-btn-secondary px-3 py-1 text-[11px] flex items-center space-x-1">
+            <i class="fa-solid fa-copy text-cyan-400"></i>
+            <span>COPY JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-h-[360px]">
+        <table class="w-full text-left font-mono text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-black/40 text-[10px] text-slate-400 uppercase tracking-wider">
+              <th class="py-2.5 px-3 w-10">#</th>
+              <th class="py-2.5 px-3 w-1/3">KEY (NAME)</th>
+              <th class="py-2.5 px-3">VALUE</th>
+              <th class="py-2.5 px-3 w-16 text-center">ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="queryParamsBody" class="divide-y divide-slate-800/60">
+            <!-- Injected by parseUrlTree() -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEO Knowledge Base & Explainer -->
+    <article class="hud-card p-6 space-y-6 mt-12 text-slate-300 font-mono text-xs leading-relaxed border-cyan-500/30">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+          RFC 3986 Uniform Resource Identifier Specification
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Complete client-side URI percent-encoding, component isolation, and query parameter serialization runtime.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">01 / PERCENT-ENCODING</span>
+          <p class="text-slate-400 text-[11px]">
+            Replaces unsafe ASCII characters with a `%` followed by two hexadecimal digits. `encodeURIComponent` escapes all non-alphanumeric chars except `-_.~'()*`.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">02 / QUERY NORMALIZATION</span>
+          <p class="text-slate-400 text-[11px]">
+            `URLSearchParams` ensures compliant query string decoding and encoding, handling plus sign (`+`) spaces and array bracket parameters seamlessly.
+          </p>
+        </div>
+        <div class="space-y-2 border border-slate-800 p-4 bg-black/40">
+          <span class="text-cyan-400 font-bold text-sm">03 / ZERO TRACKING EXECUTION</span>
+          <p class="text-slate-400 text-[11px]">
+            Your private query parameters, API keys, and session tokens are parsed locally inside browser memory. Zero analytics or server telemetry is collected.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-slate-800">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">FREQUENTLY ASKED QUESTIONS</h3>
+        <div class="space-y-2 text-[11px] text-slate-400">
+          <p><strong class="text-cyan-300">Q: What is the difference between encodeURI and encodeURIComponent?</strong><br>
+          `encodeURI` preserves protocol and path delimiters like `:`, `/`, `?`, and `#`. `encodeURIComponent` encodes all reserved characters for safe insertion into a query parameter.</p>
+          <p><strong class="text-cyan-300">Q: Can I edit parameters in the table to rebuild the URL?</strong><br>
+          Yes. Editing any key or value in the query parameter table instantly re-serializes the complete URL in the main input box.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (25)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'url';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    // Codec Functions
+    function runEncode(mode) {
+      const el = document.getElementById('urlInput');
+      try {
+        if (mode === 'component') {
+          el.value = encodeURIComponent(el.value);
+        } else {
+          el.value = encodeURI(el.value);
+        }
+        parseUrlTree();
+        showToast('ENCODED STRING');
+      } catch (e) {
+        showToast('ENCODE ERROR: ' + e.message);
+      }
+    }
+
+    function runDecode(mode) {
+      const el = document.getElementById('urlInput');
+      try {
+        if (mode === 'component') {
+          el.value = decodeURIComponent(el.value);
+        } else {
+          el.value = decodeURI(el.value);
+        }
+        parseUrlTree();
+        showToast('DECODED STRING');
+      } catch (e) {
+        showToast('DECODE ERROR: ' + e.message);
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('urlInput').value = '';
+      parseUrlTree();
+      showToast('CLEARED URL');
+    }
+
+    function loadSampleUrl() {
+      document.getElementById('urlInput').value = "https://apps.sarwarfx.cfd/search?query=crypto+token&mode=hud&page=1&limit=50&category=security#results";
+      parseUrlTree();
+      showToast('LOADED SAMPLE URL');
+    }
+
+    // Live URL Parsing & Query Table Synchronization
+    let queryParamsList = [];
+
+    function parseUrlTree() {
+      const raw = document.getElementById('urlInput').value.trim();
+      const badge = document.getElementById('urlValidBadge');
+      const pProto = document.getElementById('treeProtocol');
+      const pHost = document.getElementById('treeHost');
+      const pPath = document.getElementById('treePath');
+      const pHash = document.getElementById('treeHash');
+
+      if (!raw) {
+        badge.textContent = '[STANDBY]';
+        badge.className = 'text-[11px] font-mono text-slate-500 font-bold';
+        pProto.textContent = '--';
+        pHost.textContent = '--';
+        pPath.textContent = '--';
+        pHash.textContent = '--';
+        queryParamsList = [];
+        renderQueryTable();
+        return;
+      }
+
+      try {
+        // Use dummy origin if relative
+        let parsed;
+        if (raw.startsWith('http://') || raw.startsWith('https://')) {
+          parsed = new URL(raw);
+          badge.textContent = '● VALID ABSOLUTE URL';
+          badge.className = 'text-[11px] font-mono text-emerald-400 font-bold';
+          pProto.textContent = parsed.protocol || '--';
+          pHost.textContent = parsed.host || '--';
+        } else {
+          parsed = new URL(raw, 'https://apps.sarwarfx.cfd');
+          badge.textContent = '● RELATIVE URI PATH';
+          badge.className = 'text-[11px] font-mono text-cyan-400 font-bold';
+          pProto.textContent = '[RELATIVE]';
+          pHost.textContent = '[LOCAL HOST]';
+        }
+
+        pPath.textContent = parsed.pathname || '/';
+        pHash.textContent = parsed.hash || '--';
+
+        // Extract Query Parameters
+        queryParamsList = [];
+        parsed.searchParams.forEach((val, key) => {
+          queryParamsList.push({ key, val });
+        });
+
+        renderQueryTable();
+      } catch (e) {
+        badge.textContent = '● MALFORMED URI';
+        badge.className = 'text-[11px] font-mono text-rose-400 font-bold';
+      }
+    }
+
+    function renderQueryTable() {
+      const tbody = document.getElementById('queryParamsBody');
+      const countEl = document.getElementById('paramCount');
+      countEl.textContent = queryParamsList.length;
+
+      if (queryParamsList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-600 font-mono">NO QUERY PARAMETERS DETECTED</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = queryParamsList.map((item, idx) => `
+        <tr class="hover:bg-slate-900/40">
+          <td class="py-2.5 px-3 text-cyan-400 font-bold text-[10px]">${idx + 1}</td>
+          <td class="py-2.5 px-3">
+            <input 
+              type="text" 
+              value="${escapeHtml(item.key)}" 
+              oninput="onParamKeyChange(${idx}, this.value)" 
+              class="w-full px-2 py-1 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs text-pink-300 font-mono outline-none">
+          </td>
+          <td class="py-2.5 px-3">
+            <input 
+              type="text" 
+              value="${escapeHtml(item.val)}" 
+              oninput="onParamValChange(${idx}, this.value)" 
+              class="w-full px-2 py-1 bg-black/80 border border-slate-800 focus:border-cyan-400 text-xs text-cyan-200 font-mono outline-none">
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <button onclick="removeQueryRow(${idx})" class="text-slate-500 hover:text-pink-400 transition-colors" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function onParamKeyChange(idx, newKey) {
+      queryParamsList[idx].key = newKey;
+      syncTableToUrl();
+    }
+
+    function onParamValChange(idx, newVal) {
+      queryParamsList[idx].val = newVal;
+      syncTableToUrl();
+    }
+
+    function addQueryRow() {
+      queryParamsList.push({ key: `param_${queryParamsList.length + 1}`, val: 'value' });
+      renderQueryTable();
+      syncTableToUrl();
+    }
+
+    function removeQueryRow(idx) {
+      queryParamsList.splice(idx, 1);
+      renderQueryTable();
+      syncTableToUrl();
+    }
+
+    function syncTableToUrl() {
+      const raw = document.getElementById('urlInput').value.trim();
+      try {
+        let isAbsolute = raw.startsWith('http://') || raw.startsWith('https://');
+        let parsed = isAbsolute ? new URL(raw) : new URL(raw, 'https://apps.sarwarfx.cfd');
+
+        // Clear and rebuild query
+        parsed.search = '';
+        const params = new URLSearchParams();
+        queryParamsList.forEach(item => {
+          if (item.key.trim()) params.append(item.key.trim(), item.val);
+        });
+        parsed.search = params.toString();
+
+        if (isAbsolute) {
+          document.getElementById('urlInput').value = parsed.toString();
+        } else {
+          const relativeUrl = parsed.pathname + (parsed.search ? '?' + parsed.search : '') + (parsed.hash || '');
+          document.getElementById('urlInput').value = relativeUrl;
+        }
+      } catch (e) {
+        // skip if invalid
+      }
+    }
+
+    function copyQueryParams() {
+      const obj = {};
+      queryParamsList.forEach(item => {
+        if (item.key) obj[item.key] = item.val;
+      });
+      navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+      showToast('COPIED QUERY PARAMS JSON');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleUrl();
+    });
+  </script>
+</body>
+</html>
