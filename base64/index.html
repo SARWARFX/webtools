@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // base64 - Base64 Suite & Data URI Converter</title>
+  <meta name="description" content="100% client-side Base64 encoder/decoder with full UTF-8 support, plus image-to-Data-URI converter with HTML/CSS snippet generation.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 10% 90%, rgba(139, 92, 246, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-arrow-right-arrow-left text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">base64</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">100% IN-BROWSER • UTF-8 SAFE</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Header & Mode Switcher -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
+          <i class="fa-solid fa-code text-xs"></i>
+          <span>Binary-to-Text & Data URI Studio</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">Base64 Encoder, Decoder & Data URI Studio</h1>
+      </div>
+
+      <!-- Main Tabs -->
+      <div class="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 shrink-0">
+        <button id="tabBtnText" onclick="switchBase64Tab('text')" class="px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20">
+          <i class="fa-solid fa-font"></i>
+          <span>Text Encoder</span>
+        </button>
+        <button id="tabBtnFile" onclick="switchBase64Tab('file')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-image"></i>
+          <span>File to Data URI</span>
+        </button>
+        <button id="tabBtnDecode" onclick="switchBase64Tab('decode')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-file-export"></i>
+          <span>Base64 to File</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: TEXT ENCODE / DECODE -->
+    <div id="sectionText" class="space-y-4">
+      
+      <!-- Toolbar Controls -->
+      <div class="glass-card rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-4">
+          <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="optUrlSafe" onchange="runTextConversion()" class="rounded bg-slate-900 border-slate-800 text-cyan-500">
+            <span>URL-Safe Base64 (- and _ without padding)</span>
+          </label>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="loadSampleText()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
+            <i class="fa-solid fa-flask mr-1 text-cyan-400"></i> Sample Text
+          </button>
+          <button onclick="swapTextPanels()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
+            <i class="fa-solid fa-arrow-right-arrow-left mr-1"></i> Swap
+          </button>
+          <button onclick="clearTextPanels()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 transition-all">
+            <i class="fa-solid fa-trash mr-1"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Dual Stage: Plaintext vs Base64 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        
+        <!-- Plaintext Panel -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[440px]">
+          <div class="flex items-center justify-between text-xs font-mono pb-2 border-b border-slate-800/80">
+            <span class="text-white font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-align-left text-cyan-400"></i> Plaintext (UTF-8)
+            </span>
+            <div class="flex items-center space-x-2">
+              <span id="plainStats" class="text-slate-500">0 chars</span>
+              <button onclick="copyPlaintext()" class="text-cyan-400 hover:text-cyan-300"><i class="fa-solid fa-copy"></i></button>
+            </div>
+          </div>
+          <textarea 
+            id="plainInput" 
+            placeholder="Type or paste plaintext here (Supports Emojis 🚀, Unicode, JSON)..."
+            class="flex-1 w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3.5 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed"
+            oninput="onPlainInput()"></textarea>
+        </div>
+
+        <!-- Base64 Panel -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[440px] neon-cyan-glow border-cyan-500/20">
+          <div class="flex items-center justify-between text-xs font-mono pb-2 border-b border-slate-800/80">
+            <span class="text-cyan-400 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-binary"></i> Base64 Output / Input
+            </span>
+            <div class="flex items-center space-x-2">
+              <span id="base64Stats" class="text-slate-500">0 chars (+33%)</span>
+              <button onclick="copyBase64Output()" class="text-cyan-400 hover:text-cyan-300"><i class="fa-solid fa-copy"></i></button>
+            </div>
+          </div>
+          <textarea 
+            id="base64Input" 
+            placeholder="Base64 encoded string appears here, or paste Base64 to decode into plaintext..."
+            class="flex-1 w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3.5 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none resize-none leading-relaxed"
+            oninput="onBase64Input()"></textarea>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: FILE / IMAGE TO DATA URI -->
+    <div id="sectionFile" class="hidden space-y-6">
+      
+      <!-- Upload Zone -->
+      <div id="fileDropZone" class="glass-card rounded-2xl p-8 border-2 border-dashed border-slate-800 hover:border-cyan-500/60 transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer group bg-slate-950/40" onclick="document.getElementById('fileDataInput').click()">
+        <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/15">
+          <i class="fa-solid fa-file-arrow-up"></i>
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
+            Drop any image, icon, audio, or font file to convert to Data URI
+          </div>
+          <p class="text-xs text-slate-400 mt-1">PNG, JPG, SVG, WebP, GIF, WOFF2, MP3, PDF</p>
+        </div>
+        <input type="file" id="fileDataInput" class="hidden" onchange="handleDataUriFile(event)">
+      </div>
+
+      <!-- Output Snippets (When file loaded) -->
+      <div id="fileSnippetsContainer" class="hidden space-y-5">
+        
+        <!-- File Info & Thumbnail -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 border-cyan-500/20">
+          <div class="w-20 h-20 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center shrink-0">
+            <img id="filePreviewThumb" class="max-w-full max-h-full object-contain" alt="Preview">
+          </div>
+          <div class="flex-1 space-y-1 font-mono text-xs">
+            <div id="metaFileName" class="text-white font-bold text-sm">filename.png</div>
+            <div class="flex flex-wrap gap-3 text-slate-400 text-[11px]">
+              <span>MIME: <span id="metaMime" class="text-cyan-400">image/png</span></span>
+              <span>Raw Size: <span id="metaRawSize" class="text-slate-200">0 KB</span></span>
+              <span>Base64 Size: <span id="metaB64Size" class="text-indigo-400">0 KB</span></span>
+              <span class="text-emerald-400 font-semibold">+33.3% Base64 Overhead</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Snippets Grid -->
+        <div class="space-y-4">
+          
+          <!-- Complete Data URI -->
+          <div class="glass-card rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-300 font-semibold">Complete Data URI (data:image/...;base64,...)</span>
+              <button onclick="copySnippet('snippetDataUri')" class="text-cyan-400 hover:text-cyan-300 font-medium"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+            </div>
+            <textarea id="snippetDataUri" readonly rows="3" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-cyan-300 outline-none resize-none"></textarea>
+          </div>
+
+          <!-- HTML <img> Tag -->
+          <div class="glass-card rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-300 font-semibold">HTML &lt;img&gt; Embed Snippet</span>
+              <button onclick="copySnippet('snippetHtml')" class="text-cyan-400 hover:text-cyan-300 font-medium"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+            </div>
+            <textarea id="snippetHtml" readonly rows="2" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 outline-none resize-none"></textarea>
+          </div>
+
+          <!-- CSS Background Image -->
+          <div class="glass-card rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-300 font-semibold">CSS background-image Snippet</span>
+              <button onclick="copySnippet('snippetCss')" class="text-cyan-400 hover:text-cyan-300 font-medium"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+            </div>
+            <textarea id="snippetCss" readonly rows="2" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 outline-none resize-none"></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 3: BASE64 TO FILE -->
+    <div id="sectionDecode" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-file-export text-cyan-400 text-sm"></i>
+            <h2 class="text-sm font-semibold text-white">Paste Base64 to Reconstruct & Download File</h2>
+          </div>
+          <span class="text-xs text-slate-500 font-mono">Auto-detects MIME prefix</span>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-xs font-medium text-slate-300">Base64 String or Data URI:</label>
+          <textarea id="b64ToFileInput" rows="6" placeholder="Paste data:image/png;base64,iVBORw... or raw Base64 string..." class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500/60 rounded-xl p-3 text-xs font-mono text-cyan-300 outline-none" oninput="inspectBase64Input()"></textarea>
+        </div>
+
+        <!-- Preview & Download Section -->
+        <div id="b64InspectCard" class="hidden p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <div id="b64PreviewBox" class="w-16 h-16 rounded-lg bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center shrink-0">
+              <img id="b64DecodedImg" class="max-w-full max-h-full object-contain" alt="Decoded">
+            </div>
+            <div class="space-y-1 font-mono text-xs">
+              <div id="decodedMime" class="text-white font-semibold">Detected MIME: image/png</div>
+              <div id="decodedSize" class="text-slate-400 text-[11px]">Reconstructed: 0 bytes</div>
+            </div>
+          </div>
+          <button onclick="downloadDecodedFile()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-download"></i>
+            <span>Download File</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'base64';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Tab Switching
+    function switchBase64Tab(tab) {
+      const tabs = ['text', 'file', 'decode'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`section${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === tab) {
+          sec.classList.remove('hidden');
+          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+        }
+      });
+    }
+
+    // UTF-8 Safe Base64 Helpers
+    function utf8ToBase64(str, urlSafe = false) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      let b64 = btoa(binary);
+      if (urlSafe) {
+        b64 = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      }
+      return b64;
+    }
+
+    function base64ToUtf8(b64) {
+      // Revert URL-safe replacements
+      let standardB64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+      while (standardB64.length % 4) {
+        standardB64 += '=';
+      }
+      const binary = atob(standardB64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    }
+
+    function onPlainInput() {
+      const plain = document.getElementById('plainInput').value;
+      const urlSafe = document.getElementById('optUrlSafe').checked;
+      document.getElementById('plainStats').textContent = `${plain.length} chars`;
+
+      if (!plain) {
+        document.getElementById('base64Input').value = '';
+        document.getElementById('base64Stats').textContent = '0 chars';
+        return;
+      }
+
+      try {
+        const encoded = utf8ToBase64(plain, urlSafe);
+        document.getElementById('base64Input').value = encoded;
+        document.getElementById('base64Stats').textContent = `${encoded.length} chars (+33%)`;
+      } catch (e) {
+        // Encoding error
+      }
+    }
+
+    function onBase64Input() {
+      const b64 = document.getElementById('base64Input').value.trim();
+      document.getElementById('base64Stats').textContent = `${b64.length} chars`;
+
+      if (!b64) {
+        document.getElementById('plainInput').value = '';
+        document.getElementById('plainStats').textContent = '0 chars';
+        return;
+      }
+
+      try {
+        const decoded = base64ToUtf8(b64);
+        document.getElementById('plainInput').value = decoded;
+        document.getElementById('plainStats').textContent = `${decoded.length} chars`;
+      } catch (err) {
+        // Invalid base64 sequence
+      }
+    }
+
+    function runTextConversion() {
+      onPlainInput();
+    }
+
+    function loadSampleText() {
+      document.getElementById('plainInput').value = `sarwarfx // webtools 🚀\n100% Client-Side Privacy\nUTF-8 Multilingual: こんにちは, مرحبا, Bonjour!`;
+      onPlainInput();
+      showToast('Loaded UTF-8 sample text');
+    }
+
+    function swapTextPanels() {
+      const plain = document.getElementById('plainInput').value;
+      const b64 = document.getElementById('base64Input').value;
+      document.getElementById('plainInput').value = b64;
+      document.getElementById('base64Input').value = plain;
+      showToast('Swapped text panels');
+    }
+
+    function clearTextPanels() {
+      document.getElementById('plainInput').value = '';
+      document.getElementById('base64Input').value = '';
+      document.getElementById('plainStats').textContent = '0 chars';
+      document.getElementById('base64Stats').textContent = '0 chars';
+      showToast('Cleared text');
+    }
+
+    function copyPlaintext() {
+      const val = document.getElementById('plainInput').value;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      showToast('Plaintext copied');
+    }
+
+    function copyBase64Output() {
+      const val = document.getElementById('base64Input').value;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      showToast('Base64 string copied');
+    }
+
+    // File to Data URI
+    function handleDataUriFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUri = ev.target.result;
+        document.getElementById('fileSnippetsContainer').classList.remove('hidden');
+        document.getElementById('filePreviewThumb').src = dataUri;
+        document.getElementById('metaFileName').textContent = file.name;
+        document.getElementById('metaMime').textContent = file.type || 'application/octet-stream';
+        document.getElementById('metaRawSize').textContent = formatBytes(file.size);
+        document.getElementById('metaB64Size').textContent = formatBytes(dataUri.length);
+
+        document.getElementById('snippetDataUri').value = dataUri;
+        document.getElementById('snippetHtml').value = `<img src="${dataUri}" alt="${file.name}" />`;
+        document.getElementById('snippetCss').value = `background-image: url('${dataUri}');`;
+
+        showToast(`Converted ${file.name} to Data URI`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function copySnippet(elementId) {
+      const val = document.getElementById(elementId).value;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      showToast('Snippet copied to clipboard');
+    }
+
+    // Base64 to File
+    let decodedFileBlob = null;
+    let decodedFileName = 'decoded-file.bin';
+
+    function inspectBase64Input() {
+      const raw = document.getElementById('b64ToFileInput').value.trim();
+      const inspectCard = document.getElementById('b64InspectCard');
+      const img = document.getElementById('b64DecodedImg');
+      const mimeLabel = document.getElementById('decodedMime');
+      const sizeLabel = document.getElementById('decodedSize');
+
+      if (!raw) {
+        inspectCard.classList.add('hidden');
+        return;
+      }
+
+      let mime = 'application/octet-stream';
+      let b64Data = raw;
+
+      if (raw.startsWith('data:')) {
+        const match = raw.match(/^data:([^;]+);base64,(.+)$/);
+        if (match) {
+          mime = match[1];
+          b64Data = match[2];
+        }
+      }
+
+      try {
+        const binary = atob(b64Data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        decodedFileBlob = new Blob([bytes], { type: mime });
+        
+        inspectCard.classList.remove('hidden');
+        mimeLabel.textContent = `MIME: ${mime}`;
+        sizeLabel.textContent = `Reconstructed File: ${formatBytes(decodedFileBlob.size)}`;
+
+        if (mime.startsWith('image/')) {
+          img.src = raw.startsWith('data:') ? raw : `data:${mime};base64,${b64Data}`;
+          img.classList.remove('hidden');
+        } else {
+          img.classList.add('hidden');
+        }
+
+        const ext = mime.split('/')[1] || 'bin';
+        decodedFileName = `sarwarfx-reconstructed.${ext}`;
+      } catch (err) {
+        inspectCard.classList.add('hidden');
+      }
+    }
+
+    function downloadDecodedFile() {
+      if (!decodedFileBlob) return;
+      const url = URL.createObjectURL(decodedFileBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = decodedFileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('File downloaded successfully');
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleText();
+    });
+  </script>
+</body>
+</html>

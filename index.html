@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // webtools - 10 Zero-Build Client-Side Web Utilities</title>
+  <meta name="description" content="10 independent, zero-build client-side web utilities hosted on Cloudflare Pages. Obsidian dark theme, 100% in-browser privacy.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.15), transparent),
+        radial-gradient(circle at 10% 90%, rgba(99, 102, 241, 0.1), transparent),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.12);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-cube text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">webtools</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">10 APPS • ZERO LOGS • STATIC EDGE</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all text-xs font-medium">
+          <i class="fa-brands fa-github text-sm"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero & Directory -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-10 space-y-10">
+
+    <!-- Hero Section -->
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
+        <i class="fa-solid fa-microchip"></i>
+        <span>Cloudflare Pages Monorepo • Zero Build Step</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        High-Performance <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Client-Side</span> Web Utilities
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+        A cohesive suite of 10 standalone privacy-first tools designed for developers, system administrators, and digital nomads. 100% local JavaScript execution. No cookies, no trackers, zero backend.
+      </p>
+
+      <!-- Quick Search Bar -->
+      <div class="max-w-md mx-auto pt-2 relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-5 text-slate-500 text-xs"></i>
+        <input type="text" id="toolSearch" oninput="filterTools()" placeholder="Filter tools (e.g. qr, json, speed, diff)..." class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950/80 border border-slate-800 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 text-xs font-mono text-slate-200 placeholder-slate-500 outline-none transition-all">
+      </div>
+    </div>
+
+    <!-- 10 Tools Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
+      <!-- Dynamically generated or static cards -->
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'OpenSpeedTest gauge embed, real-time edge latency, jitter diagnostics & external benchmark links.', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd', tags: ['Bandwidth', 'Latency', 'Jitter'] },
+      { id: 'qr', name: 'QR Suite', desc: 'High-density QR generator for Wi-Fi networks, URLs, vCards & text, plus live camera and image scanner.', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd', tags: ['Wi-Fi Join', 'vCard', 'Webcam Scan'] },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier with 2/4 space & tab options, syntax error pointer with line/col, interactive collapsible tree viewer.', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd', tags: ['Validator', 'Tree View', 'Minify'] },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IPv4/IPv6 detection, ISP/ASN lookup, city/region geolocation with embedded interactive Leaflet dark map.', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd', tags: ['GeoIP', 'ASN Map', 'DNS Ping'] },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side and unified git-style difference viewer with line numbers and neon addition/deletion highlights.', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd', tags: ['Split View', 'Unified', 'Patch'] },
+      { id: 'compress', name: 'Image Compressor', desc: 'Pure browser-side canvas image optimizer & WebP converter with quality tuning, byte savings & dimensions scaler.', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd', tags: ['WebP', 'Canvas', 'Lossless'] },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way UTF-8 safe text Base64 encoder/decoder and file/image to Data URI generator with HTML & CSS tags.', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd', tags: ['Data URI', 'UTF-8', 'Image Embed'] },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher (10 modes), line deduplicator, whitespace sanitizer, slugifier, line sorter & live analytics.', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd', tags: ['Case Switch', 'Dedupe', 'Slugify'] },
+      { id: 'clock', name: 'World Clock', desc: 'Minimalist global world clock across 10 hubs with 24h meeting time scrubber, cyber stopwatch & countdown timer.', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd', tags: ['Timezones', 'Meeting Slider', 'Timer'] },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Multi-tab calculator: bandwidth file transfer estimator, loan/mortgage EMI with amortization schedule & margin tool.', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd', tags: ['Bandwidth Calc', 'Loan EMI', 'Margins'] },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `./${tool.id}/index.html`;
+    }
+
+    function renderTools(list = TOOLS) {
+      const container = document.getElementById('toolsContainer');
+      container.innerHTML = list.map(tool => {
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="tool-card glass-card rounded-2xl p-5 hover:border-cyan-500/50 hover:bg-slate-900 transition-all duration-200 group flex flex-col justify-between space-y-4 hover:shadow-[0_0_25px_rgba(34,211,238,0.15)] cursor-pointer">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <i class="fa-solid ${tool.icon} text-base"></i>
+                </div>
+                <span class="text-[10px] font-mono text-cyan-400 uppercase bg-cyan-950/40 border border-cyan-500/30 px-2 py-0.5 rounded">Ready</span>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center justify-between">
+                  <span>${tool.name}</span>
+                  <i class="fa-solid fa-arrow-up-right text-xs text-slate-500 group-hover:text-cyan-400 transition-colors"></i>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${tool.desc}</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+              <div class="flex flex-wrap gap-1">
+                ${tool.tags.map(t => `<span class="text-[10px] font-mono text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">${t}</span>`).join('')}
+              </div>
+              <span class="text-[11px] font-mono text-slate-500 group-hover:text-slate-400 transition-colors">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function filterTools() {
+      const q = document.getElementById('toolSearch').value.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => 
+        t.name.toLowerCase().includes(q) || 
+        t.desc.toLowerCase().includes(q) || 
+        t.id.toLowerCase().includes(q) ||
+        t.tags.some(tag => tag.toLowerCase().includes(q))
+      );
+      renderTools(filtered);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTools();
+    });
+  </script>
+</body>
+</html>

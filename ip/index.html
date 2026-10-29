@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // ip - Public IP, ISP, ASN & Geolocation Map</title>
+  <meta name="description" content="Instant public IP lookup, autonomous system (ASN), ISP details, geolocation coordinates with interactive Leaflet map, and network diagnostics.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Dark map filter */
+    .leaflet-tile {
+      filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+    }
+    .leaflet-container {
+      background: #030712 !important;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-network-wired text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">ip</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">ZERO LOGGING • DIRECT LOOKUP</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero IP Header -->
+    <div class="glass-card rounded-2xl p-6 sm:p-8 neon-cyan-glow border-cyan-500/20 relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2">
+          <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
+            <i class="fa-solid fa-globe text-xs"></i>
+            <span>Public Network Interface</span>
+          </div>
+
+          <div class="flex flex-wrap items-baseline gap-3 pt-1">
+            <h1 id="publicIpDisplay" class="text-3xl sm:text-5xl font-extrabold text-white font-mono tracking-tight select-all">
+              Fetching IP...
+            </h1>
+            <span id="ipTypeBadge" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-mono text-cyan-400 font-bold uppercase">
+              IPv4
+            </span>
+          </div>
+
+          <p id="ipOrgSubtitle" class="text-slate-400 text-xs sm:text-sm font-mono">
+            Resolving ISP, Autonomous System & Routing Data...
+          </p>
+        </div>
+
+        <!-- Hero Buttons -->
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button onclick="copyIpAddress()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 active:scale-95 transition-all flex items-center space-x-2 cursor-pointer">
+            <i class="fa-solid fa-copy"></i>
+            <span>Copy IP Address</span>
+          </button>
+          <button onclick="fetchIpDetails(true)" class="px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Refresh</span>
+          </button>
+          <button onclick="copyRawJson()" class="px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-cyan-400 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer">
+            <i class="fa-solid fa-file-code"></i>
+            <span>Raw JSON</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geolocation & ISP Telemetry Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Column: Detailed Metadata Cards (7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Network & Routing Card -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-server text-cyan-400 text-xs"></i>
+              <h2 class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Carrier & ASN Routing</h2>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">BGP Telemetry</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+            
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Internet Service Provider (ISP)</div>
+              <div id="metaIsp" class="text-slate-200 font-semibold truncate">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Autonomous System (ASN)</div>
+              <div id="metaAsn" class="text-cyan-400 font-semibold truncate">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Organization</div>
+              <div id="metaOrg" class="text-slate-200 font-semibold truncate">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Routing Range (CIDR)</div>
+              <div id="metaCidr" class="text-indigo-400 font-semibold truncate">Auto-assigned</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Geographic Location Card -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-location-dot text-cyan-400 text-xs"></i>
+              <h2 class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Geographic Location</h2>
+            </div>
+            <span id="countryFlagBadge" class="text-sm">🌐</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono text-xs">
+            
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">City</div>
+              <div id="metaCity" class="text-slate-200 font-semibold">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Region / State</div>
+              <div id="metaRegion" class="text-slate-200 font-semibold">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Country</div>
+              <div id="metaCountry" class="text-cyan-400 font-semibold">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Postal Code</div>
+              <div id="metaPostal" class="text-slate-200 font-semibold">--</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Time Zone</div>
+              <div id="metaTimezone" class="text-slate-200 font-semibold">Loading...</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div class="text-slate-500 text-[10px] uppercase">Coordinates</div>
+              <div id="metaCoords" class="text-emerald-400 font-semibold">0.00, 0.00</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Client Browser & WebRTC Card -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-desktop text-cyan-400 text-xs"></i>
+              <h2 class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Client Fingerprint & Local IP</h2>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">Browser APIs</span>
+          </div>
+
+          <div class="space-y-2.5 font-mono text-xs">
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <span class="text-slate-400">User-Agent Platform</span>
+              <span id="clientPlatform" class="text-slate-200">Detecting...</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <span class="text-slate-400">Screen Resolution & Depth</span>
+              <span id="clientScreen" class="text-slate-200">Detecting...</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <span class="text-slate-400">Primary Language</span>
+              <span id="clientLang" class="text-cyan-400 font-semibold">Detecting...</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <span class="text-slate-400">WebRTC Candidate Check</span>
+              <span id="clientWebrtc" class="text-emerald-400 font-semibold">No Leak Detected</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Leaflet Interactive Map & Edge Ping (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Interactive Leaflet Map -->
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-white font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-map text-cyan-400"></i> Geolocation Map
+            </span>
+            <span id="mapCoordsLabel" class="text-cyan-400">Lat: 0.00 / Lon: 0.00</span>
+          </div>
+
+          <!-- Leaflet Map Container -->
+          <div id="ipMap" class="w-full h-[320px] rounded-xl border border-slate-800 overflow-hidden relative z-0"></div>
+
+          <p class="text-[11px] text-slate-500 text-center font-mono">
+            Map coordinates derived from MaxMind/GeoIP databases (approximate city-level radius).
+          </p>
+        </div>
+
+        <!-- Global Edge DNS Ping Checker -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Edge DNS Latency Check</span>
+            <button onclick="pingEdgeServers()" class="text-xs text-cyan-400 hover:text-cyan-300 font-mono">
+              <i class="fa-solid fa-play mr-1"></i>Test
+            </button>
+          </div>
+
+          <div class="space-y-2 font-mono text-xs">
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span class="text-slate-300">Cloudflare DNS (1.1.1.1)</span>
+              </div>
+              <span id="dnsPingCf" class="text-cyan-400 font-bold">-- ms</span>
+            </div>
+
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                <span class="text-slate-300">Google Public DNS (8.8.8.8)</span>
+              </div>
+              <span id="dnsPingGoogle" class="text-cyan-400 font-bold">-- ms</span>
+            </div>
+
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                <span class="text-slate-300">Quad9 Anycast (9.9.9.9)</span>
+              </div>
+              <span id="dnsPingQuad" class="text-cyan-400 font-bold">-- ms</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'ip';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // IP Lookup Engine & Map
+    let rawIpData = null;
+    let leafletMap = null;
+    let mapMarker = null;
+
+    function initMap(lat = 20, lon = 0) {
+      const mapContainer = document.getElementById('ipMap');
+      if (!leafletMap) {
+        leafletMap = L.map(mapContainer, {
+          zoomControl: false,
+          attributionControl: false
+        }).setView([lat, lon], 11);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18
+        }).addTo(leafletMap);
+
+        const cyanIcon = L.divIcon({
+          className: 'custom-map-pin',
+          html: '<div style="width: 14px; height: 14px; background: #22d3ee; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 15px #22d3ee;"></div>',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7]
+        });
+
+        mapMarker = L.marker([lat, lon], { icon: cyanIcon }).addTo(leafletMap);
+      } else {
+        leafletMap.setView([lat, lon], 11);
+        if (mapMarker) mapMarker.setLatLng([lat, lon]);
+      }
+    }
+
+    async function fetchIpDetails(manual = false) {
+      if (manual) showToast('Refreshing IP telemetry...');
+      
+      try {
+        // Query primary ipwho.is (CORS enabled, highly accurate with ASN)
+        let res = await fetch('https://ipwho.is/');
+        let data = await res.json();
+
+        if (!data.success && data.message) {
+          // Fallback to ipapi.co
+          res = await fetch('https://ipapi.co/json/');
+          data = await res.json();
+          normalizeIpApiCo(data);
+        } else {
+          normalizeIpWhoIs(data);
+        }
+      } catch (err) {
+        // Second fallback to ipify for IP address only
+        try {
+          const res = await fetch('https://api.ipify.org?format=json');
+          const data = await res.json();
+          document.getElementById('publicIpDisplay').textContent = data.ip;
+          document.getElementById('ipOrgSubtitle').textContent = 'Public IP detected (Extended GeoIP throttled)';
+          rawIpData = data;
+          showToast('Resolved basic IP');
+        } catch (e) {
+          document.getElementById('publicIpDisplay').textContent = '127.0.0.1';
+          document.getElementById('ipOrgSubtitle').textContent = 'Offline / Direct localhost loopback';
+        }
+      }
+    }
+
+    function normalizeIpWhoIs(data) {
+      rawIpData = data;
+      const ip = data.ip || 'Unknown';
+      const isIpv6 = ip.includes(':');
+
+      document.getElementById('publicIpDisplay').textContent = ip;
+      document.getElementById('ipTypeBadge').textContent = isIpv6 ? 'IPv6' : 'IPv4';
+      document.getElementById('ipOrgSubtitle').textContent = `${data.connection?.isp || data.isp || 'Broadband ISP'} • AS${data.connection?.asn || data.asn || '0'}`;
+
+      document.getElementById('metaIsp').textContent = data.connection?.isp || data.isp || 'N/A';
+      document.getElementById('metaAsn').textContent = data.connection?.asn ? `AS${data.connection.asn}` : 'N/A';
+      document.getElementById('metaOrg').textContent = data.connection?.org || data.org || 'N/A';
+      document.getElementById('metaCidr').textContent = data.connection?.range || 'Allocated';
+
+      document.getElementById('metaCity').textContent = data.city || 'N/A';
+      document.getElementById('metaRegion').textContent = data.region || 'N/A';
+      document.getElementById('metaCountry').textContent = `${data.country || 'N/A'} (${data.country_code || ''})`;
+      document.getElementById('metaPostal').textContent = data.postal || '--';
+      document.getElementById('metaTimezone').textContent = data.timezone?.id || data.timezone || 'UTC';
+      
+      const lat = data.latitude || 0;
+      const lon = data.longitude || 0;
+      document.getElementById('metaCoords').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+      document.getElementById('mapCoordsLabel').textContent = `Lat: ${lat.toFixed(4)} / Lon: ${lon.toFixed(4)}`;
+
+      initMap(lat, lon);
+      showToast('IP network intelligence updated');
+    }
+
+    function normalizeIpApiCo(data) {
+      rawIpData = data;
+      const ip = data.ip || 'Unknown';
+      const isIpv6 = ip.includes(':');
+
+      document.getElementById('publicIpDisplay').textContent = ip;
+      document.getElementById('ipTypeBadge').textContent = isIpv6 ? 'IPv6' : 'IPv4';
+      document.getElementById('ipOrgSubtitle').textContent = `${data.org || 'ISP'} • ${data.asn || ''}`;
+
+      document.getElementById('metaIsp').textContent = data.org || 'N/A';
+      document.getElementById('metaAsn').textContent = data.asn || 'N/A';
+      document.getElementById('metaOrg').textContent = data.org || 'N/A';
+      document.getElementById('metaCidr').textContent = 'Public Subnet';
+
+      document.getElementById('metaCity').textContent = data.city || 'N/A';
+      document.getElementById('metaRegion').textContent = data.region || 'N/A';
+      document.getElementById('metaCountry').textContent = `${data.country_name || 'N/A'} (${data.country_code || ''})`;
+      document.getElementById('metaPostal').textContent = data.postal || '--';
+      document.getElementById('metaTimezone').textContent = data.timezone || 'UTC';
+
+      const lat = data.latitude || 0;
+      const lon = data.longitude || 0;
+      document.getElementById('metaCoords').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+      document.getElementById('mapCoordsLabel').textContent = `Lat: ${lat.toFixed(4)} / Lon: ${lon.toFixed(4)}`;
+
+      initMap(lat, lon);
+      showToast('IP network intelligence updated');
+    }
+
+    function copyIpAddress() {
+      const ip = document.getElementById('publicIpDisplay').textContent.trim();
+      if (!ip || ip.includes('Fetching')) return;
+      navigator.clipboard.writeText(ip);
+      showToast(`Copied ${ip} to clipboard!`);
+    }
+
+    function copyRawJson() {
+      if (!rawIpData) return;
+      navigator.clipboard.writeText(JSON.stringify(rawIpData, null, 2));
+      showToast('Raw IP payload copied as JSON');
+    }
+
+    // Client Browser Details
+    function checkBrowserTelemetry() {
+      document.getElementById('clientPlatform').textContent = navigator.platform || navigator.userAgentData?.platform || 'Unknown';
+      document.getElementById('clientScreen').textContent = `${window.screen.width}x${window.screen.height} (${window.screen.colorDepth}-bit)`;
+      document.getElementById('clientLang').textContent = navigator.language || 'en-US';
+
+      // Check WebRTC
+      try {
+        const rtc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+        rtc.createDataChannel("");
+        rtc.createOffer().then(offer => rtc.setLocalDescription(offer));
+        rtc.onicecandidate = (event) => {
+          if (event && event.candidate && event.candidate.candidate) {
+            const cand = event.candidate.candidate;
+            const match = cand.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+            if (match && !match[1].startsWith('127.')) {
+              document.getElementById('clientWebrtc').textContent = `Local: ${match[1]}`;
+            }
+          }
+        };
+      } catch (e) {
+        document.getElementById('clientWebrtc').textContent = 'Protected / Blocked';
+      }
+    }
+
+    // Ping DNS
+    async function pingDns(url) {
+      const start = performance.now();
+      try {
+        await fetch(url + '?_=' + Math.random(), { mode: 'no-cors', cache: 'no-store' });
+        return Math.round(performance.now() - start);
+      } catch (err) {
+        return Math.round(performance.now() - start);
+      }
+    }
+
+    async function pingEdgeServers() {
+      showToast('Testing edge DNS latency...');
+      const cfPing = await pingDns('https://1.1.1.1/cdn-cgi/trace');
+      document.getElementById('dnsPingCf').textContent = `${cfPing} ms`;
+
+      const gPing = await pingDns('https://dns.google/resolve?name=example.com');
+      document.getElementById('dnsPingGoogle').textContent = `${gPing} ms`;
+
+      const quadPing = await pingDns('https://dns.quad9.net:5053/dns-query');
+      document.getElementById('dnsPingQuad').textContent = `${quadPing} ms`;
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      initMap();
+      fetchIpDetails();
+      checkBrowserTelemetry();
+      setTimeout(pingEdgeServers, 600);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // diff - Code & Text Difference Checker</title>
+  <meta name="description" content="100% client-side side-by-side and unified diff checker for code, JSON, and text with visual neon highlights.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- JSDiff CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Diff lines */
+    .diff-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .diff-added {
+      background: rgba(16, 185, 129, 0.18);
+      color: #6ee7b7;
+      border-left: 3px solid #10b981;
+    }
+    .diff-removed {
+      background: rgba(244, 63, 94, 0.18);
+      color: #fda4af;
+      border-left: 3px solid #f43f5e;
+    }
+    .diff-unchanged {
+      color: #94a3b8;
+      border-left: 3px solid transparent;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-code-compare text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">diff</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">100% IN-BROWSER • ZERO SERVER ROUNDTRIP</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+    <!-- Header & Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
+          <i class="fa-solid fa-code-branch text-xs"></i>
+          <span>LCS Line & Word Comparator</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">Code & Text Difference Checker</h1>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleDiff('code')" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-code text-cyan-400"></i>
+          <span>Sample Code</span>
+        </button>
+        <button onclick="loadSampleDiff('prose')" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-file-lines text-indigo-400"></i>
+          <span>Sample Text</span>
+        </button>
+        <button onclick="swapInputs()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Swap</span>
+        </button>
+        <button onclick="clearDiff()" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-rose-950/40 hover:border-rose-800/50 text-slate-400 hover:text-rose-400 text-xs transition-all">
+          <i class="fa-solid fa-trash mr-1"></i> Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Diff Controls & Metrics Bar -->
+    <div class="glass-card rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      
+      <!-- View Modes & Diff Granularity -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Split vs Unified Toggle -->
+        <div class="p-0.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center">
+          <button id="viewSplitBtn" onclick="setDiffViewMode('split')" class="px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold">
+            <i class="fa-solid fa-columns mr-1"></i> Side-by-Side
+          </button>
+          <button id="viewUnifiedBtn" onclick="setDiffViewMode('unified')" class="px-3 py-1 rounded-md text-slate-400 hover:text-white">
+            <i class="fa-solid fa-bars mr-1"></i> Unified
+          </button>
+        </div>
+
+        <!-- Mode: Line vs Word -->
+        <select id="diffGranularity" onchange="runDiff()" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 text-xs outline-none">
+          <option value="lines">Line-by-Line Diff</option>
+          <option value="words">Word-by-Word Diff</option>
+        </select>
+
+        <!-- Ignore Options -->
+        <label class="flex items-center space-x-1.5 cursor-pointer text-slate-400 hover:text-slate-200">
+          <input type="checkbox" id="optIgnoreWs" onchange="runDiff()" class="rounded bg-slate-900 border-slate-800 text-cyan-500 focus:ring-cyan-500/20">
+          <span>Ignore Whitespace</span>
+        </label>
+        <label class="flex items-center space-x-1.5 cursor-pointer text-slate-400 hover:text-slate-200">
+          <input type="checkbox" id="optIgnoreCase" onchange="runDiff()" class="rounded bg-slate-900 border-slate-800 text-cyan-500 focus:ring-cyan-500/20">
+          <span>Ignore Case</span>
+        </label>
+      </div>
+
+      <!-- Metrics Badges -->
+      <div class="flex items-center space-x-3 font-mono">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-semibold" id="badgeAdded">+0 Additions</span>
+        <span class="px-2.5 py-0.5 rounded bg-rose-950/40 border border-rose-500/30 text-rose-400 font-semibold" id="badgeRemoved">-0 Deletions</span>
+        <button onclick="copyPatchOutput()" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-cyan-400 transition-all">
+          <i class="fa-solid fa-copy mr-1"></i> Copy Patch
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Input Editors Section (Collapsible or Side-by-side) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="inputEditorsContainer">
+      
+      <!-- Left: Original Text -->
+      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
+          <span class="text-rose-400 font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-file-circle-minus"></i> Original (Left)
+          </span>
+          <label for="fileUploadOrig" class="hover:text-cyan-400 cursor-pointer text-[11px]">
+            <i class="fa-solid fa-upload mr-1"></i>Load File
+            <input type="file" id="fileUploadOrig" class="hidden" onchange="loadFile(event, 'orig')">
+          </label>
+        </div>
+
+        <textarea 
+          id="textOrig" 
+          rows="8"
+          placeholder="Paste original source or text here..."
+          class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-y leading-relaxed"
+          oninput="runDiff()"></textarea>
+      </div>
+
+      <!-- Right: Modified Text -->
+      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
+          <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-file-circle-plus"></i> Modified (Right)
+          </span>
+          <label for="fileUploadMod" class="hover:text-cyan-400 cursor-pointer text-[11px]">
+            <i class="fa-solid fa-upload mr-1"></i>Load File
+            <input type="file" id="fileUploadMod" class="hidden" onchange="loadFile(event, 'mod')">
+          </label>
+        </div>
+
+        <textarea 
+          id="textMod" 
+          rows="8"
+          placeholder="Paste modified version here to compare..."
+          class="w-full bg-slate-950/80 border border-slate-800/80 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-y leading-relaxed"
+          oninput="runDiff()"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Visual Diff Output Stage -->
+    <div class="glass-card rounded-2xl p-4 space-y-3 neon-cyan-glow border-cyan-500/20 min-h-[400px]">
+      <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
+        <span class="text-white font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-layer-group text-cyan-400"></i> Visual Comparison
+        </span>
+        <span id="diffStatusLabel" class="text-cyan-400">Computed via JSDiff</span>
+      </div>
+
+      <!-- Split Output -->
+      <div id="diffSplitView" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Left Side Split -->
+        <div class="bg-slate-950/90 rounded-xl border border-slate-800 overflow-x-auto max-h-[500px]">
+          <div class="sticky top-0 bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 text-[11px] font-mono text-rose-300 font-semibold">
+            Original (Deletions)
+          </div>
+          <div id="splitOrigContainer" class="p-2 space-y-0.5"></div>
+        </div>
+
+        <!-- Right Side Split -->
+        <div class="bg-slate-950/90 rounded-xl border border-slate-800 overflow-x-auto max-h-[500px]">
+          <div class="sticky top-0 bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 text-[11px] font-mono text-emerald-300 font-semibold">
+            Modified (Additions)
+          </div>
+          <div id="splitModContainer" class="p-2 space-y-0.5"></div>
+        </div>
+      </div>
+
+      <!-- Unified Output -->
+      <div id="diffUnifiedView" class="hidden bg-slate-950/90 rounded-xl border border-slate-800 overflow-x-auto max-h-[500px]">
+        <div class="sticky top-0 bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 text-[11px] font-mono text-slate-400 font-semibold flex justify-between">
+          <span>Unified Git-Style Diff</span>
+          <span>Line Markers (+/-)</span>
+        </div>
+        <div id="unifiedContainer" class="p-2 space-y-0.5"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'diff';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Samples
+    const SAMPLES = {
+      code: {
+        orig: `function calculateTotal(price, taxRate) {\n  const tax = price * taxRate;\n  return price + tax;\n}\n\nconsole.log(calculateTotal(100, 0.05));`,
+        mod: `function calculateTotal(price, taxRate, discount = 0) {\n  const discountedPrice = price - discount;\n  const tax = discountedPrice * taxRate;\n  return discountedPrice + tax;\n}\n\n// Enhanced with discount support\nconsole.log(calculateTotal(100, 0.05, 10));`
+      },
+      prose: {
+        orig: `sarwarfx webtools provides fast online utilities.\nAll tools run on a remote server.\nData is logged for analytics.\nAvailable on standard hosting.`,
+        mod: `sarwarfx webtools provides fast, ultra-secure online utilities.\nAll tools run 100% in your local browser with zero backend.\nZero data is logged or transmitted to third parties.\nAvailable globally on Cloudflare Pages.`
+      }
+    };
+
+    function loadSampleDiff(type) {
+      document.getElementById('textOrig').value = SAMPLES[type].orig;
+      document.getElementById('textMod').value = SAMPLES[type].mod;
+      runDiff();
+      showToast(`Loaded ${type} sample comparison`);
+    }
+
+    function swapInputs() {
+      const orig = document.getElementById('textOrig').value;
+      const mod = document.getElementById('textMod').value;
+      document.getElementById('textOrig').value = mod;
+      document.getElementById('textMod').value = orig;
+      runDiff();
+      showToast('Swapped inputs');
+    }
+
+    function clearDiff() {
+      document.getElementById('textOrig').value = '';
+      document.getElementById('textMod').value = '';
+      runDiff();
+      showToast('Diff cleared');
+    }
+
+    function loadFile(e, target) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (target === 'orig') document.getElementById('textOrig').value = ev.target.result;
+        else document.getElementById('textMod').value = ev.target.result;
+        runDiff();
+        showToast(`Loaded ${file.name}`);
+      };
+      reader.readAsText(file);
+    }
+
+    let currentViewMode = 'split';
+
+    function setDiffViewMode(mode) {
+      currentViewMode = mode;
+      const splitBtn = document.getElementById('viewSplitBtn');
+      const unifiedBtn = document.getElementById('viewUnifiedBtn');
+      const splitView = document.getElementById('diffSplitView');
+      const unifiedView = document.getElementById('diffUnifiedView');
+
+      if (mode === 'split') {
+        splitBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
+        unifiedBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
+        splitView.classList.remove('hidden');
+        unifiedView.classList.add('hidden');
+      } else {
+        unifiedBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
+        splitBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
+        unifiedView.classList.remove('hidden');
+        splitView.classList.add('hidden');
+      }
+    }
+
+    let lastComputedPatch = '';
+
+    function runDiff() {
+      const orig = document.getElementById('textOrig').value;
+      const mod = document.getElementById('textMod').value;
+      const granularity = document.getElementById('diffGranularity').value;
+      const ignoreWs = document.getElementById('optIgnoreWs').checked;
+      const ignoreCase = document.getElementById('optIgnoreCase').checked;
+
+      if (!window.Diff) return;
+
+      const options = {
+        ignoreWhitespace: ignoreWs,
+        ignoreCase: ignoreCase
+      };
+
+      let diffResult;
+      if (granularity === 'words') {
+        diffResult = Diff.diffWords(orig, mod, options);
+      } else {
+        diffResult = Diff.diffLines(orig, mod, options);
+      }
+
+      let addedCount = 0;
+      let removedCount = 0;
+
+      // Render Split & Unified
+      const splitOrig = document.getElementById('splitOrigContainer');
+      const splitMod = document.getElementById('splitModContainer');
+      const unified = document.getElementById('unifiedContainer');
+
+      splitOrig.innerHTML = '';
+      splitMod.innerHTML = '';
+      unified.innerHTML = '';
+
+      let patchLines = [];
+      let origLineNum = 1;
+      let modLineNum = 1;
+
+      diffResult.forEach(part => {
+        const lines = part.value.replace(/\n$/, '').split('\n');
+
+        if (part.added) {
+          addedCount += lines.length;
+          lines.forEach(line => {
+            // Mod side only
+            splitMod.innerHTML += `<div class="diff-line diff-added px-2 py-0.5"><span class="text-emerald-500/70 inline-block w-8 select-none">${modLineNum++}</span>+ ${escapeHtml(line)}</div>`;
+            unified.innerHTML += `<div class="diff-line diff-added px-2 py-0.5"><span class="text-emerald-500/70 inline-block w-12 select-none">+</span>${escapeHtml(line)}</div>`;
+            patchLines.push(`+ ${line}`);
+          });
+        } else if (part.removed) {
+          removedCount += lines.length;
+          lines.forEach(line => {
+            // Orig side only
+            splitOrig.innerHTML += `<div class="diff-line diff-removed px-2 py-0.5"><span class="text-rose-500/70 inline-block w-8 select-none">${origLineNum++}</span>- ${escapeHtml(line)}</div>`;
+            unified.innerHTML += `<div class="diff-line diff-removed px-2 py-0.5"><span class="text-rose-500/70 inline-block w-12 select-none">-</span>${escapeHtml(line)}</div>`;
+            patchLines.push(`- ${line}`);
+          });
+        } else {
+          lines.forEach(line => {
+            splitOrig.innerHTML += `<div class="diff-line diff-unchanged px-2 py-0.5"><span class="text-slate-600 inline-block w-8 select-none">${origLineNum++}</span>  ${escapeHtml(line)}</div>`;
+            splitMod.innerHTML += `<div class="diff-line diff-unchanged px-2 py-0.5"><span class="text-slate-600 inline-block w-8 select-none">${modLineNum++}</span>  ${escapeHtml(line)}</div>`;
+            unified.innerHTML += `<div class="diff-line diff-unchanged px-2 py-0.5"><span class="text-slate-600 inline-block w-12 select-none"> </span>${escapeHtml(line)}</div>`;
+            patchLines.push(`  ${line}`);
+          });
+        }
+      });
+
+      document.getElementById('badgeAdded').textContent = `+${addedCount} Additions`;
+      document.getElementById('badgeRemoved').textContent = `-${removedCount} Deletions`;
+      lastComputedPatch = patchLines.join('\n');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function copyPatchOutput() {
+      if (!lastComputedPatch) {
+        showToast('No diff content to copy');
+        return;
+      }
+      navigator.clipboard.writeText(lastComputedPatch);
+      showToast('Diff patch copied to clipboard');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleDiff('code');
+    });
+  </script>
+</body>
+</html>

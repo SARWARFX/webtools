@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // clock - World Clock, Timezone Scrubber & Meeting Planner</title>
+  <meta name="description" content="100% client-side global world clock, interactive 24h meeting time planner, cyber stopwatch, and countdown timer.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-clock text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">clock</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">HIGH-PRECISION CLOCK • ZERO DRIFT</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Header & Mode Switcher -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
+          <i class="fa-solid fa-earth-americas text-xs"></i>
+          <span>Global Time Synchronization</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">World Clock & Interactive Meeting Time Planner</h1>
+      </div>
+
+      <!-- Main Tabs -->
+      <div class="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 shrink-0">
+        <button id="tabBtnWorld" onclick="switchClockTab('world')" class="px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20">
+          <i class="fa-solid fa-globe"></i>
+          <span>World Clocks</span>
+        </button>
+        <button id="tabBtnStopwatch" onclick="switchClockTab('stopwatch')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span>Stopwatch</span>
+        </button>
+        <button id="tabBtnTimer" onclick="switchClockTab('timer')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <span>Timer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: WORLD CLOCK & MEETING PLANNER -->
+    <div id="sectionWorld" class="space-y-6">
+      
+      <!-- Interactive Time Scrubber (Meeting Planner) Card -->
+      <div class="glass-card rounded-2xl p-5 border-cyan-500/30 neon-cyan-glow space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-sliders text-cyan-400 text-sm"></i>
+            <h2 class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Interactive Meeting Time Scrubber</h2>
+          </div>
+          <div class="flex items-center space-x-3 text-xs font-mono">
+            <span id="sliderOffsetBadge" class="px-2.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 font-bold">LIVE TIME (±0 hrs)</span>
+            <button onclick="resetToLiveTime()" class="text-slate-400 hover:text-white transition-colors">
+              <i class="fa-solid fa-rotate-left mr-1"></i>Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs text-slate-400 font-mono">
+            <span>-12 Hours</span>
+            <span class="text-cyan-400 font-bold">Drag slider to simulate global time</span>
+            <span>+12 Hours</span>
+          </div>
+          <input type="range" id="timeSlider" min="-12" max="12" step="0.5" value="0" oninput="onTimeSliderChange()" class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-950 rounded-lg">
+          <div class="flex justify-between text-[11px] text-slate-500 font-mono">
+            <span>Yesterday</span>
+            <span>Now</span>
+            <span>Tomorrow</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs font-mono text-slate-400 border-t border-slate-800/60">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Working Hours (9 AM - 6 PM)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span> Outside Business Hours</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 cursor-pointer">
+              <input type="checkbox" id="toggle24h" onchange="renderClocks()" class="rounded bg-slate-900 border-slate-800 text-cyan-500">
+              <span>24-Hour Format</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- World Clocks Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="clockGrid">
+        <!-- Injected dynamically by renderClocks() -->
+      </div>
+
+    </div>
+
+    <!-- TAB 2: CYBER STOPWATCH -->
+    <div id="sectionStopwatch" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-8 max-w-xl mx-auto text-center space-y-6 neon-cyan-glow border-cyan-500/20">
+        
+        <div class="text-xs font-mono text-slate-500 uppercase tracking-widest">Precision Chronometer</div>
+
+        <!-- Stopwatch Display -->
+        <div id="stopwatchDisplay" class="text-5xl sm:text-6xl font-extrabold text-white font-mono tracking-tight text-cyan-400">
+          00:00:00.00
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-3">
+          <button id="swStartBtn" onclick="toggleStopwatch()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+            Start
+          </button>
+          <button id="swLapBtn" onclick="recordLap()" disabled class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-semibold cursor-not-allowed">
+            Lap
+          </button>
+          <button id="swResetBtn" onclick="resetStopwatch()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold">
+            Reset
+          </button>
+        </div>
+
+        <!-- Lap History -->
+        <div class="border-t border-slate-800 pt-4 space-y-2 text-left font-mono text-xs max-h-48 overflow-y-auto" id="lapHistory">
+          <!-- Injected laps -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: COUNTDOWN TIMER -->
+    <div id="sectionTimer" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-8 max-w-xl mx-auto text-center space-y-6 neon-cyan-glow border-cyan-500/20">
+        
+        <div class="text-xs font-mono text-slate-500 uppercase tracking-widest">Countdown Timer</div>
+
+        <!-- Time Inputs (When stopped) -->
+        <div id="timerInputGroup" class="flex items-center justify-center gap-2 font-mono text-xl">
+          <div class="flex flex-col items-center">
+            <input type="number" id="timerHours" min="0" max="99" value="00" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
+            <span class="text-[10px] text-slate-500 mt-1 uppercase">Hours</span>
+          </div>
+          <span class="text-slate-600">:</span>
+          <div class="flex flex-col items-center">
+            <input type="number" id="timerMins" min="0" max="59" value="05" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
+            <span class="text-[10px] text-slate-500 mt-1 uppercase">Mins</span>
+          </div>
+          <span class="text-slate-600">:</span>
+          <div class="flex flex-col items-center">
+            <input type="number" id="timerSecs" min="0" max="59" value="00" class="w-16 p-2 text-center rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-cyan-500">
+            <span class="text-[10px] text-slate-500 mt-1 uppercase">Secs</span>
+          </div>
+        </div>
+
+        <!-- Timer Running Readout -->
+        <div id="timerDisplay" class="hidden text-5xl sm:text-6xl font-extrabold text-white font-mono tracking-tight text-cyan-400">
+          00:05:00
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-3">
+          <button id="timerStartBtn" onclick="toggleTimer()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+            Start Timer
+          </button>
+          <button onclick="resetTimer()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold">
+            Reset
+          </button>
+        </div>
+
+        <!-- Presets -->
+        <div class="flex items-center justify-center gap-2 pt-2 text-xs font-mono text-slate-400">
+          <span>Presets:</span>
+          <button onclick="setTimerPreset(1)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">1m</button>
+          <button onclick="setTimerPreset(5)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">5m</button>
+          <button onclick="setTimerPreset(15)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">15m</button>
+          <button onclick="setTimerPreset(25)" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:text-cyan-400">Pomodoro (25m)</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'clock';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // World Clock Cities Config
+    const CITIES = [
+      { name: 'Local Time (Browser)', tz: Intl.DateTimeFormat().resolvedOptions().timeZone, tag: 'LOCAL' },
+      { name: 'UTC / Universal Time', tz: 'UTC', tag: 'ZULU' },
+      { name: 'New York (EST/EDT)', tz: 'America/New_York', tag: 'US-EAST' },
+      { name: 'San Francisco (PST/PDT)', tz: 'America/Los_Angeles', tag: 'US-WEST' },
+      { name: 'London (GMT/BST)', tz: 'Europe/London', tag: 'UK' },
+      { name: 'Frankfurt / Berlin (CET)', tz: 'Europe/Berlin', tag: 'EU' },
+      { name: 'Dubai (GST)', tz: 'Asia/Dubai', tag: 'ME' },
+      { name: 'Singapore (SGT)', tz: 'Asia/Singapore', tag: 'ASIA' },
+      { name: 'Tokyo (JST)', tz: 'Asia/Tokyo', tag: 'JP' },
+      { name: 'Sydney (AEST)', tz: 'Australia/Sydney', tag: 'AU' },
+    ];
+
+    let simulatedOffsetHours = 0;
+
+    function onTimeSliderChange() {
+      simulatedOffsetHours = parseFloat(document.getElementById('timeSlider').value);
+      const badge = document.getElementById('sliderOffsetBadge');
+      if (simulatedOffsetHours === 0) {
+        badge.textContent = 'LIVE TIME (±0 hrs)';
+        badge.className = 'px-2.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 font-bold';
+      } else {
+        const sign = simulatedOffsetHours > 0 ? '+' : '';
+        badge.textContent = `SIMULATED (${sign}${simulatedOffsetHours} hrs)`;
+        badge.className = 'px-2.5 py-0.5 rounded bg-indigo-950/40 border border-indigo-500/40 text-indigo-300 font-bold';
+      }
+      renderClocks();
+    }
+
+    function resetToLiveTime() {
+      document.getElementById('timeSlider').value = 0;
+      onTimeSliderChange();
+      showToast('Reset to real-time synchronized clock');
+    }
+
+    function renderClocks() {
+      const container = document.getElementById('clockGrid');
+      const is24h = document.getElementById('toggle24h').checked;
+
+      // Current time with simulated offset
+      const now = new Date(Date.now() + (simulatedOffsetHours * 3600 * 1000));
+
+      container.innerHTML = CITIES.map(city => {
+        let timeStr = '';
+        let dateStr = '';
+        let hours = 0;
+
+        try {
+          const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: city.tz,
+            hour12: !is24h,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+          });
+          const parts = formatter.formatToParts(now);
+          const pMap = {};
+          parts.forEach(p => pMap[p.type] = p.value);
+
+          timeStr = is24h ? `${pMap.hour}:${pMap.minute}:${pMap.second}` : `${pMap.hour}:${pMap.minute}:${pMap.second} ${pMap.dayPeriod || ''}`;
+          dateStr = `${pMap.weekday}, ${pMap.month} ${pMap.day}`;
+
+          // Calculate hour for business hours (9 to 18)
+          const hour24Formatter = new Intl.DateTimeFormat('en-US', { timeZone: city.tz, hour12: false, hour: 'numeric' });
+          hours = parseInt(hour24Formatter.format(now), 10);
+        } catch (e) {
+          timeStr = '--:--:--';
+          dateStr = 'Unavailable';
+        }
+
+        const isWorkHours = hours >= 9 && hours < 18;
+        const isDayTime = hours >= 6 && hours < 19;
+
+        return `
+          <div class="glass-card rounded-2xl p-5 border transition-all ${
+            city.tag === 'LOCAL' 
+              ? 'border-cyan-500/50 bg-slate-900/80 shadow-[0_0_20px_rgba(34,211,238,0.15)]' 
+              : 'border-slate-800/80'
+          }">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800/60">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm ${isDayTime ? 'text-amber-400' : 'text-indigo-400'}">
+                  <i class="fa-solid ${isDayTime ? 'fa-sun' : 'fa-moon'}"></i>
+                </span>
+                <span class="text-xs font-bold text-white tracking-wide">${city.name}</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded ${
+                isWorkHours 
+                  ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-semibold' 
+                  : 'bg-slate-800 text-slate-500'
+              }">
+                ${isWorkHours ? 'WORKING HOURS' : 'OFF HOURS'}
+              </span>
+            </div>
+
+            <div class="py-4">
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight ${
+                city.tag === 'LOCAL' ? 'text-cyan-400' : ''
+              }">
+                ${timeStr}
+              </div>
+              <div class="text-xs font-mono text-slate-400 mt-1">
+                ${dateStr}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-500">
+              <span>TZ: ${city.tz}</span>
+              <button onclick="navigator.clipboard.writeText('${city.name}: ${timeStr} (${dateStr})'); showToast('Time copied');" class="text-slate-400 hover:text-cyan-400 transition-colors">
+                <i class="fa-solid fa-copy mr-1"></i>Copy
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Tab Switching
+    function switchClockTab(tab) {
+      ['world', 'stopwatch', 'timer'].forEach(t => {
+        const sec = document.getElementById(`section${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === tab) {
+          sec.classList.remove('hidden');
+          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+        }
+      });
+    }
+
+    // Stopwatch Logic
+    let swInterval = null;
+    let swStartTime = 0;
+    let swElapsedTime = 0;
+    let swLaps = [];
+
+    function toggleStopwatch() {
+      const btn = document.getElementById('swStartBtn');
+      const lapBtn = document.getElementById('swLapBtn');
+
+      if (!swInterval) {
+        swStartTime = Date.now() - swElapsedTime;
+        swInterval = setInterval(updateStopwatchDisplay, 10);
+        btn.textContent = 'Pause';
+        btn.className = 'px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md transition-all';
+        lapBtn.disabled = false;
+        lapBtn.className = 'px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500 text-slate-300 hover:text-cyan-400 text-xs font-semibold cursor-pointer';
+      } else {
+        clearInterval(swInterval);
+        swInterval = null;
+        btn.textContent = 'Resume';
+        btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+      }
+    }
+
+    function updateStopwatchDisplay() {
+      swElapsedTime = Date.now() - swStartTime;
+      const ms = Math.floor((swElapsedTime % 1000) / 10);
+      const secs = Math.floor((swElapsedTime / 1000) % 60);
+      const mins = Math.floor((swElapsedTime / (1000 * 60)) % 60);
+      const hrs = Math.floor(swElapsedTime / (1000 * 60 * 60));
+
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('stopwatchDisplay').textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}.${pad(ms)}`;
+    }
+
+    function recordLap() {
+      if (!swInterval) return;
+      const current = document.getElementById('stopwatchDisplay').textContent;
+      swLaps.unshift(current);
+      const container = document.getElementById('lapHistory');
+      container.innerHTML = swLaps.map((lap, i) => `
+        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800">
+          <span class="text-slate-400">Lap ${swLaps.length - i}</span>
+          <span class="text-cyan-400 font-bold">${lap}</span>
+        </div>
+      `).join('');
+    }
+
+    function resetStopwatch() {
+      clearInterval(swInterval);
+      swInterval = null;
+      swElapsedTime = 0;
+      swLaps = [];
+      document.getElementById('stopwatchDisplay').textContent = '00:00:00.00';
+      document.getElementById('lapHistory').innerHTML = '';
+      const btn = document.getElementById('swStartBtn');
+      btn.textContent = 'Start';
+      btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+      const lapBtn = document.getElementById('swLapBtn');
+      lapBtn.disabled = true;
+      lapBtn.className = 'px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs font-semibold cursor-not-allowed';
+    }
+
+    // Countdown Timer
+    let timerInterval = null;
+    let timerRemainingSecs = 0;
+
+    function setTimerPreset(mins) {
+      document.getElementById('timerHours').value = '00';
+      document.getElementById('timerMins').value = String(mins).padStart(2, '0');
+      document.getElementById('timerSecs').value = '00';
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timerStartBtn');
+      const inputGroup = document.getElementById('timerInputGroup');
+      const display = document.getElementById('timerDisplay');
+
+      if (!timerInterval) {
+        if (timerRemainingSecs === 0) {
+          const h = parseInt(document.getElementById('timerHours').value, 10) || 0;
+          const m = parseInt(document.getElementById('timerMins').value, 10) || 0;
+          const s = parseInt(document.getElementById('timerSecs').value, 10) || 0;
+          timerRemainingSecs = (h * 3600) + (m * 60) + s;
+        }
+
+        if (timerRemainingSecs <= 0) {
+          showToast('Please set a duration greater than 0');
+          return;
+        }
+
+        inputGroup.classList.add('hidden');
+        display.classList.remove('hidden');
+        btn.textContent = 'Pause Timer';
+        btn.className = 'px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md transition-all';
+
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+          timerRemainingSecs--;
+          updateTimerDisplay();
+          if (timerRemainingSecs <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            playChime();
+            showToast('Timer Complete!');
+            resetTimer();
+          }
+        }, 1000);
+      } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = 'Resume Timer';
+        btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+      }
+    }
+
+    function updateTimerDisplay() {
+      const hrs = Math.floor(timerRemainingSecs / 3600);
+      const mins = Math.floor((timerRemainingSecs % 3600) / 60);
+      const secs = timerRemainingSecs % 60;
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRemainingSecs = 0;
+      document.getElementById('timerInputGroup').classList.remove('hidden');
+      document.getElementById('timerDisplay').classList.add('hidden');
+      const btn = document.getElementById('timerStartBtn');
+      btn.textContent = 'Start Timer';
+      btn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold text-xs shadow-md transition-all';
+    }
+
+    // Audio chime with Web Audio API
+    function playChime() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) {}
+    }
+
+    // Main clock loop (runs every second)
+    setInterval(() => {
+      if (simulatedOffsetHours === 0) {
+        renderClocks();
+      }
+    }, 1000);
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      renderClocks();
+    });
+  </script>
+</body>
+</html>

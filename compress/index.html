@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // compress - In-Browser Canvas Image Compressor & WebP Converter</title>
+  <meta name="description" content="100% client-side image compression and format converter. Convert JPG/PNG to modern WebP with zero quality loss and instant byte savings.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 10% 80%, rgba(16, 185, 129, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Checkerboard background for transparent PNG/WebP */
+    .checkerboard {
+      background-color: #0b0f19;
+      background-image: 
+        linear-gradient(45deg, #161f30 25%, transparent 25%), 
+        linear-gradient(-45deg, #161f30 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #161f30 75%), 
+        linear-gradient(-45deg, transparent 75%, #161f30 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-file-image text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">compress</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">100% LOCAL CANVAS • ZERO UPLOAD</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Header & Quick Info -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
+          <i class="fa-solid fa-bolt text-xs"></i>
+          <span>HTML5 Canvas 2D Engine</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">Pure Browser-Side Image Compressor & WebP Converter</h1>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-mono text-slate-400">
+        <span class="p-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800">
+          <i class="fa-solid fa-keyboard mr-1 text-cyan-400"></i> Tip: Press Ctrl+V to paste screenshot
+        </span>
+      </div>
+    </div>
+
+    <!-- Drag & Drop Upload Zone (Interactive) -->
+    <div id="dropZone" class="glass-card rounded-2xl p-8 border-2 border-dashed border-slate-800 hover:border-cyan-500/60 transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer group bg-slate-950/40" onclick="document.getElementById('fileInput').click()">
+      <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/15">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
+          Click to upload or drag & drop image here
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Supports JPEG, PNG, WEBP, AVIF, GIF, BMP, SVG</p>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- Compression Controls & Live Preview (Shown when image loaded) -->
+    <div id="workspaceSection" class="hidden space-y-6">
+      
+      <!-- Metrics & Savings Banner -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border-cyan-500/30 neon-cyan-glow">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center font-mono text-xs">
+          <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Original Size</span>
+            <span id="statOrigSize" class="text-slate-200 text-sm font-bold mt-0.5 block">--</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Compressed Size</span>
+            <span id="statCompSize" class="text-cyan-400 text-sm font-bold mt-0.5 block">--</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40">
+            <span class="text-emerald-400 text-[10px] uppercase block font-semibold">Total Savings</span>
+            <span id="statSavingsPct" class="text-emerald-300 text-sm font-bold mt-0.5 block">0%</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Output Format</span>
+            <span id="statFormatBadge" class="text-indigo-400 text-sm font-bold mt-0.5 block uppercase">WEBP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings & Controls Bar -->
+      <div class="glass-card rounded-2xl p-5 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <span class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Optimization Tuning</span>
+          <button onclick="resetSliders()" class="text-xs text-slate-400 hover:text-cyan-400 transition-colors">
+            <i class="fa-solid fa-rotate-left mr-1"></i>Reset Defaults
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-xs">
+          
+          <!-- Quality Slider -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-medium text-slate-300">Compression Quality</label>
+              <span id="qualityValLabel" class="text-cyan-400 font-mono font-bold">80%</span>
+            </div>
+            <input type="range" id="sliderQuality" min="5" max="100" value="80" oninput="onQualitySliderChanged()" class="w-full accent-cyan-400 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+              <span>Smallest File</span>
+              <span>Balanced</span>
+              <span>Ultra HD</span>
+            </div>
+          </div>
+
+          <!-- Format Selector -->
+          <div class="space-y-2">
+            <label class="font-medium text-slate-300">Target Image Format</label>
+            <select id="selectFormat" onchange="compressImage()" class="w-full px-3 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-200 text-xs outline-none focus:border-cyan-500">
+              <option value="image/webp" selected>WebP (Recommended - 80% smaller)</option>
+              <option value="image/jpeg">JPEG / JPG</option>
+              <option value="image/png">PNG (Lossless Canvas)</option>
+            </select>
+          </div>
+
+          <!-- Max Width -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-medium text-slate-300">Max Width (px)</label>
+              <span id="origWidthLabel" class="text-slate-500 font-mono text-[11px]">Orig: --</span>
+            </div>
+            <input type="number" id="inputMaxWidth" placeholder="Auto" onchange="onDimensionChanged('width')" class="w-full px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-200 text-xs outline-none focus:border-cyan-500 font-mono">
+          </div>
+
+          <!-- Max Height -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-medium text-slate-300">Max Height (px)</label>
+              <span id="origHeightLabel" class="text-slate-500 font-mono text-[11px]">Orig: --</span>
+            </div>
+            <input type="number" id="inputMaxHeight" placeholder="Auto" onchange="onDimensionChanged('height')" class="w-full px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-200 text-xs outline-none focus:border-cyan-500 font-mono">
+          </div>
+
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between pt-1 text-xs text-slate-400 border-t border-slate-800/60">
+          <label class="flex items-center space-x-2 cursor-pointer hover:text-slate-200">
+            <input type="checkbox" id="checkAspectRatio" checked class="rounded bg-slate-900 border-slate-800 text-cyan-500">
+            <span>Maintain Aspect Ratio Proportions</span>
+          </label>
+          <div class="flex items-center space-x-2 mt-2 sm:mt-0">
+            <button onclick="downloadCompressed()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-download"></i>
+              <span>Download Compressed</span>
+            </button>
+            <button onclick="copyDataUri()" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-copy"></i>
+              <span>Copy Data URI</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Visual Side-by-Side Comparison Stage -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        
+        <!-- Original Image Card -->
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800">
+            <span class="text-slate-200 font-semibold">Original Image</span>
+            <span id="origDimBadge">0 x 0 px</span>
+          </div>
+          <div class="checkerboard rounded-xl p-2 flex items-center justify-center min-h-[300px] max-h-[460px] overflow-hidden">
+            <img id="previewOrig" class="max-h-[420px] max-w-full object-contain rounded-lg" alt="Original">
+          </div>
+        </div>
+
+        <!-- Compressed Image Card -->
+        <div class="glass-card rounded-2xl p-4 space-y-3 neon-cyan-glow border-cyan-500/20">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800">
+            <span class="text-cyan-400 font-semibold">Optimized Preview</span>
+            <span id="compDimBadge">0 x 0 px</span>
+          </div>
+          <div class="checkerboard rounded-xl p-2 flex items-center justify-center min-h-[300px] max-h-[460px] overflow-hidden">
+            <img id="previewComp" class="max-h-[420px] max-w-full object-contain rounded-lg" alt="Compressed">
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'compress';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Image Compressor State
+    let originalImage = null;
+    let originalFile = null;
+    let compressedBlob = null;
+    let compressedDataUrl = '';
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) processLoadedImage(file);
+    }
+
+    // Drag and Drop
+    const dropZone = document.getElementById('dropZone');
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-cyan-400', 'bg-cyan-950/20');
+      });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-cyan-400', 'bg-cyan-950/20');
+      });
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) processLoadedImage(file);
+    });
+
+    // Paste from clipboard (Ctrl+V)
+    window.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            processLoadedImage(file);
+            showToast('Pasted image from clipboard');
+            break;
+          }
+        }
+      }
+    });
+
+    function processLoadedImage(file) {
+      originalFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          originalImage = img;
+          document.getElementById('workspaceSection').classList.remove('hidden');
+          document.getElementById('previewOrig').src = e.target.result;
+          document.getElementById('statOrigSize').textContent = formatBytes(file.size);
+          document.getElementById('origDimBadge').textContent = `${img.naturalWidth} x ${img.naturalHeight} px`;
+          document.getElementById('origWidthLabel').textContent = `Orig: ${img.naturalWidth}px`;
+          document.getElementById('origHeightLabel').textContent = `Orig: ${img.naturalHeight}px`;
+
+          document.getElementById('inputMaxWidth').value = img.naturalWidth;
+          document.getElementById('inputMaxHeight').value = img.naturalHeight;
+
+          compressImage();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onQualitySliderChanged() {
+      const val = document.getElementById('sliderQuality').value;
+      document.getElementById('qualityValLabel').textContent = `${val}%`;
+      compressImage();
+    }
+
+    function onDimensionChanged(changedAxis) {
+      if (!originalImage) return;
+      const keepRatio = document.getElementById('checkAspectRatio').checked;
+      const origW = originalImage.naturalWidth;
+      const origH = originalImage.naturalHeight;
+      const ratio = origW / origH;
+
+      const wInput = document.getElementById('inputMaxWidth');
+      const hInput = document.getElementById('inputMaxHeight');
+
+      if (keepRatio) {
+        if (changedAxis === 'width' && wInput.value) {
+          hInput.value = Math.round(wInput.value / ratio);
+        } else if (changedAxis === 'height' && hInput.value) {
+          wInput.value = Math.round(hInput.value * ratio);
+        }
+      }
+      compressImage();
+    }
+
+    function resetSliders() {
+      if (!originalImage) return;
+      document.getElementById('sliderQuality').value = 80;
+      document.getElementById('qualityValLabel').textContent = '80%';
+      document.getElementById('selectFormat').value = 'image/webp';
+      document.getElementById('inputMaxWidth').value = originalImage.naturalWidth;
+      document.getElementById('inputMaxHeight').value = originalImage.naturalHeight;
+      compressImage();
+      showToast('Settings reset to default');
+    }
+
+    function compressImage() {
+      if (!originalImage) return;
+
+      const quality = parseInt(document.getElementById('sliderQuality').value, 10) / 100;
+      const mimeType = document.getElementById('selectFormat').value;
+      let targetW = parseInt(document.getElementById('inputMaxWidth').value, 10) || originalImage.naturalWidth;
+      let targetH = parseInt(document.getElementById('inputMaxHeight').value, 10) || originalImage.naturalHeight;
+
+      // Ensure minimum dimensions
+      targetW = Math.max(1, targetW);
+      targetH = Math.max(1, targetH);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+
+      // High quality smoothing
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // If output is JPEG and original has transparency, fill with white or black
+      if (mimeType === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, targetW, targetH);
+      }
+
+      ctx.drawImage(originalImage, 0, 0, targetW, targetH);
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        compressedBlob = blob;
+        compressedDataUrl = canvas.toDataURL(mimeType, quality);
+        
+        document.getElementById('previewComp').src = compressedDataUrl;
+        document.getElementById('statCompSize').textContent = formatBytes(blob.size);
+        document.getElementById('compDimBadge').textContent = `${targetW} x ${targetH} px`;
+
+        // Format label
+        const ext = mimeType.split('/')[1].toUpperCase();
+        document.getElementById('statFormatBadge').textContent = ext;
+
+        // Calculate Savings
+        const origSize = originalFile.size;
+        const compSize = blob.size;
+        const diff = origSize - compSize;
+        const savingsPct = Math.round((diff / origSize) * 100);
+
+        const savingsEl = document.getElementById('statSavingsPct');
+        if (savingsPct >= 0) {
+          savingsEl.textContent = `-${savingsPct}% (${formatBytes(diff)})`;
+          savingsEl.className = 'text-emerald-300 text-sm font-bold mt-0.5 block';
+        } else {
+          savingsEl.textContent = `+${Math.abs(savingsPct)}% (Larger)`;
+          savingsEl.className = 'text-amber-400 text-sm font-bold mt-0.5 block';
+        }
+      }, mimeType, quality);
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function downloadCompressed() {
+      if (!compressedBlob) return;
+      const mimeType = document.getElementById('selectFormat').value;
+      const ext = mimeType === 'image/webp' ? 'webp' : (mimeType === 'image/png' ? 'png' : 'jpg');
+      
+      let baseName = 'compressed-image';
+      if (originalFile && originalFile.name) {
+        baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+      }
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(compressedBlob);
+      a.download = `${baseName}-sarwarfx.${ext}`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('Image downloaded successfully');
+    }
+
+    function copyDataUri() {
+      if (!compressedDataUrl) return;
+      navigator.clipboard.writeText(compressedDataUrl);
+      showToast('Base64 Data URI copied to clipboard');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+    });
+  </script>
+</body>
+</html>

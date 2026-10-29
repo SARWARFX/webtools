@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sarwarfx // json - JSON Formatter, Validator & Tree Viewer</title>
+  <meta name="description" content="100% client-side JSON prettifier, syntax validator with line/column pointer, collapsible tree inspector, and minifier.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322d3ee'><path d='M4 5v14h4v-2H6V7h2V5H4zm12 0v2h2v10h-2v2h4V5h-4zm-7 6h2v2H9v-2zm4 0h2v2h-2v-2z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            card: 'rgba(15, 23, 42, 0.65)',
+            borderGlow: 'rgba(51, 65, 85, 0.7)',
+            cyanGlow: '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      background-image: 
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34, 211, 238, 0.12), transparent),
+        radial-gradient(circle at 10% 80%, rgba(59, 130, 246, 0.08), transparent);
+      min-height: 100vh;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    .neon-cyan-glow {
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    }
+    /* Tree view styling */
+    .tree-node {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .tree-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+    .tree-toggle:hover {
+      color: #22d3ee;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+          <i class="fa-solid fa-code text-base"></i>
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="font-extrabold tracking-tight text-white text-base">sarwarfx</span>
+          <span class="text-cyan-400 font-mono text-sm font-bold">//</span>
+          <span class="font-semibold text-slate-300 text-sm tracking-wide">json</span>
+        </div>
+      </a>
+
+      <!-- Center Status Badge -->
+      <div class="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 font-mono">100% IN-BROWSER • ZERO TELEMETRY</span>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 text-slate-300 text-xs font-medium transition-all cursor-pointer">
+          <i class="fa-solid fa-grid-2"></i>
+          <span>Suite (10)</span>
+        </button>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all text-sm" title="View on GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+    <!-- Hero Title & Quick Actions Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono mb-1">
+          <i class="fa-solid fa-brackets-curly text-xs"></i>
+          <span>Syntax Diagnostic & Interactive Tree</span>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">JSON Formatter, Validator & Tree Viewer</h1>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadSampleJson()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-flask text-cyan-400"></i>
+          <span>Sample</span>
+        </button>
+        <label for="jsonFileInput" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-upload"></i>
+          <span>Upload</span>
+          <input type="file" id="jsonFileInput" accept=".json,.txt" class="hidden" onchange="handleFileUpload(event)">
+        </label>
+        <button onclick="downloadJsonFile()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-download"></i>
+          <span>Download</span>
+        </button>
+        <button onclick="clearAll()" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-rose-950/40 hover:border-rose-800/50 text-slate-400 hover:text-rose-400 text-xs transition-all">
+          <i class="fa-solid fa-trash mr-1"></i> Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Banner (Hidden by default, shown when invalid JSON) -->
+    <div id="errorBanner" class="hidden p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 text-rose-300 text-xs font-mono space-y-1.5 transition-all">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 font-bold text-rose-400">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="errorTitle">JSON Syntax Error Detected</span>
+        </div>
+        <span id="errorCoords" class="px-2 py-0.5 rounded bg-rose-900/50 text-rose-200 text-[11px] font-semibold">Line: -- | Col: --</span>
+      </div>
+      <div id="errorMessage" class="text-rose-200/90 pl-6">Unexpected token at position...</div>
+    </div>
+
+    <!-- Workspace Controls Bar -->
+    <div class="glass-card rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      
+      <!-- Left Format Mode Options -->
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-mono">Format:</span>
+        <button onclick="formatJson(2)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">2 Spaces</button>
+        <button onclick="formatJson(4)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">4 Spaces</button>
+        <button onclick="formatJson('\t')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Tabs</button>
+        <button onclick="minifyJson()" class="px-2.5 py-1 rounded-lg bg-cyan-950/30 hover:bg-cyan-900/40 text-cyan-400 border border-cyan-800/40">Minify (1-line)</button>
+      </div>
+
+      <!-- Right Output View Toggles -->
+      <div class="flex items-center space-x-2">
+        <div class="p-0.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center">
+          <button id="viewCodeBtn" onclick="switchOutputView('code')" class="px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold">
+            <i class="fa-solid fa-code mr-1"></i> Text Code
+          </button>
+          <button id="viewTreeBtn" onclick="switchOutputView('tree')" class="px-3 py-1 rounded-md text-slate-400 hover:text-white">
+            <i class="fa-solid fa-network-wired mr-1"></i> Tree Inspector
+          </button>
+        </div>
+        <button onclick="copyFormattedJson()" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-medium">
+          <i class="fa-solid fa-copy mr-1"></i> Copy
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Main Dual Editor / Viewer Stage -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      
+      <!-- Left Panel: Raw Input Editor -->
+      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[500px]">
+        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
+          <span class="flex items-center gap-1.5 text-slate-200 font-semibold">
+            <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Raw JSON Input
+          </span>
+          <span id="inputCharCount">0 characters</span>
+        </div>
+
+        <textarea 
+          id="jsonInput" 
+          placeholder="Paste or type raw JSON here..."
+          class="flex-1 w-full bg-slate-950/80 border border-slate-800/80 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 rounded-xl p-3.5 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed"
+          oninput="onInputChanged()"></textarea>
+      </div>
+
+      <!-- Right Panel: Formatted Output / Interactive Tree -->
+      <div class="glass-card rounded-2xl p-4 flex flex-col space-y-3 min-h-[500px] border-cyan-500/20 neon-cyan-glow">
+        
+        <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800/80">
+          <span class="flex items-center gap-1.5 text-slate-200 font-semibold">
+            <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> 
+            <span id="outputTitle">Formatted Output</span>
+          </span>
+
+          <div class="flex items-center space-x-3">
+            <span id="jsonMetrics" class="text-cyan-400">Valid JSON</span>
+          </div>
+        </div>
+
+        <!-- Code View -->
+        <div id="codeViewContainer" class="flex-1 relative">
+          <pre id="jsonOutputPre" class="w-full h-full max-h-[460px] overflow-auto bg-slate-950/90 border border-slate-800/80 rounded-xl p-3.5 text-xs font-mono text-slate-200 leading-relaxed select-text"></pre>
+        </div>
+
+        <!-- Tree View -->
+        <div id="treeViewContainer" class="hidden flex-1 flex flex-col space-y-2">
+          <!-- Tree Search Bar -->
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+            <input type="text" id="treeSearchInput" oninput="filterTreeNodes()" placeholder="Search keys or values in tree..." class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-200 placeholder-slate-500 outline-none">
+          </div>
+
+          <!-- Tree Actions -->
+          <div class="flex items-center space-x-2 text-[11px] text-slate-400">
+            <button onclick="expandAllTreeNodes()" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-square-plus mr-1"></i>Expand All</button>
+            <span>•</span>
+            <button onclick="collapseAllTreeNodes()" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-square-minus mr-1"></i>Collapse All</button>
+          </div>
+
+          <div id="treeContent" class="flex-1 max-h-[420px] overflow-auto bg-slate-950/90 border border-slate-800/80 rounded-xl p-3.5 space-y-1 tree-node"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- JSON Statistics Footer Strip -->
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs">
+      <div class="glass-card rounded-xl p-3">
+        <div class="text-slate-500 text-[10px] uppercase">Total Size</div>
+        <div id="statSize" class="text-white font-bold mt-0.5">0 B</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <div class="text-slate-500 text-[10px] uppercase">Total Keys</div>
+        <div id="statKeys" class="text-white font-bold mt-0.5">0</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <div class="text-slate-500 text-[10px] uppercase">Objects</div>
+        <div id="statObjects" class="text-cyan-400 font-bold mt-0.5">0</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <div class="text-slate-500 text-[10px] uppercase">Arrays</div>
+        <div id="statArrays" class="text-indigo-400 font-bold mt-0.5">0</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <div class="text-slate-500 text-[10px] uppercase">Max Depth</div>
+        <div id="statDepth" class="text-emerald-400 font-bold mt-0.5">0</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Suite Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all opacity-0">
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-grid-2"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white tracking-wide">sarwarfx <span class="text-cyan-400">//</span> webtools suite</h2>
+            <p class="text-xs text-slate-400">10 Client-Side Micro-Utilities • Zero Build • Hosted on Cloudflare Pages</p>
+          </div>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4" id="suiteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-slate-400 font-semibold">sarwarfx // webtools</span>
+        <span>•</span>
+        <span>Zero Backend • 100% Client-Side Privacy</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Cloudflare Pages Static Monorepo</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    const CURRENT_TOOL_ID = 'json';
+    const TOOLS = [
+      { id: 'speed', name: 'Speed Test', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'speed.sarwarfx.cfd' },
+      { id: 'qr', name: 'QR Suite', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'qr.sarwarfx.cfd' },
+      { id: 'json', name: 'JSON Formatter', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'json.sarwarfx.cfd' },
+      { id: 'ip', name: 'IP & Network', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'ip.sarwarfx.cfd' },
+      { id: 'diff', name: 'Code & Text Diff', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'diff.sarwarfx.cfd' },
+      { id: 'compress', name: 'Image Compressor', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'compress.sarwarfx.cfd' },
+      { id: 'base64', name: 'Base64 Suite', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'base64.sarwarfx.cfd' },
+      { id: 'clean', name: 'Text Cleaner', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'clean.sarwarfx.cfd' },
+      { id: 'clock', name: 'World Clock', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'clock.sarwarfx.cfd' },
+      { id: 'calc', name: 'Dev & Finance Calc', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'calc.sarwarfx.cfd' },
+    ];
+
+    function getToolHref(tool) {
+      const isSubdomain = window.location.hostname.endsWith('sarwarfx.cfd');
+      return isSubdomain ? `https://${tool.subdomain}/` : `../${tool.id}/index.html`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3.5 rounded-xl border transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.15)] cursor-default' 
+              : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 cursor-pointer'
+          }">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+              isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400 group-hover:bg-cyan-500/10'
+            }">
+              <i class="fa-solid ${tool.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">${tool.name}</span>
+                ${isActive ? '<span class="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-snug truncate">${tool.desc}</p>
+              <span class="text-[10px] font-mono text-slate-500 mt-1 block">${tool.subdomain}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-medium border bg-slate-900/95 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 text-slate-200 border-cyan-500/40`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // JSON Formatter & Validator Core
+    let parsedJsonCache = null;
+    let currentIndent = 2;
+
+    const SAMPLE_JSON = {
+      "project": "sarwarfx-webtools",
+      "version": "1.0.0",
+      "active": true,
+      "hosting": {
+        "platform": "Cloudflare Pages",
+        "zeroBuild": true,
+        "primaryDomain": "sarwarfx.cfd",
+        "edgeNodes": 280
+      },
+      "utilities": [
+        { "name": "speed", "subdomain": "speed.sarwarfx.cfd", "status": "online" },
+        { "name": "qr", "subdomain": "qr.sarwarfx.cfd", "status": "online" },
+        { "name": "json", "subdomain": "json.sarwarfx.cfd", "status": "online" }
+      ],
+      "metrics": {
+        "clientPrivacy": 100,
+        "serverLatencyMs": 0,
+        "externalTelemetry": null
+      }
+    };
+
+    function loadSampleJson() {
+      const input = document.getElementById('jsonInput');
+      input.value = JSON.stringify(SAMPLE_JSON, null, 2);
+      onInputChanged();
+      showToast('Loaded sample JSON dataset');
+    }
+
+    function onInputChanged() {
+      const text = document.getElementById('jsonInput').value;
+      document.getElementById('inputCharCount').textContent = `${text.length} characters`;
+
+      if (!text.trim()) {
+        hideError();
+        document.getElementById('jsonOutputPre').textContent = '';
+        document.getElementById('treeContent').innerHTML = '';
+        parsedJsonCache = null;
+        updateMetrics(null);
+        return;
+      }
+
+      try {
+        parsedJsonCache = JSON.parse(text);
+        hideError();
+        renderFormattedOutput();
+        renderTreeView();
+        updateMetrics(parsedJsonCache, text.length);
+      } catch (err) {
+        showError(err, text);
+        parsedJsonCache = null;
+      }
+    }
+
+    function showError(err, text) {
+      const banner = document.getElementById('errorBanner');
+      const msg = document.getElementById('errorMessage');
+      const coords = document.getElementById('errorCoords');
+      banner.classList.remove('hidden');
+
+      // Attempt to extract line and column
+      let line = 1, col = 1;
+      const matchPos = err.message.match(/position\s+(\d+)/i);
+      if (matchPos) {
+        const pos = parseInt(matchPos[1], 10);
+        const upToError = text.slice(0, pos);
+        const lines = upToError.split('\n');
+        line = lines.length;
+        col = lines[lines.length - 1].length + 1;
+      }
+
+      coords.textContent = `Line ${line} : Col ${col}`;
+      msg.textContent = err.message;
+      document.getElementById('jsonMetrics').innerHTML = `<span class="text-rose-400 font-semibold"><i class="fa-solid fa-circle-xmark mr-1"></i>Invalid Syntax</span>`;
+    }
+
+    function hideError() {
+      document.getElementById('errorBanner').classList.add('hidden');
+      document.getElementById('jsonMetrics').innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i>Valid JSON</span>`;
+    }
+
+    function formatJson(indent) {
+      currentIndent = indent;
+      if (parsedJsonCache) {
+        const formatted = JSON.stringify(parsedJsonCache, null, indent);
+        document.getElementById('jsonInput').value = formatted;
+        onInputChanged();
+        showToast(`Formatted with ${indent === '\t' ? 'Tabs' : indent + ' spaces'}`);
+      } else {
+        showToast('Please provide valid JSON first');
+      }
+    }
+
+    function minifyJson() {
+      if (parsedJsonCache) {
+        const minified = JSON.stringify(parsedJsonCache);
+        document.getElementById('jsonInput').value = minified;
+        onInputChanged();
+        showToast('Minified JSON onto a single line');
+      } else {
+        showToast('Please provide valid JSON first');
+      }
+    }
+
+    function renderFormattedOutput() {
+      if (!parsedJsonCache) return;
+      const formatted = JSON.stringify(parsedJsonCache, null, currentIndent);
+      document.getElementById('jsonOutputPre').textContent = formatted;
+    }
+
+    // Switch between Code View and Tree View
+    function switchOutputView(view) {
+      const codeView = document.getElementById('codeViewContainer');
+      const treeView = document.getElementById('treeViewContainer');
+      const codeBtn = document.getElementById('viewCodeBtn');
+      const treeBtn = document.getElementById('viewTreeBtn');
+      const outputTitle = document.getElementById('outputTitle');
+
+      if (view === 'code') {
+        codeView.classList.remove('hidden');
+        treeView.classList.add('hidden');
+        codeBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
+        treeBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
+        outputTitle.textContent = 'Formatted Code';
+      } else {
+        codeView.classList.add('hidden');
+        treeView.classList.remove('hidden');
+        treeBtn.className = 'px-3 py-1 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold';
+        codeBtn.className = 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
+        outputTitle.textContent = 'Interactive Tree Inspector';
+        if (parsedJsonCache) renderTreeView();
+      }
+    }
+
+    // Interactive Tree Builder
+    function renderTreeView() {
+      const container = document.getElementById('treeContent');
+      if (!parsedJsonCache) {
+        container.innerHTML = '<div class="text-slate-500 p-4">No valid JSON loaded.</div>';
+        return;
+      }
+      container.innerHTML = createTreeHtml(parsedJsonCache, 'root');
+    }
+
+    function createTreeHtml(val, keyName = '', depth = 0) {
+      if (val === null) {
+        return `<div class="pl-4"><span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span><span class="text-rose-400 font-bold">null</span></div>`;
+      }
+      const type = typeof val;
+      if (type === 'string') {
+        return `<div class="pl-4"><span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span><span class="text-emerald-400">"${escapeHtml(val)}"</span></div>`;
+      }
+      if (type === 'number') {
+        return `<div class="pl-4"><span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span><span class="text-cyan-400 font-bold">${val}</span></div>`;
+      }
+      if (type === 'boolean') {
+        return `<div class="pl-4"><span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span><span class="text-amber-400 font-bold">${val}</span></div>`;
+      }
+
+      if (Array.isArray(val)) {
+        const id = 'tree_' + Math.random().toString(36).substr(2, 9);
+        return `
+          <div class="tree-item pl-4">
+            <span class="tree-toggle text-cyan-400 font-semibold" onclick="toggleTreeNode('${id}')">
+              <i class="fa-solid fa-caret-down mr-1"></i>
+              <span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span>
+              <span class="text-slate-400 font-mono">[${val.length}]</span>
+            </span>
+            <div id="${id}" class="tree-children border-l border-slate-800 ml-1.5 pl-2 mt-0.5 space-y-0.5">
+              ${val.map((item, idx) => createTreeHtml(item, String(idx), depth + 1)).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (type === 'object') {
+        const keys = Object.keys(val);
+        const id = 'tree_' + Math.random().toString(36).substr(2, 9);
+        return `
+          <div class="tree-item pl-4">
+            <span class="tree-toggle text-cyan-400 font-semibold" onclick="toggleTreeNode('${id}')">
+              <i class="fa-solid fa-caret-down mr-1"></i>
+              <span class="text-indigo-400">${keyName ? `"${keyName}": ` : ''}</span>
+              <span class="text-slate-400 font-mono">{${keys.length}}</span>
+            </span>
+            <div id="${id}" class="tree-children border-l border-slate-800 ml-1.5 pl-2 mt-0.5 space-y-0.5">
+              ${keys.map(k => createTreeHtml(val[k], k, depth + 1)).join('')}
+            </div>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function toggleTreeNode(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('hidden');
+      const icon = el.previousElementSibling.querySelector('i');
+      if (icon) {
+        icon.className = el.classList.contains('hidden') ? 'fa-solid fa-caret-right mr-1' : 'fa-solid fa-caret-down mr-1';
+      }
+    }
+
+    function expandAllTreeNodes() {
+      document.querySelectorAll('.tree-children').forEach(el => el.classList.remove('hidden'));
+      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-down mr-1');
+    }
+
+    function collapseAllTreeNodes() {
+      document.querySelectorAll('.tree-children').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tree-toggle i').forEach(icon => icon.className = 'fa-solid fa-caret-right mr-1');
+    }
+
+    function filterTreeNodes() {
+      const q = document.getElementById('treeSearchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.tree-item').forEach(item => {
+        if (!q) {
+          item.style.display = '';
+          return;
+        }
+        item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Stats Counter
+    function updateMetrics(obj, byteSize = 0) {
+      if (!obj) {
+        document.getElementById('statSize').textContent = '0 B';
+        document.getElementById('statKeys').textContent = '0';
+        document.getElementById('statObjects').textContent = '0';
+        document.getElementById('statArrays').textContent = '0';
+        document.getElementById('statDepth').textContent = '0';
+        return;
+      }
+
+      let keys = 0, objects = 0, arrays = 0, maxDepth = 0;
+
+      function traverse(o, depth) {
+        if (depth > maxDepth) maxDepth = depth;
+        if (Array.isArray(o)) {
+          arrays++;
+          o.forEach(item => traverse(item, depth + 1));
+        } else if (typeof o === 'object' && o !== null) {
+          objects++;
+          const k = Object.keys(o);
+          keys += k.length;
+          k.forEach(key => traverse(o[key], depth + 1));
+        }
+      }
+
+      traverse(obj, 1);
+
+      document.getElementById('statSize').textContent = formatBytes(byteSize);
+      document.getElementById('statKeys').textContent = keys;
+      document.getElementById('statObjects').textContent = objects;
+      document.getElementById('statArrays').textContent = arrays;
+      document.getElementById('statDepth').textContent = maxDepth;
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    // File Operations
+    function copyFormattedJson() {
+      const text = document.getElementById('jsonOutputPre').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      showToast('Formatted JSON copied to clipboard');
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        document.getElementById('jsonInput').value = ev.target.result;
+        onInputChanged();
+        showToast(`Loaded ${file.name}`);
+      };
+      reader.readAsText(file);
+    }
+
+    function downloadJsonFile() {
+      const text = document.getElementById('jsonOutputPre').textContent || document.getElementById('jsonInput').value;
+      if (!text) {
+        showToast('No JSON to download');
+        return;
+      }
+      const blob = new Blob([text], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sarwarfx-data-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('JSON file downloaded');
+    }
+
+    function clearAll() {
+      document.getElementById('jsonInput').value = '';
+      onInputChanged();
+      showToast('Editor cleared');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleJson();
+    });
+  </script>
+</body>
+</html>
