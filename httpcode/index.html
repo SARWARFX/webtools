@@ -46,7 +46,7 @@
     }
   }
   </script>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%2305070d"/><rect x="25" y="25" width="50" height="50" rx="8" stroke="%2300f5ff" stroke-width="6" fill="none"/><text x="50" y="58" font-family="monospace" font-size="22" font-weight="bold" fill="%2300ff9d" text-anchor="middle">200</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2305070d%22/><rect x=%2225%22 y=%2225%22 width=%2250%22 height=%2250%22 rx=%228%22 stroke=%22%2300f5ff%22 stroke-width=%226%22 fill=%22none%22/><text x=%2250%22 y=%2258%22 font-family=%22monospace%22 font-size=%2222%22 font-weight=%22bold%22 fill=%22%2300ff9d%22 text-anchor=%22middle%22>200</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,21 +220,20 @@
         </div>
         <input 
           type="text" 
-          id="codeSearchInput" 
+          id="search-input" 
           placeholder="SEARCH STATUS CODES [404, 522, unauthorized, gateway, teapot, timeout]..." 
-          oninput="filterCodes()" 
           class="w-full bg-slate-950 border border-slate-800 rounded pl-9 pr-4 py-2.5 text-xs font-mono text-cyan-300 placeholder-slate-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all uppercase">
       </div>
 
       <!-- Class Category Tabs -->
       <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-[11px]" id="filterTabs">
-        <button onclick="setFilter('ALL')" data-filter="ALL" class="px-3 py-1.5 rounded font-bold transition-all bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 shrink-0">ALL CODES</button>
-        <button onclick="setFilter('1xx')" data-filter="1xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">1xx INFO</button>
-        <button onclick="setFilter('2xx')" data-filter="2xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">2xx SUCCESS</button>
-        <button onclick="setFilter('3xx')" data-filter="3xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">3xx REDIRECT</button>
-        <button onclick="setFilter('4xx')" data-filter="4xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">4xx CLIENT</button>
-        <button onclick="setFilter('5xx')" data-filter="5xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">5xx SERVER</button>
-        <button onclick="setFilter('EDGE')" data-filter="EDGE" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0">CLOUDFLARE / EDGE</button>
+        <button onclick="setCategory('ALL')" data-category="ALL" class="active px-3 py-1.5 rounded font-bold transition-all bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 shrink-0 shadow-[0_0_12px_rgba(0,245,255,0.25)]">ALL CODES</button>
+        <button onclick="setCategory('1xx')" data-category="1xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">1xx INFO</button>
+        <button onclick="setCategory('2xx')" data-category="2xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">2xx SUCCESS</button>
+        <button onclick="setCategory('3xx')" data-category="3xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">3xx REDIRECT</button>
+        <button onclick="setCategory('4xx')" data-category="4xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">4xx CLIENT</button>
+        <button onclick="setCategory('5xx')" data-category="5xx" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">5xx SERVER</button>
+        <button onclick="setCategory('CLOUDFLARE')" data-category="CLOUDFLARE" class="px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent">CLOUDFLARE / EDGE</button>
       </div>
     </div>
 
@@ -247,13 +246,13 @@
           <span id="matchTally" class="text-cyan-400 font-bold">50 CODES</span>
         </div>
 
-        <div id="codesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[620px] overflow-y-auto pr-1">
-          <!-- Populated by renderCodeCards() -->
+        <div id="matching-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[620px] overflow-y-auto pr-1">
+          <!-- Populated by renderCodeList() -->
         </div>
       </div>
 
       <!-- Detail Inspector (5 cols) -->
-      <div class="lg:col-span-5 hud-card p-5 rounded space-y-4 flex flex-col font-mono text-xs">
+      <div id="protocol-spec" class="lg:col-span-5 hud-card p-5 rounded space-y-4 flex flex-col font-mono text-xs">
         <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
           <div class="flex items-center space-x-2">
             <i class="fa-solid fa-microchip text-pink-400"></i>
@@ -306,10 +305,8 @@
                 COPY
               </button>
             </div>
-            <pre id="headerSnippetBlock" class="p-2.5 bg-slate-950 rounded border border-slate-800 text-cyan-300 font-mono text-[11px] overflow-x-auto leading-relaxed">
-HTTP/1.1 200 OK
-Content-Type: text/html; charset=UTF-8
-            </pre>
+            <pre id="headerSnippetBlock" class="p-2.5 bg-slate-950 rounded border border-slate-800 text-cyan-300 font-mono text-[11px] overflow-x-auto leading-relaxed">HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8</pre>
           </div>
         </div>
       </div>
@@ -387,146 +384,223 @@ Content-Type: text/html; charset=UTF-8
     </article>
   </main>
 
+  <!-- Script Logic: HTTP Database & Filtering Engine -->
   <script>
-    const STATUS_DATA = [
+    const HTTP_DATABASE = [
       // 1xx Informational
-      { code: 100, name: 'Continue', class: '1xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Initial part of request received; client should proceed with remainder.', causes: ['Sent when Expect: 100-continue header sent by client.'], fixes: ['Client may proceed to send request body.'] },
-      { code: 101, name: 'Switching Protocols', class: '1xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server agrees to switch application protocols (e.g. HTTP to WebSocket).', causes: ['WebSocket upgrade header received: Upgrade: websocket.'], fixes: ['Handshake completed; switch socket to binary frame mode.'] },
-      { code: 102, name: 'Processing', class: '1xx', rfc: 'RFC 2518', cache: 'Non-cacheable', desc: 'WebDAV server has received and is processing request, but no response is available yet.', causes: ['Long-running WebDAV file operations.'], fixes: ['Client should wait for definitive response.'] },
-      { code: 103, name: 'Early Hints', class: '1xx', rfc: 'RFC 8297', cache: 'Non-cacheable', desc: 'Returns Link headers before final HTTP message to allow browser to preload CSS/JS.', causes: ['Edge server sending preload hints while backend computes response.'], fixes: ['Browser begins prefetching referenced assets in Link headers.'] },
+      { code: 100, name: 'Continue', category: '1xx', class: '1xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Initial part of request received; client should proceed with remainder.', desc: 'Initial part of request received; client should proceed with remainder.', causes: ['Sent when Expect: 100-continue header sent by client.'], mitigation: ['Client may proceed to send request body.'], fixes: ['Client may proceed to send request body.'] },
+      { code: 101, name: 'Switching Protocols', category: '1xx', class: '1xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server agrees to switch application protocols (e.g. HTTP to WebSocket).', desc: 'Server agrees to switch application protocols (e.g. HTTP to WebSocket).', causes: ['WebSocket upgrade header received: Upgrade: websocket.'], mitigation: ['Handshake completed; switch socket to binary frame mode.'], fixes: ['Handshake completed; switch socket to binary frame mode.'] },
+      { code: 102, name: 'Processing', category: '1xx', class: '1xx', isCloudflare: false, rfc: 'RFC 2518', cache: 'Non-cacheable', description: 'WebDAV server has received and is processing request, but no response is available yet.', desc: 'WebDAV server has received and is processing request, but no response is available yet.', causes: ['Long-running WebDAV file operations.'], mitigation: ['Client should wait for definitive response.'], fixes: ['Client should wait for definitive response.'] },
+      { code: 103, name: 'Early Hints', category: '1xx', class: '1xx', isCloudflare: false, rfc: 'RFC 8297', cache: 'Non-cacheable', description: 'Returns Link headers before final HTTP message to allow browser to preload CSS/JS.', desc: 'Returns Link headers before final HTTP message to allow browser to preload CSS/JS.', causes: ['Edge server sending preload hints while backend computes response.'], mitigation: ['Browser begins prefetching referenced assets in Link headers.'], fixes: ['Browser begins prefetching referenced assets in Link headers.'] },
 
       // 2xx Success
-      { code: 200, name: 'OK', class: '2xx', rfc: 'RFC 9110', cache: 'Cacheable by default', desc: 'Standard response for successful HTTP requests.', causes: ['Request successfully received and processed.'], fixes: ['No remedial action necessary.'] },
-      { code: 201, name: 'Created', class: '2xx', rfc: 'RFC 9110', cache: 'Cacheable with Location', desc: 'Request succeeded and a new resource has been created as a result.', causes: ['Successful POST/PUT database record insertion.'], fixes: ['Inspect returned Location header for resource URI.'] },
-      { code: 202, name: 'Accepted', class: '2xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Request accepted for processing, but processing has not been completed.', causes: ['Asynchronous task queued in worker queue (RabbitMQ/Celery).'], fixes: ['Poll task status endpoint for final completion.'] },
-      { code: 204, name: 'No Content', class: '2xx', rfc: 'RFC 9110', cache: 'Cacheable', desc: 'Server successfully fulfilled request and there is no additional content to send in payload.', causes: ['Successful DELETE request or empty form submission.'], fixes: ['Client UI updates without changing active page view.'] },
-      { code: 206, name: 'Partial Content', class: '2xx', rfc: 'RFC 9110', cache: 'Cacheable with Range', desc: 'Server is delivering only part of resource due to Range header sent by client.', causes: ['Video/audio stream seek or resumed HTTP file download.'], fixes: ['Inspect Content-Range header for served byte range.'] },
+      { code: 200, name: 'OK', category: '2xx', class: '2xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Cacheable by default', description: 'Standard response for successful HTTP requests.', desc: 'Standard response for successful HTTP requests.', causes: ['Request successfully received and processed.'], mitigation: ['No remedial action necessary.'], fixes: ['No remedial action necessary.'] },
+      { code: 201, name: 'Created', category: '2xx', class: '2xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Cacheable with Location', description: 'Request succeeded and a new resource has been created as a result.', desc: 'Request succeeded and a new resource has been created as a result.', causes: ['Successful POST/PUT database record insertion.'], mitigation: ['Inspect returned Location header for resource URI.'], fixes: ['Inspect returned Location header for resource URI.'] },
+      { code: 202, name: 'Accepted', category: '2xx', class: '2xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Request accepted for processing, but processing has not been completed.', desc: 'Request accepted for processing, but processing has not been completed.', causes: ['Asynchronous task queued in worker queue (RabbitMQ/Celery).'], mitigation: ['Poll task status endpoint for final completion.'], fixes: ['Poll task status endpoint for final completion.'] },
+      { code: 204, name: 'No Content', category: '2xx', class: '2xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Cacheable', description: 'Server successfully fulfilled request and there is no additional content to send in payload.', desc: 'Server successfully fulfilled request and there is no additional content to send in payload.', causes: ['Successful DELETE request or empty form submission.'], mitigation: ['Client UI updates without changing active page view.'], fixes: ['Client UI updates without changing active page view.'] },
+      { code: 206, name: 'Partial Content', category: '2xx', class: '2xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Cacheable with Range', description: 'Server is delivering only part of resource due to Range header sent by client.', desc: 'Server is delivering only part of resource due to Range header sent by client.', causes: ['Video/audio stream seek or resumed HTTP file download.'], mitigation: ['Inspect Content-Range header for served byte range.'], fixes: ['Inspect Content-Range header for served byte range.'] },
 
       // 3xx Redirection
-      { code: 301, name: 'Moved Permanently', class: '3xx', rfc: 'RFC 9110', cache: 'Heuristically cacheable', desc: 'Target resource has been assigned a new permanent URI. All future references should use this new URI.', causes: ['Domain migration, HTTP to HTTPS enforcement, slug changes.'], fixes: ['Update bookmark or inbound links to target in Location header.'] },
-      { code: 302, name: 'Found', class: '3xx', rfc: 'RFC 9110', cache: 'Non-cacheable by default', desc: 'Target resource resides temporarily under a different URI.', causes: ['Temporary maintenance redirection, localized geo redirect.'], fixes: ['Follow Location header for current request only.'] },
-      { code: 304, name: 'Not Modified', class: '3xx', rfc: 'RFC 9110', cache: 'Cache update directive', desc: 'Tells client that response has not been modified since last request (ETag or If-Modified-Since).', causes: ['Client requested asset with valid local cache cache-token.'], fixes: ['Browser renders asset directly from local disk memory cache.'] },
-      { code: 307, name: 'Temporary Redirect', class: '3xx', rfc: 'RFC 9110', cache: 'Non-cacheable by default', desc: 'Temporary redirect with strict guarantee that request method cannot be changed (POST remains POST).', causes: ['Redirecting API endpoints without losing POST body payload.'], fixes: ['Re-issue identical HTTP method to Location target.'] },
-      { code: 308, name: 'Permanent Redirect', class: '3xx', rfc: 'RFC 9110', cache: 'Heuristically cacheable', desc: 'Permanent redirect guaranteeing request method cannot be changed (POST remains POST).', causes: ['Permanent REST API versioning or protocol redirection.'], fixes: ['Permanently update client client endpoint configuration.'] },
+      { code: 301, name: 'Moved Permanently', category: '3xx', class: '3xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Heuristically cacheable', description: 'Target resource has been assigned a new permanent URI. All future references should use this new URI.', desc: 'Target resource has been assigned a new permanent URI. All future references should use this new URI.', causes: ['Domain migration, HTTP to HTTPS enforcement, slug changes.'], mitigation: ['Update bookmark or inbound links to target in Location header.'], fixes: ['Update bookmark or inbound links to target in Location header.'] },
+      { code: 302, name: 'Found', category: '3xx', class: '3xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable by default', description: 'Target resource resides temporarily under a different URI.', desc: 'Target resource resides temporarily under a different URI.', causes: ['Temporary maintenance redirection, localized geo redirect.'], mitigation: ['Follow Location header for current request only.'], fixes: ['Follow Location header for current request only.'] },
+      { code: 304, name: 'Not Modified', category: '3xx', class: '3xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Cache update directive', description: 'Tells client that response has not been modified since last request (ETag or If-Modified-Since).', desc: 'Tells client that response has not been modified since last request (ETag or If-Modified-Since).', causes: ['Client requested asset with valid local cache cache-token.'], mitigation: ['Browser renders asset directly from local disk memory cache.'], fixes: ['Browser renders asset directly from local disk memory cache.'] },
+      { code: 307, name: 'Temporary Redirect', category: '3xx', class: '3xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable by default', description: 'Temporary redirect with strict guarantee that request method cannot be changed (POST remains POST).', desc: 'Temporary redirect with strict guarantee that request method cannot be changed (POST remains POST).', causes: ['Redirecting API endpoints without losing POST body payload.'], mitigation: ['Re-issue identical HTTP method to Location target.'], fixes: ['Re-issue identical HTTP method to Location target.'] },
+      { code: 308, name: 'Permanent Redirect', category: '3xx', class: '3xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Heuristically cacheable', description: 'Permanent redirect guaranteeing request method cannot be changed (POST remains POST).', desc: 'Permanent redirect guaranteeing request method cannot be changed (POST remains POST).', causes: ['Permanent REST API versioning or protocol redirection.'], mitigation: ['Permanently update client endpoint configuration.'], fixes: ['Permanently update client endpoint configuration.'] },
 
       // 4xx Client Error
-      { code: 400, name: 'Bad Request', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server cannot or will not process request due to perceived client error (malformed syntax, deceptive routing).', causes: ['Invalid JSON syntax, missing required fields, headers too large.'], fixes: ['Validate payload schema and verify request encoding before retrying.'] },
-      { code: 401, name: 'Unauthorized', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Request lacks valid authentication credentials for target resource.', causes: ['Missing, expired, or malformed Authorization Bearer token.'], fixes: ['Re-authenticate, refresh access token, and supply Authorization header.'] },
-      { code: 403, name: 'Forbidden', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server understands request but refuses to authorize it (credentials exist but lack permission).', causes: ['Insufficient ACL role, IP blocklist, WAF security rule trigger.'], fixes: ['Verify user permission scope or contact administrator for access.'] },
-      { code: 404, name: 'Not Found', class: '4xx', rfc: 'RFC 9110', cache: 'Heuristically cacheable', desc: 'Origin server did not find a current representation for target resource.', causes: ['Typo in URL path, deleted page, broken hyperlink.'], fixes: ['Check URL spelling or set up 301 redirect to replacement page.'] },
-      { code: 405, name: 'Method Not Allowed', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Request method is recognized by server but not supported by target resource.', causes: ['Submitting POST to a static read-only GET endpoint.'], fixes: ['Inspect Allow header in response to see supported methods.'] },
-      { code: 408, name: 'Request Timeout', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server did not receive a complete request message within the time it was prepared to wait.', causes: ['Slow client connection, stalled upload stream.'], fixes: ['Retry request with faster network or smaller payload size.'] },
-      { code: 409, name: 'Conflict', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Request could not be completed due to a conflict with current state of resource.', causes: ['Duplicate unique email in signup, concurrent database edit race.'], fixes: ['Resolve resource state discrepancy before re-submitting.'] },
-      { code: 410, name: 'Gone', class: '4xx', rfc: 'RFC 9110', cache: 'Heuristically cacheable', desc: 'Target resource is no longer available at origin server and no forwarding address is known.', causes: ['Permanently retired API version or deleted product listing.'], fixes: ['Remove reference from client; search engines drop index immediately.'] },
-      { code: 413, name: 'Payload Too Large', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server is refusing to process request because request payload is larger than server limits.', causes: ['Uploaded file exceeds client_max_body_size in Nginx or API limit.'], fixes: ['Compress file, split into chunks, or raise server upload quota.'] },
-      { code: 418, name: "I'm a teapot", class: '4xx', rfc: 'RFC 2324 / 9110', cache: 'Non-cacheable', desc: 'Server refuses to brew coffee because it is permanently a teapot.', causes: ['Easter egg or automated bot trap response.'], fixes: ['Switch to brewing tea instead.'] },
-      { code: 422, name: 'Unprocessable Content', class: '4xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server understands content type and syntax, but was unable to process contained instructions.', causes: ['Validation error: string passed where integer expected.'], fixes: ['Inspect response error payload for specific validation failures.'] },
-      { code: 429, name: 'Too Many Requests', class: '4xx', rfc: 'RFC 6585', cache: 'Non-cacheable', desc: 'User has sent too many requests in a given amount of time (rate limiting).', causes: ['Exceeded API requests/minute quota.'], fixes: ['Inspect Retry-After response header and implement exponential backoff.'] },
+      { code: 400, name: 'Bad Request', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server cannot or will not process request due to perceived client error (malformed syntax, deceptive routing).', desc: 'Server cannot or will not process request due to perceived client error (malformed syntax, deceptive routing).', causes: ['Invalid JSON syntax, missing required fields, headers too large.'], mitigation: ['Validate payload schema and verify request encoding before retrying.'], fixes: ['Validate payload schema and verify request encoding before retrying.'] },
+      { code: 401, name: 'Unauthorized', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Request lacks valid authentication credentials for target resource.', desc: 'Request lacks valid authentication credentials for target resource.', causes: ['Missing, expired, or malformed Authorization Bearer token.'], mitigation: ['Re-authenticate, refresh access token, and supply Authorization header.'], fixes: ['Re-authenticate, refresh access token, and supply Authorization header.'] },
+      { code: 403, name: 'Forbidden', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server understands request but refuses to authorize it (credentials exist but lack permission).', desc: 'Server understands request but refuses to authorize it (credentials exist but lack permission).', causes: ['Insufficient ACL role, IP blocklist, WAF security rule trigger.'], mitigation: ['Verify user permission scope or contact administrator for access.'], fixes: ['Verify user permission scope or contact administrator for access.'] },
+      { code: 404, name: 'Not Found', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Heuristically cacheable', description: 'Origin server did not find a current representation for target resource.', desc: 'Origin server did not find a current representation for target resource.', causes: ['Typo in URL path, deleted page, broken hyperlink.'], mitigation: ['Check URL spelling or set up 301 redirect to replacement page.'], fixes: ['Check URL spelling or set up 301 redirect to replacement page.'] },
+      { code: 405, name: 'Method Not Allowed', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Request method is recognized by server but not supported by target resource.', desc: 'Request method is recognized by server but not supported by target resource.', causes: ['Submitting POST to a static read-only GET endpoint.'], mitigation: ['Inspect Allow header in response to see supported methods.'], fixes: ['Inspect Allow header in response to see supported methods.'] },
+      { code: 408, name: 'Request Timeout', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server did not receive a complete request message within the time it was prepared to wait.', desc: 'Server did not receive a complete request message within the time it was prepared to wait.', causes: ['Slow client connection, stalled upload stream.'], mitigation: ['Retry request with faster network or smaller payload size.'], fixes: ['Retry request with faster network or smaller payload size.'] },
+      { code: 409, name: 'Conflict', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Request could not be completed due to a conflict with current state of resource.', desc: 'Request could not be completed due to a conflict with current state of resource.', causes: ['Duplicate unique email in signup, concurrent database edit race.'], mitigation: ['Resolve resource state discrepancy before re-submitting.'], fixes: ['Resolve resource state discrepancy before re-submitting.'] },
+      { code: 410, name: 'Gone', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Heuristically cacheable', description: 'Target resource is no longer available at origin server and no forwarding address is known.', desc: 'Target resource is no longer available at origin server and no forwarding address is known.', causes: ['Permanently retired API version or deleted product listing.'], mitigation: ['Remove reference from client; search engines drop index immediately.'], fixes: ['Remove reference from client; search engines drop index immediately.'] },
+      { code: 413, name: 'Payload Too Large', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server is refusing to process request because request payload is larger than server limits.', desc: 'Server is refusing to process request because request payload is larger than server limits.', causes: ['Uploaded file exceeds client_max_body_size in Nginx or API limit.'], mitigation: ['Compress file, split into chunks, or raise server upload quota.'], fixes: ['Compress file, split into chunks, or raise server upload quota.'] },
+      { code: 418, name: "I'm a teapot", category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 2324 / 9110', cache: 'Non-cacheable', description: 'Server refuses to brew coffee because it is permanently a teapot.', desc: 'Server refuses to brew coffee because it is permanently a teapot.', causes: ['Easter egg or automated bot trap response.'], mitigation: ['Switch to brewing tea instead.'], fixes: ['Switch to brewing tea instead.'] },
+      { code: 422, name: 'Unprocessable Content', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server understands content type and syntax, but was unable to process contained instructions.', desc: 'Server understands content type and syntax, but was unable to process contained instructions.', causes: ['Validation error: string passed where integer expected.'], mitigation: ['Inspect response error payload for specific validation failures.'], fixes: ['Inspect response error payload for specific validation failures.'] },
+      { code: 429, name: 'Too Many Requests', category: '4xx', class: '4xx', isCloudflare: false, rfc: 'RFC 6585', cache: 'Non-cacheable', description: 'User has sent too many requests in a given amount of time (rate limiting).', desc: 'User has sent too many requests in a given amount of time (rate limiting).', causes: ['Exceeded API requests/minute quota.'], mitigation: ['Inspect Retry-After response header and implement exponential backoff.'], fixes: ['Inspect Retry-After response header and implement exponential backoff.'] },
+      { code: 499, name: 'Client Closed Request', category: '4xx', class: 'EDGE', isCloudflare: false, rfc: 'Nginx Extension', cache: 'Non-cacheable', description: 'Client closed connection while Nginx was still processing request.', desc: 'Client closed connection while Nginx was still processing request.', causes: ['User hit browser stop button or frontend timeout canceled fetch().'], mitigation: ['Speed up backend response time to prevent client abort.'], fixes: ['Speed up backend response time to prevent client abort.'] },
 
       // 5xx Server Error
-      { code: 500, name: 'Internal Server Error', class: '5xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server encountered an unexpected condition that prevented it from fulfilling request.', causes: ['Unhandled exception in backend code, database crash, null pointer.'], fixes: ['Inspect server application error logs (stderr / syslog) to debug stack trace.'] },
-      { code: 501, name: 'Not Implemented', class: '5xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server does not support functionality required to fulfill request.', causes: ['HTTP method unknown or unsupported by web server engine.'], fixes: ['Use standard supported HTTP methods (GET, POST, etc.).'] },
-      { code: 502, name: 'Bad Gateway', class: '5xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server, while acting as a gateway or proxy, received an invalid response from upstream server.', causes: ['Upstream application (Node, PHP-FPM, Python) crashed or unreachable.'], fixes: ['Verify backend service is running on internal port and accepting connections.'] },
-      { code: 503, name: 'Service Unavailable', class: '5xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server is currently unable to handle request due to temporary overload or scheduled maintenance.', causes: ['Server CPU/memory saturated, maintenance window active.'], fixes: ['Check server health metrics; inspect Retry-After header.'] },
-      { code: 504, name: 'Gateway Timeout', class: '5xx', rfc: 'RFC 9110', cache: 'Non-cacheable', desc: 'Server acting as gateway did not receive a timely response from upstream backend.', causes: ['Backend query took longer than proxy_read_timeout (e.g. 60s).'], fixes: ['Optimize database queries or increase gateway proxy timeout setting.'] },
+      { code: 500, name: 'Internal Server Error', category: '5xx', class: '5xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server encountered an unexpected condition that prevented it from fulfilling request.', desc: 'Server encountered an unexpected condition that prevented it from fulfilling request.', causes: ['Unhandled exception in backend code, database crash, null pointer.'], mitigation: ['Inspect server application error logs (stderr / syslog) to debug stack trace.'], fixes: ['Inspect server application error logs (stderr / syslog) to debug stack trace.'] },
+      { code: 501, name: 'Not Implemented', category: '5xx', class: '5xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server does not support functionality required to fulfill request.', desc: 'Server does not support functionality required to fulfill request.', causes: ['HTTP method unknown or unsupported by web server engine.'], mitigation: ['Use standard supported HTTP methods (GET, POST, etc.).'], fixes: ['Use standard supported HTTP methods (GET, POST, etc.).'] },
+      { code: 502, name: 'Bad Gateway', category: '5xx', class: '5xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server, while acting as a gateway or proxy, received an invalid response from upstream server.', desc: 'Server, while acting as a gateway or proxy, received an invalid response from upstream server.', causes: ['Upstream application (Node, PHP-FPM, Python) crashed or unreachable.'], mitigation: ['Verify backend service is running on internal port and accepting connections.'], fixes: ['Verify backend service is running on internal port and accepting connections.'] },
+      { code: 503, name: 'Service Unavailable', category: '5xx', class: '5xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server is currently unable to handle request due to temporary overload or scheduled maintenance.', desc: 'Server is currently unable to handle request due to temporary overload or scheduled maintenance.', causes: ['Server CPU/memory saturated, maintenance window active.'], mitigation: ['Check server health metrics; inspect Retry-After header.'], fixes: ['Check server health metrics; inspect Retry-After header.'] },
+      { code: 504, name: 'Gateway Timeout', category: '5xx', class: '5xx', isCloudflare: false, rfc: 'RFC 9110', cache: 'Non-cacheable', description: 'Server acting as gateway did not receive a timely response from upstream backend.', desc: 'Server acting as gateway did not receive a timely response from upstream backend.', causes: ['Backend query took longer than proxy_read_timeout (e.g. 60s).'], mitigation: ['Optimize database queries or increase gateway proxy timeout setting.'], fixes: ['Optimize database queries or increase gateway proxy timeout setting.'] },
 
-      // Cloudflare / Edge Codes
-      { code: 520, name: 'Web Server Returned an Unknown Error', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Catch-all error when origin server returns something unexpected or empty back to Cloudflare.', causes: ['Origin web server crashed while writing response, empty header response.'], fixes: ['Check origin access/error logs; verify Apache/Nginx did not SIGSEGV.'] },
-      { code: 521, name: 'Web Server Is Down', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Origin server refused TCP connection from Cloudflare edge nodes.', causes: ['Web server process is stopped, or origin firewall blocked Cloudflare IP range.'], fixes: ['Start web server process and whitelist all Cloudflare IP prefixes in iptables/UFW.'] },
-      { code: 522, name: 'Connection Timed Out', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Cloudflare could not complete TCP handshake with origin server within 15 seconds.', causes: ['Origin firewall dropped SYN packets; network routing blackhole.'], fixes: ['Check firewall rules; ensure port 443 open; check server CPU load.'] },
-      { code: 523, name: 'Origin Is Unreachable', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Cloudflare was unable to reach origin server due to DNS resolution failure or bad IP.', causes: ['Incorrect DNS A record in Cloudflare dashboard, origin gateway down.'], fixes: ['Verify origin IP address in Cloudflare DNS settings.'] },
-      { code: 524, name: 'A Timeout Occurred', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Cloudflare connected to origin, but origin did not send HTTP reply within 100 seconds.', causes: ['Long-running database migration, intense report generation, hanging process.'], fixes: ['Offload long processes to background queues or use Cloudflare Enterprise 6000s timeout.'] },
-      { code: 525, name: 'SSL Handshake Failed', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Cloudflare could not negotiate an SSL/TLS handshake with origin server.', causes: ['Origin SSL certificate expired, cipher suite mismatch, Full (Strict) SSL without valid cert.'], fixes: ['Install valid SSL cert on origin or set Cloudflare SSL mode to Full.'] },
-      { code: 526, name: 'Invalid SSL Certificate', class: 'EDGE', rfc: 'Cloudflare', cache: 'Non-cacheable', desc: 'Cloudflare could not validate origin SSL certificate while Full (Strict) SSL is active.', causes: ['Self-signed certificate on origin, expired origin certificate.'], fixes: ['Install trusted Let's Encrypt certificate or Cloudflare Origin CA certificate.'] },
-      { code: 499, name: 'Client Closed Request', class: 'EDGE', rfc: 'Nginx Extension', cache: 'Non-cacheable', desc: 'Client closed connection while Nginx was still processing request.', causes: ['User hit browser stop button or frontend timeout canceled fetch().'], fixes: ['Speed up backend response time to prevent client abort.'] }
+      // Cloudflare Edge Codes
+      { code: 520, name: 'Web Server Returned an Unknown Error', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Catch-all error when origin server returns something unexpected or empty back to Cloudflare.', desc: 'Catch-all error when origin server returns something unexpected or empty back to Cloudflare.', causes: ['Origin web server crashed while writing response, empty header response.'], mitigation: ['Check origin access/error logs; verify Apache/Nginx did not SIGSEGV.'], fixes: ['Check origin access/error logs; verify Apache/Nginx did not SIGSEGV.'] },
+      { code: 521, name: 'Web Server Is Down', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Origin server refused TCP connection from Cloudflare edge nodes.', desc: 'Origin server refused TCP connection from Cloudflare edge nodes.', causes: ['Web server process is stopped, or origin firewall blocked Cloudflare IP range.'], mitigation: ['Start web server process and whitelist all Cloudflare IP prefixes in iptables/UFW.'], fixes: ['Start web server process and whitelist all Cloudflare IP prefixes in iptables/UFW.'] },
+      { code: 522, name: 'Connection Timed Out', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Cloudflare could not complete TCP handshake with origin server within 15 seconds.', desc: 'Cloudflare could not complete TCP handshake with origin server within 15 seconds.', causes: ['Origin firewall dropped SYN packets; network routing blackhole.'], mitigation: ['Check firewall rules; ensure port 443 open; check server CPU load.'], fixes: ['Check firewall rules; ensure port 443 open; check server CPU load.'] },
+      { code: 523, name: 'Origin Is Unreachable', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Cloudflare was unable to reach origin server due to DNS resolution failure or bad IP.', desc: 'Cloudflare was unable to reach origin server due to DNS resolution failure or bad IP.', causes: ['Incorrect DNS A record in Cloudflare dashboard, origin gateway down.'], mitigation: ['Verify origin IP address in Cloudflare DNS settings.'], fixes: ['Verify origin IP address in Cloudflare DNS settings.'] },
+      { code: 524, name: 'A Timeout Occurred', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Cloudflare connected to origin, but origin did not send HTTP reply within 100 seconds.', desc: 'Cloudflare connected to origin, but origin did not send HTTP reply within 100 seconds.', causes: ['Long-running database migration, intense report generation, hanging process.'], mitigation: ['Offload long processes to background queues or use Cloudflare Enterprise 6000s timeout.'], fixes: ['Offload long processes to background queues or use Cloudflare Enterprise 6000s timeout.'] },
+      { code: 525, name: 'SSL Handshake Failed', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Cloudflare could not negotiate an SSL/TLS handshake with origin server.', desc: 'Cloudflare could not negotiate an SSL/TLS handshake with origin server.', causes: ['Origin SSL certificate expired, cipher suite mismatch, Full (Strict) SSL without valid cert.'], mitigation: ['Install valid SSL cert on origin or set Cloudflare SSL mode to Full.'], fixes: ['Install valid SSL cert on origin or set Cloudflare SSL mode to Full.'] },
+      { code: 526, name: 'Invalid SSL Certificate', category: 'CLOUDFLARE', class: 'EDGE', isCloudflare: true, rfc: 'Cloudflare', cache: 'Non-cacheable', description: 'Cloudflare could not validate origin SSL certificate while Full (Strict) SSL is active.', desc: 'Cloudflare could not validate origin SSL certificate while Full (Strict) SSL is active.', causes: ['Self-signed certificate on origin, expired origin certificate.'], mitigation: ["Install trusted Let's Encrypt certificate or Cloudflare Origin CA certificate."], fixes: ["Install trusted Let's Encrypt certificate or Cloudflare Origin CA certificate."] }
     ];
 
-    let currentFilter = 'ALL';
+    // Aliases for backward compatibility
+    const STATUS_DATA = HTTP_DATABASE;
+
+    let activeCategory = 'ALL';
+    let activeQuery = '';
     let activeCode = 200;
 
-    function setFilter(filter) {
-      currentFilter = filter;
+    function setCategory(category) {
+      activeCategory = category;
       document.querySelectorAll('#filterTabs button').forEach(btn => {
-        if (btn.dataset.filter === filter) {
-          btn.className = 'px-3 py-1.5 rounded font-bold transition-all bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 shrink-0';
+        const btnCat = btn.dataset.category || btn.dataset.filter;
+        if (btnCat === category) {
+          btn.classList.add('active');
+          btn.className = 'active px-3 py-1.5 rounded font-bold transition-all bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 shrink-0 shadow-[0_0_12px_rgba(0,245,255,0.25)]';
         } else {
-          btn.className = 'px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0';
+          btn.classList.remove('active');
+          btn.className = 'px-3 py-1.5 rounded font-bold transition-all text-slate-400 hover:text-white shrink-0 border border-transparent';
         }
       });
-      filterCodes();
+      applyFilters();
     }
+    const setFilter = setCategory;
 
-    function filterCodes() {
-      const query = document.getElementById('codeSearchInput').value.trim().toLowerCase();
-      const filtered = STATUS_DATA.filter(item => {
-        const matchesFilter = (currentFilter === 'ALL') || (item.class === currentFilter);
-        const matchesQuery = !query || 
-          item.code.toString().includes(query) || 
-          item.name.toLowerCase().includes(query) || 
-          item.desc.toLowerCase().includes(query);
-        return matchesFilter && matchesQuery;
+    function applyFilters() {
+      const filtered = HTTP_DATABASE.filter(item => {
+        const matchesCategory = (activeCategory === 'ALL') ||
+          (activeCategory === 'CLOUDFLARE' && item.isCloudflare) ||
+          (item.category === activeCategory) ||
+          (item.class === activeCategory);
+
+        const matchesSearch = !activeQuery ||
+          item.code.toString().includes(activeQuery) ||
+          item.name.toLowerCase().includes(activeQuery) ||
+          (item.description && item.description.toLowerCase().includes(activeQuery)) ||
+          (item.desc && item.desc.toLowerCase().includes(activeQuery)) ||
+          (item.rfc && item.rfc.toLowerCase().includes(activeQuery)) ||
+          (item.causes && item.causes.some(c => c.toLowerCase().includes(activeQuery))) ||
+          (item.mitigation && item.mitigation.some(m => m.toLowerCase().includes(activeQuery))) ||
+          (item.fixes && item.fixes.some(f => f.toLowerCase().includes(activeQuery)));
+
+        return matchesCategory && matchesSearch;
       });
 
-      renderCodeCards(filtered);
-      document.getElementById('matchTally').textContent = `${filtered.length} CODES`;
+      renderCodeList(filtered);
+      updateTelemetryBadge(filtered.length);
     }
+    const filterCodes = applyFilters;
 
-    function renderCodeCards(list) {
-      const grid = document.getElementById('codesGrid');
+    function renderCodeList(list) {
+      const container = document.getElementById('matching-list') || document.getElementById('codesGrid');
+      if (!container) return;
+
       if (list.length === 0) {
-        grid.innerHTML = '<div class="col-span-2 py-12 text-center text-slate-500 font-mono text-xs">No matching HTTP status codes found.</div>';
+        container.innerHTML = `
+          <div class="empty-status col-span-1 sm:col-span-2 py-12 px-4 text-center text-rose-400 border border-rose-500/30 bg-rose-950/20 rounded font-mono text-xs tracking-wider shadow-[0_0_15px_rgba(244,63,94,0.1)]">
+            <i class="fa-solid fa-triangle-exclamation mr-2 text-rose-500"></i>
+            NO STATUS CODES MATCH TELEMETRY QUERY
+          </div>
+        `;
         return;
       }
 
-      grid.innerHTML = list.map(item => {
+      container.innerHTML = list.map(item => {
         const isSelected = item.code === activeCode;
         let badgeColor = 'text-cyan-400 border-cyan-500/40 bg-cyan-950/60';
-        if (item.class === '2xx') badgeColor = 'text-emerald-400 border-emerald-500/40 bg-emerald-950/60';
-        if (item.class === '3xx') badgeColor = 'text-indigo-400 border-indigo-500/40 bg-indigo-950/60';
-        if (item.class === '4xx') badgeColor = 'text-amber-400 border-amber-500/40 bg-amber-950/60';
-        if (item.class === '5xx') badgeColor = 'text-rose-400 border-rose-500/40 bg-rose-950/60';
-        if (item.class === 'EDGE') badgeColor = 'text-pink-400 border-pink-500/40 bg-pink-950/60';
+        if (item.category === '2xx' || item.class === '2xx') badgeColor = 'text-emerald-400 border-emerald-500/40 bg-emerald-950/60';
+        if (item.category === '3xx' || item.class === '3xx') badgeColor = 'text-indigo-400 border-indigo-500/40 bg-indigo-950/60';
+        if (item.category === '4xx' || item.class === '4xx') badgeColor = 'text-amber-400 border-amber-500/40 bg-amber-950/60';
+        if (item.category === '5xx' || item.class === '5xx') badgeColor = 'text-rose-400 border-rose-500/40 bg-rose-950/60';
+        if (item.isCloudflare || item.category === 'CLOUDFLARE' || item.class === 'EDGE') badgeColor = 'text-pink-400 border-pink-500/40 bg-pink-950/60';
+
+        const displayTag = item.isCloudflare ? 'CLOUDFLARE' : (item.category || item.class || 'HTTP');
 
         return `
-          <div onclick="inspectCode(${item.code})" class="p-3 rounded border font-mono cursor-pointer transition-all ${
+          <div onclick="inspectCode(${item.code})" class="code-chip p-3 rounded border font-mono cursor-pointer transition-all ${
             isSelected 
               ? 'bg-slate-900 border-cyan-400 shadow-[0_0_15px_rgba(0,245,255,0.25)]' 
               : 'bg-slate-950/70 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
           }">
             <div class="flex items-center justify-between mb-1.5">
               <span class="font-orbitron font-extrabold text-base text-white tracking-wider">${item.code}</span>
-              <span class="text-[9px] px-1.5 py-0.5 rounded border font-bold uppercase ${badgeColor}">${item.class}</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded border font-bold uppercase ${badgeColor}">${displayTag}</span>
             </div>
-            <div class="text-xs font-bold text-slate-200 truncate">${item.name}</div>
-            <div class="text-[10px] text-slate-500 truncate mt-0.5">${item.desc}</div>
+            <div class="text-xs font-bold text-slate-200 truncate">${escapeHtml(item.name)}</div>
+            <div class="text-[10px] text-slate-500 truncate mt-0.5">${escapeHtml(item.description || item.desc || '')}</div>
           </div>
         `;
       }).join('');
     }
+    const renderCodeCards = renderCodeList;
+
+    function updateTelemetryBadge(count) {
+      const badge = document.getElementById('matchTally');
+      if (badge) {
+        badge.textContent = `${count} CODES`;
+      }
+    }
 
     function inspectCode(code) {
       activeCode = code;
-      const item = STATUS_DATA.find(x => x.code === code);
+      const item = HTTP_DATABASE.find(x => x.code === code);
       if (!item) return;
 
-      document.getElementById('inspectCodeNum').textContent = item.code;
-      document.getElementById('inspectCodeTitle').textContent = item.name;
-      document.getElementById('inspectSpecBadge').textContent = item.rfc;
-      document.getElementById('inspectClass').textContent = `${item.class.toUpperCase()} STATUS`;
-      document.getElementById('inspectCache').textContent = `CACHING: ${item.cache}`;
-      document.getElementById('inspectDesc').textContent = item.desc;
+      const numEl = document.getElementById('inspectCodeNum');
+      if (numEl) {
+        numEl.textContent = item.code;
+        let borderShadow = 'border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,245,255,0.3)]';
+        if (item.category === '2xx' || item.class === '2xx') borderShadow = 'border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]';
+        if (item.category === '3xx' || item.class === '3xx') borderShadow = 'border-indigo-400 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.3)]';
+        if (item.category === '4xx' || item.class === '4xx') borderShadow = 'border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]';
+        if (item.category === '5xx' || item.class === '5xx') borderShadow = 'border-rose-400 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]';
+        if (item.isCloudflare || item.category === 'CLOUDFLARE' || item.class === 'EDGE') borderShadow = 'border-pink-500 text-pink-300 shadow-[0_0_15px_rgba(255,43,214,0.3)]';
+        numEl.className = `w-16 h-16 rounded bg-slate-900 border-2 flex items-center justify-center font-orbitron font-black text-2xl shrink-0 ${borderShadow}`;
+      }
+
+      const titleEl = document.getElementById('inspectCodeTitle');
+      if (titleEl) titleEl.textContent = item.name;
+
+      const specBadge = document.getElementById('inspectSpecBadge');
+      if (specBadge) specBadge.textContent = item.rfc;
+
+      const classEl = document.getElementById('inspectClass');
+      if (classEl) {
+        const catLabel = item.isCloudflare ? 'CLOUDFLARE EDGE' : (item.category || item.class || 'HTTP');
+        classEl.textContent = `${catLabel.toUpperCase()} STATUS`;
+      }
+
+      const cacheEl = document.getElementById('inspectCache');
+      if (cacheEl) cacheEl.textContent = `CACHING: ${item.cache}`;
+
+      const descEl = document.getElementById('inspectDesc');
+      if (descEl) descEl.textContent = item.description || item.desc || '';
 
       const causesList = document.getElementById('inspectCauses');
-      causesList.innerHTML = item.causes.map(c => `<li>${c}</li>`).join('');
+      if (causesList) {
+        const causes = item.causes || [];
+        causesList.innerHTML = causes.map(c => `<li>${escapeHtml(c)}</li>`).join('');
+      }
 
-      const fixesList = document.getElementById('inspectFixes');
-      fixesList.innerHTML = item.fixes.map(f => `<li>${f}</li>`).join('');
+      const fixesList = document.getElementById('inspectFixes') || document.getElementById('inspectMitigation');
+      if (fixesList) {
+        const mitigation = item.mitigation || item.fixes || [];
+        fixesList.innerHTML = mitigation.map(m => `<li>${escapeHtml(m)}</li>`).join('');
+      }
 
-      const snippet = `HTTP/1.1 ${item.code} ${item.name}\nDate: ${new Date().toUTCString()}\nContent-Type: application/json; charset=utf-8\nConnection: keep-alive`;
-      document.getElementById('headerSnippetBlock').textContent = snippet;
+      const snippetBlock = document.getElementById('headerSnippetBlock');
+      if (snippetBlock) {
+        snippetBlock.textContent = `HTTP/1.1 ${item.code} ${item.name}
+Date: ${new Date().toUTCString()}
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive`;
+      }
 
-      // Re-render cards to reflect selected outline
-      filterCodes();
+      // Highlight active card
+      document.querySelectorAll('#matching-list .code-chip').forEach(chip => {
+        const codeNum = chip.querySelector('.font-orbitron')?.textContent;
+        if (codeNum && parseInt(codeNum, 10) === code) {
+          chip.className = 'code-chip p-3 rounded border font-mono cursor-pointer transition-all bg-slate-900 border-cyan-400 shadow-[0_0_15px_rgba(0,245,255,0.25)]';
+        } else {
+          chip.className = 'code-chip p-3 rounded border font-mono cursor-pointer transition-all bg-slate-950/70 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60';
+        }
+      });
     }
 
     function copyHeaderSnippet() {
@@ -536,9 +610,24 @@ Content-Type: text/html; charset=UTF-8
       });
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       renderSuiteGrid();
-      filterCodes();
+
+      // Bind search input
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          activeQuery = e.target.value.toLowerCase().trim();
+          applyFilters();
+        });
+      }
+
+      applyFilters();
       inspectCode(200);
     });
   </script>
@@ -721,3 +810,5 @@ Content-Type: text/html; charset=UTF-8
       }, 2000);
     }
   </script>
+</body>
+</html>
