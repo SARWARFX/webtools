@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morse Signal Modulator // Audio Beacon & Translator - sarwarfx</title>
+  <meta name="description" content="Bidirectional text-to-Morse and Morse-to-text translator with Web Audio API sound generator, visual blinking beacon radar, and WPM speed controls.">
+  <meta name="keywords" content="morse code translator, morse code audio player, text to morse code, morse code sound generator, international morse code">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/morse/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/morse/" />
+  <meta property="og:title" content="Morse Signal Modulator // Audio Beacon & Translator - sarwarfx" />
+  <meta property="og:description" content="Bidirectional text-to-Morse and Morse-to-text translator with Web Audio API sound generator, visual blinking beacon radar, and WPM speed controls." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/morse/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/morse/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/morse/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Morse Signal Modulator // Audio Beacon & Translator - sarwarfx" />
+  <meta name="twitter:description" content="Bidirectional text-to-Morse and Morse-to-text translator with Web Audio API sound generator, visual blinking beacon radar, and WPM speed controls." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/morse/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Morse Signal Modulator & Audio Beacon",
+    "url": "https://apps.sarwarfx.cfd/morse/",
+    "description": "Bidirectional text-to-Morse and Morse-to-text translator with Web Audio API sound generator, visual blinking beacon radar, and WPM speed controls.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-2h2zm0-4h-2V7h2z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #94a3b8;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.25;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+          <i class="fa-solid fa-terminal text-lg"></i>
+          <span class="font-orbitron font-bold tracking-wider text-sm sm:text-base">CYBERTOOLS</span>
+        </a>
+        <span class="text-slate-600 font-mono text-xs">/</span>
+        <span class="text-xs font-mono text-slate-300 uppercase tracking-widest hidden sm:inline">SIGNAL_MODULATOR</span>
+        <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded">0x35</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden md:inline">SUITE SELECTOR</span>
+          <span class="text-cyan-400 font-bold">(57)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Hero Title -->
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2 text-xs font-mono text-cyan-400">
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+        <span class="tracking-widest">[SYS_NODE: 0x35 // MORSE SIGNAL MODULATOR & AUDIO BEACON]</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white tracking-wide">
+        MORSE SIGNAL <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">MODULATOR // BEACON HUD</span>
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm font-rajdhani text-base leading-relaxed max-w-3xl">
+        Bidirectional International Morse Code telecommunications transponder. Synthesize sinusoidal CW audio carrier waves, modulate visual optical beacon pulses, and adjust Paris-calibrated WPM velocity.
+      </p>
+    </div>
+
+    <!-- Modulation Controls & Optical Beacon Bar -->
+    <div class="hud-card p-4 rounded space-y-4 font-mono text-xs">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <!-- Audio Transmission Controls -->
+        <div class="flex items-center space-x-2">
+          <button id="btnPlayMorse" onclick="togglePlayMorse()" class="hud-btn-primary px-3 py-1.5 rounded flex items-center space-x-1.5">
+            <i class="fa-solid fa-play text-xs" id="playIcon"></i>
+            <span id="playLabel">TRANSMIT AUDIO</span>
+          </button>
+          <button onclick="stopAudio()" class="hud-btn-secondary px-3 py-1.5 rounded text-slate-400 hover:text-rose-400">
+            <i class="fa-solid fa-stop mr-1"></i>STOP
+          </button>
+        </div>
+
+        <!-- Optical Radar Beacon Indicator Lamp -->
+        <div class="flex items-center space-x-3 bg-black/60 px-4 py-2 rounded border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase tracking-widest">OPTICAL BEACON:</span>
+          <div id="beaconLamp" class="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 transition-all duration-75"></div>
+          <span id="beaconStatus" class="text-[10px] text-slate-500 font-bold">STANDBY</span>
+        </div>
+
+        <!-- Action Utilities -->
+        <div class="flex items-center space-x-2">
+          <button onclick="swapPanes()" class="hud-btn-secondary px-2.5 py-1.5 rounded text-[11px] text-amber-300">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i>SWAP
+          </button>
+          <button onclick="loadSample('sos')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-[11px] text-rose-400">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>SOS
+          </button>
+          <button onclick="loadSample('tactical')" class="hud-btn-secondary px-2.5 py-1.5 rounded text-[11px] text-cyan-300">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>SAMPLE
+          </button>
+          <button onclick="clearAll()" class="hud-btn-secondary px-2.5 py-1.5 rounded text-[11px] text-slate-400 hover:text-rose-400">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio Modulator Sliders: Frequency (Hz) & Velocity (WPM) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-800/80">
+        <!-- Speed (WPM) -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-400 text-[11px]">
+            <span>CARRIER VELOCITY (WPM):</span>
+            <span id="labelWpm" class="text-cyan-400 font-bold">20 WPM</span>
+          </div>
+          <input type="range" id="sliderWpm" min="5" max="40" value="20" oninput="updateWpm(this.value)" class="w-full accent-cyan-400 cursor-pointer">
+          <div class="flex justify-between text-[9px] text-slate-600">
+            <span>5 WPM (Novice)</span>
+            <span>20 WPM (Standard)</span>
+            <span>40 WPM (High Speed CW)</span>
+          </div>
+        </div>
+
+        <!-- Tone Frequency (Hz) -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-400 text-[11px]">
+            <span>AUDIO FREQUENCY (PITCH):</span>
+            <span id="labelFreq" class="text-pink-400 font-bold">650 Hz</span>
+          </div>
+          <input type="range" id="sliderFreq" min="400" max="900" value="650" oninput="updateFreq(this.value)" class="w-full accent-pink-400 cursor-pointer">
+          <div class="flex justify-between text-[9px] text-slate-600">
+            <span>400 Hz (Bass)</span>
+            <span>650 Hz (Standard CW)</span>
+            <span>900 Hz (High Treble)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual Workspace: Plaintext & Morse Stream -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono text-xs">
+
+      <!-- Left: Plaintext Stream -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-align-left text-cyan-400 text-xs"></i>
+            <span class="font-bold tracking-wider text-slate-200 uppercase">PLAINTEXT MESSAGE</span>
+          </div>
+          <span class="text-[10px] text-slate-500" id="inTextCount">0 chars</span>
+        </div>
+
+        <textarea id="textInput" oninput="translateFromText()" placeholder="Type plain text to modulate into Morse code (e.g. SOS MAYDAY)..." class="flex-1 bg-black/70 border border-slate-800/80 rounded p-4 font-mono text-xs text-slate-200 focus:border-cyan-400 outline-none leading-relaxed min-h-[300px] select-all"></textarea>
+      </div>
+
+      <!-- Right: Morse Stream -->
+      <div class="hud-card p-5 rounded space-y-3 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-barcode text-pink-400 text-xs"></i>
+            <span class="font-bold tracking-wider text-slate-200 uppercase">MODULATED MORSE CODE</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-[10px] text-slate-500" id="outMorseCount">0 signals</span>
+            <button onclick="copyMorse()" class="hud-btn-primary px-3 py-1 rounded text-[11px] flex items-center space-x-1">
+              <i class="fa-solid fa-copy text-xs"></i>
+              <span>COPY</span>
+            </button>
+          </div>
+        </div>
+
+        <textarea id="morseInput" oninput="translateFromMorse()" placeholder="Enter Morse code elements (. for dit, - for dah, space between letters, / for words)..." class="flex-1 bg-black/70 border border-slate-800/80 rounded p-4 font-mono text-xs text-cyan-300 leading-relaxed min-h-[300px] select-all outline-none"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Collapsible International Morse Reference Drawer -->
+    <div class="hud-card p-5 rounded space-y-3 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+        <div class="flex items-center space-x-2 text-cyan-400 font-bold">
+          <i class="fa-solid fa-book-open"></i>
+          <span>INTERNATIONAL MORSE CODE REFERENCE (ITU-R M.1677-1)</span>
+        </div>
+        <button onclick="toggleChart()" id="chartToggleBtn" class="text-slate-400 hover:text-white">[EXPAND CHART]</button>
+      </div>
+
+      <div id="morseChart" class="hidden grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 pt-2 text-[11px]">
+        <!-- Rendered by renderChart() -->
+      </div>
+    </div>
+
+    <!-- Semantic Crawl Article & Technical Reference -->
+    <article class="hud-card p-6 sm:p-8 rounded space-y-6 text-slate-300 font-mono text-xs sm:text-sm leading-relaxed border-cyan-500/20">
+      <div class="border-b border-cyan-500/20 pb-4">
+        <h2 class="text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide">
+          INTERNATIONAL MORSE TELEGRAPHY, PARIS CALIBRATION & CONTINUOUS WAVE (CW)
+        </h2>
+        <p class="text-slate-400 text-xs mt-1">
+          Technical specifications for ITU-R M.1677-1 timing ratios, Web Audio API sinusoidal synthesis, and airgapped client privacy.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">1. Timing Proportions & The "PARIS" Standard</h3>
+        <p>
+          Standardized globally by the International Telecommunication Union (ITU-R M.1677-1), Morse code is a rhythmic binary stream where all temporal durations derive from a single unit dot (<code class="text-cyan-300">dit</code>):
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 pl-2 text-slate-400">
+          <li><strong class="text-cyan-300">Dit Duration (1 Unit):</strong> The foundational time atom. At 20 WPM, 1 unit equals exactly 60 milliseconds.</li>
+          <li><strong class="text-pink-300">Dah Duration (3 Units):</strong> Exactly three times the duration of a single dit.</li>
+          <li><strong class="text-amber-300">Intra-Character Space (1 Unit):</strong> Silence separating dits and dahs within the same character.</li>
+          <li><strong class="text-emerald-300">Inter-Character Space (3 Units):</strong> Silence separating consecutive letters.</li>
+          <li><strong class="text-slate-300">Word Space (7 Units):</strong> Silence separating distinct words (represented by forward slash <code class="text-cyan-300">/</code> in raw text).</li>
+        </ul>
+        <p class="text-slate-400 text-xs mt-1">
+          Transmission speed is calibrated against the international test word <strong class="text-white">"PARIS "</strong>, which contains exactly 50 elemental units: <code class="text-cyan-300">Unit Duration (ms) = 1200 / WPM</code>.
+        </p>
+      </div>
+
+      <div class="space-y-4 pt-2">
+        <h3 class="text-cyan-400 font-orbitron font-bold text-sm tracking-wide">2. Web Audio API Sinusoidal Modulation</h3>
+        <p>
+          Unlike legacy web applications using static audio files, this tool leverages native browser <code class="text-cyan-300">AudioContext</code> oscillators. Carrier waves are generated as pure mathematical sine tones with an exponential gain envelope to eliminate high-frequency acoustic key-clicks.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Airgapped Safety</strong>
+          100% in-browser generation. Zero audio streams, network requests, or text strings ever leave your device.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Optical Radar Sync</strong>
+          The hardware-accelerated glowing beacon flashes in microsecond lockstep with the synthesized audio signal.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Bidirectional Codec</strong>
+          Freely convert plain English sentences into Morse code or paste raw dot-dash sequences to decode transmitted telegraphs.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (57)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'morse';
+    const TOOLS = [
+{ id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' },
+      { id: 'cert', name: 'SSL / PEM INSPECTOR', desc: 'Inspect X.509 certificates, SANs, validity expiration countdown, and cryptographic fingerprints.', icon: 'fa-certificate', subdomain: 'apps.sarwarfx.cfd/cert/', code: '0x20' },
+      { id: 'bcrypt', name: 'BCRYPT CIPHER', desc: 'Client-side Bcrypt password hash synthesizer, salt round benchmark, and string match verifier.', icon: 'fa-user-shield', subdomain: 'apps.sarwarfx.cfd/bcrypt/', code: '0x21' },
+      { id: 'xml', name: 'XML / JSON MATRIX', desc: 'Lossless bidirectional XML to JSON converter with syntax prettifier and tag sanitizer.', icon: 'fa-code', subdomain: 'apps.sarwarfx.cfd/xml/', code: '0x22' },
+      { id: 'favicon', name: 'FAVICON & PWA STUDIO', desc: 'Generate multi-resolution icons (16px to 512px) and PWA manifests with zip bundle export.', icon: 'fa-icons', subdomain: 'apps.sarwarfx.cfd/favicon/', code: '0x23' },
+      { id: 'glass', name: 'GLASSMORPHISM STUDIO', desc: 'Cyberpunk glass UI generator with live blur, glow, opacity controls, and production CSS export.', icon: 'fa-gem', subdomain: 'apps.sarwarfx.cfd/glass/', code: '0x24' },
+      { id: 'table', name: 'MARKDOWN TABLE LAB', desc: 'Interactive grid editor for Markdown tables with column alignments, CSV import, and live preview.', icon: 'fa-table-columns', subdomain: 'apps.sarwarfx.cfd/table/', code: '0x25' },
+      { id: 'dns', name: 'DNS SYNTHESIZER', desc: 'Interactive DNS zone builder for A, AAAA, CNAME, MX, TXT (SPF/DMARC) & CAA with BIND/Cloudflare export.', icon: 'fa-server', subdomain: 'apps.sarwarfx.cfd/dns/', code: '0x26' },
+      { id: 'robots', name: 'CRAWLER GATEKEEPER', desc: 'Visual robots.txt compiler with crawler toggles (Googlebot, GPTBot, ClaudeBot) and sitemap exporter.', icon: 'fa-robot', subdomain: 'apps.sarwarfx.cfd/robots/', code: '0x27' },
+      { id: 'meta', name: 'OPENGRAPH RADAR', desc: 'Social meta tag generator with live card previews for Twitter/X, Facebook, and LinkedIn.', icon: 'fa-share-nodes', subdomain: 'apps.sarwarfx.cfd/meta/', code: '0x28' },
+      { id: 'ua', name: 'USER-AGENT ANALYZER', desc: 'Client-side browser User-Agent telemetry inspector detailing engine, OS architecture & hardware.', icon: 'fa-window-maximize', subdomain: 'apps.sarwarfx.cfd/ua/', code: '0x29' },
+      { id: 'chmod', name: 'PERMISSIONS MATRIX', desc: 'Interactive Unix file permission calculator with bidirectional octal (755, 644) and symbolic (-rwxr-xr-x) sync.', icon: 'fa-user-lock', subdomain: 'apps.sarwarfx.cfd/chmod/', code: '0x2A' },
+      { id: 'lorem', name: 'CYBER TEXT SYNTHESIZER', desc: 'Procedural dummy text generator with Standard Latin, Cyberpunk Tech Jargon, and Hacker cipher strings.', icon: 'fa-paragraph', subdomain: 'apps.sarwarfx.cfd/lorem/', code: '0x2B' },
+      { id: 'ports', name: 'PORT PROTOCOL MATRIX', desc: 'Offline TCP/UDP service port encyclopedia (1-65535) with service recon, threat ratings & firewall rules.', icon: 'fa-ethernet', subdomain: 'apps.sarwarfx.cfd/ports/', code: '0x2C' },
+      { id: 'minify', name: 'CODE CONDENSER', desc: 'Real-time HTML, CSS & JavaScript minifier with whitespace stripper & byte-savings metrics.', icon: 'fa-minimize', subdomain: 'apps.sarwarfx.cfd/minify/', code: '0x2D' },
+      { id: 'unescape', name: 'STRING ESCAPE MATRIX', desc: 'Multi-format string escaper/unescaper supporting JSON, JavaScript, HTML entities & SQL escapes.', icon: 'fa-quote-right', subdomain: 'apps.sarwarfx.cfd/unescape/', code: '0x2E' },
+      { id: 'list', name: 'ARRAY DEDUPLICATOR', desc: 'Fast text list cleaner to deduplicate entries, sort alphabetically/numerically, strip blanks & join.', icon: 'fa-list-ol', subdomain: 'apps.sarwarfx.cfd/list/', code: '0x2F' },
+      { id: 'units', name: 'DATA STORAGE CALCULATOR', desc: 'Bidirectional converter for Bytes, KB, MB, GB, TB, PB (Decimal vs Binary IEC) with speed estimator.', icon: 'fa-hard-drive', subdomain: 'apps.sarwarfx.cfd/units/', code: '0x30' },
+      { id: 'ascii', name: 'ASCII TABLE TERMINAL', desc: 'Interactive 128 standard and extended ASCII character lookup with Dec, Hex, Oct, Bin & HTML codes.', icon: 'fa-table-list', subdomain: 'apps.sarwarfx.cfd/ascii/', code: '0x31' },
+      { id: 'markdown', name: 'MARKDOWN PREVIEW STUDIO', desc: 'Dual-pane live GFM Markdown editor with cyberpunk formatting toolbar, syntax cheatsheet & HTML export.', icon: 'fa-pen-to-square', subdomain: 'apps.sarwarfx.cfd/markdown/', code: '0x32' },
+      { id: 'textstat', name: 'TEXT METRICS RADAR', desc: 'Real-time lexical density, sentence/word counts, reading time & word frequency matrix.', icon: 'fa-chart-simple', subdomain: 'apps.sarwarfx.cfd/textstat/', code: '0x33' },
+      { id: 'caesar', name: 'ROTOR SHIFT CIPHER', desc: 'Interactive Caesar, Rot13 & Rot47 cipher engine with full 25-shift brute-force matrix.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/caesar/', code: '0x34' },
+      { id: 'morse', name: 'MORSE CODE MODULATOR', desc: 'Bidirectional Morse code translator with Web Audio synthesizer beeps & visual beacon.', icon: 'fa-tower-broadcast', subdomain: 'apps.sarwarfx.cfd/morse/', code: '0x35' },
+      { id: 'hexview', name: 'RAW BYTE MATRIX', desc: 'In-memory hexadecimal byte inspector & hex dump viewer with offset addresses & ASCII pane.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/hexview/', code: '0x36' },
+      { id: 'jsondiff', name: 'SEMANTIC JSON DIFF', desc: 'Order-independent semantic JSON comparator identifying added, removed & modified keys.', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/jsondiff/', code: '0x37' },
+      { id: 'token', name: 'KEY FORGE', desc: 'Cryptographically secure CSPRNG token synthesizer for API keys, Hex tokens & secrets.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/token/', code: '0x38' },
+      { id: 'newlines', name: 'WHITESPACE PURIFIER', desc: 'CRLF/LF line ending converter, tab-to-space sanitizer & whitespace compression matrix.', icon: 'fa-align-left', subdomain: 'apps.sarwarfx.cfd/newlines/', code: '0x39' }
+];
+
+    function toggleSuiteModal(open) {
+      const m = document.getElementById('suiteModal');
+      if (open) {
+        m.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleSuiteModal(true);
+      } else if (e.key === 'Escape') {
+        toggleSuiteModal(false);
+      }
+    });
+
+    function renderSuiteGrid() {
+      const g = document.getElementById('suiteGrid');
+      if (!g) return;
+      g.innerHTML = TOOLS.map(t => {
+        const isCurrent = t.id === CURRENT_TOOL_ID;
+        return `
+          <a href="/${t.id}/" class="p-2.5 rounded border ${isCurrent ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300' : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/80'} flex items-center justify-between transition-all group">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <i class="fa-solid ${t.icon} text-cyan-400 text-sm w-4 text-center"></i>
+              <div class="truncate">
+                <div class="font-bold tracking-wide group-hover:text-cyan-300 truncate text-[11px]">${t.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${t.desc}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 bg-black/40 px-1.5 py-0.5 rounded border border-slate-800 ml-2 shrink-0">${t.code}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+  </script>
+
+  <script>
+    const MORSE_MAP = {
+      'A': '.-',     'B': '-...',   'C': '-.-.',   'D': '-..',
+      'E': '.',      'F': '..-.',   'G': '--.',    'H': '....',
+      'I': '..',     'J': '.---',   'K': '-.-',    'L': '.-..',
+      'M': '--',     'N': '-.',     'O': '---',    'P': '.--.',
+      'Q': '--.-',   'R': '.-.',    'S': '...',    'T': '-',
+      'U': '..-',    'V': '...-',   'W': '.--',    'X': '-..-',
+      'Y': '-.--',   'Z': '--..',
+      '0': '-----',  '1': '.----',  '2': '..---',  '3': '...--',
+      '4': '....-',  '5': '.....',  '6': '-....',  '7': '--...',
+      '8': '---..',  '9': '----.',
+      '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.',
+      '!': '-.-.--', '/': '-..-.',  '(': '-.--.',  ')': '-.--.-',
+      '&': '.-...',  ':': '---...', ';': '-.-.-.', '=': '-...-',
+      '+': '.-.-.',  '-': '-....-', '_': '..--.-', '"': '.-..-.',
+      '$': '...-..-', '@': '.--.-.'
+    };
+
+    const REVERSE_MORSE = {};
+    Object.keys(MORSE_MAP).forEach(k => {
+      REVERSE_MORSE[MORSE_MAP[k]] = k;
+    });
+
+    let currentWpm = 20;
+    let currentFreq = 650;
+    let audioCtx = null;
+    let isPlaying = false;
+    let playTimeout = null;
+
+    function getUnitTimeMs() {
+      return 1200 / currentWpm;
+    }
+
+    function updateWpm(val) {
+      currentWpm = parseInt(val, 10);
+      document.getElementById('labelWpm').textContent = `${currentWpm} WPM`;
+    }
+
+    function updateFreq(val) {
+      currentFreq = parseInt(val, 10);
+      document.getElementById('labelFreq').textContent = `${currentFreq} Hz`;
+    }
+
+    function translateFromText() {
+      const text = document.getElementById('textInput').value.toUpperCase();
+      document.getElementById('inTextCount').textContent = `${text.length} chars`;
+
+      const words = text.trim().split(/\s+/);
+      const morseWords = words.map(word => {
+        return word.split('').map(char => MORSE_MAP[char] || '').filter(Boolean).join(' ');
+      });
+
+      const morseResult = morseWords.join(' / ');
+      document.getElementById('morseInput').value = morseResult;
+      document.getElementById('outMorseCount').textContent = `${morseResult.replace(/[^.-]/g, '').length} signals`;
+    }
+
+    function translateFromMorse() {
+      const morse = document.getElementById('morseInput').value.trim();
+      document.getElementById('outMorseCount').textContent = `${morse.replace(/[^.-]/g, '').length} signals`;
+
+      const words = morse.split('/');
+      const textWords = words.map(word => {
+        const letters = word.trim().split(/\s+/);
+        return letters.map(code => REVERSE_MORSE[code] || '?').join('');
+      });
+
+      const textResult = textWords.join(' ');
+      document.getElementById('textInput').value = textResult;
+      document.getElementById('inTextCount').textContent = `${textResult.length} chars`;
+    }
+
+    // Audio Carrier Generator via Web Audio API
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function setBeacon(active) {
+      const lamp = document.getElementById('beaconLamp');
+      const status = document.getElementById('beaconStatus');
+      if (active) {
+        lamp.className = 'w-4 h-4 rounded-full bg-cyan-400 border border-white shadow-[0_0_15px_#00f5ff] transition-all duration-75';
+        status.textContent = 'TRANSMITTING';
+        status.className = 'text-[10px] text-cyan-400 font-bold';
+      } else {
+        lamp.className = 'w-4 h-4 rounded-full bg-slate-800 border border-slate-700 transition-all duration-75';
+        status.textContent = isPlaying ? 'GAP' : 'STANDBY';
+        status.className = 'text-[10px] text-slate-500 font-bold';
+      }
+    }
+
+    async function togglePlayMorse() {
+      if (isPlaying) {
+        stopAudio();
+        return;
+      }
+
+      const morse = document.getElementById('morseInput').value.trim();
+      if (!morse) {
+        showToast('MORSE STREAM IS EMPTY');
+        return;
+      }
+
+      const ctx = getAudioContext();
+      isPlaying = true;
+      document.getElementById('playIcon').className = 'fa-solid fa-pause text-xs';
+      document.getElementById('playLabel').textContent = 'PAUSE';
+
+      const unitMs = getUnitTimeMs();
+
+      for (let i = 0; i < morse.length; i++) {
+        if (!isPlaying) break;
+        const char = morse[i];
+
+        if (char === '.') {
+          await playTone(ctx, unitMs);
+          await sleep(unitMs); // Inter-element silence
+        } else if (char === '-') {
+          await playTone(ctx, unitMs * 3);
+          await sleep(unitMs); // Inter-element silence
+        } else if (char === ' ') {
+          await sleep(unitMs * 2); // Inter-letter silence (already 1 unit from previous element)
+        } else if (char === '/') {
+          await sleep(unitMs * 4); // Inter-word silence
+        }
+      }
+
+      stopAudio();
+    }
+
+    function playTone(ctx, durationMs) {
+      return new Promise(resolve => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(currentFreq, ctx.currentTime);
+
+        // Smooth attack and release to eliminate clicks
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.005);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + (durationMs / 1000) - 0.005);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + (durationMs / 1000));
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        setBeacon(true);
+        osc.start();
+
+        setTimeout(() => {
+          setBeacon(false);
+          osc.stop();
+          resolve();
+        }, durationMs);
+      });
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function stopAudio() {
+      isPlaying = false;
+      setBeacon(false);
+      document.getElementById('playIcon').className = 'fa-solid fa-play text-xs';
+      document.getElementById('playLabel').textContent = 'TRANSMIT AUDIO';
+    }
+
+    function swapPanes() {
+      const text = document.getElementById('textInput').value;
+      const morse = document.getElementById('morseInput').value;
+      document.getElementById('textInput').value = morse;
+      translateFromText();
+      showToast('SWAPPED PANES');
+    }
+
+    function loadSample(type) {
+      if (type === 'sos') {
+        document.getElementById('textInput').value = 'SOS SOS CQ CQ CQ DE SARWARFX K';
+      } else {
+        document.getElementById('textInput').value = 'CYBERTOOLS 2026 // AIRGAP SECURE TELECOMMUNICATIONS TERMINAL';
+      }
+      translateFromText();
+      showToast('LOADED SAMPLE MESSAGE');
+    }
+
+    function clearAll() {
+      stopAudio();
+      document.getElementById('textInput').value = '';
+      document.getElementById('morseInput').value = '';
+      document.getElementById('inTextCount').textContent = '0 chars';
+      document.getElementById('outMorseCount').textContent = '0 signals';
+      showToast('CLEARED WORKSPACE');
+    }
+
+    function copyMorse() {
+      const text = document.getElementById('morseInput').value;
+      navigator.clipboard.writeText(text);
+      showToast('COPIED MORSE CODE');
+    }
+
+    function toggleChart() {
+      const chart = document.getElementById('morseChart');
+      const btn = document.getElementById('chartToggleBtn');
+      chart.classList.toggle('hidden');
+      btn.textContent = chart.classList.contains('hidden') ? '[EXPAND CHART]' : '[COLLAPSE CHART]';
+    }
+
+    function renderChart() {
+      const container = document.getElementById('morseChart');
+      container.innerHTML = Object.entries(MORSE_MAP).map(([char, code]) => {
+        return `
+          <div class="p-1.5 bg-black/50 border border-slate-800 rounded flex items-center justify-between">
+            <span class="font-bold text-cyan-400">${char}</span>
+            <span class="text-slate-300 font-mono tracking-widest">${code}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      renderChart();
+      loadSample('sos');
+    });
+  </script>
+</body>
+</html>

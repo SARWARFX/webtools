@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '50-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '57-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -384,6 +384,55 @@ const APPS = [
     subdomain: 'markdown',
     title: 'CYBERTOOLS // MARKDOWN',
     subtitle: 'MARKDOWN PREVIEW & CHEATSHEET STUDIO',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'textstat',
+    subdomain: 'textstat',
+    title: 'CYBERTOOLS // TEXTSTAT',
+    subtitle: 'LEXICAL METRICS & DENSITY RADAR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'caesar',
+    subdomain: 'caesar',
+    title: 'CYBERTOOLS // CAESAR',
+    subtitle: 'CLASSICAL CIPHER & ROT ROTOR HUD',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'morse',
+    subdomain: 'morse',
+    title: 'CYBERTOOLS // MORSE',
+    subtitle: 'SIGNAL MODULATOR & MORSE BEACON',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'hexview',
+    subdomain: 'hexview',
+    title: 'CYBERTOOLS // HEXVIEW',
+    subtitle: 'RAW BYTE MATRIX & BINARY INSPECTOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'jsondiff',
+    subdomain: 'jsondiff',
+    title: 'CYBERTOOLS // JSONDIFF',
+    subtitle: 'SEMANTIC PAYLOAD DELTA RADAR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'token',
+    subdomain: 'token',
+    title: 'CYBERTOOLS // TOKEN',
+    subtitle: 'KEY FORGE & PSEUDO-RANDOM GENERATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'newlines',
+    subdomain: 'newlines',
+    title: 'CYBERTOOLS // NEWLINES',
+    subtitle: 'WHITESPACE PURIFIER & CRLF SANITIZER',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
