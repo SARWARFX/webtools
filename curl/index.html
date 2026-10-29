@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cURL to Code Transpiler // JavaScript Fetch, Axios, Python Requests - sarwarfx</title>
+  <meta name="description" content="Transpile cURL terminal commands into modern JavaScript fetch, Axios, Python requests, and Node.js code instantly in your browser. 100% client-side privacy.">
+  <meta name="keywords" content="curl to fetch, curl to python, curl to code, curl converter, curl to axios, curl transpiler, developer tools, api testing">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/curl/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/curl/" />
+  <meta property="og:title" content="cURL to Code Transpiler // JavaScript Fetch, Axios, Python Requests - sarwarfx" />
+  <meta property="og:description" content="Transpile cURL terminal commands into modern JavaScript fetch, Axios, Python requests, and Node.js code instantly in your browser. 100% client-side privacy." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/curl/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/curl/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/curl/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="cURL to Code Transpiler // JavaScript Fetch, Axios, Python Requests - sarwarfx" />
+  <meta name="twitter:description" content="Transpile cURL terminal commands into modern JavaScript fetch, Axios, Python requests, and Node.js code instantly in your browser. 100% client-side privacy." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/curl/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "cURL to Code Transpiler",
+    "url": "https://apps.sarwarfx.cfd/curl/",
+    "description": "Transpile cURL terminal commands into modern JavaScript fetch, Axios, Python requests, and Node.js code instantly in your browser. 100% client-side privacy.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-textarea {
+      background: rgba(2, 6, 23, 0.9);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      resize: vertical;
+    }
+    .hud-textarea:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-terminal text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">curl</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="flex items-center text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse mr-1.5"></span>
+          SYS_NODE: 0x1C
+        </span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300">CURL &rarr; CODE SYNTAX ENGINE</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-pink-400" id="curlTelemetry">METHOD: GET // READY</span>
+      </div>
+
+      <!-- Action Items -->
+      <div class="flex items-center space-x-2.5">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">SUITE</span>
+          <span class="text-[10px] text-cyan-400/80">(31)</span>
+        </button>
+        <a href="/" class="hud-btn-primary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-terminal"></i>
+          <span class="hidden sm:inline">ROOT_HUB</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Viewport -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+    
+    <!-- Title & Description Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-[10px] text-cyan-300 uppercase tracking-widest font-mono mb-2">
+          <i class="fa-solid fa-code-compare text-cyan-400"></i>
+          <span>HTTP Command Transpiler & API Generator</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-orbitron uppercase">
+          cURL &rarr; CODE // <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">TRANSPILER</span>
+        </h1>
+        <p class="text-slate-400 text-xs sm:text-sm font-rajdhani font-medium mt-1">
+          Instant client-side transpilation of raw cURL requests into JavaScript fetch(), Axios, Python requests, and Node.js.
+        </p>
+      </div>
+
+      <!-- Target Language Switcher -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button id="tabFetch" onclick="setTargetLang('fetch')" class="px-3 py-1.5 rounded text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/60 shadow-[0_0_10px_rgba(0,245,255,0.2)]">JS FETCH</button>
+        <button id="tabAxios" onclick="setTargetLang('axios')" class="px-3 py-1.5 rounded text-xs font-mono text-slate-400 hover:text-white border border-slate-800">AXIOS</button>
+        <button id="tabPython" onclick="setTargetLang('python')" class="px-3 py-1.5 rounded text-xs font-mono text-slate-400 hover:text-white border border-slate-800">PYTHON</button>
+        <button id="tabNode" onclick="setTargetLang('node')" class="px-3 py-1.5 rounded text-xs font-mono text-slate-400 hover:text-white border border-slate-800">NODE.JS</button>
+        <button onclick="loadSample()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs flex items-center space-x-1.5 ml-2">
+          <i class="fa-solid fa-terminal text-cyan-400"></i>
+          <span>SAMPLE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Split Pane Editors -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      
+      <!-- Left: cURL Input -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-terminal text-cyan-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">RAW cURL COMMAND</span>
+          </div>
+          <button onclick="clearInput()" class="text-slate-500 hover:text-rose-400 text-xs font-mono">[CLEAR]</button>
+        </div>
+        <textarea id="curlInput" rows="18" placeholder="Paste your cURL command here (e.g. curl -X POST https://api.sarwarfx.cfd/auth -H 'Content-Type: application/json' -d '{&quot;token&quot;:&quot;123&quot;}')..." class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1" oninput="transpile()"></textarea>
+      </div>
+
+      <!-- Right: Generated Code Output -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-file-code text-pink-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider" id="outputLangTitle">JAVASCRIPT FETCH OUTPUT</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="copyOutput()" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Copy Code">
+              <i class="fa-solid fa-copy mr-1"></i>COPY
+            </button>
+            <button onclick="downloadCode()" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Download Code">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+        </div>
+        <textarea id="codeOutput" rows="18" class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1 text-cyan-200" readonly></textarea>
+      </div>
+
+    </div>
+
+    <!-- Semantic Crawl Article -->
+    <article class="hud-card p-6 text-slate-400 text-xs font-mono leading-relaxed space-y-4">
+      <div class="flex items-center space-x-2 text-cyan-400 border-b border-cyan-500/20 pb-3">
+        <i class="fa-solid fa-book text-sm"></i>
+        <h3 class="font-bold text-white uppercase tracking-wider text-sm">CURL REVERSE-ENGINEERING & CODE GENERATION</h3>
+      </div>
+      
+      <p>
+        <strong>cURL</strong> is the de-facto standard CLI utility for network transmissions. Converting terminal curl requests into production programming code requires precise parsing of HTTP methods, authorization headers, query strings, and request payloads:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Token Tokenization</strong>
+          Handles single-quote and double-quote boundaries, multi-line backslash escapes (`\`), and shell argument flags (`-H`, `-d`, `-X`).
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Target Transpilation</strong>
+          Generates idiomatic target code: modern async/await for `fetch()`, clean config dictionaries for Python `requests`, and modular promises for Axios.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Zero Leakage</strong>
+          Your sensitive bearer tokens, API credentials, and query secrets never leave your device. All parsing is executed in-memory.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (31)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'curl';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    let targetLanguage = 'fetch';
+
+    function setTargetLang(lang) {
+      targetLanguage = lang;
+      const tabs = ['fetch', 'axios', 'python', 'node'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === lang) {
+          btn.className = 'px-3 py-1.5 rounded text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/60 shadow-[0_0_10px_rgba(0,245,255,0.2)]';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded text-xs font-mono text-slate-400 hover:text-white border border-slate-800';
+        }
+      });
+
+      const titles = {
+        fetch: 'JAVASCRIPT FETCH OUTPUT',
+        axios: 'AXIOS PROMISE OUTPUT',
+        python: 'PYTHON REQUESTS OUTPUT',
+        node: 'NODE.JS HTTPS OUTPUT'
+      };
+      document.getElementById('outputLangTitle').textContent = titles[lang] || 'CODE OUTPUT';
+      transpile();
+    }
+
+    // Tokenize cURL command into shell args
+    function tokenizeCurl(curlStr) {
+      const str = curlStr.replace(/\\\r?\n/g, ' ').trim();
+      const tokens = [];
+      let current = '';
+      let quote = null;
+      let escaped = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        if (escaped) {
+          current += char;
+          escaped = false;
+        } else if (char === '\\') {
+          escaped = true;
+        } else if (quote) {
+          if (char === quote) {
+            quote = null;
+          } else {
+            current += char;
+          }
+        } else if (char === '"' || char === "'") {
+          quote = char;
+        } else if (/\s/.test(char)) {
+          if (current.length > 0) {
+            tokens.push(current);
+            current = '';
+          }
+        } else {
+          current += char;
+        }
+      }
+      if (current.length > 0) tokens.push(current);
+      return tokens;
+    }
+
+    function parseCurl(raw) {
+      const tokens = tokenizeCurl(raw);
+      if (tokens.length === 0 || tokens[0].toLowerCase() !== 'curl') {
+        return null;
+      }
+
+      let url = '';
+      let method = 'GET';
+      const headers = {};
+      let data = null;
+
+      for (let i = 1; i < tokens.length; i++) {
+        const t = tokens[i];
+        if (t === '-X' || t === '--request') {
+          method = tokens[++i].toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const hStr = tokens[++i];
+          const colonIdx = hStr.indexOf(':');
+          if (colonIdx > -1) {
+            const k = hStr.slice(0, colonIdx).trim();
+            const v = hStr.slice(colonIdx + 1).trim();
+            headers[k] = v;
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          data = tokens[++i];
+          if (method === 'GET') method = 'POST';
+        } else if (t === '-u' || t === '--user') {
+          const auth = tokens[++i];
+          headers['Authorization'] = 'Basic ' + btoa(auth);
+        } else if (!t.startsWith('-') && !url) {
+          url = t;
+        }
+      }
+
+      return { url, method, headers, data };
+    }
+
+    function transpile() {
+      const raw = document.getElementById('curlInput').value.trim();
+      if (!raw) {
+        document.getElementById('codeOutput').value = '';
+        document.getElementById('curlTelemetry').textContent = 'METHOD: NONE // READY';
+        return;
+      }
+
+      const parsed = parseCurl(raw);
+      if (!parsed || !parsed.url) {
+        document.getElementById('codeOutput').value = '// Error: Unable to parse valid cURL command.\n// Ensure command starts with "curl" followed by a URL.';
+        return;
+      }
+
+      document.getElementById('curlTelemetry').textContent = `METHOD: ${parsed.method} // URL: ${parsed.url.slice(0, 30)}...`;
+
+      let out = '';
+      if (targetLanguage === 'fetch') {
+        out = generateFetch(parsed);
+      } else if (targetLanguage === 'axios') {
+        out = generateAxios(parsed);
+      } else if (targetLanguage === 'python') {
+        out = generatePython(parsed);
+      } else if (targetLanguage === 'node') {
+        out = generateNode(parsed);
+      }
+
+      document.getElementById('codeOutput').value = out;
+    }
+
+    function generateFetch(p) {
+      const options = {
+        method: p.method,
+        headers: p.headers
+      };
+      if (p.data) {
+        try {
+          // If valid JSON, keep as JSON.stringify object
+          const json = JSON.parse(p.data);
+          options.body = `JSON.stringify(${JSON.stringify(json, null, 2)})`;
+        } catch(e) {
+          options.body = JSON.stringify(p.data);
+        }
+      }
+
+      let code = `const response = await fetch("${p.url}", {\n`;
+      code += `  method: "${p.method}",\n`;
+      if (Object.keys(p.headers).length > 0) {
+        code += `  headers: ${JSON.stringify(p.headers, null, 4).replace(/\n/g, '\n  ')},\n`;
+      }
+      if (p.data) {
+        code += `  body: ${options.body}\n`;
+      }
+      code += `});\n\nconst data = await response.json();\nconsole.log(data);`;
+      return code;
+    }
+
+    function generateAxios(p) {
+      let code = `import axios from 'axios';\n\n`;
+      code += `const options = {\n`;
+      code += `  method: '${p.method}',\n`;
+      code += `  url: '${p.url}',\n`;
+      if (Object.keys(p.headers).length > 0) {
+        code += `  headers: ${JSON.stringify(p.headers, null, 4).replace(/\n/g, '\n  ')},\n`;
+      }
+      if (p.data) {
+        try {
+          const json = JSON.parse(p.data);
+          code += `  data: ${JSON.stringify(json, null, 4).replace(/\n/g, '\n  ')}\n`;
+        } catch(e) {
+          code += `  data: ${JSON.stringify(p.data)}\n`;
+        }
+      }
+      code += `};\n\nconst response = await axios.request(options);\nconsole.log(response.data);`;
+      return code;
+    }
+
+    function generatePython(p) {
+      let code = `import requests\n\n`;
+      code += `url = "${p.url}"\n`;
+      if (Object.keys(p.headers).length > 0) {
+        code += `headers = ${JSON.stringify(p.headers, null, 4)}\n`;
+      }
+      if (p.data) {
+        try {
+          const json = JSON.parse(p.data);
+          code += `payload = ${JSON.stringify(json, null, 4)}\n\n`;
+          code += `response = requests.${p.method.toLowerCase()}(url, json=payload${Object.keys(p.headers).length > 0 ? ', headers=headers' : ''})\n`;
+        } catch(e) {
+          code += `payload = ${JSON.stringify(p.data)}\n\n`;
+          code += `response = requests.${p.method.toLowerCase()}(url, data=payload${Object.keys(p.headers).length > 0 ? ', headers=headers' : ''})\n`;
+        }
+      } else {
+        code += `\nresponse = requests.${p.method.toLowerCase()}(url${Object.keys(p.headers).length > 0 ? ', headers=headers' : ''})\n`;
+      }
+      code += `print(response.json())`;
+      return code;
+    }
+
+    function generateNode(p) {
+      return `const https = require('https');\n\nconst url = new URL("${p.url}");\nconst options = {\n  hostname: url.hostname,\n  port: url.port || 443,\n  path: url.pathname + url.search,\n  method: "${p.method}",\n  headers: ${JSON.stringify(p.headers, null, 4).replace(/\n/g, '\n  ')}\n};\n\nconst req = https.request(options, (res) => {\n  let data = '';\n  res.on('data', chunk => data += chunk);\n  res.on('end', () => console.log(JSON.parse(data)));\n});\n\n${p.data ? `req.write(${JSON.stringify(p.data)});\n` : ''}req.end();`;
+    }
+
+    function copyOutput() {
+      const code = document.getElementById('codeOutput').value;
+      if (!code) return;
+      navigator.clipboard.writeText(code);
+      showToast('COPIED GENERATED CODE');
+    }
+
+    function downloadCode() {
+      const code = document.getElementById('codeOutput').value;
+      if (!code) return;
+      const ext = targetLanguage === 'python' ? 'py' : 'js';
+      const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `request.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`DOWNLOADED request.${ext}`);
+    }
+
+    function loadSample() {
+      const sample = `curl -X POST "https://api.github.com/repos/sarwarfx/webtools/issues" \\
+  -H "Authorization: Bearer ghp_99cyberreconmatrix000000000000" \\
+  -H "Accept: application/vnd.github.v3+json" \\
+  -H "Content-Type: application/json" \\
+  -d '{"title":"Implement Subnet Matrix Node","body":"Deploy Node 0x1D into production suite."}'`;
+      document.getElementById('curlInput').value = sample;
+      transpile();
+      showToast('LOADED GITHUB API CURL SAMPLE');
+    }
+
+    function clearInput() {
+      document.getElementById('curlInput').value = '';
+      document.getElementById('codeOutput').value = '';
+      document.getElementById('curlTelemetry').textContent = 'METHOD: NONE // READY';
+      showToast('CLEARED cURL INPUT');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSample();
+    });
+  </script>
+</body>
+</html>

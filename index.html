@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberTools HUD Terminal // 25 Free In-Browser Web Utilities - sarwarfx</title>
-  <meta name="description" content="Suite of 25 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
+  <title>CyberTools HUD Terminal // 31 Free In-Browser Web Utilities - sarwarfx</title>
+  <meta name="description" content="Suite of 31 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.">
   <meta name="keywords" content="web utilities, developer tools, cyberpunk hud, client-side tools, cloudflare pages, privacy tools, json formatter, qr generator">
   <link rel="canonical" href="https://apps.sarwarfx.cfd/">
   <meta name="theme-color" content="#020617">
@@ -12,8 +12,8 @@
   <!-- OPEN GRAPH / FACEBOOK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://apps.sarwarfx.cfd/" />
-  <meta property="og:title" content="CyberTools HUD Terminal // 25 Free In-Browser Web Utilities - sarwarfx" />
-  <meta property="og:description" content="Suite of 25 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta property="og:title" content="CyberTools HUD Terminal // 31 Free In-Browser Web Utilities - sarwarfx" />
+  <meta property="og:description" content="Suite of 31 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta property="og:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:url" content="https://apps.sarwarfx.cfd/og-cover.png" />
   <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/og-cover.png" />
@@ -24,8 +24,8 @@
 
   <!-- TWITTER / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CyberTools HUD Terminal // 25 Free In-Browser Web Utilities - sarwarfx" />
-  <meta name="twitter:description" content="Suite of 25 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
+  <meta name="twitter:title" content="CyberTools HUD Terminal // 31 Free In-Browser Web Utilities - sarwarfx" />
+  <meta name="twitter:description" content="Suite of 31 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages." />
   <meta name="twitter:image" content="https://apps.sarwarfx.cfd/og-cover.png" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -35,7 +35,7 @@
     "@type": "WebApplication",
     "name": "sarwarfx CyberTools Command Hub",
     "url": "https://apps.sarwarfx.cfd/",
-    "description": "Suite of 25 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
+    "description": "Suite of 31 modular web utilities in an advanced cyberpunk HUD terminal. 100% in-browser, client-side, zero tracking, instant processing on Cloudflare Pages.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,7 +216,7 @@
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest">
         <i class="fa-solid fa-crosshairs text-cyan-400"></i>
-        <span>TACTICAL RECON TERMINAL • 25 ACTIVE UTILITY NODES</span>
+        <span>TACTICAL RECON TERMINAL • 31 ACTIVE UTILITY NODES</span>
       </div>
       
       <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase leading-tight font-mono">
@@ -236,13 +236,13 @@
           type="text" 
           id="toolSearch" 
           oninput="filterTools()" 
-          placeholder="FILTER_MODULES [uuid, url, pass, epoch, slug, yaml, hash, jwt, regex, cron]..." 
+          placeholder="FILTER_MODULES [csv, sql, curl, subnet, svg, base, uuid, url, pass, epoch]..." 
           class="w-full pl-9 pr-4 py-2.5 bg-black/80 border border-slate-800 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none uppercase tracking-wider">
         <span class="absolute right-3.5 top-5 text-[10px] text-slate-500 font-mono">[READY]</span>
       </div>
     </div>
 
-    <!-- 25 Tools Cards Grid -->
+    <!-- 31 Tools Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="toolsContainer">
       <!-- Injected dynamically by renderTools() -->
     </div>
@@ -294,7 +294,13 @@
       { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', tags: ['CSPRNG', 'DICEWARE', 'ENTROPY'], code: '0x16' },
       { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', tags: ['EPOCH', 'UNIX TIME', 'ISO 8601'], code: '0x17' },
       { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', tags: ['SLUG', 'CAMELCASE', 'KEBAB'], code: '0x18' },
-      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' }
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', tags: ['JSON2YAML', 'YAML2JSON', 'SYNTAX'], code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', tags: ['CSV', 'TSV', 'TABULAR', 'JSON'], code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', tags: ['SQL', 'FORMAT', 'POSTGRES', 'MYSQL'], code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', tags: ['CURL', 'FETCH', 'PYTHON', 'AXIOS'], code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', tags: ['CIDR', 'SUBNET', 'IPV4', 'NETWORKING'], code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', tags: ['SVG', 'VECTOR', 'MINIFY', 'OPTIMIZE'], code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', tags: ['BASE CONVERT', 'BINARY', 'HEX', 'BIGINT'], code: '0x1F' }
     ];
 
     function getToolHref(tool) {

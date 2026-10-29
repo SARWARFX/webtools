@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Syntax Formatter & Query Purifier // PostgreSQL, MySQL, SQLite - sarwarfx</title>
+  <meta name="description" content="Client-side SQL query formatter, minifier, and keyword case purifier for PostgreSQL, MySQL, SQLite, and Standard SQL. 100% private in-browser execution.">
+  <meta name="keywords" content="sql formatter, sql beautifier, format sql query, sql minifier, postgresql formatter, mysql formatter, sqlite query, developer tools">
+  <link rel="canonical" href="https://apps.sarwarfx.cfd/sql/" />
+  <meta name="theme-color" content="#020617">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://apps.sarwarfx.cfd/sql/" />
+  <meta property="og:title" content="SQL Syntax Formatter & Query Purifier // PostgreSQL, MySQL, SQLite - sarwarfx" />
+  <meta property="og:description" content="Client-side SQL query formatter, minifier, and keyword case purifier for PostgreSQL, MySQL, SQLite, and Standard SQL. 100% private in-browser execution." />
+  <meta property="og:image" content="https://apps.sarwarfx.cfd/sql/og-cover.png" />
+  <meta property="og:image:url" content="https://apps.sarwarfx.cfd/sql/og-cover.png" />
+  <meta property="og:image:secure_url" content="https://apps.sarwarfx.cfd/sql/og-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CyberTools Tactical Preview Banner" />
+
+  <!-- TWITTER / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SQL Syntax Formatter & Query Purifier // PostgreSQL, MySQL, SQLite - sarwarfx" />
+  <meta name="twitter:description" content="Client-side SQL query formatter, minifier, and keyword case purifier for PostgreSQL, MySQL, SQLite, and Standard SQL. 100% private in-browser execution." />
+  <meta name="twitter:image" content="https://apps.sarwarfx.cfd/sql/og-cover.png" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SQL Syntax Formatter & Query Purifier",
+    "url": "https://apps.sarwarfx.cfd/sql/",
+    "description": "Client-side SQL query formatter, minifier, and keyword case purifier for PostgreSQL, MySQL, SQLite, and Standard SQL. 100% private in-browser execution.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5ff'><path d='M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 7c-4.41 0-8-1.57-8-2.5S7.59 4 12 4s8 1.57 8 2.5-3.59 2.5-8 2.5zm8 2.5c0 .15-.04.3-.11.44C18.23 13.55 15.34 14.5 12 14.5s-6.23-.95-7.89-2.56c-.07-.14-.11-.29-.11-.44V10c1.78 1.48 4.7 2.5 8 2.5s6.22-1.02 8-2.5v1.5zm0 5c0 .15-.04.3-.11.44C18.23 18.55 15.34 19.5 12 19.5s-6.23-.95-7.89-2.56c-.07-.14-.11-.29-.11-.44V15c1.78 1.48 4.7 2.5 8 2.5s6.22-1.02 8-2.5v1.5z'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070d',
+            card: 'rgba(8, 15, 30, 0.78)',
+            cyanGlow: '#00f5ff',
+            pinkGlow: '#ff2bd6',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070d;
+      background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.02), rgba(255, 43, 214, 0.015), rgba(0, 245, 255, 0.02)),
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 255, 0.12), transparent);
+      background-size: 100% 4px, 6px 100%, 100% 100%;
+      min-height: 100vh;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-card {
+      position: relative;
+      background: rgba(8, 15, 30, 0.78);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.06), inset 0 0 15px rgba(0, 245, 255, 0.02);
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+    }
+    .hud-card::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00f5ff;
+      border-left: 2px solid #00f5ff;
+    }
+    .hud-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #ff2bd6;
+      border-right: 2px solid #ff2bd6;
+    }
+
+    .hud-textarea {
+      background: rgba(2, 6, 23, 0.9);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      resize: vertical;
+    }
+    .hud-textarea:focus {
+      border-color: #00f5ff;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #00f5ff, #0284c7);
+      border: 1px solid #00f5ff;
+      color: #05070d;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #00f5ff, #38bdf8);
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .hud-btn-secondary {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.85);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+    .hud-btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.12);
+      border-color: rgba(0, 245, 255, 0.6);
+      color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "346689d4f4b0498393005cfe06ff2f5b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body class="flex flex-col min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Top Tactical HUD Bar -->
+  <header class="border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" title="Return to Apps Hub">
+        <div class="w-9 h-9 bg-cyan-500/10 border border-cyan-500/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 group-hover:shadow-[0_0_15px_rgba(0,245,255,0.5)] transition-all relative">
+          <i class="fa-solid fa-database text-sm"></i>
+          <div class="absolute -top-1 -left-1 w-1.5 h-1.5 bg-cyan-400"></div>
+          <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-cyan-400"></div>
+        </div>
+        <div class="flex items-baseline space-x-1.5 font-mono">
+          <span class="font-extrabold tracking-widest text-white text-sm uppercase">sarwarfx</span>
+          <span class="text-cyan-400 text-xs font-bold">//</span>
+          <span class="font-semibold text-cyan-300 text-xs tracking-wider uppercase">sql</span>
+        </div>
+      </a>
+
+      <!-- Center Micro-Telemetry -->
+      <div class="hidden lg:flex items-center space-x-3 px-3 py-1 bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-400">
+        <span class="flex items-center text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse mr-1.5"></span>
+          SYS_NODE: 0x1B
+        </span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300">SQL PURIFIER & FORMATTER</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-pink-400" id="queryTelemetry">OP: SELECT // 0 LINES</span>
+      </div>
+
+      <!-- Action Items -->
+      <div class="flex items-center space-x-2.5">
+        <button onclick="toggleSuiteModal(true)" class="hud-btn-secondary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="hidden sm:inline">SUITE</span>
+          <span class="text-[10px] text-cyan-400/80">(31)</span>
+        </button>
+        <a href="/" class="hud-btn-primary px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs">
+          <i class="fa-solid fa-terminal"></i>
+          <span class="hidden sm:inline">ROOT_HUB</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Viewport -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+    
+    <!-- Title & Description Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-4 gap-4">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-cyan-950/40 border border-cyan-500/30 text-[10px] text-cyan-300 uppercase tracking-widest font-mono mb-2">
+          <i class="fa-solid fa-align-left text-cyan-400"></i>
+          <span>Database Query Normalizer & Formatter</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-orbitron uppercase">
+          SQL PURIFIER // <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">SYNTAX FORMATTER</span>
+        </h1>
+        <p class="text-slate-400 text-xs sm:text-sm font-rajdhani font-medium mt-1">
+          Zero-backend client SQL beautifier, minifier, and parameterized template generator supporting PostgreSQL, MySQL, SQLite, and ANSI SQL.
+        </p>
+      </div>
+
+      <!-- Formatting Toolbar -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center bg-black/60 border border-slate-800 p-1 rounded text-xs font-mono">
+          <span class="text-slate-500 px-2 text-[10px] uppercase">CASE:</span>
+          <button id="btnCaseUpper" onclick="setKeywordCase('upper')" class="px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/50">UPPER</button>
+          <button id="btnCaseLower" onclick="setKeywordCase('lower')" class="px-2 py-0.5 rounded text-[11px] text-slate-400 hover:text-white">lower</button>
+        </div>
+        <button onclick="loadSampleQuery()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs flex items-center space-x-1.5">
+          <i class="fa-solid fa-database text-cyan-400"></i>
+          <span>SAMPLE</span>
+        </button>
+        <button onclick="clearPanes()" class="hud-btn-secondary px-3 py-1.5 rounded text-xs text-rose-400 hover:text-rose-300 border-rose-900/60">
+          <i class="fa-solid fa-trash-can mr-1"></i>CLEAR
+        </button>
+      </div>
+    </div>
+
+    <!-- Primary Action Controls -->
+    <div class="flex flex-wrap items-center justify-center gap-3 py-1">
+      <button onclick="formatSQL()" class="hud-btn-primary px-5 py-2.5 rounded flex items-center space-x-2 text-xs">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>FORMAT & BEAUTIFY SQL</span>
+      </button>
+      <button onclick="minifySQL()" class="hud-btn-secondary px-4 py-2.5 rounded flex items-center space-x-2 text-xs">
+        <i class="fa-solid fa-compress text-cyan-400"></i>
+        <span>MINIFY QUERY</span>
+      </button>
+      <button onclick="parameterizeSQL()" class="hud-btn-secondary px-4 py-2.5 rounded flex items-center space-x-2 text-xs border-pink-500/40 text-pink-300 hover:border-pink-400 hover:text-white">
+        <i class="fa-solid fa-hashtag"></i>
+        <span>PARAMETERIZE (:p1, :p2)</span>
+      </button>
+    </div>
+
+    <!-- Split Pane Dual Editor -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      
+      <!-- Left Pane: Raw SQL Input -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-terminal text-cyan-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">RAW SQL INPUT</span>
+          </div>
+          <div class="flex items-center space-x-2 text-[10px] font-mono text-slate-500">
+            <span id="inputCharCount">0 CHARS</span>
+          </div>
+        </div>
+        <textarea id="sqlInput" rows="18" placeholder="Paste or type raw SQL query here (e.g. select u.id, u.name from users u where u.status = 'active')..." class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1" oninput="updateInputStats()"></textarea>
+      </div>
+
+      <!-- Right Pane: Purified SQL Output -->
+      <div class="hud-card p-4 space-y-2 flex flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-code text-pink-400"></i>
+            <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">PURIFIED SQL OUTPUT</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="copyOutput()" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Copy Output">
+              <i class="fa-solid fa-copy mr-1"></i>COPY
+            </button>
+            <button onclick="downloadSQL()" class="hud-btn-secondary px-2 py-0.5 text-[10px] rounded" title="Download .sql">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+        </div>
+        <textarea id="sqlOutput" rows="18" placeholder="Formatted, minified, or parameterized SQL output will appear here..." class="hud-textarea w-full p-3 text-xs sm:text-sm rounded flex-1 text-cyan-200" readonly></textarea>
+      </div>
+
+    </div>
+
+    <!-- Semantic Crawl Article -->
+    <article class="hud-card p-6 text-slate-400 text-xs font-mono leading-relaxed space-y-4">
+      <div class="flex items-center space-x-2 text-cyan-400 border-b border-cyan-500/20 pb-3">
+        <i class="fa-solid fa-book text-sm"></i>
+        <h3 class="font-bold text-white uppercase tracking-wider text-sm">SQL QUERY OPTIMIZATION & NORMALIZATION</h3>
+      </div>
+      
+      <p>
+        Consistent SQL query formatting standardizes readability across relational database administration, code reviews, and ORM query debugging.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">1. Clause Breaking</strong>
+          Major keywords (`SELECT`, `FROM`, `JOIN`, `WHERE`, `GROUP BY`) are structured into discrete lines with indented column projections.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">2. Parameterization</strong>
+          Literal values are isolated into indexed binding parameters (`:p1`, `:p2`), preventing SQL injection and easing query cache analysis.
+        </div>
+        <div class="p-3 bg-black/40 border border-slate-800">
+          <strong class="text-cyan-300 block mb-1">3. Minification</strong>
+          Collapses indentation and commentary into single-line executable query strings for embedded API payloads and microservice logs.
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Global Suite Quick Switcher Modal -->
+  <div id="suiteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="hud-card max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-cyan-500/50">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-table-cells-large text-cyan-400"></i>
+          <span class="font-bold text-white font-mono uppercase tracking-wider text-sm">CYBERTOOLS TACTICAL SUITE (31)</span>
+        </div>
+        <button onclick="toggleSuiteModal(false)" class="text-slate-400 hover:text-white font-mono text-sm">[ESC / CLOSE]</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-mono text-xs" id="suiteGrid">
+        <!-- Rendered by renderSuiteGrid() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-900 border border-cyan-500/80 text-cyan-300 font-mono text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,245,255,0.4)] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-slate-950/80 py-6 text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="text-slate-400 hover:text-cyan-400 font-bold uppercase tracking-wider transition-colors">
+          sarwarfx // webtools
+        </a>
+        <span class="text-slate-600">|</span>
+        <span class="text-[11px]">[AIRGAP ZERO-LOG PRIVACY]</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600 text-[11px]">[CLOUDFLARE_PAGES_STATIC]</span>
+        <a href="https://github.com/SARWARFX/webtools" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors uppercase text-[11px]">
+          <i class="fa-brands fa-github mr-1"></i>GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const CURRENT_TOOL_ID = 'sql';
+    const TOOLS = [
+      { id: 'speed', name: 'SPEED BENCHMARK', desc: 'Bandwidth gauge, edge ping & jitter monitor', icon: 'fa-gauge-high', subdomain: 'apps.sarwarfx.cfd/speed/', code: '0x01' },
+      { id: 'qr', name: 'OPTICAL MATRIX', desc: 'Live QR generator for Wi-Fi/text & scanner', icon: 'fa-qrcode', subdomain: 'apps.sarwarfx.cfd/qr/', code: '0x02' },
+      { id: 'json', name: 'DATA INSPECTOR', desc: 'Prettifier, syntax validator & tree viewer', icon: 'fa-brackets-curly', subdomain: 'apps.sarwarfx.cfd/json/', code: '0x03' },
+      { id: 'ip', name: 'SIGNAL RADAR', desc: 'Public IP, ISP, ASN & geolocation map', icon: 'fa-network-wired', subdomain: 'apps.sarwarfx.cfd/ip/', code: '0x04' },
+      { id: 'diff', name: 'DIFF ANALYZER', desc: 'Side-by-side & unified difference viewer', icon: 'fa-code-compare', subdomain: 'apps.sarwarfx.cfd/diff/', code: '0x05' },
+      { id: 'compress', name: 'PIXEL OPTIMIZER', desc: 'Client-side canvas WebP/JPEG optimizer', icon: 'fa-file-image', subdomain: 'apps.sarwarfx.cfd/compress/', code: '0x06' },
+      { id: 'base64', name: 'BINARY CIPHER', desc: 'Two-way text & file/image Data URI encoder', icon: 'fa-arrow-right-arrow-left', subdomain: 'apps.sarwarfx.cfd/base64/', code: '0x07' },
+      { id: 'clean', name: 'STREAM PURIFIER', desc: 'Case switcher, deduplicator & line ops', icon: 'fa-wand-magic-sparkles', subdomain: 'apps.sarwarfx.cfd/clean/', code: '0x08' },
+      { id: 'clock', name: 'CHRONOMETER', desc: 'Timezones & interactive meeting planner', icon: 'fa-clock', subdomain: 'apps.sarwarfx.cfd/clock/', code: '0x09' },
+      { id: 'calc', name: 'TELEMETRY CALC', desc: 'Download time, loan EMI & margin tool', icon: 'fa-calculator', subdomain: 'apps.sarwarfx.cfd/calc/', code: '0x0A' },
+      { id: 'pack', name: 'CONTEXT PACKER', desc: 'Flatten codebase repositories into structured LLM prompt context with ASCII file tree.', icon: 'fa-box-archive', subdomain: 'apps.sarwarfx.cfd/pack/', code: '0x0B' },
+      { id: 'redact', name: 'PRIVACY REDACTOR', desc: 'Blackout & pixelate confidential document data and sanitize all hidden camera EXIF tags.', icon: 'fa-user-secret', subdomain: 'apps.sarwarfx.cfd/redact/', code: '0x0C' },
+      { id: 'invoice', name: 'INVOICE STUDIO', desc: 'Client-side zero-login invoice studio with dynamic rows, auto-saving storage & vector PDF print.', icon: 'fa-file-invoice-dollar', subdomain: 'apps.sarwarfx.cfd/invoice/', code: '0x0D' },
+      { id: 'hash', name: 'CRYPTO DIGEST', desc: 'Real-time text & file checksum calculator (SHA-256, SHA-512, MD5) with HMAC signing and verification.', icon: 'fa-shield-halved', subdomain: 'apps.sarwarfx.cfd/hash/', code: '0x0E' },
+      { id: 'jwt', name: 'AUTH INSPECTOR', desc: 'Decode JWT tokens in-browser, inspect claims, format JSON, and monitor live expiration countdown.', icon: 'fa-key', subdomain: 'apps.sarwarfx.cfd/jwt/', code: '0x0F' },
+      { id: 'regex', name: 'PATTERN SYNTHESIZER', desc: 'Real-time JavaScript regular expression tester with live highlight, capture group table & search/replace.', icon: 'fa-asterisk', subdomain: 'apps.sarwarfx.cfd/regex/', code: '0x10' },
+      { id: 'cron', name: 'CRON CHRONOMETER', desc: 'Parse standard cron expressions into natural English schedule descriptions and view next 10 executions.', icon: 'fa-calendar-days', subdomain: 'apps.sarwarfx.cfd/cron/', code: '0x11' },
+      { id: 'palette', name: 'CHROMA MATRIX', desc: 'Bidirectional HEX, RGB, HSL, OKLCH color converter with WCAG 2.1 accessibility contrast auditor.', icon: 'fa-palette', subdomain: 'apps.sarwarfx.cfd/palette/', code: '0x12' },
+      { id: 'doc', name: 'TACTICAL DOSSIER', desc: 'Split-pane Markdown editor with real-time rendered preview and one-click vector PDF export.', icon: 'fa-file-lines', subdomain: 'apps.sarwarfx.cfd/doc/', code: '0x13' },
+      { id: 'uuid', name: 'ENTROPY IDENTIFIER', desc: 'Bulk generator for UUID v4/v7, ULID, and custom-alphabet NanoIDs with entropy metrics.', icon: 'fa-fingerprint', subdomain: 'apps.sarwarfx.cfd/uuid/', code: '0x14' },
+      { id: 'url', name: 'URI CODEC & PARSER', desc: 'RFC 3986 bidirectional encoder/decoder with visual query parameter tree and protocol parser.', icon: 'fa-link', subdomain: 'apps.sarwarfx.cfd/url/', code: '0x15' },
+      { id: 'pass', name: 'PASSPHRASE MATRIX', desc: 'Cryptographic password generator and Diceware passphrase synthesizer with crack-time estimator.', icon: 'fa-lock', subdomain: 'apps.sarwarfx.cfd/pass/', code: '0x16' },
+      { id: 'epoch', name: 'CHRONO TELEMETRY', desc: 'Bidirectional Unix epoch timestamp converter (sec, ms, micro) with live ticking clock.', icon: 'fa-stopwatch', subdomain: 'apps.sarwarfx.cfd/epoch/', code: '0x17' },
+      { id: 'slug', name: 'CASE & SLUGIFIER', desc: 'Case transformer (kebab, camel, snake, Pascal, CONSTANT) with SEO URL slug sanitizer.', icon: 'fa-font', subdomain: 'apps.sarwarfx.cfd/slug/', code: '0x18' },
+      { id: 'yaml', name: 'JSON/YAML MATRIX', desc: 'Lossless bidirectional JSON to YAML converter with syntax validation and indentation control.', icon: 'fa-file-code', subdomain: 'apps.sarwarfx.cfd/yaml/', code: '0x19' },
+      { id: 'csv', name: 'CSV & TABULAR MATRIX', desc: 'Bidirectional CSV/TSV to JSON converter with delimiter autodetection and tabular preview.', icon: 'fa-file-csv', subdomain: 'apps.sarwarfx.cfd/csv/', code: '0x1A' },
+      { id: 'sql', name: 'SQL SYNTAX PURIFIER', desc: 'Client-side SQL query formatter, minifier, and keyword case purifier for standard SQL dialects.', icon: 'fa-database', subdomain: 'apps.sarwarfx.cfd/sql/', code: '0x1B' },
+      { id: 'curl', name: 'CURL TRANSPILER', desc: 'Transpile cURL commands into JavaScript fetch, Axios, Python requests, and Node.js code.', icon: 'fa-terminal', subdomain: 'apps.sarwarfx.cfd/curl/', code: '0x1C' },
+      { id: 'subnet', name: 'CIDR & SUBNET RADAR', desc: 'IPv4/IPv6 CIDR network calculator, subnet mask, usable host range & binary breakdown.', icon: 'fa-sitemap', subdomain: 'apps.sarwarfx.cfd/subnet/', code: '0x1D' },
+      { id: 'svg', name: 'VECTOR SVG OPTIMIZER', desc: 'Clean, minify, and strip metadata from vector SVG code with live canvas preview and byte savings.', icon: 'fa-bezier-curve', subdomain: 'apps.sarwarfx.cfd/svg/', code: '0x1E' },
+      { id: 'base', name: 'NUMBER BASE MATRIX', desc: 'Arbitrary-precision BigInt converter between Binary, Octal, Decimal, and Hexadecimal.', icon: 'fa-binary', subdomain: 'apps.sarwarfx.cfd/base/', code: '0x1F' }
+    ];
+
+    function getToolHref(tool) {
+      return `/${tool.id}/`;
+    }
+
+    function renderSuiteGrid() {
+      const grid = document.getElementById('suiteGrid');
+      if (!grid) return;
+      grid.innerHTML = TOOLS.map(tool => {
+        const isActive = tool.id === CURRENT_TOOL_ID;
+        const href = getToolHref(tool);
+        return `
+          <a href="${href}" class="p-3 border font-mono transition-all text-left flex items-start space-x-3 group ${
+            isActive 
+              ? 'bg-cyan-950/40 border-cyan-500 shadow-[0_0_15px_rgba(0,245,255,0.2)] cursor-default' 
+              : 'bg-black/60 border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/40'
+          }">
+            <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center border ${
+              isActive ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300' : 'border-slate-800 bg-black/40 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-300'
+            } transition-colors">
+              <i class="fa-solid ${tool.icon} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold tracking-wider ${isActive ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-300'} text-[11px]">${tool.name}</span>
+                <span class="text-[9px] text-slate-500">${tool.code}</span>
+              </div>
+              <p class="text-slate-500 text-[10px] truncate mt-0.5">${tool.desc}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function toggleSuiteModal(show) {
+      const modal = document.getElementById('suiteModal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSuiteModal(false);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    let keywordCaseMode = 'upper';
+
+    function setKeywordCase(mode) {
+      keywordCaseMode = mode;
+      const btnUp = document.getElementById('btnCaseUpper');
+      const btnLow = document.getElementById('btnCaseLower');
+      if (mode === 'upper') {
+        btnUp.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
+        btnLow.className = 'px-2 py-0.5 rounded text-[11px] text-slate-400 hover:text-white';
+      } else {
+        btnLow.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
+        btnUp.className = 'px-2 py-0.5 rounded text-[11px] text-slate-400 hover:text-white';
+      }
+      formatSQL();
+    }
+
+    const SQL_RESERVED = [
+      'SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL', 'LIKE', 'BETWEEN',
+      'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN', 'CROSS JOIN', 'JOIN', 'ON', 'AS',
+      'GROUP BY', 'HAVING', 'ORDER BY', 'ASC', 'DESC', 'LIMIT', 'OFFSET', 'UNION', 'UNION ALL',
+      'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'DROP TABLE',
+      'ALTER TABLE', 'PRIMARY KEY', 'FOREIGN KEY', 'REFERENCES', 'INDEX', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
+      'EXISTS', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'COALESCE'
+    ];
+
+    const MAJOR_CLAUSES = [
+      'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT', 'OFFSET',
+      'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN', 'JOIN',
+      'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'UNION ALL', 'UNION'
+    ];
+
+    function updateInputStats() {
+      const val = document.getElementById('sqlInput').value;
+      document.getElementById('inputCharCount').textContent = `${val.length} CHARS`;
+
+      // Detect query type
+      let type = 'SQL';
+      const upper = val.trim().toUpperCase();
+      if (upper.startsWith('SELECT')) type = 'SELECT';
+      else if (upper.startsWith('INSERT')) type = 'INSERT';
+      else if (upper.startsWith('UPDATE')) type = 'UPDATE';
+      else if (upper.startsWith('DELETE')) type = 'DELETE';
+      else if (upper.startsWith('CREATE')) type = 'DDL: CREATE';
+      else if (upper.startsWith('ALTER')) type = 'DDL: ALTER';
+
+      const lines = val ? val.split('\n').length : 0;
+      document.getElementById('queryTelemetry').textContent = `OP: ${type} // ${lines} LINES`;
+    }
+
+    function formatSQL() {
+      const raw = document.getElementById('sqlInput').value.trim();
+      if (!raw) {
+        document.getElementById('sqlOutput').value = '';
+        return;
+      }
+
+      // 1. Normalize spaces
+      let str = raw.replace(/\s+/g, ' ');
+
+      // 2. Put major clauses on new lines
+      MAJOR_CLAUSES.forEach(clause => {
+        const regex = new RegExp(`\\b${clause}\\b`, 'gi');
+        str = str.replace(regex, `\n${clause.toUpperCase()} `);
+      });
+
+      // 3. Handle commas in SELECT clause and AND/OR in WHERE
+      str = str.replace(/\s*,\s*/g, ',\n  ');
+      str = str.replace(/\bAND\b/gi, '\n  AND');
+      str = str.replace(/\bOR\b/gi, '\n  OR');
+
+      // 4. Apply keyword case
+      SQL_RESERVED.forEach(kw => {
+        const regex = new RegExp(`\\b${kw}\\b`, 'gi');
+        const rep = keywordCaseMode === 'upper' ? kw.toUpperCase() : kw.toLowerCase();
+        str = str.replace(regex, rep);
+      });
+
+      // 5. Clean extra whitespace per line
+      const formatted = str
+        .split('\n')
+        .map(l => l.trimEnd())
+        .filter((l, i, arr) => !(l.trim() === '' && (i === 0 || i === arr.length - 1)))
+        .join('\n')
+        .trim();
+
+      document.getElementById('sqlOutput').value = formatted;
+      showToast('FORMATTED SQL QUERY');
+    }
+
+    function minifySQL() {
+      const raw = document.getElementById('sqlInput').value.trim();
+      if (!raw) return;
+      // Strip comments
+      let str = raw.replace(/--.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+      // Single line
+      str = str.replace(/\s+/g, ' ').trim();
+      document.getElementById('sqlOutput').value = str;
+      showToast('MINIFIED SQL QUERY');
+    }
+
+    function parameterizeSQL() {
+      const raw = document.getElementById('sqlInput').value.trim();
+      if (!raw) return;
+
+      let paramIdx = 1;
+      // Replace single-quoted strings
+      let parameterized = raw.replace(/'[^']*'/g, () => `:p${paramIdx++}`);
+      // Replace numeric literals after =, <, >, in, between
+      parameterized = parameterized.replace(/(=\s*|\bIN\s*\(\s*|\bBETWEEN\s+)(\d+(\.\d+)?)/gi, (match, prefix) => {
+        return `${prefix}:p${paramIdx++}`;
+      });
+
+      document.getElementById('sqlOutput').value = parameterized;
+      showToast(`PARAMETERIZED ${paramIdx - 1} LITERALS`);
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('sqlOutput').value;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      showToast('COPIED SQL OUTPUT');
+    }
+
+    function downloadSQL() {
+      const val = document.getElementById('sqlOutput').value;
+      if (!val) return;
+      const blob = new Blob([val], { type: 'text/sql;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'query.sql';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('DOWNLOADED query.sql');
+    }
+
+    function loadSampleQuery() {
+      const sample = `select u.id, u.username, u.email, count(o.id) as order_count, sum(o.total_usd) as revenue from users u left join orders o on u.id = o.user_id where u.created_at >= '2026-01-01' and u.is_active = true and o.status in ('completed', 'shipped') group by u.id, u.username, u.email having sum(o.total_usd) > 500 order by revenue desc limit 25;`;
+      document.getElementById('sqlInput').value = sample;
+      updateInputStats();
+      formatSQL();
+      showToast('LOADED SAMPLE QUERY');
+    }
+
+    function clearPanes() {
+      document.getElementById('sqlInput').value = '';
+      document.getElementById('sqlOutput').value = '';
+      updateInputStats();
+      showToast('CLEARED SQL EDITORS');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSuiteGrid();
+      loadSampleQuery();
+    });
+  </script>
+</body>
+</html>

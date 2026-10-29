@@ -33,7 +33,7 @@ const APPS = [
     dir: '',
     subdomain: 'apps',
     title: 'CYBERTOOLS',
-    subtitle: '25-IN-1 CLIENT-SIDE UTILITIES',
+    subtitle: '31-IN-1 CLIENT-SIDE UTILITIES',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   },
   {
@@ -209,6 +209,48 @@ const APPS = [
     subdomain: 'yaml',
     title: 'CYBERTOOLS // YAML',
     subtitle: 'JSON TO YAML LOSSLESS SYNTAX MATRIX',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'csv',
+    subdomain: 'csv',
+    title: 'CYBERTOOLS // CSV',
+    subtitle: 'TABULAR DATA & CSV/JSON CONVERTER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'sql',
+    subdomain: 'sql',
+    title: 'CYBERTOOLS // SQL',
+    subtitle: 'SQL SYNTAX FORMATTER & PURIFIER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'curl',
+    subdomain: 'curl',
+    title: 'CYBERTOOLS // CURL',
+    subtitle: 'CURL TO CODE TRANSPILER & SYNTAX ENGINE',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'subnet',
+    subdomain: 'subnet',
+    title: 'CYBERTOOLS // SUBNET',
+    subtitle: 'IPV4/IPV6 CIDR & NETWORK CALCULATOR',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'svg',
+    subdomain: 'svg',
+    title: 'CYBERTOOLS // SVG',
+    subtitle: 'VECTOR SVG OPTIMIZER & MINIFIER',
+    telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
+  },
+  {
+    dir: 'base',
+    subdomain: 'base',
+    title: 'CYBERTOOLS // BASE',
+    subtitle: 'NUMBER BASE & BIT PATTERN CONVERTER',
     telemetry: '[ 100% IN-BROWSER // ZERO LOGS // EDGE HOSTED ]'
   }
 ];
